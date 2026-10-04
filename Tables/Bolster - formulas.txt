@@ -1,18 +1,18 @@
 Target	Stat	Formula	Notes
-def	HP	HP + HP/MonsterLevel * (PartyLevel-MonsterLevel) + (MonSettings.HPBySize and MonsterHeight/160 or 1) * HP	"Target" values: 
+def	HP	local up = min(max(PartyLevel-MonsterLevel, 0)/MonsterLevel, MonSettings.MaxHPBoost or 3); local size = MonSettings.HPBySize and MonsterHeight/160 or 1; return HP*(1 + up + size)*(1 + 0.6*BolsterMul*PartyLevel/(PartyLevel+20))	"Target" values: 
 def	AC	clamp((AC + 0.25*PartyLevel/MonsterPower) * MonsterPower * (1 + PartyLevel/50),0,2000)	def - default for all kinds of monsters, used if there are no special one.
-def	MoveSpeed	(MonSettings.Style == 2 or MonSettings.Style == 0) and (min(MoveSpeed*PartyLevel/MonsterLevel, MonSettings.Style == 2 and MoveSpeed*3 or MoveSpeed*1.75)) or MoveSpeed	*Number of monster kind* - used only for selected kind of monsters. Kind of monsters - same number as in Hostile.txt from EnglishT.lod
+def	MoveSpeed	local s = MonSettings.Style; if s == 2 or s == 0 then return min(MoveSpeed*max(PartyLevel/MonsterLevel, 1)*(1 + 0.15*BolsterMul*PartyLevel/(PartyLevel+20)), s == 2 and MoveSpeed*3 or MoveSpeed*1.75) end; return MoveSpeed	*Number of monster kind* - used only for selected kind of monsters. Kind of monsters - same number as in Hostile.txt from EnglishT.lod
 def	MaxDamage	(MaxDamage + max(MaxDamage * (1 + MonsterPower / 3 - 0.33), 0))*(1 + PartyLevel/100)^0.444	
-def	SpellSkill	MonSettings.Style == 3 and min(SpellSkill*PartyLevel/MonsterLevel, 10*BolsterMul) or min(SpellSkill*MonsterPower, 7)	"Stat" values: HP, AC, MoveSpeed, MinDamage, MaxDamage, SpellSkill, SpellMastery, AllowNewSpell, AllowSummons, PlayerAC
-def	SpellMastery	MonSettings.Style == 3 and min(floor(SpellMastery + PartyLevel/MonsterLevel), 4) or min(SpellMastery + MonsterPower, 3)	
-def	AllowNewSpell	MapSettings.Spells and MonSettings.Spells and PartyLevel/MonsterLevel > 1.5	"Formula" accept any expressions with lua syntax, quick reference:
-def	AllowSummons	MapSettings.Summons and MonSettings.Summons and PartyLevel/MonsterLevel > 1.5	+; -; *; /; ^; sqrt(x); min(...); max(...); random(x[, y]); abs(x); clamp(v, min, max)
-def	AllowReplicate	MapSettings.Summons and MonSettings.Replicate and PartyLevel/MonsterLevel > 1.5	Result of execution "Formula" should be number for all stats, except "AllowNewSpells", "AllowSummons".
+def	SpellSkill	MonSettings.Style == 3 and min(max(SpellSkill*PartyLevel/MonsterLevel, SpellSkill + PartyLevel/20), max(10*BolsterMul, SpellSkill)) or min(SpellSkill*MonsterPower, max(7, SpellSkill))	"Stat" values: HP, AC, MoveSpeed, MinDamage, MaxDamage, SpellSkill, SpellMastery, AllowNewSpell, AllowSummons, PlayerAC
+def	SpellMastery	MonSettings.Style == 3 and min(SpellMastery + max(floor(PartyLevel/MonsterLevel), 1), 4) or max(SpellMastery, min(SpellMastery + MonsterPower, 3))	
+def	AllowNewSpell	MapSettings.Spells and MonSettings.Spells and (PartyLevel/MonsterLevel > 1.5 or PartyLevel >= 30)	"Formula" accept any expressions with lua syntax, quick reference:
+def	AllowSummons	MapSettings.Summons and MonSettings.Summons and (PartyLevel/MonsterLevel > 1.5 or PartyLevel >= 50)	+; -; *; /; ^; sqrt(x); min(...); max(...); random(x[, y]); abs(x); clamp(v, min, max)
+def	AllowReplicate	MapSettings.Summons and MonSettings.Replicate and (PartyLevel/MonsterLevel > 1.5 or PartyLevel >= 50)	Result of execution "Formula" should be number for all stats, except "AllowNewSpells", "AllowSummons".
 def	PlayerAC	0	If "Formula" is pure math expression, "return" can be omitted.
-76	HP	HP+(MonSettings.HPBySize and MonsterHeight/160 or 1)*(HP/MonsterLevel*(PartyLevel-MonsterLevel))	
-spc	HP	HP + HP/MonsterLevel * max(PartyLevel-MonsterLevel, 0)	
-spc	MaxDamage	MaxDamage + MaxDamage/MonsterLevel * max(PartyLevel-MonsterLevel, 0)	  Variables for PlayerAC formula:
-spc	AC	AC + AC/MonsterLevel * max(PartyLevel-MonsterLevel, 0)	PlayerAC, Player, Monster, BolsterMul. Monster is already bolstered at this point.
+76	HP	local up = min(max(PartyLevel-MonsterLevel, 0)/MonsterLevel, MonSettings.MaxHPBoost or 3); local size = MonSettings.HPBySize and MonsterHeight/160 or 1; return HP*(1 + size*(1 + up))*(1 + 0.6*BolsterMul*PartyLevel/(PartyLevel+20))	
+spc	HP	(HP + HP/MonsterLevel * max(PartyLevel-MonsterLevel, 0))*(1 + 0.6*BolsterMul*PartyLevel/(PartyLevel+20))	
+spc	MaxDamage	(MaxDamage + MaxDamage/MonsterLevel * max(PartyLevel-MonsterLevel, 0))*(1 + PartyLevel/100)^0.444	  Variables for PlayerAC formula:
+spc	AC	(AC + AC/MonsterLevel * max(PartyLevel-MonsterLevel, 0))*(1 + PartyLevel/100)^0.444	PlayerAC, Player, Monster, BolsterMul. Monster is already bolstered at this point.
 spc	SpellSkill	SpellSkill	  Variables for other formulas:
 spc	SpellMastery	SpellMastery	PartyLevel - average party level
 			MonsterLevel - average level of monster's "family" (three monsters of same kind)
