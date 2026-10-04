@@ -1,0 +1,49 @@
+Standard Bonuses by Group										
+
+Bonus Stat	Of Name	Arm	Shld	Helm	Belt	Cape	Gaunt	Boot	Ring	Amul
+
+Might	of Might	2	0	4	4	4	4	2	4	4
+Intellect	of Thought	2	0	4	4	4	4	2	4	4
+Personality	of Charm	2	0	4	4	4	4	4	4	4
+Endurance	of Vigor	2	0	4	4	4	4	2	4	4
+Accuracy	of Precision	2	0	4	4	4	4	2	4	4
+Speed	of Speed	2	0	4	4	4	4	10	4	4
+Luck	of Luck	2	0	4	4	4	4	4	4	4
+Hit Points	of Health	4	2	2	0	4	2	4	4	4
+Spell Points	of Magic	4	2	4	0	4	4	4	4	4
+Armor Class	of Defense	8	8	4	0	4	4	2	4	4
+Fire Resistance	of Fire Resistance	4	4	2	0	4	6	2	4	4
+Air Resistance	of Air Resistance	4	4	2	0	4	6	2	4	4
+Water Resistance	of Water Resistance	4	4	2	0	4	6	2	4	4					
+Earth Resistance	of Earth Resistance	4	4	2	0	4	6	2	4	4					
+Mind Resistance	of Mind Resistance	4	4	2	0	4	6	2	4	4					
+Body Resistance	of Body Resistance	4	4	2	0	4	6	2	4	4					
+Alchemy skill	of Alchemy	0	0	0	2	2	0	2	4	6					
+Stealing skill	of Stealing	0	0	0	0	0	0	0	0	0					
+Disarm skill	of Disarming	0	0	2	2	2	8	2	6	2					
+ID Item skill	of Items	0	0	2	2	2	2	2	4	6					
+ID Monster skill	of Monsters	0	0	0	2	2	2	2	4	6					
+Armsmaster skill	of Arms	4	4	4	4	0	4	4	0	0					
+Dodge skill	of Dodging	0 	0	0	6	4	2	4	2	2					
+Unarmed skill	of the Fist	0	0	0	2	2	8	4	2	2					
+Great Might	of Great Might	0	0	0	0	0	0	0	0	0
+Spell skill B	(Beginner)	0	0	0	0	0	0	0	0	0
+Spell skill E	(Expert)	0	0	0	0	0	0	0	0	0
+Spell skill M	(Master)	0	0	0	0	0	0	0	0	0
+Spell skill GM	(Grandmaster)	0	0	0	0	0	0	0	0	0
+Spirit Resistance	of Spirit Resistance	2	2	1	0	2	3	1	2	2			
+Light Resistance	of Light Resistance	2	2	1	0	2	3	1	2	2
+Dark Resistance	of Dark Resistance	2	2	1	0	2	3	1	2	2
+
+		64	46	61	48	84	109	71	92	94					
+		
+	Bonus range for Standard by Level					Value Mod= (+100 / Plus of Item)									
+	lvl	min	max
+	1	0	0
+	2	1	5
+	3	3	8
+	4	6	12
+	5	4	17
+	6	6	25
+
+	(note weapons can only have Special Bonuses)		

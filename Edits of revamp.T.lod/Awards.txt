@@ -1,0 +1,263 @@
+A Bit	Awards	Sort	Notes
+1		1	Won Arcomage 1
+2		1	Won Arcomage 2
+3		1	Won Arcomage 3
+4		1	Won Arcomage 4
+5		1	Won Arcomage 5
+6		1	Won Arcomage 6
+7		1	Won Arcomage 7
+8		1	Won Arcomage 8
+9		1	Won Arcomage 9
+10		1	Won Arcomage 10
+11		1	Won Arcomage 11
+12		1	Won Arcomage 12
+13		1	Won Arcomage 13
+14		1	Won Arcomage 14
+15		1	Won Arcomage 15
+16		1	Won Arcomage 16
+17		1	Won Arcomage 17
+18		1	Won Arcomage 18
+19		1	Won Arcomage 19
+20		1	Won Arcomage 20
+21		1	Won Arcomage 21
+22		1	Won Arcomage 22
+23		1	Won Arcomage 23
+24		1	Won Arcomage 24
+25		1	Won Arcomage 25
+26		1	Won Arcomage 26
+27		1	Won Arcomage 27
+28		1	Won Arcomage 28
+29		1	Won Arcomage 29
+30		1	Won Arcomage 30
+31		1	Won Arcomage 31
+32		1	Won Arcomage 32
+33		1	Won Arcomage 33
+34		1	Won Arcomage 34
+35		1	Won Arcomage 35
+36	Arcomage wins: %lu	2	
+37	Arcomage losses: %lu	2	
+38	Have earned status of Novice Bounty Hunter	2	
+39	Have earned status of Journeyman Bounty Hunter	2	
+40	Have earned status of Master Bounty Hunter	2	
+41	Arcomage Champion of Jadame	2	
+42	Current Fines Due: %lu	0	
+43	%u Deaths	0	
+44	Collected %u in bounties	0	
+45	Served %u prison terms	0	
+46	Won %u Page Arena Victories	0	
+47	Won %u Squire Arena Victories	0	
+48	Won %u Knight Arena Victories	0	
+49	Won %u Lord Arena Victories	0	
+50	Arcomage Champion of Antagarich	2	
+51	Arcomage Champion of Enroth	2	
+52	Brought Power Stone to Fredrick Talimere	3	
+53	Blackmailed the Wererat Smugglers	3	
+54	Delivered Dadeross' Letter to Elgar Fellmoon	3	
+55	Found a witness to the cataclysm in the Ironsand Desert	3	
+56	Placed Vilebite's ashes in the Troll Tomb	3	
+57	Formed an alliance with the Garrote Gorge Dragons	3	
+58	Formed an alliance with Charles Quixote and his Dragon Hunters	3	
+59	Formed an alliance with the Minotaurs of Ravage Roaming	3	
+60	Formed an alliance with the Necromancers' Guild	3	
+61	Formed and alliance with the Temple of the Sun	3	
+62	Sunk the Regnan fleet allowing Roland and Catherine Ironfist to join the alliance	3	
+63	Built the Conflux Key	3	
+64	"Rescued Shalwend, Lord of Air"	3	
+65	"Rescued Acwalander, Lord of Water"	3	
+66	"Rescued Gralkor the Cruel, Lord of Earth"	3	
+67	"Rescued Pyrannaste, Lord of Fire"	3	
+68	Destroyed the Crystal of the Destroyer	3	
+69	Delivered a jar of Blue Wasp Jelly	4	Pioneer
+70	Rescued Cauri Blackthorne	4	Pathfinder
+71	Found Troll Homeland	4	Berserker
+72	Removed basilisks from the Ancient Troll Home	4	Warmonger
+73	Pulled out a sword from a stone	4	Cavalier
+74	Returned Ebonest to Charles Quixote	4	Champion
+75	Rescued Blazen Stormlance	4	
+76	"Infused Bazalath's Egg with the flames' power"	4	Flight Leader
+77	Gave the Sword of Whistlebone the Slayer to the Deftclaw Redreaver	4	Great Wyrm
+78	Delivered letter to Ninegos	4	Minotaur Headsman
+79	Recovered Axe of Balthazar	4	Minotaur Lord
+80	Placed a focusing beacon in Shadowspire	4	Cleric of the Light
+81	Found the lost Prophecies of the Sun and returned them to the Temple of the Sun	4	Priest of the Light
+82	Brought a vial of the hermit troll blood	4	Elder Vampire
+83	Found the Sarcophagus and Remains of Korbu	4	Nosferatu
+84	Led Dead Prophetess to Avershara	4	Necromancer
+85	Found the Lost Book of Khel	4	Master Necromancer
+86	Stopped the Yellow Fever Epidemic on Dagger Wound Island	5	
+87	"Retrieved three cheeses for Asael Fromago, the Cheese Connoisseur of Alvar"	5	
+88	Found the treasure of the Dread Pirate Stanley	5	
+89	Recovered Idol of the Snake for Hiss of Blood Drop village	5	
+90	Brought Potions of Fire Resistance to the southern houses of Rust	5	
+91	Killed all of the Ogres in the Alvar region	5	
+92	"Rescued Isthric the Tongue, brother of Rohtnax, on the Dagger Wound Islands"	5	
+93	Found the shield Eclipse	5	
+94	Rescued Irabelle Hunter from the Ogre Fortress in Alvar	5	
+95	Found the Dragonbane flower for Calindril in the Garrote Gorge Dragon Hunter's Fort	5	
+96	Found the Dragonbane flower for Balion Tearwing in Garrote Gorge	5	
+97	Brought the Annointed Herb Potion to Languid on the Dagger Wound Islands	5	
+98	Killed all of the Dire Wolves in the Ravenshore area	5	
+99	Delivered False Report to the Dread Pirate Stanley for Arion Hunter	5	
+100	Killed all of the Dragons in the Garrote Gorge area for Avalon in the Garrote Gorge Dragon Hunter's Fort	5	
+101	Killed all of the Dragon Hunters in the Garrote Gorge are for Jerin Flame-eye in the Dragon Cave of Garrote Gorge	5	
+102	Joined the Elemental Guild in Jadame	6	
+103	Won the Scavenger Hunt on Emerald Island	7	
+104	Removed goblins from Castle Harmondale	7	
+105	Rescued the dwarves from the Red Dwarf Mine	7	
+106	Rescued Loren Steel	7	
+107	Gave Loren Imposter to Catherine	7	
+108	Retrieved Fort Riverstride Plans	7	
+109	Gave false plans to Elfking	7	
+110	Completed Wizard Proving Grounds	7	
+111	Retrieved Both Temple Pieces	7	
+112	Solved the Mystery of the Wine Cellar	7	
+113	Retrieved Soul Jars	7	
+114	Assassinated Tolberti	7	
+115	Cleaned out Clanker's Laboratory	7	
+116	Assassinated Robert the Wise	7	
+117	Completed Necromancer Breeding Pit	7	
+118	Slayed Xenofex	7	
+119	Brought the Oscillation Overthruster to Resurectra and opened the Space Gate	7	
+120	Brought the Oscillation Overthruster to Kastore and rebuilt the Heavenly Forge	7	
+121	Stole the vase from Lord Markham's estate	8	Rogue
+122	Misplaced weights in Watchtower 6	8	Spy
+123	Killed Lady Eleanor Carmine	8	Assassin
+124	Destroyed all the undead in the Haunted House	8	Cavalier
+125	Won five arena challenges for Leda Rowan	8	Templar
+126	Robbed the Elven Treasury at Castle Navan	8	Black Knight
+127	Found the lost meditation spot in the Dwarven Barrows	8	Initiate Monk
+128	Defeated the High Priest of Baa	8	Master Monk
+129	Deciphered the code in the School of Sorcery	8	Ninja
+130	Solved the secret to the entrance of the Faerie Mound	8	Hunter
+131	Calmed the trees in the Tularean Forest	8	Ranger Lord
+132	"Collected 50,000 gold worth of bounties from the Bounty Hunts for Ebednezer Sower"	8	Bounty Hunter
+133	Sabotaged the lift in the Red Dwarf Mines	8	Warrior Mage
+134	Retrieved the Perfect Bow and returned it to Lawrence Mark	8	Master Archer
+135	Retrieved the Perfect Bow and returned it to Steagal Snick	8	Sniper
+136	Killed Wromthrax the Heartless	8	Crusader
+137	"Rescued Alice Hargreaves from William's Tower"	8	Hero
+138	Captured Alice Hargreaves from Castle Gryphonheart	8	Villain
+139	Found the lost pirate map in the Tidewater Caverns	8	Priest
+140	Purified the Altar of Evil in the Temple of the Moon	8	Priest of the Light
+141	Defaced the Altar of Good in the Temple of the Sun	8	Priest of the Dark
+142	Visited the stonehenge monoliths in Tatalia, the Evenmorn Islands, and Avlee	8	Great Druid
+143	Returned the bones of the Dwarf King	8	Arch Druid
+144	Retrieved the dragon egg for Tor Anwyn	8	Warlock
+145	Constructed a Golem	8	Wizard
+146	Found the Book of Divine Intervention in the Breeding Zone	8	Archmage
+147	Retrieved the lich jars from the Proving Grounds	8	Master Necromancer
+148	Found the missing contestants on Emerald Island	9	
+149	Retrieved the Heart of the Wood	9	
+150	Returned Withern's Lantern	9	
+151	Returned Haldar's Remains	9	
+152	Returned Lord Davrik's signet Ring	9	
+153	Returned Parson's Quill to Norbert Thrush	9	
+154	Returned Faerie Pipes to Johann Kerrid	9	
+155	Troglodyte Slayer	9	
+156	Griffin Slayer	9	
+157	Retrieved the Seasons' Stole	9	
+158	Found and placed all the statuettes	9	
+159	Retrieved the complete set of paintings	9	
+160	Joined the Elemental Guild in Antagarich	10	
+161	Joined the Self Guild in Antagarich	10	
+162	Joined the Air Guild in Antagarich	10	
+163	Joined the Earth Guild in Antagarich	10	
+164	Joined the Fire Guild in Antagarich	10	
+165	Joined the Water Guild in Antagarich	10	
+166	Joined the Body Guild in Antagarich	10	
+167	Joined the Mind Guild in Antagarich	10	
+168	Joined the Spirit Guild in Antagarich	10	
+169	Joined the Light Guild in Antagarich	10	
+170	Joined the Dark Guild in Antagarich	10	
+171	Retrieved Lord Kilburn's Shield	11	
+172	Retrieved the Hourglass of Time	11	
+173	Destroyed the Devil's Post	11	
+174	Captured the Prince of Thieves	11	
+175	Fixed the Stable Prices	11	
+176	Ended Winter	11	
+177	Exposed the Traitor on the High Council	11	
+178	Awakened the Oracle	11	
+179	Gained Access to the Control Center	11	
+180	Freed Archibald	11	
+181	Destroyed the Hive and Saved Enroth	11	
+182	Rescued a Damsel in Distress	12	Crusader
+183	Slayed Longfang Witherhide	12	
+184	Drank from the Fountain of Magic	12	Wizard
+185	Retrieved the Crystal of Terrax	12	Master Wizard
+186	"Got Knight's nomination"	12	Cavalier
+187	Defeated the Warlord	12	Champion
+188	Repaired Temple Stone in Free Haven	12	Priest
+189	Brought Sacred Chalice to Temple Stone	12	High Priest
+190	Visited the Altar of the Sun	12	Great Druid
+191	Visited the Altar of the Moon	12	Arch Druid
+192	Retrieved the key to the Dragon Towers	12	Warrior Mage
+193	Reseted all of the Dragon Towers	12	Battle Mage
+194	Returned the Prince	13	
+195	Killed Snergle	13	
+196	Saved the Mayor of Mist	13	
+197	Retrieved the Baa Candelabra	13	
+198	Retrieved Andrew's Harp	13	
+199	Retrieved Ethric's Skull	13	
+200	Killed the Spider Queen	13	
+201	Saved the Monolith	13	
+202	Gave Bat Guano to Barad	13	
+203	Destroyed the Wicked Crystal	13	
+204	Rescued Emmanuel	13	
+205	Found Zoltan's Artifact	13	
+206	Rescued Sharry	13	
+207	Rescued Angela	13	
+208	Rescued Sherell	13	
+209	Broke the Blackshire Curse	13	
+210	Killed the Werewolf Leader	13	
+211	Solved the Goblinwatch Combination	13	
+212	Returned with the Chime of Harmony	13	
+213	Retrieved Emil's Egg	13	
+214	Placed Twillen's statuettes	13	
+215	Aided the Lord of Fire	13	
+216	Delivered 6th Letter to Wilbur Humphry	13	
+217	Allowed to use the Royal Yacht	13	
+218	Destroyed the Book of Liches	13	
+219	Super-Goober	13	
+220	Solved the Obelisk Puzzle	13	
+221	Joined the Elemental Guild in Enroth	14	
+222	Joined the Self Guild in Enroth	14	
+223	Joined the Buccaneer's Lair Guild	14	
+224	Joined the Protection Services Guild	14	
+225	Joined the Smugglers' Guild	14	
+226	Joined the Blade's End Guild	14	
+227	Joined the Duelists' Edge Guild	14	
+228	Joined the Berserker's Fury Guild	14	
+229	Joined the Air Guild in Enroth	14	
+230	Joined the Earth Guild in Enroth	14	
+231	Joined the Fire Guild in Enroth	14	
+232	Joined the Water Guild in Enroth	14	
+233	Joined the Body Guild in Enroth	14	
+234	Joined the Mind Guild in Enroth	14	
+235	Joined the Spirit Guild in Enroth	14	
+236	Joined the Light Guild in Enroth	14	
+237	Joined the Dark Guild in Enroth	14	
+238	Joined the Self Guild in Jadame	6	
+239	Joined the Air Guild in Jadame	6	
+240	Joined the Earth Guild in Jadame	6	
+241	Joined the Fire Guild in Jadame	6	
+242	Joined the Water Guild in Jadame	6	
+243	Joined the Body Guild in Jadame	6	
+244	Joined the Mind Guild in Jadame	6	
+245	Joined the Spirit Guild in Jadame	6	
+246	Joined the Light Guild in Jadame	6	
+247	Joined the Dark Guild in Jadame	6	
+248	Joined the Initiate Guild of Inner Power in Jadame	6	
+249	Joined the Adept Guild of Inner Power in Jadame	6	
+250	Joined the Master Guild of Inner Power in Jadame	6	
+251	Joined the Paramount Guild of Inner Power in Jadame	6	
+252	Joined the Initiate Guild of Inner Power in Antagarich	10	
+253	Joined the Adept Guild of Inner Power in Antagarich	10	
+254	Joined the Master Guild of Inner Power in Antagarich	10	
+255	Joined the Paramount Guild of Inner Power in Antagarich	10	
+256	Joined the Initiate Guild of Inner Power in Enroth	14	
+257	Joined the Adept Guild of Inner Power in Enroth	14	
+258	Joined the Master Guild of Inner Power in Enroth	14	
+259	Joined the Paramount Guild of Inner Power in Enroth	14	
+260	Retrieved a sample of Ancient technology from Clanker's Laboratory	8
+261	Retrieved the Dimensional Scanner and Pathfinder Beacon and returned them to Resurectra	8
+262	Retrieved the Dimensional Scanner and Pathfinder Beacon and returned them to Kastore	8
