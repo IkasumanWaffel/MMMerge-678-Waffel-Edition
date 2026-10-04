@@ -255,7 +255,7 @@ function events.ItemAdditionalDamage(t)
         -- по уже резистнутому урону — двойное сопротивление
         local res = getMonsterRes(monIdx, permDK)
         local pct = CalcMonResPercent(res)
-        resisted = math.floor(enchDmg * pct)
+        resisted = round(enchDmg * pct)
         if resisted > 0 and t.Monster then
             t.Monster.HP = t.Monster.HP - resisted
         end

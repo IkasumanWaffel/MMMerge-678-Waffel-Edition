@@ -1292,7 +1292,7 @@
 		local element = mem.i4[d.ebp + 0x0C]  -- второй параметр monster_resists
 
 		local pct = CalcMonResPercent(res)
-		local newDmg = math.floor(damage * pct)
+		local newDmg = round(damage * pct)
 		mem.i4[d.ebp + 0x10] = newDmg
 
 		MF.LogInfo("[RES] elem=%d res=%d dmg=%d -> %d (pct=%.3f)",
@@ -1478,7 +1478,7 @@
 		if _G.CE_SecondaryResist and _G.CE_SecondaryResist > 0 then return end
 		local p = MF.GetWeaponPenalty and MF.GetWeaponPenalty(it) or 0
 		if p > 0 then
-			t.Result = math.floor(t.Result * (1 - p))
+			t.Result = round(t.Result * (1 - p))
 		end
 	end
 
@@ -2325,7 +2325,7 @@
 			return "Indestructible"
 		end
 		local maxDur, curDur = calcDurability2(itemNum, divisor)
-		maxDur, curDur = math.floor(maxDur + 0.5), math.floor(curDur + 0.5)
+		maxDur, curDur = round(maxDur), round(curDur)
 		if curDur >= maxDur then
 			return string.format("%d", maxDur)
 		end

@@ -70,7 +70,7 @@ local CONFIG = {
 	bowWearChance    = 0.20,   -- per arrow / bolt that hits
 	parryWearChance  = 0.25,   -- per successful weapon parry
 	blockWearChance  = 0.25,   -- per successful shield block
-	armorWearChance  = 0.25,   -- per physical hit that gets through; ONE armor piece is picked
+	armorWearChance  = 0.20,   -- per physical hit that gets through; ONE armor piece is picked
 	wearAmount       = 1,
 
 	-- Stage thresholds (fraction of max durability remaining)
