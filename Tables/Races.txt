@@ -1,0 +1,41 @@
+#	StringId	BaseRace	Family	Kind	Name	Plural	Adjective	SpellsB	SpellsE	SpellsM	SpellsG	SpcMSpell	SpcMSkill	SpcMDmg	SpcMSP	SpcMRecv	SpcMBits	SpcMCD	SpcMProj	SpcMSnd	SpcRSpell	SpcRSkill	SpcRDmg	SpcRSP	SpcRRecv	SpcRBits	SpcRCD	SpcRProj	SpcRSnd
+0	Human	0	0	0	Human	Humans	Human				
+1	UndeadHuman	0	1	1	Undead Human	Undead Humans	Undead Human				
+2	VampireHuman	0	2	1	Vampire Human	Vampire Humans	Vampire Human	111	112	113	114
+3	ZombieHuman	0	3	1	Zombie Human	Zombie Humans	Zombie Human				
+4	GhostHuman	0	4	1	Ghost Human	Ghost Humans	Ghost Human				
+5	DarkElf	5	0	2	Dark Elf	Dark Elves	Dark Elven	100	101	102	103
+6	UndeadDarkElf	5	1	1	Undead Dark Elf	Undead Dark Elves	Undead Dark Elven	100	101	102	103
+7	VampireDarkElf	5	2	1	Vampire Dark Elf	Vampire Dark Elves	Vampire Dark Elven	100,111	101,112	102,113	103,114
+8	ZombieDarkElf	5	3	1	Zombie Dark Elf	Zombie Dark Elves	Zombie Dark Elven	100	101	102	103
+9	GhostDarkElf	5	4	1	Ghost Dark Elf	Ghost Dark Elves	Ghost Dark Elven	100	101	102	103
+10	Minotaur	10	0	3	Minotaur	Minotaurs	Minotaur				
+11	UndeadMinotaur	10	1	1	Undead Minotaur	Undead Minotaurs	Undead Minotaur				
+12	VampireMinotaur	10	2	1	Vampire Minotaur	Vampire Minotaurs	Vampire Minotaur	111	112	113	114
+13	ZombieMinotaur	10	3	1	Zombie Minotaur	Zombie Minotaurs	Zombie Minotaur				
+14	GhostMinotaur	10	4	1	Ghost Minotaur	Ghost Minotaurs	Ghost Minotaur				
+15	Troll	15	0	4	Troll	Trolls	Troll				
+16	UndeadTroll	15	1	1	Undead Troll	Undead Trolls	Undead Troll				
+17	VampireTroll	15	2	1	Vampire Troll	Vampire Trolls	Vampire Troll	111	112	113	114
+18	ZombieTroll	15	3	1	Zombie Troll	Zombie Trolls	Zombie Troll				
+19	GhostTroll	15	4	1	Ghost Troll	Ghost Trolls	Ghost Troll				
+20	Dragon	20	0	5	Dragon	Dragons	Dragon	122	123	124	125	137	23	0	0	100	0x30	600			137	23	0	0	100	0x30	100		
+21	UndeadDragon	20	1	1	Undead Dragon	Undead Dragons	Undead Dragon	122	123	124	125	137	23	10	0	100	0x30	1200			137	23	10	0	100	0x30	100		
+22	VampireDragon	20	2	1	Vampire Dragon	Vampire Dragons	Vampire Dragon	111,122	112,123	113,124	114,125	137	23	10	0	100	0x30	1200			137	23	10	0	100	0x30	100		
+23	ZombieDragon	20	3	1	Zombie Dragon	Zombie Dragons	Zombie Dragon	122	123	124	125	137	23	10	0	100	0x30	1200			137	23	10	0	100	0x30	100		
+24	GhostDragon	20	4	1	Ghost Dragon	Ghost Dragons	Ghost Dragon	122	123	124	125	137	23	10	0	100	0x30	1200			137	23	10	0	100	0x30	100		
+25	Elf	25	0	2	Elf	Elves	Elven	100	101	102	103
+26	UndeadElf	25	1	1	Undead Elf	Undead Elves	Undead Elven	100	101	102	103
+27	VampireElf	25	2	1	Vampire Elf	Vampire Elves	Vampire Elven	100,111	101,112	102,113	103,114
+28	ZombieElf	25	3	1	Zombie Elf	Zombie Elves	Zombie Elven	100	101	102	103
+29	GhostElf	25	4	1	Ghost Elf	Ghost Elves	Ghost Elven	100	101	102	103
+30	Goblin	30	0	6	Goblin	Goblins	Goblin				
+31	UndeadGoblin	30	1	1	Undead Goblin	Undead Goblins	Undead Goblin				
+32	VampireGoblin	30	2	1	Vampire Goblin	Vampire Goblins	Vampire Goblin	111	112	113	114
+33	ZombieGoblin	30	3	1	Zombie Goblin	Zombie Goblins	Zombie Goblin				
+34	GhostGoblin	30	4	1	Ghost Goblin	Ghost Goblins	Ghost Goblin				
+35	Dwarf	35	0	7	Dwarf	Dwarves	Dwarven				
+36	UndeadDwarf	35	1	1	Undead Dwarf	Undead Dwarves	Undead Dwarven				
+37	VampireDwarf	35	2	1	Vampire Dwarf	Vampire Dwarves	Vampire Dwarven	111	112	113	114
+38	ZombieDwarf	35	3	1	Zombie Dwarf	Zombie Dwarves	Zombie Dwarven				
+39	GhostDwarf	35	4	1	Ghost Dwarf	Ghost Dwarves	Ghost Dwarven				

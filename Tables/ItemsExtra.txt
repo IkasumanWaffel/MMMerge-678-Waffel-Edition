@@ -1,0 +1,1486 @@
+Id	Note	ContF	QCont	LostQBit	StartQBit	EndQBit	PostEnd
+1	Longsword	3,1,1
+2	Trollish War Sword	3,1,1
+3	Dark Elven Longsword	3,1,1
+4	Templar's Sword	3,1,1
+5	Champion's Sword	3,1,1
+6	Two-Handed Sword	3,1,1
+7	Dark Elven Bastard Sword	3,1,1
+8	Minotaur Battlesword	3,1,1
+9	Dragonning Blade	3,1,1
+10	Headsman's Reaver	3,1,1
+11	Iron Broadsword	3,1,1
+12	Trollish Claymore	3,1,1
+13	Lizardman Broadsword	3,1,1
+14	Knightly Broadsword	3,1,1
+15	Archangel Broadsword	3,1,1
+16	Rusty Cutlass	3,1,1
+17	Goblin Scimitar	3,1,1
+18	Regnan Cutlass	3,1,1
+19	Regnan Falchion	3,1,1
+20	Captain's Cutlass	3,1,1
+21	Crude Dagger	3,1,1
+22	Crystal Dagger	3,1,1
+23	Merchantman's Dagger	3,1,1
+24	Master's Dagger	3,1,1
+25	Fanged Blade	3,1,1
+26	Long Dagger	3,1,1
+27	Alvarian Poignard	3,1,1
+28	Regnan Fighting Knife	3,1,1
+29	Twilight Kris	3,1,1
+30	Dueling Long Dagger	3,1,1
+31	Stone Axe	3,1,1
+32	Battle Hatchet	3,1,1
+33	Battleaxe	3,1,1
+34	Dwarven Battleaxe	3,1,1
+35	Minotaur Battleaxe	3,1,1
+36	Two-Handed Axe	3,1,1
+37	Footman's Axe	3,1,1
+38	Minotaur War Axe	3,1,1
+39	Elite Minotaur Axe	3,1,1
+40	Minotaur Herdsman Axe	3,1,1
+41	Ogre Fighting Stick	3,1,1
+42	Steel Spear	3,1,1
+43	Elven Long Spear	3,1,1
+44	War Spear	3,1,1
+45	Dragon Harpoon	3,1,1
+46	Improvised Voulge	3,1,1
+47	Halberd	3,1,1
+48	Beaked Halberd	3,1,1
+49	Minotaur Campaign Pole-axe	3,1,1
+50	Labyrinth Grapple	3,1,1
+51	Hayfork	3,1,1
+52	Infantry Fork	3,1,1
+53	Lizardman Trident	3,1,1
+54	Regnan Trident	3,1,1
+55	Triton Trident	3,1,1
+56	Hunting Bow	3,1,1
+57	Recurve Bow	3,1,1
+58	Snakewood Bow	3,1,1
+59	Elven Warbow	3,1,1
+60	Devilbone Bow	3,1,1
+61	Light Crossbow	3,1,1
+62	Blood Drop Crossbow	3,1,1
+63	Hunting Crossbow	3,1,1
+64	Caravaner's Crossbow	3,1,1
+65	Regnan Crossbow	3,1,1
+66	Mace	3,1,1
+67	Flail	3,1,1
+68	Temple Mace	3,1,1
+69	Reverend Sceptre	3,1,1
+70	Trollish War Mace	3,1,1
+71	Sledgehammer	3,1,1
+72	Field Hammer	3,1,1
+73	Warhammer	3,1,1
+74	Sun Hammer	3,1,1
+75	Trollish Maul	3,1,1
+76	Barbed Club	3,1,1
+77	Thornbark Club	3,1,1
+78	Overlord's Club	3,1,1
+79	Journey Staff	3,1,1
+80	Orb Staff	3,1,1
+81	Priestly Staff	3,1,1
+82	Serpent Staff	3,1,1
+83	Bone Staff	3,1,1
+84	Leather Jerkin	3,1,1
+85	Hardened Leather Vest	3,1,1
+86	Caravaner's Leather	3,1,1
+87	Regnan Leather	3,1,1
+88	Alvarian Leather	3,1,1
+89	Rusty Mail Vest	3,1,1
+90	Steel Chainmail	3,1,1
+91	Minotaur Chainmail	3,1,1
+92	Siertal Chainmail	3,1,1
+93	Erudine Chainmail	3,1,1
+94	Rusty Breastplate	3,1,1
+95	Banded Plate	3,1,1
+96	Minotaur Plate	3,1,1
+97	Dark Knight Plate	3,1,1
+98	Dragoning Plate	3,1,1
+99	Trollish Shield	3,1,1
+100	Thornbark Shield	3,1,1
+101	Regnan Tournament Shield	3,1,1
+102	Veteran Shield	3,1,1
+103	Dragon Hunter's Shield	3,1,1
+104	Wooden Buckler	3,1,1
+105	Caravaner's Small Shield	3,1,1
+106	Calvary Shield	3,1,1
+107	Death Head Shield	3,1,1
+108	Eldritch Shield	3,1,1
+109	Helm	3,1,1
+110	Lizardman Helm	3,1,1
+111	Full Helm	3,1,1
+112	Battle Helm	3,1,1
+113	Dragon Helm	3,1,1
+114	Cloth Hat	3,1,1
+115	Festival Hat	3,1,1
+116	Merchantman's Hat	3,1,1
+117	Leather Belt	3,1,1
+118	Sturdy Belt	3,1,1
+119	Wyvern Leather Belt	3,1,1
+120	Steel Belt	3,1,1
+121	Artificer's Belt	3,1,1
+122	Traveler's Cloak	3,1,1
+123	Moon Temple Cloak	3,1,1
+124	Alvar Cloak	3,1,1
+125	Necromancer Cloak	3,1,1
+126	Vampire Cloak	3,1,1
+127	Leather Gloves	3,1,1
+128	Troll Gauntlets	3,1,1
+129	Steel Gauntlets	3,1,1
+130	Minotaur Gauntlets	3,1,1
+131	Crusader's Gauntlets	3,1,1
+132	Walking Boots	3,1,1
+133	Hardened Leather Boots	3,1,1
+134	Regnan Boots	3,1,1
+135	Alvarian Boots	3,1,1
+136	Dragonning Boots	3,1,1
+137	Bronze Ring	3,1,1
+138	Gold Ring	3,1,1
+139	Pearl Ring	3,1,1
+140	Gemstone Ring	3,1,1
+141	Amethyst Ring	3,1,1
+142	Necromatic Ring	3,1,1
+143	Ruby Ring	3,1,1
+144	Vampire's Ring	3,1,1
+145	Sun Opal Ring	3,1,1
+146	Focal Ring	3,1,1
+147	Brass Charm	3,1,1
+148	Jade Amulet	3,1,1
+149	Blood Talisman	3,1,1
+150	Shadow Sect Medallion	3,1,1
+151	Locus Amulet	3,1,1
+152	Witch's Wand of Fire	3,1,1
+153	Witch's Wand of Sparks	3,1,1
+154	Witch's Wand of Poison	3,1,1
+155	Witch's Wand of Stunning	3,1,1
+156	Witch's Wand of Harming	3,1,1
+157	Shaman's Wand of Light	3,1,1
+158	Shaman's Wand of Ice	3,1,1
+159	Shaman's Wand of Lashing	3,1,1
+160	Shaman's Wand of Mind	3,1,1
+161	Shaman's Wand of Swarms	3,1,1
+162	Wizard Wand of Fireballs	3,1,1
+163	Wizard Wand of Acid	3,1,1
+164	Wizard Wand of Lightning	3,1,1
+165	Wizard Wand of Blades	3,1,1
+166	Wizard Wand of Berzerking	3,1,1
+167	Serpent Wand of Blasting	3,1,1
+168	Serpent Wand of the Fist	3,1,1
+169	Serpent Wand of Rocks	3,1,1
+170	Serpent Wand of Paralysis	3,1,1
+171	Arcane Wand of Clouds	3,1,1
+172	Necrotic Wand of Implosion	3,1,1
+173	Necrotic Wand of Distortion	3,1,1
+174	Necrotic Wand of Shrapnel	3,1,1
+175	Necrotic Wand of Shrinking	3,1,1
+176	Necrotic Wand of Incineration	3,1,1
+177	Zircon	3,1,1
+178	Iolite	3,1,1
+179	Citrine	3,1,1
+180	Amber	3,1,1
+181	Amethyst	3,1,1
+182	Topaz	3,1,1
+183	Emerald	3,1,1
+184	Sapphire	3,1,1
+185	Ruby	3,1,1
+186	Diamond	3,1,1
+187	Gold	3,1,1
+188	Gold	3,1,1
+189	Gold	3,1,1
+190	Dimension door	3,1,1
+200	Widowsweep Berries	3,1,1
+201	Wolf's Eye	3,1,2
+202	Phial of Gog Blood	3,1,2
+203	Ruby	3,1,2
+204	Phoenix Feather	3,1,2
+205	Phima Root	3,1,1
+206	Meteor Fragment	3,1,2
+207	Will O' Wisp Heart	3,1,2
+208	Datura	3,1,2
+209	Dragon Turtle Fang	3,1,2
+210	Poppy Pod	3,1,1
+211	Thornbark	3,1,2
+212	Sulfur	3,1,2
+213	Garnet	3,1,2
+214	Unicorn Horn	3,1,2
+215	Mushroom	3,1,2
+216	Obsidian	3,1,2
+217	Wasp Wing	3,1,2
+218	Mercury	3,1,2
+219	Philosopher's Stone	3,1,2
+220	Potion Bottle	3,3,3
+221	Catalyst	3,3,3
+222	Cure Wounds	3,3,3
+223	Magic Potion	3,3,3
+224	Cure Weakness	3,3,3
+225	Cure Disease	3,3,3
+226	Cure Poison	3,3,3
+227	Awaken	3,3,3
+228	Haste	3,3,3
+229	Heroism	3,3,3
+230	Bless	3,3,3
+231	Preservation	3,3,3
+232	Shield	3,3,3
+233	Recharge Item	3,3,3
+234	Stoneskin	3,3,3
+235	Water Breathing	3,3,3
+236	Harden Item	3,3,3
+237	Remove Fear	3,3,3
+238	Remove Curse	3,3,3
+239	Cure Insanity	3,3,3
+240	Might Boost	3,3,3
+241	Intellect Boost	3,3,3
+242	Personality Boost	3,3,3
+243	Endurance Boost	3,3,3
+244	Speed Boost	3,3,3
+245	Accuracy Boost	3,3,3
+246	Flaming Potion	3,3,3
+247	Freezing Potion	3,3,3
+248	Noxious Potion	3,3,3
+249	Shocking Potion	3,3,3
+250	Swift Potion	3,3,3
+251	Cure Paralysis	3,3,3
+252	Divine Restoration	3,3,3
+253	Divine Cure	3,3,3
+254	Divine Power	3,3,3
+255	Luck Boost	3,3,3
+256	Fire Resistance	3,3,3
+257	Air Resistance	3,3,3
+258	Water Resistance	3,3,3
+259	Earth Resistance	3,3,3
+260	Mind Resistance	3,3,3
+261	Body Resistance	3,3,3
+262	Stone to Flesh	3,3,3
+263	Slaying Potion	3,3,3
+264	Pure Luck	3,3,3
+265	Pure Speed	3,3,3
+266	Pure Intellect	3,3,3
+267	Pure Endurance	3,3,3
+268	Pure Personality	3,3,3
+269	Pure Accuracy	3,3,3
+270	Pure Might	3,3,3
+271	Rejuvenation	3,3,3
+272	Essence of Might	3,3,3
+273	Essence of Intellect	3,3,3
+274	Essence of Personality	3,3,3
+275	Essence of Endurance	3,3,3
+276	Essence of Accuracy	3,3,3
+277	Essence of Speed	3,3,3
+278	Essence of Luck	3,3,3
+279	Potion of Doom 	3,3,3
+280	Divine Boost 	3,3,3
+281	Divine Protection	3,3,3
+282	Divine Transcendence	3,3,3
+283	Potion of the Gods 	3,3,3
+284	Pure Fire Resistance	3,3,3
+285	Pure Air Resistance	3,3,3
+286	Pure Water Resistance	3,3,3
+287	Pure Earth Resistance	3,3,3
+288	Pure Mind Resistance	3,3,3
+289	Pure Body Resistance	3,3,3
+290	Protection from Magic	3,3,3
+300	Torch Light	3,3,3
+301	Fire Bolt	3,3,3
+302	Fire Resistance	3,3,3
+303	Fire Aura	3,3,3
+304	Haste	3,3,3
+305	Fireball	3,3,3
+306	Fire Spike	3,3,3
+307	Immolation	3,3,3
+308	Meteor Shower	3,3,3
+309	Inferno	3,3,3
+310	Incinerate	3,3,3
+311	Wizard Eye	3,3,3
+312	Feather Fall	3,3,3
+313	Air Resistance	3,3,3
+314	Sparks	3,3,3
+315	Jump	3,3,3
+316	Shield	3,3,3
+317	Lightning Bolt	3,3,3
+318	Invisibility	3,3,3
+319	Implosion	3,3,3
+320	Fly	3,3,3
+321	Starburst	3,3,3
+322	Awaken	3,3,3
+323	Poison Spray	3,3,3
+324	Water Resistance	3,3,3
+325	Ice Bolt	3,3,3
+326	Water Walk	3,3,3
+327	Recharge Item	3,3,3
+328	Acid Burst	3,3,3
+329	Enchant Item	3,3,3
+330	Town Portal	3,3,3
+331	Ice Blast	3,3,3
+332	Lloyd's Beacon	3,3,3
+333	Stun	3,3,3
+334	Slow	3,3,3
+335	Earth Resistance	3,3,3
+336	Deadly Swarm	3,3,3
+337	Stone Skin	3,3,3
+338	Blades	3,3,3
+339	Stone to Flesh	3,3,3
+340	Rock Blast	3,3,3
+341	Telekinesis	3,3,3
+342	Death Blossom	3,3,3
+343	Mass Distortion	3,3,3
+344	Detect Life	3,3,3
+345	Bless	3,3,3
+346	Fate	3,3,3
+347	Turn Undead	3,3,3
+348	Remove Curse	3,3,3
+349	Preservation	3,3,3
+350	Heroism	3,3,3
+351	Spirit Lash	3,3,3
+352	Raise Dead	3,3,3
+353	Shared Life	3,3,3
+354	Resurrection	3,3,3
+355	Telepathy	3,3,3
+356	Remove Fear	3,3,3
+357	Mind Resistance	3,3,3
+358	Mind Blast	3,3,3
+359	Charm	3,3,3
+360	Cure Paralysis	3,3,3
+361	Berserk	3,3,3
+362	Mass Fear	3,3,3
+363	Cure Insanity	3,3,3
+364	Psychic Shock	3,3,3
+365	Enslave	3,3,3
+366	Cure Weakness	3,3,3
+367	Heal	3,3,3
+368	Body Resistance	3,3,3
+369	Harm	3,3,3
+370	Regeneration	3,3,3
+371	Cure Poison	3,3,3
+372	Hammerhands	3,3,3
+373	Cure Disease	3,3,3
+374	Protection from Magic	3,3,3
+375	Flying Fist	3,3,3
+376	Power Cure	3,3,3
+377	Light Bolt	3,3,3
+378	Destroy Undead	3,3,3
+379	Dispel Magic	3,3,3
+380	Paralyze	3,3,3
+381	Summon Wisp	3,3,3
+382	Day of the Gods	3,3,3
+383	Prismatic Light	3,3,3
+384	Day of Protection	3,3,3
+385	Hour of Power	3,3,3
+386	Sunray	3,3,3
+387	Divine Intervention	3,3,3
+388	Reanimate	3,3,3
+389	Toxic Cloud	3,3,3
+390	Vampiric Weapon	3,3,3
+391	Shrinking Ray	3,3,3
+392	Shrapmetal	3,3,3
+393	Control Undead	3,3,3
+394	Pain Reflection	3,3,3
+395	Dark Grasp	3,3,3
+396	Dragon Breath	3,3,3
+397	Armageddon	3,3,3
+398	Souldrinker	3,3,3
+400	Torch Light	3,1,1
+401	Fire Bolt	3,1,1
+402	Fire Resistance	3,1,1
+403	Fire Aura	3,1,1
+404	Haste	3,1,1
+405	Fireball	3,1,1
+406	Fire Spike	3,1,1
+407	Immolation	3,1,1
+408	Meteor Shower	3,1,1
+409	Inferno	3,1,1
+410	Incinerate	3,1,1
+411	Wizard Eye	3,1,1
+412	Feather Fall	3,1,1
+413	Air Resistance	3,1,1
+414	Sparks	3,1,1
+415	Jump	3,1,1
+416	Shield	3,1,1
+417	Lightning Bolt	3,1,1
+418	Invisibility	3,1,1
+419	Implosion	3,1,1
+420	Fly	3,1,1
+421	Starburst	3,1,1
+422	Awaken	3,1,1
+423	Poison Spray	3,1,1
+424	Water Resistance	3,1,1
+425	Ice Bolt	3,1,1
+426	Water Walk	3,1,1
+427	Recharge Item	3,1,1
+428	Acid Burst	3,1,1
+429	Enchant Item	3,1,1
+430	Town Portal	3,1,1
+431	Ice Blast	3,1,1
+432	Lloyd's Beacon	3,1,1
+433	Stun	3,1,1
+434	Slow	3,1,1
+435	Earth Resistance	3,1,1
+436	Deadly Swarm	3,1,1
+437	Stone Skin	3,1,1
+438	Blades	3,1,1
+439	Stone to Flesh	3,1,1
+440	Rock Blast	3,1,1
+441	Telekinesis	3,1,1
+442	Death Blossom	3,1,1
+443	Mass Distortion	3,1,1
+444	Detect Life	3,1,1
+445	Bless	3,1,1
+446	Fate	3,1,1
+447	Turn Undead	3,1,1
+448	Remove Curse	3,1,1
+449	Preservation	3,1,1
+450	Heroism	3,1,1
+451	Spirit Lash	3,1,1
+452	Raise Dead	3,1,1
+453	Shared Life	3,1,1
+454	Resurrection	3,1,1
+455	Telepathy	3,1,1
+456	Remove Fear	3,1,1
+457	Mind Resistance	3,1,1
+458	Mind Blast	3,1,1
+459	Charm	3,1,1
+460	Cure Paralysis	3,1,1
+461	Berserk	3,1,1
+462	Mass Fear	3,1,1
+463	Cure Insanity	3,1,1
+464	Psychic Shock	3,1,1
+465	Enslave	3,1,1
+466	Cure Weakness	3,1,1
+467	Heal	3,1,1
+468	Body Resistance	3,1,1
+469	Harm	3,1,1
+470	Regeneration	3,1,1
+471	Cure Poison	3,1,1
+472	Hammerhands	3,1,1
+473	Cure Disease	3,1,1
+474	Protection from Magic	3,1,1
+475	Flying Fist	3,1,1
+476	Power Cure	3,1,1
+477	Light Bolt	3,1,1
+478	Destroy Undead	3,1,1
+479	Dispel Magic	3,1,1
+480	Paralyze	3,1,1
+481	Summon Wisp	3,1,1
+482	Day of the Gods	3,1,1
+483	Prismatic Light	3,1,1
+484	Day of Protection	3,1,1
+485	Hour of Power	3,1,1
+486	Sunray	3,1,1
+487	Divine Intervention	3,1,1
+488	Reanimate	3,1,1
+489	Toxic Cloud	3,1,1
+490	Vampiric Weapon	3,1,1
+491	Shrinking Ray	3,1,1
+492	Shrapmetal	3,1,1
+493	Control Undead	3,1,1
+494	Pain Reflection	3,1,1
+495	Dark Grasp	3,1,1
+496	Dragon Breath	3,1,1
+497	Armageddon	3,1,1
+498	Souldrinker	3,1,1
+500	Elsenrail	3,1,1
+501	Glomenthal	3,1,1
+502	Terminus	3,1,1
+503	Judicious Measure	3,1,1
+504	Elderaxe	3,1,1
+505	Volcano	3,1,1
+506	Wyrm Spitter	3,1,1
+507	Guardian	3,1,1
+508	Foulfang	3,1,1
+509	Scepter of Kings	3,1,1
+510	Breaker	3,1,1
+511	Staff of the Swamp	3,1,1
+512	Longseeker	3,1,1
+513	Serendine's Preservation	3,1,1
+514	Glomenmail	3,1,1
+515	Supreme Plate	3,1,1
+516	Eclipse	3,1,1	1	283		128	
+517	Fleetfingers	3,1,1
+518	Herald's Boots	3,1,1
+519	Ring of Planes	3,1,1
+520	Drogg's Helm	3,1,1
+521	Crown of Final Dominion	3,1,1
+522	Archangel Wings	3,1,1
+523	Snake	3,1,1
+524	Havoc	3,1,1
+525	Finality	3,1,1
+526	Hell's Cleaver	3,1,1
+527	Spiritslayer	3,1,1
+528	Trident of Rulership	3,1,1
+529	Blade of Mercy	3,1,1
+530	Staff of Elements	3,1,1
+531	Tournament Bow	3,1,1
+532	Lightning Crossbow	3,1,1
+533	Last Stage Cuirass	3,1,1
+534	Herondale's Lost Shield	3,1,1
+535	Ring of Fusion	3,1,1
+536	Lucky Hat	3,1,1
+537	Berserker Belt	3,1,1
+538	Mace of the Sun	3,1,1
+539	Ebonest	3,1,1	1	199		71	x
+540	Sword of Whistlebone	3,1,1	1	200		86	x
+541	Axe of Balthazar	3,1,1	1	201		77	x
+542	Noblebone Bow	3,1,1
+543	Cycle of Life	3,1,1
+544	Sword-out-of-the-Stone	3,1,1	1		291	292	
+602	False Report	3,1,1	1	282
+603	Urn of Ashes	3,1,1	1	202
+604	Nightshade Brazier	3,1,1	1	203
+605	Dragon Leader's Egg	3,1,1	1	204
+606	Heart of Fire	3,1,1	1	205		45
+607	Heart of Water	3,1,1	1	206		45
+608	Heart of Air	3,1,1	1	207		45
+609	Heart of Earth	3,1,1	1	208		45
+610	Conflux Key	3,1,1	1	209
+611	Lost Book of Khel	3,1,1	1	210		83
+612	Sarcophagus of Korbu	3,1,1	1	211		88
+613	Puzzle Box	3,1,1	1	249
+614	Vial of Grave Earth	3,1,1	1	248
+615	Drum of Victory	3,1,1	1	246
+616	Anointed Herb Potion	3,1,1	1	245
+617	Power Stone	3,1,1	1	212		1
+618	Power Stone	3,1,1	1	213		2
+619	Pirate Leader's Key	3,1,1	1	214
+623	Gem of Restoration	3,1,1	1	217
+626	Prophecies of the Sun	3,1,1	1	218		79
+627	Remains of Korbu	3,1,1	1	219		88
+629	Ring of Keys	3,1,1	1	220		228
+630	Idol of the Snake	3,1,1	1	112
+632	Naga Hide	3,1,1
+633	Dire Wolf Pelt	3,1,1
+634	Flute	3,1,1	1	237
+637	Bone of Doom	3,1,1	1	247
+662	Cannonball of Dominion	3,1,1	1	224
+667	Bazalath's Egg	3,1,1	1		1720	1722	
+668	Beacon Ring	3,1,1	1		293	295	
+669	Letter to Ninegos	3,1,1	1		1729	1731	
+686	Iron-laced ore	3,1,1
+687	Siertal-laced ore	3,1,1
+688	Phylt-laced ore	3,1,1
+689	Kergar-laced ore	3,1,1
+690	Erudine-laced ore	3,1,1
+691	Stalt-laced ore	3,1,1
+732	Certificate of Authentication	3,1,1	1			77
+741	Dadeross' Letter to Fellmoon	3,1,1	1	221
+742	Blackmail Letter	3,1,1	1	222
+803	Crude Longsword	1,3,1
+804	Elven Saber	1,3,1
+805	Keen Longsword	1,3,1
+806	Graceful Sword	1,3,1
+807	Duelist Blade	1,3,1
+808	Two-Handed Sword	1,3,1
+809	Great Sword	1,3,1
+810	Heroic Sword	1,3,1
+811	Broadsword	1,3,1
+812	Steel Broadsword	1,3,1
+813	Champion Sword	1,3,1
+814	Cutlass	1,3,1
+815	Goblin Cutlass	1,3,1
+816	Regnan Cutlass	1,3,1
+817	Dagger	1,3,1
+818	Dwarven Dagger	1,3,1
+819	Sharktooth Dagger	1,3,1
+820	Assassin's Dagger	1,3,1
+821	Mage Dagger	1,3,1
+822	Long Dagger	1,3,1
+823	Erathian Long Dagger	1,3,1
+824	Exquisite Long Dagger	1,3,1
+825	Crude Axe	1,3,1
+826	Battle Axe	1,3,1
+827	Dwarven Axe	1,3,1
+828	Steel Axe	1,3,1
+829	Minotaur Axe	1,3,1
+830	Poleaxe	1,3,1
+831	Warrior's Poleaxe	1,3,1
+832	Headsman's Poleaxe	1,3,1
+833	Crude Spear	1,3,1
+834	Soldier's spear	1,3,1
+835	Elven Spear	1,3,1
+836	Cruel Spear	1,3,1
+837	Sublime Spear	1,3,1
+838	Old Halberd	1,3,1
+839	Weighted Halberd	1,3,1
+840	Mighty Halberd	1,3,1
+841	Crude Trident	1,3,1
+842	Barbed Trident	1,3,1
+843	War Trident	1,3,1
+844	Crude Bow	1,3,1
+845	Longbow	1,3,1
+846	Elven Longbow	1,3,1
+847	Composite Bow	1,3,1
+848	Griffin Bow	1,3,1
+849	Crude Crossbow	1,3,1
+850	Heavy Crossbow	1,3,1
+851	Ideal Crossbow	1,3,1
+852	Crude Mace	1,3,1
+853	Spiked Mace	1,3,1
+854	Zealot Mace	1,3,1
+855	Dwarven Morningstar	1,3,1
+856	Supreme Flail	1,3,1
+857	Hammer	1,3,1
+858	War Hammer	1,3,1
+859	Dwarven Hammer	1,3,1
+860	Club	1,3,1
+861	Spiked Club	1,3,1
+862	Steel club	1,3,1
+863	Simple Staff	1,3,1
+864	Iron Core Staff	1,3,1
+865	Wizard Staff	1,3,1
+866	Blaster	1,3,1
+867	Blaster Rifle	1,3,1
+868	Crude Leather Armor	1,3,1
+869	Studded Leather	1,3,1
+870	Officer's Leather	1,3,1
+871	Regnan Leather	1,3,1
+872	Royal Leather	1,3,1
+873	Disheveled Chain Mail	1,3,1
+874	Quality Steel Chain Mail	1,3,1
+875	Fine Chain Mail	1,3,1
+876	Resplendent Chain Mail	1,3,1
+877	Golden Chain Mail	1,3,1
+878	Plate Armor	1,3,1
+879	Splendid Plate Armor	1,3,1
+880	Noble Plate Armor	1,3,1
+881	Goblin Shield	1,3,1
+882	Wooden Shield	1,3,1
+883	Horseman's Shield	1,3,1
+884	Sterling Shield	1,3,1
+885	Phynaxian Shield	1,3,1
+886	Wooden Buckler	1,3,1
+887	Bronze Shield	1,3,1
+888	Metal Shield	1,3,1
+889	Alloyed Shield	1,3,1
+890	Majestic Shield	1,3,1
+891	Horned Helm	1,3,1
+892	Conscript's Helm	1,3,1
+893	Full Helm	1,3,1
+894	Phynaxian Helm	1,3,1
+895	Mogred Helm	1,3,1
+896	Peasant Hat	1,3,1
+897	Traveller's Hat	1,3,1
+898	Fancy Hat	1,3,1
+899	Crown	1,3,1
+900	Noble Crown	1,3,1
+901	Regal Crown	1,3,1
+902	Leather Belt	1,3,1
+903	Fine Belt	1,3,1
+904	Strong Belt	1,3,1
+905	Silver Belt	1,3,1
+906	Gilded Belt	1,3,1
+907	Leather Cloak	1,3,1
+908	Huntsman's Cloak	1,3,1
+909	Ranger's Cloak	1,3,1
+910	Elegant Cloak	1,3,1
+911	Glorious Cloak	1,3,1
+912	Gauntlets	1,3,1
+913	Steel Gauntlets	1,3,1
+914	Silver Mesh Gauntlets	1,3,1
+915	Dragon Hide Gauntlets	1,3,1
+916	Mogred Gauntlets	1,3,1
+917	Leather Boots	1,3,1
+918	Steel Plated Boots	1,3,1
+919	Ranger Boots	1,3,1
+920	Knight's Boots	1,3,1
+921	Paladin Boots	1,3,1
+922	Brass Ring	1,3,1
+923	Pearl Ring	1,3,1
+924	Platinum Ring	1,3,1
+925	Emerald Ring	1,3,1
+926	Sapphire Ring	1,3,1
+927	Warlock's Ring	1,3,1
+928	Enchanted Ring	1,3,1
+929	Dazzling Ring	1,3,1
+930	Wizard Ring	1,3,1
+931	Angel's Ring	1,3,1
+932	Eyeball Amulet	1,3,1
+933	Bronze Amulet	1,3,1
+934	Witch's Amulet	1,3,1
+935	Death's Head Pendant	1,3,1
+936	Sun Amulet	1,3,1
+937	Wand of Fire	1,3,1
+938	Wand of Sparks	1,3,1
+939	Wand of Poison	1,3,1
+940	Wand of Stunning	1,3,1
+941	Wand of Harm	1,3,1
+942	Fairy Wand of Light	1,3,1
+943	Fairy Wand of Ice	1,3,1
+944	Fairy Wand of Lashing	1,3,1
+945	Fairy Wand of Mind	1,3,1
+946	Fairy Wand of Swarms	1,3,1
+947	Alacorn Wand of Fireballs	1,3,1
+948	Alacorn Wand of Acid	1,3,1
+949	Alacorn Wand of Lightning	1,3,1
+950	Alacorn Wand of Blades	1,3,1
+951	Alacorn Wand of Charms	1,3,1
+952	Arcane Wand of Blasting	1,3,1
+953	Arcane Wand of The Fist	1,3,1
+954	Arcane Wand of Rocks	1,3,1
+955	Arcane Wand of Paralyzing	1,3,1
+956	Arcane Wand of Clouds	1,3,1
+957	Mystic Wand of Implosion	1,3,1
+958	Mystic Wand of Distortion	1,3,1
+959	Mystic Wand of Shrapmetal	1,3,1
+960	Mystic Wand of Shrinking	1,3,1
+961	Mystic Wand of Incineration	1,3,1
+963	Electric Lantern	1,3,1
+964	Beacon Pathfinder	1,3,1
+965	Dimensional Scanner	1,3,1
+966	Jetpack	1,3,1
+988	Blue Quartz	1,3,1
+989	Topaz	1,3,1
+990	Emerald	1,3,1
+991	Sapphire	1,3,1
+992	Green Garnet	1,3,1
+993	Rose Crystal	1,3,1
+994	Diamond	1,3,1
+995	Amethyst	1,3,1
+996	Yellow Topaz	1,3,1
+997	Diamond	1,3,1
+998	Ruby	1,3,1
+1002	Widowsweep Berries	1,3,1
+1003	Crushed Rose Petals	1,3,2
+1004	Vial of Troll Blood	1,3,2
+1005	Ruby	1,3,2
+1006	Dragon's Eye	1,3,2
+1007	Phirna Root	1,3,1
+1008	Meteorite Fragment	1,3,2
+1009	Harpy Feather	1,3,2
+1010	Moonstone	1,3,2
+1011	Elvish Toadstool	1,3,2
+1012	Poppysnaps	1,3,1
+1013	Fae Dust	1,3,2
+1014	Sulfur	1,3,2
+1015	Garnet	1,3,2
+1016	Vial of Devil Ichor	1,3,2
+1017	Mushroom	1,3,2
+1018	Obsidian	1,3,2
+1019	Vial of Ooze Endoplasm	1,3,2
+1020	Mercury	1,3,2
+1021	Philosopher's Stone	1,3,2
+1102	Torch Light	3,3,3
+1103	Fire Bolt	3,3,3
+1104	Fire Resistance	3,3,3
+1105	Fire Aura	3,3,3
+1106	Haste	3,3,3
+1107	Fireball	3,3,3
+1108	Fire Spike	3,3,3
+1109	Immolation	3,3,3
+1110	Meteor Shower	3,3,3
+1111	Inferno	3,3,3
+1112	Incinerate	3,3,3
+1113	Wizard Eye	3,3,3
+1114	Feather Fall	3,3,3
+1115	Air Resistance	3,3,3
+1116	Sparks	3,3,3
+1117	Jump	3,3,3
+1118	Shield	3,3,3
+1119	Lightning Bolt	3,3,3
+1120	Invisibility	3,3,3
+1121	Implosion	3,3,3
+1122	Fly	3,3,3
+1123	Starburst	3,3,3
+1124	Awaken	3,3,3
+1125	Poison Spray	3,3,3
+1126	Water Resistance	3,3,3
+1127	Ice Bolt	3,3,3
+1128	Water Walk	3,3,3
+1129	Recharge Item	3,3,3
+1130	Acid Burst	3,3,3
+1131	Enchant Item	3,3,3
+1132	Town Portal	3,3,3
+1133	Ice Blast	3,3,3
+1134	Lloyd's Beacon	3,3,3
+1135	Stun	3,3,3
+1136	Slow	3,3,3
+1137	Earth Resistance	3,3,3
+1138	Deadly Swarm	3,3,3
+1139	Stone Skin	3,3,3
+1140	Blades	3,3,3
+1141	Stone to Flesh	3,3,3
+1142	Rock Blast	3,3,3
+1143	Telekinesis	3,3,3
+1144	Death Blossom	3,3,3
+1145	Mass Distortion	3,3,3
+1146	Detect Life	3,3,3
+1147	Bless	3,3,3
+1148	Fate	3,3,3
+1149	Turn Undead	3,3,3
+1150	Remove Curse	3,3,3
+1151	Preservation	3,3,3
+1152	Heroism	3,3,3
+1153	Spirit Lash	3,3,3
+1154	Raise Dead	3,3,3
+1155	Shared Life	3,3,3
+1156	Resurrection	3,3,3
+1157	Remove Fear	3,3,3
+1158	Mind Blast	3,3,3
+1159	Mind Resistance	3,3,3
+1160	Telepathy	3,3,3
+1161	Charm	3,3,3
+1162	Cure Paralysis	3,3,3
+1163	Berserk	3,3,3
+1164	Mass Fear	3,3,3
+1165	Cure Insanity	3,3,3
+1166	Psychic Shock	3,3,3
+1167	Enslave	3,3,3
+1168	Cure Weakness	3,3,3
+1169	Heal	3,3,3
+1170	Body Resistance	3,3,3
+1171	Harm	3,3,3
+1172	Regeneration	3,3,3
+1173	Cure Poison	3,3,3
+1174	Hammerhands	3,3,3
+1175	Cure Disease	3,3,3
+1176	Protection from Magic	3,3,3
+1177	Flying Fist	3,3,3
+1178	Power Cure	3,3,3
+1179	Light Bolt	3,3,3
+1180	Destroy Undead	3,3,3
+1181	Dispel Magic	3,3,3
+1182	Paralyze	3,3,3
+1183	Summon Elemental	3,3,3
+1184	Day of the Gods	3,3,3
+1185	Prismatic Light	3,3,3
+1186	Day of Protection	3,3,3
+1187	Hour of Power	3,3,3
+1188	Sunray	3,3,3
+1189	Divine Intervention	3,3,3
+1190	Reanimate	3,3,3
+1191	Toxic Cloud	3,3,3
+1192	Vampiric Weapon	3,3,3
+1193	Shrinking Ray	3,3,3
+1194	Shrapmetal	3,3,3
+1195	Control Undead	3,3,3
+1196	Pain Reflection	3,3,3
+1197	Dark Grasp	3,3,3
+1198	Dragon Breath	3,3,3
+1199	Armageddon	3,3,3
+1200	Souldrinker	3,3,3
+1202	Torch Light	1,3,1
+1203	Fire Bolt	1,3,1
+1204	Fire Resistance	1,3,1
+1205	Fire Aura	1,3,1
+1206	Haste	1,3,1
+1207	Fireball	1,3,1
+1208	Fire Spike	1,3,1
+1209	Immolation	1,3,1
+1210	Meteor Shower	1,3,1
+1211	Inferno	1,3,1
+1212	Incinerate	1,3,1
+1213	Wizard Eye	1,3,1
+1214	Feather Fall	1,3,1
+1215	Air Resistance	1,3,1
+1216	Sparks	1,3,1
+1217	Jump	1,3,1
+1218	Shield	1,3,1
+1219	Lightning Bolt	1,3,1
+1220	Invisibility	1,3,1
+1221	Implosion	1,3,1
+1222	Fly	1,3,1
+1223	Starburst	1,3,1
+1224	Awaken	1,3,1
+1225	Poison Spray	1,3,1
+1226	Water Resistance	1,3,1
+1227	Ice Bolt	1,3,1
+1228	Water Walk	1,3,1
+1229	Recharge Item	1,3,1
+1230	Acid Burst	1,3,1
+1231	Enchant Item	1,3,1
+1232	Town Portal	1,3,1
+1233	Ice Blast	1,3,1
+1234	Lloyd's Beacon	1,3,1
+1235	Stun	1,3,1
+1236	Slow	1,3,1
+1237	Earth Resistance	1,3,1
+1238	Deadly Swarm	1,3,1
+1239	Stone Skin	1,3,1
+1240	Blades	1,3,1
+1241	Stone to Flesh	1,3,1
+1242	Rock Blast	1,3,1
+1243	Telekinesis	1,3,1
+1244	Death Blossom	1,3,1
+1245	Mass Distortion	1,3,1
+1246	Detect Life	1,3,1
+1247	Bless	1,3,1
+1248	Fate	1,3,1
+1249	Turn Undead	1,3,1
+1250	Remove Curse	1,3,1
+1251	Preservation	1,3,1
+1252	Heroism	1,3,1
+1253	Spirit Lash	1,3,1
+1254	Raise Dead	1,3,1
+1255	Shared Life	1,3,1
+1256	Resurrection	1,3,1
+1257	Remove Fear	1,3,1
+1258	Mind Blast	1,3,1
+1259	Mind Resistance	1,3,1
+1260	Telepathy	1,3,1
+1261	Charm	1,3,1
+1262	Cure Paralysis	1,3,1
+1263	Berserk	1,3,1
+1264	Mass Fear	1,3,1
+1265	Cure Insanity	1,3,1
+1266	Psychic Shock	1,3,1
+1267	Enslave	1,3,1
+1268	Cure Weakness	1,3,1
+1269	Heal	1,3,1
+1270	Body Resistance	1,3,1
+1271	Harm	1,3,1
+1272	Regeneration	1,3,1
+1273	Cure Poison	1,3,1
+1274	Hammerhands	1,3,1
+1275	Cure Disease	1,3,1
+1276	Protection from Magic	1,3,1
+1277	Flying Fist	1,3,1
+1278	Power Cure	1,3,1
+1279	Light Bolt	1,3,1
+1280	Destroy Undead	1,3,1
+1281	Dispel Magic	1,3,1
+1282	Paralyze	1,3,1
+1283	Summon Elemental	1,3,1
+1284	Day of the Gods	1,3,1
+1285	Prismatic Light	1,3,1
+1286	Day of Protection	1,3,1
+1287	Hour of Power	1,3,1
+1288	Sunray	1,3,1
+1289	Divine Intervention	1,3,1	2	738
+1290	Reanimate	1,3,1
+1291	Toxic Cloud	1,3,1
+1292	Vampiric Weapon	1,3,1
+1293	Shrinking Ray	1,3,1
+1294	Shrapmetal	1,3,1
+1295	Control Undead	1,3,1
+1296	Pain Reflection	1,3,1
+1297	Dark Grasp	1,3,1
+1298	Dragon Breath	1,3,1
+1299	Armageddon	1,3,1
+1300	Souldrinker	1,3,1
+1302	Puck	1,3,1
+1303	Iron Feather	1,3,1
+1304	Wallace	1,3,1
+1305	Corsair	1,3,1
+1306	Governor's Armor	1,3,1
+1307	Yoruba	1,3,1
+1308	Splitter	1,3,1
+1309	Ghoulsbane	1,3,1
+1310	Gibbet	1,3,1
+1311	Charele	1,3,1
+1312	Ullyses	1,3,1
+1313	Hands of the Master	1,3,1
+1314	Seven League Boots	1,3,1
+1315	Ruler's Ring	1,3,1
+1316	Mash	1,3,1
+1317	Ethric's Staff	1,3,1
+1318	Hareck's Leather	1,3,1
+1319	Old Nick	1,3,1
+1320	Amuck	1,3,1
+1321	Glory Shield	1,3,1
+1322	Kelebrim	1,3,1
+1323	Taledon's Helm	1,3,1
+1324	Scholar's Cap	1,3,1
+1325	Phynaxian Crown	1,3,1
+1326	Titan's Belt	1,3,1
+1327	Twilight	1,3,1
+1328	Ania Selving	1,3,1
+1329	Justice	1,3,1
+1330	Mekorig's Hammer	1,3,1
+1331	Hermes' Sandals	1,3,1
+1332	Cloak of the Sheep	1,3,1
+1333	Elfbane	1,3,1
+1334	Mind's Eye	1,3,1
+1335	Elven Chainmail	1,3,1
+1336	Forge Gauntlets	1,3,1
+1337	Hero's Belt	1,3,1
+1338	Lady's Escort	1,3,1
+1339	Clanker's Amulet	1,3,1
+1340	Lieutenant's Cutlass	1,3,1
+1341	Medusa's Mirror	1,3,1
+1342	Lady Carmine's Dagger	1,3,1	2	725
+1343	Villain's Blade	1,3,1
+1344	The Perfect Bow	1,3,1	2	753
+1345	The Perfect Bow	1,3,1
+1346	Shadow's Mask	1,3,1
+1347	Ghost Ring	1,3,1
+1348	Faerie Ring	1,3,1
+1349	Sun Cloak	1,3,1
+1350	Moon Cloak	1,3,1
+1351	Zokarr's Axe	1,3,1
+1352	Vampire's Cape	1,3,1
+1353	Minotaur's Axe	1,3,1
+1354	Grognard's Cutlass	1,3,1
+1372	The DeathBlade	1,3,1
+1402	Heart of the Wood	1,3,1	2	729
+1404	Case of Soul Jars	1,3,1	2	743
+1407	Oscillation Overthruster	1,3,1	2	748
+1426	Vase	1,3,1	2	724
+1428	Zokarr IV's Skull	1,3,1	2	740
+1431	Elixir	1,3,1	2	742
+1441	Golem chest	1,3,1	2	737
+1442	Abbey Normal Golem Head	1,3,1	2	732
+1443	Golem head	1,3,1	2	731
+1444	Golem left leg	1,3,1	2	736
+1445	Golem right leg	1,3,1	2	735
+1446	Golem right arm	1,3,1	2	733
+1447	Golem left arm	1,3,1	2	734
+1449	Dragon Egg	1,3,1	2	739
+1451	Worn Belt	1,3,1	2	728
+1477	Control Cube	1,3,1	2	746
+1478	Altar Piece	1,3,1	2	744
+1479	Altar Piece	1,3,1	2	745
+1485	Map to Evenmorn Island	1,3,1	2	730
+1488	Iron-laced ore	1,3,1
+1489	Siertal-laced ore	1,3,1
+1490	Phylt-laced ore	1,3,1
+1491	Kergar-laced ore	1,3,1
+1492	Erudine-laced ore	1,3,1
+1493	Stalt-laced ore	1,3,1
+1503	Cipher	1,3,1	2	727
+1504	Scroll of Waves	1,3,1	2	726
+1603	Longsword	1,1,3
+1604	Warrior Sword	1,1,3
+1605	Crusader Sword	1,1,3
+1606	Champion Sword	1,1,3
+1607	Lionheart Sword	1,1,3
+1608	Two-Handed Sword	1,1,3
+1609	Great Sword	1,1,3
+1610	Heroic Sword	1,1,3
+1611	Broadsword	1,1,3
+1612	Steel Broadsword	1,1,3
+1613	Mighty Broadsword	1,1,3
+1614	Cutlass	1,1,3
+1615	Pirate Cutlass	1,1,3
+1616	Master Cutlass	1,1,3
+1617	Dagger	1,1,3
+1618	Blood Dagger	1,1,3
+1619	Shadow Dagger	1,1,3
+1620	Mage Dagger	1,1,3
+1621	Jeweled Dagger	1,1,3
+1622	Long Dagger	1,1,3
+1623	Piercing Dagger	1,1,3
+1624	Divine Dagger	1,1,3
+1625	Hand Axe	1,1,3
+1626	Battle Axe	1,1,3
+1627	War Axe	1,1,3
+1628	Dwarven Axe	1,1,3
+1629	Supreme Axe	1,1,3
+1630	Light Poleaxe	1,1,3
+1631	Heavy Poleaxe	1,1,3
+1632	Grand Poleaxe	1,1,3
+1633	Spear	1,1,3
+1634	Stout Spear	1,1,3
+1635	Serpent Spear	1,1,3
+1636	Savage Spear	1,1,3
+1637	Sacred Spear	1,1,3
+1638	Common Halberd	1,1,3
+1639	Massive Halberd	1,1,3
+1640	Elite Halberd	1,1,3
+1641	Trident	1,1,3
+1642	Ornate Trident	1,1,3
+1643	Titanic Trident	1,1,3
+1644	Crude Longbow	1,1,3
+1645	Elven Bow	1,1,3
+1646	Precision Bow	1,1,3
+1647	Magic Bow	1,1,3
+1648	Stellar Bow	1,1,3
+1649	Crossbow	1,1,3
+1650	Accurate Crossbow	1,1,3
+1651	True Crossbow	1,1,3
+1652	Simple Mace	1,1,3
+1653	Wicked Mace	1,1,3
+1654	Thunder Mace	1,1,3
+1655	Wonder Mace	1,1,3
+1656	Death Mace	1,1,3
+1657	Massive hammer	1,1,3
+1658	Dark Hammer	1,1,3
+1659	Holy Hammer	1,1,3
+1660	Club	1,1,3
+1661	Spiked Club	1,1,3
+1662	Killer Club	1,1,3
+1663	Staff	1,1,3
+1664	Emerald Staff	1,1,3
+1665	Power Staff	1,1,3
+1666	Blaster	1,1,3
+1667	Blaster Rifle	1,1,3
+1668	Leather Armor	1,1,3
+1669	Studded Leather	1,1,3
+1670	Enchanted Leather	1,1,3
+1671	Dragon Leather	1,1,3
+1672	Imperial Leather	1,1,3
+1673	Chain Mail	1,1,3
+1674	Steel Chain Mail	1,1,3
+1675	Noble Chain Mail	1,1,3
+1676	Royal Chain Mail	1,1,3
+1677	Majestic Chain Mail	1,1,3
+1678	Plate Armor	1,1,3
+1679	Steel Plate Armor	1,1,3
+1680	Golden Plate Armor	1,1,3
+1681	Kite Shield	1,1,3
+1682	Tower Shield	1,1,3
+1683	Castle Shield	1,1,3
+1684	Celestial Shield	1,1,3
+1685	Olympian Shield	1,1,3
+1686	Wooden Shield	1,1,3
+1687	Bronze Shield	1,1,3
+1688	Steel Shield	1,1,3
+1689	Spirit Shield	1,1,3
+1690	Astral Shield	1,1,3
+1691	Wooden Helm	1,1,3
+1692	Steel Helm	1,1,3
+1693	Guardian Helm	1,1,3
+1694	Defender Helm	1,1,3
+1695	Angelic Helm	1,1,3
+1696	Cloth Hat	1,1,3
+1697	Dandy Hat	1,1,3
+1698	Wizard Cap	1,1,3
+1699	Wreath Crown	1,1,3
+1700	Regal Crown	1,1,3
+1701	Almighty Crown	1,1,3
+1702	Leather Belt	1,1,3
+1703	Mercenary Belt	1,1,3
+1704	Vanguard Belt	1,1,3
+1705	Warlord Belt	1,1,3
+1706	Sovereign Belt	1,1,3
+1707	Leather Cloak	1,1,3
+1708	Phantom Cloak	1,1,3
+1709	Elven Cloak	1,1,3
+1710	Cardinal Cloak	1,1,3
+1711	Doom's Day Cloak	1,1,3
+1712	Gauntlets	1,1,3
+1713	Knight Gauntlets	1,1,3
+1714	Paladin Gauntlets	1,1,3
+1715	Cavalier Gauntlets	1,1,3
+1716	Ultimate Gauntlets	1,1,3
+1717	Leather Boots	1,1,3
+1718	Steel Boots	1,1,3
+1719	Armored Boots	1,1,3
+1720	Sterling Boots	1,1,3
+1721	Ultimate Boots	1,1,3
+1722	Fine Ring	1,1,3
+1723	Sparkling Ring	1,1,3
+1724	Lunar Ring	1,1,3
+1725	Witch Ring	1,1,3
+1726	Blessed Ring	1,1,3
+1727	Valuable Ring	1,1,3
+1728	Precious Ring	1,1,3
+1729	Ethereal Ring	1,1,3
+1730	Exquisite Ring	1,1,3
+1731	Scarab Ring	1,1,3
+1732	Turquoise Amulet	1,1,3
+1733	Gothic Amulet	1,1,3
+1734	Claw Amulet	1,1,3
+1735	Ancient Amulet	1,1,3
+1736	Ruby Star Amulet	1,1,3
+1737	Wand of Fire	1,1,3
+1738	Wand of Sparks	1,1,3
+1739	Wand of Poison	1,1,3
+1740	Wand of Stunning	1,1,3
+1741	Wand of Harming	1,1,3
+1742	Fairy Wand of Light	1,1,3
+1743	Fairy Wand of Ice	1,1,3
+1744	Fairy Wand of Lashing	1,1,3
+1745	Fairy Wand of Mind	1,1,3
+1746	Fairy Wand of Swarms	1,1,3
+1747	Alacorn Wand of Fireballs	1,1,3
+1748	Alacorn Wand of Acid	1,1,3
+1749	Alacorn Wand of Lightning	1,1,3
+1750	Alacorn Wand of Blades	1,1,3
+1751	Alacorn Wand of Berzerking	1,1,3
+1752	Arcane Wand of Blasting	1,1,3
+1753	Arcane Wand of the Fist	1,1,3
+1754	Arcane Wand of Rocks	1,1,3
+1755	Arcane Wand of Paralyzing	1,1,3
+1756	Arcane Wand of Clouds	1,1,3
+1757	Mystic Wand of Implosion	1,1,3
+1758	Mystic Wand of Distortion	1,1,3
+1759	Mystic Wand of Shrapmetal	1,1,3
+1760	Mystic Wand of Shrinking	1,1,3
+1761	Mystic Wand of Incineration	1,1,3
+1762	Poppysnaps	1,1,3
+1763	Phirna Root	1,1,3
+1764	Widoweeps Berries	1,1,3
+1802	Torch Light	3,3,3
+1803	Fire Bolt	3,3,3
+1804	Fire Resistance	3,3,3
+1805	Fire Aura	3,3,3
+1806	Haste	3,3,3
+1807	Fireball	3,3,3
+1808	Fire Spike	3,3,3
+1809	Immolation	3,3,3
+1810	Meteor Shower	3,3,3
+1811	Inferno	3,3,3
+1812	Incinerate	3,3,3
+1813	Wizard Eye	3,3,3
+1814	Feather Fall	3,3,3
+1815	Air Resistance	3,3,3
+1816	Sparks	3,3,3
+1817	Feather Fall	3,3,3
+1818	Shield	3,3,3
+1819	Lightning Bolt	3,3,3
+1820	Invisibility	3,3,3
+1821	Implosion	3,3,3
+1822	Fly	3,3,3
+1823	Starburst	3,3,3
+1824	Awaken	3,3,3
+1825	Poison Spray	3,3,3
+1826	Water Resistance	3,3,3
+1827	Ice Bolt	3,3,3
+1828	Water Walk	3,3,3
+1829	Recharge Item	3,3,3
+1830	Acid Burst	3,3,3
+1831	Enchant Item	3,3,3
+1832	Town Portal	3,3,3
+1833	Ice Blast	3,3,3
+1834	Lloyd's Beacon	3,3,3
+1835	Stun	3,3,3
+1836	Slow	3,3,3
+1837	Earth Resistance	3,3,3
+1838	Deadly Swarm	3,3,3
+1839	Stone Skin	3,3,3
+1840	Blades	3,3,3
+1841	Stone to Flesh	3,3,3
+1842	Rock Blast	3,3,3
+1843	Telekinesis	3,3,3
+1844	Death Blossom	3,3,3
+1845	Mass Distortion	3,3,3
+1846	Detect Life	3,3,3
+1847	Bless	3,3,3
+1848	Fate	3,3,3
+1849	Turn Undead	3,3,3
+1850	Remove Curse	3,3,3
+1851	Preservation	3,3,3
+1852	Heroism	3,3,3
+1853	Spirit Lash	3,3,3
+1854	Raise Dead	3,3,3
+1855	Shared Life	3,3,3
+1856	Resurrection	3,3,3
+1857	Telepathy	3,3,3
+1858	Remove Fear	3,3,3
+1859	Mind Resistance	3,3,3
+1860	Mind Blast	3,3,3
+1861	Charm	3,3,3
+1862	Cure Paralysis	3,3,3
+1863	Berserk	3,3,3
+1864	Mass Fear	3,3,3
+1865	Cure Insanity	3,3,3
+1866	Psychic Shock	3,3,3
+1867	Enslave	3,3,3
+1868	Cure Weakness	3,3,3
+1869	Heal	3,3,3
+1870	Body Resistance	3,3,3
+1871	Harm	3,3,3
+1872	Regeneration	3,3,3
+1873	Cure Poison	3,3,3
+1874	Hammerhands	3,3,3
+1875	Cure Disease	3,3,3
+1876	Protection from Magic	3,3,3
+1877	Flying Fist	3,3,3
+1878	Power Cure	3,3,3
+1879	Light Bolt	3,3,3
+1880	Destroy Undead	3,3,3
+1881	Dispel Magic	3,3,3
+1882	Paralyze	3,3,3
+1883	Summon Wisp	3,3,3
+1884	Day of the Gods	3,3,3
+1885	Prismatic Light	3,3,3
+1886	Day of Protection	3,3,3
+1887	Hour of Power	3,3,3
+1888	Sunray	3,3,3
+1889	Divine Intervention	3,3,3
+1890	Reanimate	3,3,3
+1891	Toxic Cloud	3,3,3
+1892	Vampiric Weapon	3,3,3
+1893	Shrinking Ray	3,3,3
+1894	Shrapmetal	3,3,3
+1895	Control Undead	3,3,3
+1896	Pain Reflection	3,3,3
+1897	Dark Grasp	3,3,3
+1898	Dragon Breath	3,3,3
+1899	Armageddon	3,3,3
+1900	Souldrinker	3,3,3
+1902	Torch Light	1,1,3
+1903	Fire Bolt	1,1,3
+1904	Fire Resistance	1,1,3
+1905	Fire Resistance	1,1,3
+1906	Fire Aura	1,1,3
+1907	Fire Aura	1,1,3
+1908	Haste	1,1,3
+1909	Fireball	1,1,3
+1910	Fire Spike	1,1,3
+1911	Immolation	1,1,3
+1912	Meteor Shower	1,1,3
+1913	Inferno	1,1,3
+1914	Incinerate	1,1,3
+1915	Wizard Eye	1,1,3
+1916	Feather Fall	1,1,3
+1917	Air Resistance	1,1,3
+1918	Air Resistance	1,1,3
+1919	Sparks	1,1,3
+1920	Sparks	1,1,3
+1921	Jump	1,1,3
+1922	Shield	1,1,3
+1923	Lightning Bolt	1,1,3
+1924	Invisibility	1,1,3
+1925	Implosion	1,1,3
+1926	Fly	1,1,3
+1927	Starburst	1,1,3
+1928	Awaken	1,1,3
+1929	Poison Spray	1,1,3
+1930	Water Resistance	1,1,3
+1931	Water Resistance	1,1,3
+1932	Ice Bolt	1,1,3
+1933	Ice Bolt	1,1,3
+1934	Water Walk	1,1,3
+1935	Recharge Item	1,1,3
+1936	Acid Burst	1,1,3
+1937	Enchant Item	1,1,3
+1938	Town Portal	1,1,3
+1939	Ice Blast	1,1,3
+1940	Lloyd's Beacon	1,1,3
+1941	Stun	1,1,3
+1942	Slow	1,1,3
+1943	Earth Resistance	1,1,3
+1944	Earth Resistance	1,1,3
+1945	Deadly Swarm	1,1,3
+1946	Deadly Swarm	1,1,3
+1947	Stone Skin	1,1,3
+1948	Blades	1,1,3
+1949	Stone to Flesh	1,1,3
+1950	Rock Blast	1,1,3
+1951	Telekinesis	1,1,3
+1952	Death Blossom	1,1,3
+1953	Mass Distortion	1,1,3
+1954	Detect Life	1,1,3
+1955	Bless	1,1,3
+1956	Fate	1,1,3
+1957	Fate	1,1,3
+1958	Turn Undead	1,1,3
+1959	Turn Undead	1,1,3
+1960	Remove Curse	1,1,3
+1961	Preservation	1,1,3
+1962	Heroism	1,1,3
+1963	Spirit Lash	1,1,3
+1964	Raise Dead	1,1,3
+1965	Shared Life	1,1,3
+1966	Resurrection	1,1,3
+1967	Telepathy	1,1,3
+1968	Remove Fear	1,1,3
+1969	Mind Resistance	1,1,3
+1970	Mind Resistance	1,1,3
+1971	Mind Blast	1,1,3
+1972	Mind Blast	1,1,3
+1973	Charm	1,1,3
+1974	Cure Paralysis	1,1,3
+1975	Berserk	1,1,3
+1976	Mass Fear	1,1,3
+1977	Cure Insanity	1,1,3
+1978	Psychic Shock	1,1,3
+1979	Enslave	1,1,3
+1980	Cure Weakness	1,1,3
+1981	Heal	1,1,3
+1982	Body Resistance	1,1,3
+1983	Body Resistance	1,1,3
+1984	Harm	1,1,3
+1985	Harm	1,1,3
+1986	Regeneration	1,1,3
+1987	Cure Poison	1,1,3
+1988	Hammerhands	1,1,3
+1989	Cure Disease	1,1,3
+1990	Protection from Magic	1,1,3
+1991	Flying Fist	1,1,3
+1992	Power Cure	1,1,3
+1993	Light Bolt	1,1,3
+1994	Destroy Undead	1,1,3
+1995	Dispel Magic	1,1,3
+1996	Dispel Magic	1,1,3
+1997	Paralyze	1,1,3
+1998	Paralyze	1,1,3
+1999	Summon Wisp	1,1,3
+2000	Day of the Gods	1,1,3
+2001	Prismatic Light	1,1,3
+2002	Day of Protection	1,1,3
+2003	Hour of Power	1,1,3
+2004	Sunray	1,1,3
+2005	Divine Intervention	1,1,3
+2006	Reanimate	1,1,3
+2007	Toxic Cloud	1,1,3
+2008	Vampiric Weapon	1,1,3
+2009	Vampiric Weapon	1,1,3
+2010	Shrinking Ray	1,1,3
+2011	Shrinking Ray	1,1,3
+2012	Shrapmetal	1,1,3
+2013	Control Undead	1,1,3
+2014	Pain Reflection	1,1,3
+2015	Dark Grasp	1,1,3
+2016	Dragon Breath	1,1,3
+2017	Armageddon	1,1,3
+2018	Souldrinker	1,1,3
+2020	Mordred	1,1,3
+2021	Thor	1,1,3
+2022	Conan	1,1,3
+2023	Excalibur	1,1,3
+2024	Merlin	1,1,3
+2025	Percival	1,1,3
+2026	Galahad	1,1,3
+2027	Pellinore	1,1,3
+2028	Valeria	1,1,3
+2029	Arthur	1,1,3
+2030	Pendragon	1,1,3
+2031	Lucius	1,1,3
+2032	Guinevere	1,1,3
+2033	Igraine	1,1,3
+2034	Morgan	1,1,3
+2035	Hades	1,1,3
+2036	Ares	1,1,3
+2037	Poseidon	1,1,3
+2038	Cronos	1,1,3
+2039	Hercules	1,1,3
+2040	Artemis	1,1,3
+2041	Apollo	1,1,3
+2042	Zeus	1,1,3
+2043	Aegis	1,1,3
+2044	Odin	1,1,3
+2045	Atlas	1,1,3
+2046	Hermes	1,1,3
+2047	Aphrodite	1,1,3
+2048	Athena	1,1,3
+2049	Hera	1,1,3
+2050	Leather Pouch	1,1,3
+2051	Leather Pouch	1,1,3
+2052	Leather Pouch	1,1,3
+2053	Hourglass of Time	1,1,3	3	1207
+2054	Sacred Chalice	1,1,3	3	1212
+2055	Horn of Ros	1,1,3
+2056	Diamond	1,1,3
+2057	Moonstone	1,1,3
+2058	Topaz	1,1,3
+2059	Ruby	1,1,3
+2060	Amethyst	1,1,3
+2061	Emerald	1,1,3
+2062	Purple Topaz	1,1,3
+2063	Sunstone	1,1,3
+2064	Emerald	1,1,3
+2065	Sapphire	1,1,3
+2066	The Third Eye	1,1,3	3	1220
+2067	Deck of Fate	1,1,3
+2075	Dragon Claw	1,1,3	3	1209
+2076	Control Cube	1,1,3	3	1219
+2077	Crystal of Terrax	1,1,3	3	1210
+2081	Tanir's Bell	1,1,3	3	1221
+2106	Dragon Tower Keys	1,1,3	3	1213
+2107	Key to Gharik's Laboratory	1,1,3	3	1223
+2119	Lord Kilburn's Shield	1,1,3	3	1206
+2122	Letter from Zenofex	1,1,3	3	1214
+2125	The Letter	1,1,3	3	1205
+2126	Devil Plans	1,1,3	3	1208
+2128	Discharge Papers	1,1,3	3	1211
+2157	Captain's Code	1,1,3	3	1255
+2158	First Mate's Code	1,1,3	3	1253
+2159	Navigator's Code	1,1,3	3	1256
+2160	Communication Officer's Code	1,1,3	3	1258
+2161	Engineer's Code	1,1,3	3	1257
+2162	Doctor's Code	1,1,3	3	1254
+2164	Ritual of the Void	1,1,3	3	1222
+2170	Memory Crystal Alpha	1,1,3	3	1215
+2171	Memory Crystal Beta	1,1,3	3	1216
+2172	Memory Crystal Delta	1,1,3	3	1217
+2173	Memory Crystal Epsilon	1,1,3	3	1218

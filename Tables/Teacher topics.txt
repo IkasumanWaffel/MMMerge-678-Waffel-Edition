@@ -1,0 +1,179 @@
+TopicId	Notes	SkillId	Mastery	TextId	Req. Gold	Req. Skill
+300	Expert Staff 	0	1	300	5000	5
+301	Master Staff	0	2	301	10000	10
+302	Grand Master Staff	0	3	302	15000	15
+303	Expert Sword	1	1	303	5000	5
+304	Master Sword	1	2	304	10000	10
+305	Grand Master Sword	1	3	305	15000	15
+306	Expert Dagger	2	1	306	5000	5
+307	Master Dagger	2	2	307	10000	10
+308	Grand Master Dagger	2	3	308	15000	15
+309	Expert Axe	3	1	309	5000	5
+310	Master Axe	3	2	310	10000	10
+311	Grand Master Axe	3	3	311	15000	15
+312	Expert Spear	4	1	312	5000	5
+313	Master Spear	4	2	313	10000	10
+314	Grand Master Spear	4	3	314	15000	15
+315	Expert Bow	5	1	315	5000	5
+316	Master Bow	5	2	316	10000	10
+317	Grand Master Bow	5	3	317	15000	15
+318	Expert Mace	6	1	318	5000	5
+319	Master Mace	6	2	319	10000	10
+320	Grand Master Mace	6	3	320	15000	15
+971	Expert Blaster	7	1	1295	20000	5
+972	Master Blaster	7	2	1296	40000	10
+973	Grand Master Blaster	7	3	1297	60000	15
+324	Expert Shield	8	1	324	4000	5
+325	Master Shield	8	2	325	8000	10
+326	Grand Master Shield	8	3	326	12000	15
+327	Expert Leather	9	1	327	4000	5
+328	Master Leather	9	2	328	8000	10
+329	Grand Master Leather	9	3	329	12000	15
+330	Expert Chain	10	1	330	4000	5
+331	Master Chain	10	2	331	8000	10
+332	Grand Master Chain	10	3	332	12000	15
+333	Expert Plate	11	1	333	4000	5
+334	Master Plate	11	2	334	8000	10
+335	Grand Master Plate	11	3	335	12000	15
+336	Expert Fire Magic	12	1	336	6000	5
+337	Master Fire Magic	12	2	337	12000	10
+338	Grand Master Fire Magic	12	3	338	18000	15
+339	Expert Air Magic	13	1	339	6000	5
+340	Master Air Magic	13	2	340	12000	10
+341	Grand Master Air Magic	13	3	341	18000	15
+342	Expert Water Magic	14	1	342	6000	5
+343	Master Water Magic	14	2	343	12000	10
+344	Grand Master Water Magic	14	3	344	18000	15
+345	Expert Earth Magic	15	1	345	6000	5
+346	Master Earth Magic	15	2	346	12000	10
+347	Grand Master Earth Magic	15	3	347	18000	15
+348	Expert Spirit Magic	16	1	348	6000	5
+349	Master Spirit Magic	16	2	349	12000	10
+350	Grand Master Spirit Magic	16	3	350	18000	15
+351	Expert Mind Magic	17	1	351	6000	5
+352	Master Mind Magic	17	2	352	12000	10
+353	Grand Master Mind Magic	17	3	353	18000	15
+354	Expert Body Magic	18	1	354	6000	5
+355	Master Body Magic	18	2	355	12000	10
+356	Grand Master Body Magic	18	3	356	18000	15
+357	Expert Light Magic	19	1	357	12000	5
+358	Master Light Magic	19	2	358	24000	10
+359	Grand Master Light Magic	19	3	359	48000	15
+360	Expert Dark Magic	20	1	360	12000	5
+361	Master Dark Magic	20	2	361	24000	10
+362	Grand Master Dark Magic	20	3	362	48000	15
+363	Expert Dark Elf	21	1	363	6000	5
+364	Master Dark Elf 	21	2	364	12000	10
+365	Grand Master Dark Elf	21	3	365	18000	15
+366	Expert Vampire	22	1	366	6000	5
+367	Master Vampire	22	2	367	12000	10
+368	Grand Master Vampire	22	3	368	18000	15
+369	Expert Dragon	23	1	369	6000	5
+370	Master Dragon	23	2	370	12000	10
+371	Grand Master Dragon	23	3	371	18000	15
+372	Expert Identify Item	24	1	372	3000	5
+373	Master Identify Item	24	2	373	6000	10
+374	Grand Master Identify Item	24	3	374	9000	15
+375	Expert Merchant	25	1	375	6000	5
+376	Master Merchant	25	2	376	12000	10
+377	Grand Master Merchant	25	3	377	18000	15
+378	Expert Repair Item	26	1	378	3000	5
+379	Master Repair Item	26	2	379	6000	10
+380	Grand Master Repair Item	26	3	380	9000	15
+381	Expert Body Building	27	1	381	3000	5
+382	Master Body Building	27	2	382	6000	10
+383	Grand Master Body Building	27	3	383	9000	15
+384	Expert Meditation	28	1	384	3000	5
+385	Master Meditation 	28	2	385	6000	10
+386	Grand Master Meditation	28	3	386	9000	15
+387	Expert Perception	29	1	387	3000	5
+388	Master Perception	29	2	388	6000	10
+389	Grand Master Perception	29	3	389	9000	15
+390	Expert Regeneration	30	1	390	5000	5
+391	Master Regeneration	30	2	391	10000	10
+392	Grand Master Regeneration	30	3	392	15000	15
+393	Expert Disarm Trap 	31	1	393	3000	5
+394	Master Disarm Trap	31	2	394	6000	10
+395	Grand Master Disarm Trap	31	3	395	9000	15
+396	Expert Dodging	32	1	1364	4000	5
+397	Master Dodging	32	2	1365	8000	10
+398	Grand Master Dodging	32	3	1366	12000	15
+399	Expert Unarmed	33	1	1367	5000	5
+400	Master Unarmed	33	2	1368	10000	10
+401	Grand Master Unarmed	33	3	1369	15000	15
+402	Expert Identify Monster	34	1	402	3000	5
+403	Master Identify Monster	34	2	403	6000	10
+404	Grand Master Identify Monster	34	3	404	9000	15
+405	Expert Armsmaster	35	1	405	5000	5
+406	Master Armsmaster	35	2	406	10000	10
+407	Grand Master Armsmaster	35	3	407	15000	15
+408	Expert Stealing	36	1	408	3000	5
+409	Master Stealing	36	2	409	6000	10
+410	Grand Master Stealing	36	3	410	9000	15
+411	Expert Alchemy	37	1	411	3000	5
+412	Master Alchemy	37	2	412	6000	10
+413	Grand Master Alchemy	37	3	413	9000	15
+414	Expert Learning	38	1	414	3000	5
+415	Master Learning	38	2	415	6000	10
+416	Grand Master Learning 	38	3	416	9000	15
+1012	Dark Magic Grandmaster	20	3	362	48000	15
+1513	Expert Staff 	0	1	1892	5000	5
+1514	Master Staff	0	2	1893	10000	10
+1515	Expert Sword	1	1	1894	5000	5
+1516	Master Sword	1	2	1895	10000	10
+1517	Expert Dagger	2	1	1896	5000	5
+1518	Master Dagger	2	2	1897	10000	10
+1519	Expert Axe	3	1	1898	5000	5
+1520	Master Axe	3	2	1899	10000	10
+1521	Expert Spear	4	1	1900	5000	5
+1522	Master Spear	4	2	1901	10000	10
+1523	Expert Bow	5	1	1902	5000	5
+1524	Master Bow	5	2	1903	10000	10
+1525	Expert Mace	6	1	1904	5000	5
+1526	Master Mace	6	2	1905	10000	10
+1527	Expert Blaster	7	1	1906	20000	5
+1528	Master Blaster	7	2	1907	40000	10
+1529	Expert Shield	8	1	1908	4000	5
+1530	Master Shield	8	2	1909	8000	10
+1531	Expert Leather	9	1	1910	4000	5
+1532	Master Leather	9	2	1911	8000	10
+1533	Expert Chain	10	1	1912	4000	5
+1534	Master Chain	10	2	1913	8000	10
+1535	Expert Plate	11	1	1914	4000	5
+1536	Master Plate	11	2	1915	8000	10
+1537	Expert Fire Magic	12	1	1916	6000	5
+1538	Master Fire Magic	12	2	1917	12000	10
+1539	Expert Air Magic	13	1	1918	6000	5
+1540	Master Air Magic	13	2	1919	12000	10
+1541	Expert Water Magic	14	1	1920	6000	5
+1542	Master Water Magic	14	2	1921	12000	10
+1543	Expert Earth Magic	15	1	1922	6000	5
+1544	Master Earth Magic	15	2	1923	12000	10
+1545	Expert Spirit Magic	16	1	1924	6000	5
+1546	Master Spirit Magic	16	2	1925	12000	10
+1547	Expert Mind Magic	17	1	1926	6000	5
+1548	Master Mind Magic	17	2	1927	12000	10
+1549	Expert Body Magic	18	1	1928	6000	5
+1550	Master Body Magic	18	2	1929	12000	10
+1551	Expert Light Magic	19	1	1930	12000	5
+1552	Master Light Magic	19	2	1931	24000	10
+1553	Expert Dark Magic	20	1	1932	12000	5
+1554	Master Dark Magic	20	2	1933	24000	10
+1555	Expert Identify Item	24	1	1934	3000	5
+1556	Master Identify Item	24	2	1935	6000	10
+1557	Expert Merchant	25	1	1936	6000	5
+1558	Master Merchant	25	2	1937	12000	10
+1559	Expert Repair Item	26	1	1938	3000	5
+1560	Master Repair Item	26	2	1939	6000	10
+1561	Expert Body Building	27	1	1940	3000	5
+1562	Master Body Building	27	2	1941	6000	10
+1563	Expert Meditation	28	1	1942	3000	5
+1564	Master Meditation 	28	2	1943	6000	10
+1565	Expert Perception	29	1	1944	3000	5
+1566	Master Perception	29	2	1945	6000	10
+1567	Expert Alchemy	37	1	411	3000	5
+1568	Master Alchemy	37	2	412	6000	10
+1569	Expert Disarm Trap 	31	1	1948	3000	5
+1570	Master Disarm Trap	31	2	1949	6000	10
+1571	Expert Learning	38	1	1950	3000	5
+1572	Master Learning	38	2	1951	6000	10

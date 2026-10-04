@@ -1,0 +1,654 @@
+Monster	Undead	Dragon	Swimmer	Immobile	Peasant	NoArena	Ogre	Elemental
+0	-	-	-	-	-	-	-	-
+1 Lizardmen Male (Peasant) A	-	-	-	-	x	x	-	-
+2 Lizardmen Male (Peasant) B	-	-	-	-	x	x	-	-
+3 Lizardmen Male (Peasant) C	-	-	-	-	x	x	-	-
+4 Lizardmen Warrior A	-	-	-	-	-	-	-	-
+5 Lizardmen Warrior B	-	-	-	-	-	-	-	-
+6 Lizardmen Warrior C	-	-	-	-	-	-	-	-
+7 Couatl (winged snake) A	-	-	-	-	-	-	-	-
+8 Couatl (winged snake) B	-	-	-	-	-	-	-	-
+9 Couatl (winged snake) C	-	-	-	-	-	-	-	-
+10 Pirate Warrior Male A	-	-	-	-	-	-	-	-
+11 Pirate Warrior Male B	-	-	-	-	-	-	-	-
+12 Pirate Warrior Male C	-	-	-	-	-	-	-	-
+13 Pirate Crossbowman (Female) A	-	-	-	-	-	-	-	-
+14 Pirate Crossbowman (Female) B	-	-	-	-	-	-	-	-
+15 Pirate Crossbowman (Female) C	-	-	-	-	-	-	-	-
+16 Pirate Mage Male A	-	-	-	-	-	-	-	-
+17 Pirate Mage Male B	-	-	-	-	-	-	-	-
+18 Pirate Mage Male C	-	-	-	-	-	-	-	-
+19 Dark Elf Pesant Male A	-	-	-	-	x	x	-	-
+20 Dark Elf Pesant Male B	-	-	-	-	x	x	-	-
+21 Dark Elf Pesant Male C	-	-	-	-	x	x	-	-
+22 Dark Elf Pesant Female A	-	-	-	-	x	x	-	-
+23 Dark Elf Pesant Female B	-	-	-	-	x	x	-	-
+24 Dark Elf Pesant Female C	-	-	-	-	x	x	-	-
+25 Dark Elf Warrior A	-	-	-	-	-	-	-	-
+26 Dark Elf Warrior B	-	-	-	-	-	-	-	-
+27 Dark Elf Warrior C	-	-	-	-	-	-	-	-
+28 Ogre Pesant Male A	-	-	-	-	x	x	x	-
+29 Ogre Pesant Male B	-	-	-	-	x	x	x	-
+30 Ogre Pesant Male C	-	-	-	-	x	x	x	-
+31 Ogre Warrior A	-	-	-	-	-	-	x	-
+32 Ogre Warrior B	-	-	-	-	-	-	x	-
+33 Ogre Warrior C	-	-	-	-	-	-	x	-
+34 Wererat Human Form Male A	-	-	-	-	-	-	-	-
+35 Wererat Human Form Male B	-	-	-	-	-	-	-	-
+36 Wererat Human Form Male C	-	-	-	-	-	-	-	-
+37 Wererat Ratman Form Male A	-	-	-	-	-	-	-	-
+38 Wererat Ratman Form Male B	-	-	-	-	-	-	-	-
+39 Wererat Ratman Form Male C	-	-	-	-	-	-	-	-
+40 Wererat Rat Form Male A	-	-	-	-	-	-	-	-
+41 Wererat Rat Form Male B	-	-	-	-	-	-	-	-
+42 Wererat Rat Form Male C	-	-	-	-	-	-	-	-
+43 Dragon Hunter A	-	-	-	-	-	-	-	-
+44 Dragon Hunter B	-	-	-	-	-	-	-	-
+45 Dragon Hunter C	-	-	-	-	-	-	-	-
+46 Cleric (human male) A	-	-	-	-	-	-	-	-
+47 Cleric (human male) B	-	-	-	-	-	-	-	-
+48 Cleric (human male) C	-	-	-	-	-	-	-	-
+49 Vampire Female Peasant A	x	-	-	-	x	x	-	-
+50 Vampire Female Peasant B	x	-	-	-	x	x	-	-
+51 Vampire Female Peasant C	x	-	-	-	x	x	-	-
+52 Vampire (monster) A	x	-	-	-	-	-	-	-
+53 Vampire (monster) B	x	-	-	-	-	-	-	-
+54 Vampire (monster) C	x	-	-	-	-	-	-	-
+55 Necromancer (monster) A	-	-	-	-	-	-	-	-
+56 Necromancer (monster) B	-	-	-	-	-	-	-	-
+57 Necromancer (monster) C	-	-	-	-	-	-	-	-
+58 Troll A	-	-	-	-	-	-	x	-
+59 Troll B	-	-	-	-	-	-	x	-
+60 Troll C	-	-	-	-	-	-	x	-
+61 Troll Pesant A	-	-	-	-	x	x	x	-
+62 Troll Pesant B	-	-	-	-	x	x	x	-
+63 Troll Pesant C	-	-	-	-	x	x	x	-
+64 Minotaur A	-	-	-	-	-	-	-	-
+65 Minotaur B	-	-	-	-	-	-	-	-
+66 Minotaur C	-	-	-	-	-	-	-	-
+67 Minotaur Pesant A	-	-	-	-	x	x	-	-
+68 Minotaur Pesant B	-	-	-	-	x	x	-	-
+69 Minotaur Pesant C	-	-	-	-	x	x	-	-
+70 Dragon A	-	x	-	-	-	-	-	-
+71 Dragon B	-	x	-	-	-	-	-	-
+72 Dragon C	-	x	-	-	-	-	-	-
+73 Fire Elemental A	-	-	-	-	-	-	-	x
+74 Fire Elemental B	-	-	-	-	-	-	-	x
+75 Fire Elemental C	-	-	-	-	-	-	-	x
+76 Water Elemental A	-	-	x	-	-	x	-	x
+77 Water Elemental B	-	-	x	-	-	x	-	x
+78 Water Elemental C	-	-	x	-	-	x	-	x
+79 Earth Elemental A	-	-	-	-	-	-	-	x
+80 Earth Elemental B	-	-	-	-	-	-	-	x
+81 Earth Elemental C	-	-	-	-	-	-	-	x
+82 Air Elemental A	-	-	-	-	-	-	-	x
+83 Air Elemental B	-	-	-	-	-	-	-	x
+84 Air Elemental C	-	-	-	-	-	-	-	x
+85 Dire Wolf A	-	-	-	-	-	-	-	-
+86 Dire Wolf B	-	-	-	-	-	-	-	-
+87 Dire Wolf C	-	-	-	-	-	-	-	-
+88 Thunder Lizard A	-	-	-	-	-	-	-	-
+89 Thunder Lizard B	-	-	-	-	-	-	-	-
+90 Thunder Lizard C	-	-	-	-	-	-	-	-
+91 Cyclops A	-	-	-	-	-	-	x	-
+92 Cyclops B	-	-	-	-	-	-	x	-
+93 Cyclops C	-	-	-	-	-	-	x	-
+94 Serpentmen A	-	-	-	-	-	-	-	-
+95 Serpentmen B	-	-	-	-	-	-	-	-
+96 Serpentmen C	-	-	-	-	-	-	-	-
+97 Will ' O Wisp A	-	-	-	-	-	-	-	-
+98 Will ' O Wisp B	-	-	-	-	-	-	-	-
+99 Will ' O Wisp C	-	-	-	-	-	-	-	-
+100 Centaur A	-	-	-	-	-	-	-	-
+101 Centaur B	-	-	-	-	-	-	-	-
+102 Centaur C	-	-	-	-	-	-	-	-
+103 Efreeti A	-	-	-	-	-	-	-	x
+104 Efreeti B	-	-	-	-	-	-	-	x
+105 Efreeti C	-	-	-	-	-	-	-	x
+106 Ogre Mage A	-	-	-	-	-	-	x	-
+107 Ogre Mage B	-	-	-	-	-	-	x	-
+108 Ogre Mage C	-	-	-	-	-	-	x	-
+109 Unicorn A	-	-	-	-	-	-	-	-
+110 Unicorn B	-	-	-	-	-	-	-	-
+111 Unicorn C	-	-	-	-	-	-	-	-
+112 Crystal Dragon A	-	x	-	-	-	-	-	-
+113 Crystal Dragon B	-	x	-	-	-	-	-	-
+114 Crystal Dragon C	-	x	-	-	-	-	-	-
+115 Thunderbird A	-	-	-	-	-	-	-	x
+116 Thunderbird B	-	-	-	-	-	-	-	x
+117 Thunderbird C	-	-	-	-	-	-	-	x
+118 Wasp Warrior A	-	-	-	-	-	-	-	-
+119 Wasp Warrior B	-	-	-	-	-	-	-	-
+120 Wasp Warrior C	-	-	-	-	-	-	-	-
+121 Wyvern A	-	-	-	-	-	-	-	-
+122 Wyvern B	-	-	-	-	-	-	-	-
+123 Wyvern C	-	-	-	-	-	-	-	-
+124 Gorgon A	-	-	-	-	-	-	-	-
+125 Gorgon B	-	-	-	-	-	-	-	-
+126 Gorgon C	-	-	-	-	-	-	-	-
+127 Salamander A	-	-	-	-	-	-	-	x
+128 Salamander B	-	-	-	-	-	-	-	x
+129 Salamander C	-	-	-	-	-	-	-	x
+130 Phoenix A	-	-	-	-	-	-	-	x
+131 Phoenix B	-	-	-	-	-	-	-	x
+132 Phoenix C	-	-	-	-	-	-	-	x
+133 Triton A	-	-	-	-	-	-	-	-
+134 Triton B	-	-	-	-	-	-	-	-
+135 Triton C	-	-	-	-	-	-	-	-
+136 Dragon Turtle A	-	x	x	-	-	x	-	-
+137 Dragon Turtle B	-	x	x	-	-	x	-	-
+138 Dragon Turtle C	-	x	x	-	-	x	-	-
+139 Raven Man A	-	-	-	-	-	-	-	-
+140 Raven Man B	-	-	-	-	-	-	-	-
+141 Raven Man C	-	-	-	-	-	-	-	-
+142 Malevolent Boulder A	-	-	-	x	-	x	-	-
+143 Malevolent Boulder B	-	-	-	x	-	x	-	-
+144 Malevolent Boulder C	-	-	-	x	-	x	-	-
+145 Plane Guardian A	-	-	-	-	-	-	-	-
+146 Plane Guardian B	-	-	-	-	-	-	-	-
+147 Plane Guardian C	-	-	-	-	-	-	-	-
+148 Crystal Walker A	-	-	-	-	-	-	-	-
+149 Crystal Walker B	-	-	-	-	-	-	-	-
+150 Crystal Walker C	-	-	-	-	-	-	-	-
+151 Nightmare A	-	-	-	-	-	-	-	-
+152 Nightmare B	-	-	-	-	-	-	-	-
+153 Nightmare C	-	-	-	-	-	-	-	-
+154 Ether Knight A	x	-	-	-	-	-	-	-
+155 Ether Knight B	x	-	-	-	-	-	-	-
+156 Ether Knight C	x	-	-	-	-	-	-	-
+157 Juggernaut A	-	-	-	-	-	-	-	x
+158 Juggernaut B	-	-	-	-	-	-	-	x
+159 Juggernaut C	-	-	-	-	-	-	-	x
+160 Gog A	-	-	-	-	-	-	-	-
+161 Gog B	-	-	-	-	-	-	-	-
+162 Gog C	-	-	-	-	-	-	-	-
+163 Bone Dragon A	x	x	-	-	-	-	-	-
+164 Bone Dragon B	x	x	-	-	-	-	-	-
+165 Bone Dragon C	x	x	-	-	-	-	-	-
+166 Bedraggled Human (peasant) A	-	-	-	-	x	x	-	-
+167 Bedraggled Human (peasant) B	-	-	-	-	x	x	-	-
+168 Bedraggled Human (peasant) C	-	-	-	-	x	x	-	-
+169 Naga A	-	-	-	-	-	-	-	-
+170 Naga B	-	-	-	-	-	-	-	-
+171 Naga C	-	-	-	-	-	-	-	-
+172 Skeletons Archer A	x	-	-	-	-	-	-	-
+173 Skeletons Archer B	x	-	-	-	-	-	-	-
+174Skeletons Archer C	x	-	-	-	-	-	-	-
+175 Dark Dwarf A	-	-	-	-	-	-	-	-
+176 Dark Dwarf B	-	-	-	-	-	-	-	-
+177 Dark Dwarf C	-	-	-	-	-	-	-	-
+178 School of Fish (non-combatant) A	-	-	x	-	-	x	-	-
+179 School of Fish (non-combatant) B	-	-	x	-	-	x	-	-
+180 School of Fish (non-combatant) C	-	-	x	-	-	x	-	-
+181 Wimpy Pirate Warrior Male A	-	-	-	-	-	-	-	-
+182 Wimpy Pirate Warrior Male B	-	-	-	-	-	-	-	-
+183Wimpy Pirate Warrior Male C	-	-	-	-	-	-	-	-
+184 Wimpy Pirate Crossbowman (Female) A	-	-	-	-	-	-	-	-
+185 Wimpy Pirate Crossbowman (Female) B	-	-	-	-	-	-	-	-
+186 Wimpy Pirate Crossbowman (Female) C	-	-	-	-	-	-	-	-
+187 Wimpy Pirate Mage Male A	-	-	-	-	-	-	-	-
+188 Wimpy Pirate Mage Male B	-	-	-	-	-	-	-	-
+189 Wimpy Pirate Mage Male C	-	-	-	-	-	-	-	-
+190 Wimpy Dragon A	-	x	-	-	-	-	-	-
+191 Wimpy Dragon B	-	x	-	-	-	-	-	-
+192 Wimpy Dragon C	-	x	-	-	-	-	-	-
+193 Human Mercenary A	-	-	-	-	-	-	-	-
+194 Human Mercenary B	-	-	-	-	-	-	-	-
+195 Human Mercenary C	-	-	-	-	-	-	-	-
+196 Wimpy Plane Guardian A	-	-	-	-	-	-	-	-
+197 Wimpy Plane Guardian B	-	-	-	-	-	-	-	-
+198 Wimpy Plane Guardian C	-	-	-	-	-	-	-	-
+199 Angel A	-	-	-	-	-	-	-	-
+200 Angel B	-	-	-	-	-	-	-	-
+201 Angel C	-	-	-	-	-	-	-	-
+202 Archer A	-	-	-	-	-	-	-	-
+203 Archer B	-	-	-	-	-	-	-	-
+204 Archer C	-	-	-	-	-	-	-	-
+205 Bat A	-	-	-	-	-	-	-	-
+206 Bat B	-	-	-	-	-	-	-	-
+207 Bat C	-	-	-	-	-	-	-	-
+208 Behemoth A	-	-	-	-	-	-	-	-
+209 Behemoth B	-	-	-	-	-	-	-	-
+210 Behemoth C	-	-	-	-	-	-	-	-
+211 Beholder A	-	-	-	-	-	-	-	-
+212 Beholder B	-	-	-	-	-	-	-	-
+213 Beholder C	-	-	-	-	-	-	-	-
+214 Cleric Moon A	-	-	-	-	-	-	-	-
+215 Cleric Moon B	-	-	-	-	-	-	-	-
+216 Cleric Moon C	-	-	-	-	-	-	-	-
+217 Cleric Sun A	-	-	-	-	-	-	-	-
+218 Cleric Sun B	-	-	-	-	-	-	-	-
+219 Cleric Sun C	-	-	-	-	-	-	-	-
+220 Devil A	-	-	-	-	-	-	-	-
+221 Devil B	-	-	-	-	-	-	-	-
+222 Devil C	-	-	-	-	-	-	-	-
+223 ADragon A	-	x	-	-	-	-	-	-
+224 ADragon B	-	x	-	-	-	-	-	-
+225 ADragon C	-	x	-	-	-	-	-	-
+226 Dragonfly A	-	-	-	-	-	-	-	-
+227 Dragonfly B	-	-	-	-	-	-	-	-
+228 Dragonfly C	-	-	-	-	-	-	-	-
+229 Dwarf A	-	-	-	-	-	-	-	-
+230 Dwarf B	-	-	-	-	-	-	-	-
+231 Dwarf C	-	-	-	-	-	-	-	-
+232 Elemental Air A	-	-	-	-	-	-	-	x
+233 Elemental Air B	-	-	-	-	-	-	-	x
+234 Elemental Air C	-	-	-	-	-	-	-	x
+235 Elemental Earth A	-	-	-	-	-	-	-	x
+236 Elemental Earth B	-	-	-	-	-	-	-	x
+237 Elemental Earth C	-	-	-	-	-	-	-	x
+238 Elemental Fire A	-	-	-	-	-	-	-	x
+239 Elemental Fire B	-	-	-	-	-	-	-	x
+240 Elemental Fire C	-	-	-	-	-	-	-	x
+241 Elemental Light A	-	-	-	-	-	-	-	x
+242 Elemental Light B	-	-	-	-	-	-	-	x
+243 Elemental Light C	-	-	-	-	-	-	-	x
+244 Elemental Water A	-	-	-	-	-	-	-	x
+245 Elemental Water B	-	-	-	-	-	-	-	x
+246 Elemental Water C	-	-	-	-	-	-	-	x
+247 Elf Archer A	-	-	-	-	-	-	-	-
+248 Elf Archer B	-	-	-	-	-	-	-	-
+249 Elf Archer C	-	-	-	-	-	-	-	-
+250 Elf Spearman A	-	-	-	-	-	-	-	-
+251 Elf Spearman B	-	-	-	-	-	-	-	-
+252 Elf Spearman C	-	-	-	-	-	-	-	-
+253 Fighter Chain A	-	-	-	-	-	-	-	-
+254 Fighter Chain B	-	-	-	-	-	-	-	-
+255 Fighter Chain C	-	-	-	-	-	-	-	-
+256 Fighter Leather A	-	-	-	-	-	-	-	-
+257 Fighter Leather B	-	-	-	-	-	-	-	-
+258 Fighter Leather C	-	-	-	-	-	-	-	-
+259 Fighter Plate A	-	-	-	-	-	-	-	-
+260 Fighter Plate B	-	-	-	-	-	-	-	-
+261 Fighter Plate C	-	-	-	-	-	-	-	-
+262 Gargoyle A	-	-	-	-	-	-	-	x
+263 Gargoyle B	-	-	-	-	-	-	-	x
+264 Gargoyle C	-	-	-	-	-	-	-	x
+265 Genie A	-	-	-	-	-	-	-	x
+266 Genie B	-	-	-	-	-	-	-	x
+267 Genie C	-	-	-	-	-	-	-	x
+268 Ghost A	x	-	-	-	-	-	-	-
+269 Ghost B	x	-	-	-	-	-	-	-
+270 Ghost C	x	-	-	-	-	-	-	-
+271 Goblin A	-	-	-	-	-	-	x	-
+272 Goblin B	-	-	-	-	-	-	x	-
+273 Goblin C	-	-	-	-	-	-	x	-
+274 AGog A	-	-	-	-	-	-	-	-
+275 AGog B	-	-	-	-	-	-	-	-
+276 AGog C	-	-	-	-	-	-	-	-
+277 Golem A	-	-	-	-	-	-	-	-
+278 Golem B	-	-	-	-	-	-	-	-
+279 Golem C	-	-	-	-	-	-	-	-
+280 Griffin A	-	-	-	-	-	-	-	-
+281 Griffin B	-	-	-	-	-	-	-	-
+282 Griffin C	-	-	-	-	-	-	-	-
+283 Harpy A	-	-	-	-	-	-	-	-
+284 Harpy B	-	-	-	-	-	-	-	-
+285 Harpy C	-	-	-	-	-	-	-	-
+286 Hydra A	-	x	-	-	-	-	-	-
+287 Hydra B	-	x	-	-	-	-	-	-
+288 Hydra C	-	x	-	-	-	-	-	-
+289 Lich A	x	-	-	-	-	-	-	-
+290 Lich B	x	-	-	-	-	-	-	-
+291 Lich C	x	-	-	-	-	-	-	-
+292 Mage A	-	-	-	-	-	-	-	-
+293 Mage B	-	-	-	-	-	-	-	-
+294 Mage C	-	-	-	-	-	-	-	-
+295 Manticore A	-	-	-	-	-	-	-	-
+296 Manticore B	-	-	-	-	-	-	-	-
+297 Manticore C	-	-	-	-	-	-	-	-
+298 Medusa A	-	-	-	-	-	-	-	-
+299 Medusa B	-	-	-	-	-	-	-	-
+300 Medusa C	-	-	-	-	-	-	-	-
+301 AMinotaur A	-	-	-	-	-	-	-	-
+302 AMinotaur B	-	-	-	-	-	-	-	-
+303 AMinotaur C	-	-	-	-	-	-	-	-
+304 Monk A	-	-	-	-	-	-	-	-
+305 Monk B	-	-	-	-	-	-	-	-
+306 Monk C	-	-	-	-	-	-	-	-
+307 Necromancer A	-	-	-	-	-	-	-	-
+308 Necromancer B	-	-	-	-	-	-	-	-
+309 Necromancer C	-	-	-	-	-	-	-	-
+310 Ooze A	-	-	-	-	-	-	-	x
+311 Ooze B	-	-	-	-	-	-	-	x
+312 Ooze C	-	-	-	-	-	-	-	x
+313 Peasant Dwarf FemaleA A	-	-	-	-	x	x	-	-
+314 Peasant Dwarf FemaleA B	-	-	-	-	x	x	-	-
+315 Peasant Dwarf FemaleA C	-	-	-	-	x	x	-	-
+316 Peasant Dwarf FemaleB A	-	-	-	-	x	x	-	-
+317 Peasant Dwarf FemaleB B	-	-	-	-	x	x	-	-
+318 Peasant Dwarf FemaleB C	-	-	-	-	x	x	-	-
+319 Peasant Dwarf FemaleC A	-	-	-	-	x	x	-	-
+320 Peasant Dwarf FemaleC B	-	-	-	-	x	x	-	-
+321 Peasant Dwarf FemaleC C	-	-	-	-	x	x	-	-
+322 Peasant Dwarf MaleA A	-	-	-	-	x	x	-	-
+323 Peasant Dwarf MaleA B	-	-	-	-	x	x	-	-
+324 Peasant Dwarf MaleA C	-	-	-	-	x	x	-	-
+325 Peasant Dwarf MaleB A	-	-	-	-	x	x	-	-
+326 Peasant Dwarf MaleB B	-	-	-	-	x	x	-	-
+327 Peasant Dwarf MaleB C	-	-	-	-	x	x	-	-
+328 Peasant Dwarf MaleC A	-	-	-	-	x	x	-	-
+329 Peasant Dwarf MaleC B	-	-	-	-	x	x	-	-
+330 Peasant Dwarf MaleC C	-	-	-	-	x	x	-	-
+331 Peasant Elf FemaleA A	-	-	-	-	x	x	-	-
+332 Peasant Elf FemaleA B	-	-	-	-	x	x	-	-
+333 Peasant Elf FemaleA C	-	-	-	-	x	x	-	-
+334 Peasant Elf FemaleB A	-	-	-	-	x	x	-	-
+335 Peasant Elf FemaleB B	-	-	-	-	x	x	-	-
+336 Peasant Elf FemaleB C	-	-	-	-	x	x	-	-
+337 Peasant Elf FemaleC A	-	-	-	-	x	x	-	-
+338 Peasant Elf FemaleC B	-	-	-	-	x	x	-	-
+339 Peasant Elf FemaleC C	-	-	-	-	x	x	-	-
+340 Peasant Elf MaleA A	-	-	-	-	x	x	-	-
+341 Peasant Elf MaleA B	-	-	-	-	x	x	-	-
+342 Peasant Elf MaleA C	-	-	-	-	x	x	-	-
+343 Peasant Elf MaleB A	-	-	-	-	x	x	-	-
+344 Peasant Elf MaleB B	-	-	-	-	x	x	-	-
+345 Peasant Elf MaleB C	-	-	-	-	x	x	-	-
+346 Peasant Elf MaleC A	-	-	-	-	x	x	-	-
+347 Peasant Elf MaleC B	-	-	-	-	x	x	-	-
+348 Peasant Elf MaleC C	-	-	-	-	x	x	-	-
+349 Peasant Human1 FemaleA A	-	-	-	-	x	x	-	-
+350 Peasant Human1 FemaleA B	-	-	-	-	x	x	-	-
+351 Peasant Human1 FemaleA C	-	-	-	-	x	x	-	-
+352 Peasant Human1 FemaleB A	-	-	-	-	x	x	-	-
+353 Peasant Human1 FemaleB B	-	-	-	-	x	x	-	-
+354 Peasant Human1 FemaleB C	-	-	-	-	x	x	-	-
+355 Peasant Human1 FemaleC A	-	-	-	-	x	x	-	-
+356 Peasant Human1 FemaleC B	-	-	-	-	x	x	-	-
+357 Peasant Human1 FemaleC C	-	-	-	-	x	x	-	-
+358 Peasant Human1 MaleA A	-	-	-	-	x	x	-	-
+359 Peasant Human1 MaleA B	-	-	-	-	x	x	-	-
+360 Peasant Human1 MaleA C	-	-	-	-	x	x	-	-
+361 Peasant Human1 MaleB A	-	-	-	-	x	x	-	-
+362 Peasant Human1 MaleB B	-	-	-	-	x	x	-	-
+363 Peasant Human1 MaleB C	-	-	-	-	x	x	-	-
+364 Peasant Human1 MaleC A	-	-	-	-	x	x	-	-
+365 Peasant Human1 MaleC B	-	-	-	-	x	x	-	-
+366 Peasant Human1 MaleC C	-	-	-	-	x	x	-	-
+367 Peasant Human2 MaleA A	-	-	-	-	x	x	-	-
+368 Peasant Human2 MaleA B	-	-	-	-	x	x	-	-
+369 Peasant Human2 MaleA C	-	-	-	-	x	x	-	-
+370 Peasant Human2 MaleB A	-	-	-	-	x	x	-	-
+371 Peasant Human2 MaleB B	-	-	-	-	x	x	-	-
+372 Peasant Human2 MaleB C	-	-	-	-	x	x	-	-
+373 Peasant Human2 MaleC A	-	-	-	-	x	x	-	-
+374 Peasant Human2 MaleC B	-	-	-	-	x	x	-	-
+375 Peasant Human2 MaleC C	-	-	-	-	x	x	-	-
+376 Peasant Human2 FemaleA A	-	-	-	-	x	x	-	-
+377 Peasant Human2 FemaleA B	-	-	-	-	x	x	-	-
+378 Peasant Human2 FemaleA C	-	-	-	-	x	x	-	-
+379 Peasant Human2 FemaleB A	-	-	-	-	x	x	-	-
+380 Peasant Human2 FemaleB B	-	-	-	-	x	x	-	-
+381 Peasant Human2 FemaleB C	-	-	-	-	x	x	-	-
+382 Peasant Human2 FemaleC A	-	-	-	-	x	x	-	-
+383 Peasant Human2 FemaleC B	-	-	-	-	x	x	-	-
+384 Peasant Human2 FemaleC C	-	-	-	-	x	x	-	-
+385 Rat A	-	-	-	-	-	-	-	-
+386 Rat B	-	-	-	-	-	-	-	-
+387 Rat C	-	-	-	-	-	-	-	-
+388 Robot A	-	-	-	-	-	-	-	-
+389 Robot B	-	-	-	-	-	-	-	-
+390 Robot C	-	-	-	-	-	-	-	-
+391 Roc A	-	-	-	-	-	-	-	-
+392 Roc B	-	-	-	-	-	-	-	-
+393 Roc C	-	-	-	-	-	-	-	-
+394 Sea Monster A	-	-	x	-	-	-	-	-
+395 Sea Monster B	-	-	x	-	-	-	-	-
+396 Sea Monster C	-	-	x	-	-	-	-	-
+397 Skeleton Warrior A	x	-	-	-	-	-	-	-
+398 Skeleton Warrior B	x	-	-	-	-	-	-	-
+399 Skeleton Warrior C	x	-	-	-	-	-	-	-
+400 Spider A	-	-	-	-	-	-	-	-
+401 Spider B	-	-	-	-	-	-	-	-
+402 Spider C	-	-	-	-	-	-	-	-
+403 Swordsman A	-	-	-	-	-	-	-	-
+404 Swordsman B	-	-	-	-	-	-	-	-
+405 Swordsman C	-	-	-	-	-	-	-	-
+406 Thief A	-	-	-	-	-	-	-	-
+407 Thief B	-	-	-	-	-	-	-	-
+408 Thief C	-	-	-	-	-	-	-	-
+409 Titan A	-	-	-	-	-	-	-	-
+410 Titan B	-	-	-	-	-	-	-	-
+411 Titan C	-	-	-	-	-	-	-	-
+412 Troglodyte A	-	-	-	-	-	-	-	-
+413 Troglodyte B	-	-	-	-	-	-	-	-
+414 Troglodyte C	-	-	-	-	-	-	-	-
+415 Vampire A	x	-	-	-	-	-	-	-
+416 Vampire B	x	-	-	-	-	-	-	-
+417 Vampire C	x	-	-	-	-	-	-	-
+418 Warlock A	-	-	-	-	-	-	-	-
+419 Warlock B	-	-	-	-	-	-	-	-
+420 Warlock C	-	-	-	-	-	-	-	-
+421 Wight A	x	-	-	-	-	-	-	-
+422 Wight B	x	-	-	-	-	-	-	-
+423 Wight C	x	-	-	-	-	-	-	-
+424 AWyvern A	-	-	-	-	-	-	-	-
+425 AWyvern B	-	-	-	-	-	-	-	-
+426 AWyvern C	-	-	-	-	-	-	-	-
+427 Zombie A	x	-	-	-	-	-	-	-
+428 Zombie B	x	-	-	-	-	-	-	-
+429 Zombie C	x	-	-	-	-	-	-	-
+430 Peasant Goblin female A A	-	-	-	-	x	x	-	-
+431 Peasant Goblin female A B	-	-	-	-	x	x	-	-
+432 Peasant Goblin female A C	-	-	-	-	x	x	-	-
+433 Peasant Goblin female B A	-	-	-	-	x	x	-	-
+434 Peasant Goblin female B B	-	-	-	-	x	x	-	-
+435 Peasant Goblin female B C	-	-	-	-	x	x	-	-
+436 Peasant Goblin female C A	-	-	-	-	x	x	-	-
+437 Peasant Goblin female C B	-	-	-	-	x	x	-	-
+438 Peasant Goblin female C C	-	-	-	-	x	x	-	-
+439 Peasant Goblin Male A A	-	-	-	-	x	x	-	-
+440 Peasant Goblin Male A B	-	-	-	-	x	x	-	-
+441 Peasant Goblin Male A C	-	-	-	-	x	x	-	-
+442 Peasant Goblin Male B A	-	-	-	-	x	x	-	-
+443 Peasant Goblin Male B B	-	-	-	-	x	x	-	-
+444 Peasant Goblin Male B C	-	-	-	-	x	x	-	-
+445 Peasant Goblin Male C A	-	-	-	-	x	x	-	-
+446 Peasant Goblin Male C B	-	-	-	-	x	x	-	-
+447 Peasant Goblin Male C C	-	-	-	-	x	x	-	-
+448 ATroll A	-	-	-	-	-	-	-	-
+449 ATroll B	-	-	-	-	-	-	-	-
+450 ATroll C	-	-	-	-	-	-	-	-
+451 Treant A	-	-	-	-	-	-	-	x
+452 Treant B	-	-	-	-	-	-	-	x
+453 Treant C	-	-	-	-	-	-	-	x
+454 Ghoul A	x	-	-	-	-	-	-	-
+455 Ghoul B	x	-	-	-	-	-	-	-
+456 Ghoul C	x	-	-	-	-	-	-	-
+457 zBlasterGuy A	-	-	-	-	-	-	-	-
+458 zBlasterGuy B	-	-	-	-	-	-	-	-
+459 zBlasterGuy C	-	-	-	-	-	-	-	-
+460 zUltra Dragon A	-	x	-	-	-	-	-	-
+461 zUltra Dragon B	-	x	-	-	-	-	-	-
+462 zUltra Dragon C	-	x	-	-	-	-	-	-
+463 zcat a	-	-	-	-	x	x	-	-
+464 zcat b	-	-	-	-	x	x	-	-
+465 zcat c	-	-	-	-	x	x	-	-
+466 zchicken a	-	-	-	-	x	x	-	-
+467 zchicken b	-	-	-	-	x	x	-	-
+468 zchicken c	-	-	-	-	x	x	-	-
+469 zdog a	-	-	-	-	x	x	-	-
+470 zdog b	-	-	-	-	x	x	-	-
+471 zdog c	-	-	-	-	x	x	-	-
+472 zrat a	-	-	-	-	x	x	-	-
+473 zrat b	-	-	-	-	x	x	-	-
+474 zrat c	-	-	-	-	x	x	-	-
+475 BArcher A	-	-	-	-	-	-	-	-
+476 BArcher B	-	-	-	-	-	-	-	-
+477 BArcher C	-	-	-	-	-	-	-	-
+478 Barbarian A	-	-	-	-	-	-	-	-
+479 Barbarian B	-	-	-	-	-	-	-	-
+480 Barbarian C	-	-	-	-	-	-	-	-
+481 BBat A	-	-	-	-	-	-	-	-
+482 BBat B	-	-	-	-	-	-	-	-
+483 BBat C	-	-	-	-	-	-	-	-
+484 BBeholder A	-	-	-	-	-	-	-	-
+485 BBeholder B	-	-	-	-	-	-	-	-
+486 BBeholder C	-	-	-	-	-	-	-	-
+487 Bloodsucker A	-	-	-	-	-	-	-	-
+488 Bloodsucker B	-	-	-	-	-	-	-	-
+489 Bloodsucker C	-	-	-	-	-	-	-	-
+490 Cleric A	-	-	-	-	-	-	-	-
+491 Cleric B	-	-	-	-	-	-	-	-
+492 Cleric C	-	-	-	-	-	-	-	-
+493 Cobra A	-	-	-	-	-	-	-	-
+494 Cobra B	-	-	-	-	-	-	-	-
+495 Cobra C	-	-	-	-	-	-	-	-
+496 Cockatrice A	-	-	-	-	-	-	-	-
+497 Cockatrice B	-	-	-	-	-	-	-	-
+498 Cockatrice C	-	-	-	-	-	-	-	-
+499 DemonFly A	-	-	-	-	-	-	-	-
+500 DemonFly B	-	-	-	-	-	-	-	-
+501 DemonFly C	-	-	-	-	-	-	-	-
+502 Demon A	-	-	-	-	-	-	-	-
+503 Demon B	-	-	-	-	-	-	-	-
+504 Demon C	-	-	-	-	-	-	-	-
+505 DragonCave A	-	x	-	-	-	-	-	-
+506 DragonCave B	-	x	-	-	-	-	-	-
+507 DragonCave C	-	x	-	-	-	-	-	-
+508 BDragonFly A	-	x	-	-	-	-	-	-
+509 BDragonFly B	-	x	-	-	-	-	-	-
+510 BDragonFly C	-	x	-	-	-	-	-	-
+511 DragonLand A	-	x	-	-	-	-	-	-
+512 DragonLand B	-	x	-	-	-	-	-	-
+513 DragonLand C	-	x	-	-	-	-	-	-
+514 DragonCover A	-	x	-	-	-	-	-	-
+515 DragonCover B	-	x	-	-	-	-	-	-
+516 DragonCover C	-	x	-	-	-	-	-	-
+517 Druidess A	-	-	-	-	-	-	-	-
+518 Druidess B	-	-	-	-	-	-	-	-
+519 Druidess C	-	-	-	-	-	-	-	-
+520 BDwarf A	-	-	-	-	-	-	-	-
+521 BDwarf B	-	-	-	-	-	-	-	-
+522 BDwarf C	-	-	-	-	-	-	-	-
+523 ElemAir A	-	-	-	-	-	-	-	x
+524 ElemAir B	-	-	-	-	-	-	-	x
+525 ElemAir C	-	-	-	-	-	-	-	x
+526 ElemEarth A	-	-	-	-	-	-	-	x
+527 ElemEarth B	-	-	-	-	-	-	-	x
+528 ElemEarth C	-	-	-	-	-	-	-	x
+529 ElemFire A	-	-	-	-	-	-	-	x
+530 ElemFire B	-	-	-	-	-	-	-	x
+531 ElemFire C	-	-	-	-	-	-	-	x
+532 ElemWater A	-	-	-	-	-	-	-	x
+533 ElemWater B	-	-	-	-	-	-	-	x
+534 ElemWater C	-	-	-	-	-	-	-	x
+535 FighterChain A	-	-	-	-	-	-	-	-
+536 FighterChain B	-	-	-	-	-	-	-	-
+537 FighterChain C	-	-	-	-	-	-	-	-
+538 FighterLeath A	-	-	-	-	-	-	-	-
+539 FighterLeath B	-	-	-	-	-	-	-	-
+540 FighterLeath C	-	-	-	-	-	-	-	-
+541 BGargoyle A	-	-	-	-	-	-	-	x
+542 BGargoyle B	-	-	-	-	-	-	-	x
+543 BGargoyle C	-	-	-	-	-	-	-	x
+544 BGenie A	-	-	-	-	-	-	-	x
+545 BGenie B	-	-	-	-	-	-	-	x
+546 BGenie C	-	-	-	-	-	-	-	x
+547 BGhost A	x	-	-	-	-	-	-	-
+548 BGhost B	x	-	-	-	-	-	-	-
+549 BGhost C	x	-	-	-	-	-	-	-
+550 BGoblin A	-	-	-	-	-	-	x	-
+551 BGoblin B	-	-	-	-	-	-	x	-
+552 BGoblin C	-	-	-	-	-	-	x	-
+553 Guard A	-	-	-	-	-	-	-	-
+554 Guard B	-	-	-	-	-	-	-	-
+555 Guard C	-	-	-	-	-	-	-	-
+556 BHarpy A	-	-	-	-	-	-	-	-
+557 BHarpy B	-	-	-	-	-	-	-	-
+558 BHarpy C	-	-	-	-	-	-	-	-
+559 BHydra A	-	x	-	-	-	-	-	-
+560 BHydra B	-	x	-	-	-	-	-	-
+561 BHydra C	-	x	-	-	-	-	-	-
+562 Jackalman A	-	-	-	-	-	-	-	-
+563 Jackalman B	-	-	-	-	-	-	-	-
+564 Jackalman C	-	-	-	-	-	-	-	-
+565 KnightPlate A	-	-	-	-	-	-	-	-
+566 KnightPlate B	-	-	-	-	-	-	-	-
+567 KnightPlate C	-	-	-	-	-	-	-	-
+568 BLich A	x	-	-	-	-	-	-	-
+569 BLich B	x	-	-	-	-	-	-	-
+570 BLich C	x	-	-	-	-	-	-	-
+571 LizardArch A	-	-	-	-	-	-	-	-
+572 LizardArch B	-	-	-	-	-	-	-	-
+573 LizardArch C	-	-	-	-	-	-	-	-
+574 BMedusa A	-	-	-	-	-	-	-	-
+575 BMedusa B	-	-	-	-	-	-	-	-
+576 BMedusa C	-	-	-	-	-	-	-	-
+577 Merchant A	-	-	-	-	x	x	-	-
+578 Merchant B	-	-	-	-	x	x	-	-
+579 Merchant C	-	-	-	-	x	x	-	-
+580 BMinotaur A	-	-	-	-	-	-	-	-
+581 BMinotaur B	-	-	-	-	-	-	-	-
+582 BMinotaur C	-	-	-	-	-	-	-	-
+583 BMonk A	-	-	-	-	-	-	-	-
+584 BMonk B	-	-	-	-	-	-	-	-
+585 BMonk C	-	-	-	-	-	-	-	-
+586 Nobleman A	-	-	-	-	x	x	-	-
+587 Nobleman B	-	-	-	-	x	x	-	-
+588 Nobleman C	-	-	-	-	x	x	-	-
+589 BOoze A	-	-	-	-	-	-	-	x
+590 BOoze B	-	-	-	-	-	-	-	x
+591 BOoze C	-	-	-	-	-	-	-	x
+592 Ogre A	-	-	-	-	-	-	x	-
+593 Ogre B	-	-	-	-	-	-	x	-
+594 Ogre C	-	-	-	-	-	-	x	-
+595 PeasantF1 A	-	-	-	-	x	x	-	-
+596 PeasantF1 B	-	-	-	-	x	x	-	-
+597 Peasantf1 C	-	-	-	-	x	x	-	-
+598 PeasantF2 A	-	-	-	-	x	x	-	-
+599 PeasantF2 B	-	-	-	-	x	x	-	-
+600 PeasantF2 C	-	-	-	-	x	x	-	-
+601 PeasantF3 A	-	-	-	-	x	x	-	-
+602 PeasantF3 B	-	-	-	-	x	x	-	-
+603 PeasantF3 C	-	-	-	-	x	x	-	-
+604 PeasantF4 A	-	-	-	-	x	x	-	-
+605 PeasantF4 B	-	-	-	-	x	x	-	-
+606 PeasantF4 C	-	-	-	-	x	x	-	-
+607 PeasantM1 A	-	-	-	-	x	x	-	-
+608 PeasantM1 B	-	-	-	-	x	x	-	-
+609 PeasantM1 C	-	-	-	-	x	x	-	-
+610 PeasantM2 A	-	-	-	-	x	x	-	-
+611 PeasantM2 B	-	-	-	-	x	x	-	-
+612 PeasantM2 C	-	-	-	-	x	x	-	-
+613 PeasantM3 A	-	-	-	-	x	x	-	-
+614 PeasantM3 B	-	-	-	-	x	x	-	-
+615 PeasantM3 C	-	-	-	-	x	x	-	-
+616 PeasantM4 A	-	-	-	-	x	x	-	-
+617 PeasantM4 B	-	-	-	-	x	x	-	-
+618 PeasantM4 C	-	-	-	-	x	x	-	-
+619 BRat A	-	-	-	-	-	-	-	-
+620 BRat B	-	-	-	-	-	-	-	-
+621 BRat C	-	-	-	-	-	-	-	-
+622 BRobot A	-	-	-	-	-	-	-	-
+623 BRobot B	-	-	-	-	-	-	-	-
+624 BRobot C	-	-	-	-	-	-	-	-
+625 SeaSerpent A	-	x	x	-	-	-	-	-
+626 SeaSerpent B	-	x	x	-	-	-	-	-
+627 SeaSerpent C	-	x	x	-	-	-	-	-
+628 Skeleton A	x	-	-	-	-	-	-	-
+629 Skeleton B	x	-	-	-	-	-	-	-
+630 Skeleton C	x	-	-	-	-	-	-	-
+631 Sorcerer A	-	-	-	-	-	-	-	-
+632 Sorcerer B	-	-	-	-	-	-	-	-
+633 Sorcerer C	-	-	-	-	-	-	-	-
+634 BSpider A	-	-	-	-	-	-	-	-
+635 BSpider B	-	-	-	-	-	-	-	-
+636 BSpider C	-	-	-	-	-	-	-	-
+637 BThief A	-	-	-	-	-	-	-	-
+638 BThief B	-	-	-	-	-	-	-	-
+639 BThief C	-	-	-	-	-	-	-	-
+640 BTitan A	-	-	-	-	-	-	-	-
+641 BTitan B	-	-	-	-	-	-	-	-
+642 BTitan C	-	-	-	-	-	-	-	-
+643 Werewolf A	-	-	-	-	-	-	-	-
+644 Werewolf B	-	-	-	-	-	-	-	-
+645 Werewolf C	-	-	-	-	-	-	-	-
+646 zDemonQueen	-	-	-	-	-	-	-	-
+647 zReactor	-	-	x	-	-	-	-	-
+648 zReactor	-	-	x	-	-	-	-	-
+649 Cactus A	-	-	-	-	-	-	-	-
+650 Cactus B	-	-	-	-	-	-	-	-
+651 Cactus C	-	-	-	-	-	-	-	-
+652 zReactor	-	-	x	-	-	-	-	-

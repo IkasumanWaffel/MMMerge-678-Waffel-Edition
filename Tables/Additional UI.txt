@@ -1,0 +1,7 @@
+#	Lod name	D Lod name	Char Y	Char0 X	Char1 X	Char2 X	Char3 X	Char4 X	Show blank hostile indicator	Hostile indicator Y	Hostile indicator X offset	Selring on top	Selring Y	Selring X offset	Spelico Y	Spelico X offset	Manafrm Y	Manafrm X offset	HPSPBar Y	HPBar X offset	SPBar X offset	Char btn Y	Armory X1	Armory X2	Armory X3	Armory X4	Armory Y1	Armory Y2	Magic Shop X1	Magic Shop X Inc	Magic Shop Y1	Magic Shop Y2	Alchemist X1	Alchemist X Inc	Alchemist Y1	Alchemist Y2	Magic Guild X1	Magic Guild X Inc	Magic Guild Y1	Magic Guild Y2	Notes
+1	default		389	19	118	213	308	405	-	458	0	-	389	0	464	48	429	64	430	65	69	340	114	206	296	377	121	166	40	75	206	352	40	75	206	352	32	70	206	352	MM8 default UI
+2	7UI.icons.lod		389	19	118	213	308	405	x	378	-3	x	384	-4	464	48	404	-12	405	-11	68	340	93	196	298	403	115	146			170	322			170	322			170	322	MM7 UI
+3	6UI.icons.lod	6UI.EnglishD.lod	389	19	111	203	295	387	x	464	6	-	389	0	464	46	396	64	401	66	74	335	93	196	298	403	115	146							199	355					MM6 UI
+4	7UI.icons.lod		389	19	118	213	308	405	x	378	-3	x	384	-4	464	48	404	-12	405	-11	68	340	93	196	298	403	115	146			170	322			170	322			170	322	MM7 Neutral UI
+5	7UIlight.icons.lod		389	19	118	213	308	405	x	378	-3	x	384	-4	464	48	404	-12	405	-11	68	340	93	196	298	403	115	146			170	322			170	322			170	322	MM7 Light UI
+6	7UIdark.icons.lod		389	19	118	213	308	405	x	378	-3	x	384	-4	464	48	404	-12	405	-11	68	340	93	196	298	403	115	146			170	322			170	322			170	322	MM7 Dark UI

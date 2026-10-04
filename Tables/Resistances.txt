@@ -1,0 +1,64 @@
+#	Race	RaceName	Class	ClassName	Resistance	Value
+1	0	Human	-1	-	6	5
+2	0	Human	-1	-	8	5
+5	1	Undead Human	-1	-	7	65000
+6	1	Undead Human	-1	-	8	65000
+9	2	Vampire Human	-1	-	7	65000
+11	4	Ghost Human	-1	-	7	65000
+12	4	Ghost Human	-1	-	8	65000
+15	5	Dark Elf	-1	-	0	5
+16	5	Dark Elf	-1	-	1	5
+17	5	Dark Elf	-1	-	2	5
+18	5	Dark Elf	-1	-	3	5
+23	6	Undead Dark Elf	-1	-	7	65000
+24	6	Undead Dark Elf	-1	-	8	65000
+27	7	Vampire Dark Elf	-1	-	7	65000
+29	9	Ghost Dark Elf	-1	-	7	65000
+30	9	Ghost Dark Elf	-1	-	8	65000
+33	10	Minotaur	-1	-	6	5
+34	10	Minotaur	-1	-	7	5
+35	10	Minotaur	-1	-	8	5
+39	11	Undead Minotaur	-1	-	7	65000
+40	11	Undead Minotaur	-1	-	8	65000
+43	12	Vampire Minotaur	-1	-	7	65000
+45	14	Ghost Minotaur	-1	-	7	65000
+46	14	Ghost Minotaur	-1	-	8	65000
+49	15	Troll	-1	-	3	5
+50	15	Troll	-1	-	8	5
+53	16	Undead Troll	-1	-	7	65000
+54	16	Undead Troll	-1	-	8	65000
+57	17	Vampire Troll	-1	-	7	65000
+59	19	Ghost Troll	-1	-	7	65000
+60	19	Ghost Troll	-1	-	8	65000
+63	20	Dragon	-1	-	0	5
+64	20	Dragon	-1	-	1	5
+65	20	Dragon	-1	-	2	5
+66	20	Dragon	-1	-	3	5
+67	20	Dragon	-1	-	6	5
+68	20	Dragon	-1	-	7	5
+69	20	Dragon	-1	-	8	5
+77	21	Undead Dragon	-1	-	7	65000
+78	21	Undead Dragon	-1	-	8	65000
+81	22	Vampire Dragon	-1	-	7	65000
+83	24	Ghost Dragon	-1	-	7	65000
+84	24	Ghost Dragon	-1	-	8	65000
+87	25	Elf	-1	-	7	10
+89	26	Undead Elf	-1	-	7	65000
+90	26	Undead Elf	-1	-	8	65000
+93	27	Vampire Elf	-1	-	7	65000
+95	29	Ghost Elf	-1	-	7	65000
+96	29	Ghost Elf	-1	-	8	65000
+99	30	Goblin	-1	-	0	5
+100	30	Goblin	-1	-	1	5
+103	31	Undead Goblin	-1	-	7	65000
+104	31	Undead Goblin	-1	-	8	65000
+107	32	Vampire Goblin	-1	-	7	65000
+109	34	Ghost Goblin	-1	-	7	65000
+110	34	Ghost Goblin	-1	-	8	65000
+113	35	Dwarf	-1	-	2	5
+114	35	Dwarf	-1	-	3	5
+117	36	Undead Dwarf	-1	-	7	65000
+118	36	Undead Dwarf	-1	-	8	65000
+121	37	Vampire Dwarf	-1	-	7	65000
+123	39	Ghost Dwarf	-1	-	7	65000
+124	39	Ghost Dwarf	-1	-	8	65000

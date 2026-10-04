@@ -1,0 +1,2 @@
+#Id	Note	Level	FullHP	AC	Exp	Speed	A1Type	A1Count	A1Sides	A1Add	A1Msl	A2Chnc	A2Type	A2Count	A2Sides	A2Add	A2Msl	Spell1	Sp1Chnc	Sp1Skl	Spell2	Sp2Chnc	Sp2Skl	Bonus	BnMul	Special	SpecA	SpecB	SpecC	SpecD	RFire	RAir	RWater	REarth	RSpirit	RMind	RBody	RLight	RDark	RPhys	TrIPct	TrIType	TrILvl	Treasur
+1	Q	100	16000	60	75	140	1	10	5	2	8	0	1	10	5	2	0	95	70	10	0	0	0	0	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	100	0	0	7d20
