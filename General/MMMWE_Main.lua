@@ -2126,10 +2126,10 @@
 		local Pl = MF.GetPlayerFromPtr(d.ecx)
 		local MS, MM = SplitSkill(Pl:GetSkill(25))
 		local Rep = Party:GetReputation()
-		local Charisma = math.floor(Pl:GetPersonality()/10)*2
-		local MSGM = MS*MM-Rep+Charisma
-		mem.asmpatch(0x4902b2, "mov eax, " .. MSGM) -- Merchant skill at GM (current value: skill- and reputation-dependent, default: 10000)
-		mem.asmpatch(0x4902d8, "lea eax, [eax+esi+" .. Charisma .. "]")	--Starting merchant skill bonus is 1% per 10 points of Personality (default: 7% [eax+esi+7])
+		local Charisma = Game.GetStatisticEffect(Pl:GetPersonality())
+		local MSGM = math.max(0, MS*MM-Rep+Charisma)
+		mem.asmpatch(0x4902b2, "mov eax, " .. MSGM) -- Merchant skill at GM (current value: skill-, reputation- and personality-dependent, default: 10000)
+		mem.asmpatch(0x4902d8, "lea eax, [eax+esi+" .. Charisma .. "]")	--Starting merchant skill bonus is 0.5% per +1 Stat bonus of Personality (default: 7% [eax+esi+7])
 	end)
 	
 	-- Add a bit of sp regeneration by meditation skill

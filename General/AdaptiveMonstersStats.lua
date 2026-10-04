@@ -380,9 +380,8 @@ local function GetOverallPartyLevel()
 	--end
 	--
 	--local t = {Result = ceil(Ov/Cnt)}
-	local Fame = Party:GetFame()
-	local Cnt = sqrt(Party.Count)
-	local t = {Result = ceil((50+sqrt(2500+20*Fame*250*Cnt))/100)}
+	local FameModifier = Party:GetFame()*250*(Party.Count)^0.251929636 
+	local t = {Result = ceil((50+sqrt(2500+20*FameModifier))/100)}
 	events.Call("CalcBolsterLevel", t)
 
 	return t.Result

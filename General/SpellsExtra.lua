@@ -537,35 +537,47 @@ local function SetSpellsExtraHooks()
 	end)
 
 	-- Add buffs2 with spells
-	-- Preservation adds to Spirit Resistance
+	-- Preservation adds to Spirit Resistance.
+	-- Duration = DurationConst + Duration * skill (SpellsExtra.txt, spell 50), in game seconds.
+	-- Bonus = mastery * (5 + skill-equivalent time left), the same rule for every mastery:
+	-- mastery * (5 + skill) right after the cast, decaying to mastery * 5 once only the
+	-- constant part of the duration is left. Never negative, always a whole number.
+	-- SpellBuffs2[27] mirrors Preservation (buff icon).
+	local PreservationDur      = {60, 300, 300, 900}       -- defaults if the table has no value
+	local PreservationDurConst = {1800, 3600, 3600, 3600}
+	local GameSecond = const.Minute / 60
+
 	function events.CalcStatBonusByMagic(t)
-		if t.Stat ~= 33 then
+		if t.Stat ~= const.Stats.SpiritResistance or not t.Player then
 			return
 		end
 
 		local Pl = t.Player
 		local buff = Pl.SpellBuffs[const.PlayerBuff.Preservation]
-		if not buff or buff.ExpireTime <= Game.Time then
+		local extraBuff = Game.PlayersExtra[Pl:GetIndex()].SpellBuffs2[27]
+
+		if buff.ExpireTime <= Game.Time then
+			-- Preservation ended early (dispel, cure): drop the mirrored buff too
+			if extraBuff.ExpireTime > Game.Time then
+				extraBuff.ExpireTime = 0
+			end
 			return
 		end
 
-		local SpellMastery = buff.Skill
-		local ET = buff.ExpireTime - const.Hour - Game.Time
+		local mastery = min(max(buff.Skill, 1), 4)
+		local vars = MT.SpellsExtra and MT.SpellsExtra[50] or {}
+		local m = select(mastery, "Normal", "Expert", "Master", "GM")
+		local perSkill = (vars["Var1" .. m] or PreservationDur[mastery]) * GameSecond
+		local constDur = (vars["Var2" .. m] or PreservationDurConst[mastery]) * GameSecond
 
-		local baseBonus = SpellMastery > 0 and 5*SpellMastery or 0
-		local timeBonus = SpellMastery > 0 and select(SpellMastery,
-			ET / const.Minute + 31,
-			2 * ET / 5 / const.Minute + 1,
-			3 * ET / 5 / const.Minute + 1,
-			4 * ET / 15 / const.Minute + 1
-		) or 2 * ET / const.Hour + 1
-
-		t.Result = baseBonus + timeBonus
-
-		local extraBuff = Game.PlayersExtra[Pl:GetIndex()].SpellBuffs2[27]
-		if extraBuff then
-			extraBuff.ExpireTime = buff.ExpireTime
+		local skillLeft = 0
+		if perSkill > 0 then
+			skillLeft = max(buff.ExpireTime - Game.Time - constDur, 0) / perSkill
 		end
+
+		t.Result = t.Result + floor(mastery * (5 + skillLeft))
+
+		extraBuff.ExpireTime = buff.ExpireTime
 	end
 
 
