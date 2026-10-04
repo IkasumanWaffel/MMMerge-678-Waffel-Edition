@@ -480,35 +480,8 @@
 	
 	-- Immersive conditions module
 	
-	---- Handle temple heal costs per condition
-	function ModTempleHealCost(Conditions)
-		local Cond_Cost_Mult = 0
-		local Cond_Cost = {
-		[0] = 2,	[1] = 1,	[2] = 1,	[3] = 1,
-		[4] = 1,	[5] = 2,	[6] = 1,	[7] = 1,
-		[8] = 2, 	[9] = 2,	[10] = 3,	[11] = 3,
-		[12] = 4,	[13] = 1
-		}					
-		for i = 0,13 do
-			if Conditions[i] == 1 then
-				Cond_Cost_Mult = Cond_Cost_Mult + Cond_Cost[i]
-			end
-		end
-		mem.asmpatch(0x4B6649, 'mov dword ptr [ebp - 0x8], ' .. math.max(Cond_Cost_Mult,1))
-	end
-	function events.CanShowHealTopic(t)
-		local Player = Party:GetCurrentPlayer()
-		local Conditions = {}
-		if t.CanShow then
-			for i = 0, 13 do
-				if Player.Conditions[i] > 0 then
-					Conditions[i] = 1
-				end
-			end
-			ModTempleHealCost(Conditions)
-		end
-	end
-	
+	---- Temple heal costs per condition: moved to MMMWE_Economy.lua (Economy.Settings.Heal)
+
 	---- Weakness
 
 	local DaysToTravel = 0
@@ -2147,43 +2120,8 @@
 		end
 	end
 	
-	-- Debalance shop prices
-	-- Base formula for buying price: price = ((100 - MerchSkill)*true_item_value*shop_category_mult)/100; eax - MerchSkill, ecx - price
-	-- Base formula for selling price: price = true_item_value/(shop_category_mult + 2.0) + true_item_value*MerchSkill/100;  eax - base price, esi - MerchSkill gold bonus
+	-- Shop, temple, identify and repair prices: moved to MMMWE_Economy.lua (Economy.Settings)
 
-	mem.autohook(0x4b66e2, function(d)
-		d.eax = d.eax*0.5							-- Merchant skill buying effectiveness mult
-	end)
-	mem.autohook(0x4b66f0, function(d)
-		d.ecx = d.ecx*0.5							-- Overall buying price mult (0.5 is equal to double vanilla prices, reciprocal)
-	end)
-	mem.autohook2(0x4b66b2, function(d)
-		d.esi = d.esi*0.5							-- Merchant skill selling effectiveness mult (current: 0.5% of base item value per point of skill)
-	end)
-	mem.autohook(0x4b66b9, function(d)
-		d.eax = d.eax*0.3 							-- Base selling price mult (Base selling price is 20% of true item value at Tier 1 shops, decreasing by 5% each tier)
-	end)
-	mem.nop(0x4b66a4)								-- Selling mult add +2.0 eliminated
-	mem.autohook2(0x4b676a, function(d)
-		d.eax = d.eax*0.3 							-- Base selling price mult (for base value display)
-	end)
-	mem.nop(0x4b6762)								-- Selling mult add +2.0 eliminated (for base value display)
-	mem.autohook2(0x4b6782, function(d)
-		d.eax = d.eax*2 							-- Base buying price mult (for base value display)
-	end)
-	mem.autohook(0x4b0499, function(d)
-		d.ecx = d.ecx*0.5							-- Training hall level up and New Skill learning at shops Merchant discount mult
-	end)
-	mem.IgnoreProtection(true)
-	mem.r4[0x4e8638] = 6.0		-- Base Repair Price mul (default: 6.0)
-	mem.r4[0x4e89f0] = 100.0		-- Base ID Item Price mul (default: 50.0)
-	mem.IgnoreProtection(false)
-	mem.autohook2(0x4b6741, function(d)
-		d.eax = d.eax*2 							-- Repair price mult 
-	end)
-	mem.autohook2(0x4b67bc, function(d)
-		d.eax = d.eax*2 							-- Repair price mult 
-	end)
 	mem.autohook(0x490295, function(d)
 		local Pl = MF.GetPlayerFromPtr(d.ecx)
 		local MS, MM = SplitSkill(Pl:GetSkill(25))

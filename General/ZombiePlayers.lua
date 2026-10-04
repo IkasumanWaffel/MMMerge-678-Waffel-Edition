@@ -246,7 +246,10 @@ function events.GameInitialized2()
 	]])
 	
 
-	-- Make cure of zombie condition same expensive as eradication
+	-- Make cure of zombie condition same expensive as eradication.
+	-- NOTE: MMMWE_Economy.lua replaces temple_heal_price entirely and applies
+	-- this rule itself (Economy.Settings.Heal.ZombieMul). The patch below only
+	-- takes effect when Economy.Settings.Enabled = false or via t.CallOriginal().
 	local IsDarkTemplePtr = mem.StaticAlloc(1)
 	local HasLowRankCondZPtr = mem.StaticAlloc(1)
 	mem.asmpatch(0x4b661b, [[
@@ -270,6 +273,10 @@ function events.GameInitialized2()
 		local House = Game.Houses[i]
 		IsDarkTemple = House.Type == const.HouseType.Temple and (House.C == 2 or House.C == 3)
 		mem.u1[IsDarkTemplePtr] = IsDarkTemple and 1 or 0
+		if Economy then
+			Economy.IsDarkTemple = IsDarkTemple
+			Economy.CurrentHouse = i
+		end
 	end
 	
 	-- Zombie condition is prioritized in temple heal cost
@@ -305,6 +312,23 @@ function events.GameInitialized2()
 		return NeedHeal
 	end
 
+	-- Base reanimation price charged by dark temples (nil = normal temple heal).
+	-- Shared with MMMWE_Economy.lua so the heal topic shows the same price.
+	local function DarkHealBaseCost(Player, HouseId)
+		local Conditions = Player.Conditions
+		local Val = Game.Houses[HouseId].Val
+		if Conditions[const.Condition.Dead] > 0 then
+			return Val*5
+		elseif Conditions[const.Condition.Eradicated] > 0 then
+			return Val*10
+		elseif Conditions[const.Condition.Zombie] > 0 then
+			return Val
+		end
+	end
+	if Economy then
+		Economy.DarkHealBaseCost = DarkHealBaseCost
+	end
+
 	function events.ClickShopTopic(t)
 
 		if IsDarkTemple and t.Topic == const.ShopTopics.Heal then
@@ -317,15 +341,15 @@ function events.GameInitialized2()
 				return
 			end
 
-			local Cost
 			local Conditions = cPlayer.Conditions
+			local Cost = DarkHealBaseCost(cPlayer, t.HouseId)
 
-			if Conditions[const.Condition.Dead] > 0 then
-				Cost = Game.Houses[t.HouseId].Val*5
-			elseif Conditions[const.Condition.Eradicated] > 0 then
-				Cost = Game.Houses[t.HouseId].Val*10
-			elseif Conditions[const.Condition.Zombie] > 0 then
-				Cost = Game.Houses[t.HouseId].Val
+			if Cost and Economy and Economy.Price then
+				Cost = Economy.Price("DarkHeal", {
+					BaseCost = Cost, Mult = Game.Houses[t.HouseId].Val,
+					HouseId = t.HouseId, Player = cPlayer,
+					PlayerIndex = Party.PlayersIndexes[PlayerId],
+				})
 			end
 
 			if Cost and evt.Subtract{"Gold", Cost} then
