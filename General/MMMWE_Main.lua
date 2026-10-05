@@ -485,7 +485,6 @@
 	---- Weakness
 
 	local DaysToTravel = 0
-	local WeaknessTimers = {}
 
 	function events.WalkToMap(t)
 		vars.RemainingFood = Party.Food
@@ -507,46 +506,43 @@
 		end
 	end
 
-	local function makeWeaknessTimer(pl, slotIdx)
-		return function()
-			local weak = pl.Conditions[const.Condition.Weak]
-			if weak <= 0 then
-				return
-			end
-
-			if weak <= Game.Time - const.Day * 3
-			   and pl.Conditions[const.Condition.Insane] == 0
-			   and math.random(100) <= 25 then
-				pl.Conditions[const.Condition.Insane] = weak + const.Day * 3
-			end
-
-			if weak <= Game.Time - const.Day * 7
-			   and pl.Conditions[const.Condition.Insane] == 0
-			   and math.random(100) <= 50 then
-				pl.Conditions[const.Condition.Insane] = weak + const.Day * 7
-			end
-
-			if weak <= Game.Time - const.Day * 10
-			   and pl.Conditions[const.Condition.Dead] == 0
-			   and math.random(100) <= 50 then
-				pl.Conditions[const.Condition.Dead] = weak + const.Day * 10
-				pl.Conditions[const.Condition.Weak] = 0
-				pl.Conditions[const.Condition.Insane] = 0
-				vars.WeaknessCounter[slotIdx] = 0
-				RemoveTimer(WeaknessTimers[slotIdx])
-				WeaknessTimers[slotIdx] = nil
-			end
+	-- Daily weakness escalation (insanity, then death). The next check time is saved per
+	-- character, so changing maps doesn't add extra rolls.
+	local function checkWeakness(pl)
+		vars.WeakNextCheck = vars.WeakNextCheck or {}
+		local key = pl:GetIndex()
+		local weak = pl.Conditions[const.Condition.Weak]
+		if weak <= 0 then
+			vars.WeakNextCheck[key] = nil
+			return
 		end
-	end
-
-	local function startWeaknessTimer(pl)
-		local slotIdx = pl:GetSlot() + 1
-		if WeaknessTimers[slotIdx] then
-			RemoveTimer(WeaknessTimers[slotIdx])
-			WeaknessTimers[slotIdx] = nil
+		local nextCheck = vars.WeakNextCheck[key]
+		if nextCheck and Game.Time < nextCheck then
+			return
 		end
-		WeaknessTimers[slotIdx] = makeWeaknessTimer(pl, slotIdx)
-		Timer(WeaknessTimers[slotIdx], const.Day, true)
+		vars.WeakNextCheck[key] = Game.Time + const.Day
+
+		if weak <= Game.Time - const.Day * 3
+		   and pl.Conditions[const.Condition.Insane] == 0
+		   and math.random(100) <= 25 then
+			pl.Conditions[const.Condition.Insane] = weak + const.Day * 3
+		end
+
+		if weak <= Game.Time - const.Day * 7
+		   and pl.Conditions[const.Condition.Insane] == 0
+		   and math.random(100) <= 50 then
+			pl.Conditions[const.Condition.Insane] = weak + const.Day * 7
+		end
+
+		if weak <= Game.Time - const.Day * 10
+		   and pl.Conditions[const.Condition.Dead] == 0
+		   and math.random(100) <= 50 then
+			pl.Conditions[const.Condition.Dead] = weak + const.Day * 10
+			pl.Conditions[const.Condition.Weak] = 0
+			pl.Conditions[const.Condition.Insane] = 0
+			vars.WeaknessCounter[pl:GetSlot() + 1] = 0
+			vars.WeakNextCheck[key] = nil
+		end
 	end
 
 	---- Poison, Disease and Insanity
@@ -616,7 +612,7 @@
 			end,
 			onTick = function(pl, cond, expiryTime, ind)
 				local fsp = pl:GetFullSP()
-				pl.SP = pl.SP - math.random(10) / 100 * fsp
+				pl.SP = math.max(0, pl.SP - math.floor(math.random(10) / 100 * fsp))
 				local feeblemindChance = 12 - 0.5 * math.floor(expiryTime / const.Hour - Game.Time / const.Hour)
 				if math.random(100) <= feeblemindChance then
 					Game.PlayersExtra[ind].Debuffs[18].ExpireTime = expiryTime
@@ -635,13 +631,10 @@
 
 	local DebuffTimers = {}
 
-	local function isCured(pl, config)
-		for _, cond in ipairs(config.conds) do
-			if pl.Conditions[cond] > 0 then
-				return false
-			end
-		end
-		return true
+	-- A timer belongs to one condition level; it stops when that level is gone
+	-- (e.g. Poison 1 upgraded to Poison 2 no longer ticks twice)
+	local function isCured(pl, cond)
+		return pl.Conditions[cond] <= 0
 	end
 
 	local activeDebuffs = {}
@@ -667,7 +660,7 @@
 			end
 
 			local mainCond = pl:GetMainCondition()
-			if AdverseConditions[mainCond] or isCured(pl, config) then
+			if AdverseConditions[mainCond] or isCured(pl, cond) then
 				Game.PlayersExtra[ind].Debuffs[cond].ExpireTime = 0
 				RemoveTimer(DebuffTimers[key])
 				DebuffTimers[key] = nil
@@ -677,8 +670,8 @@
 
 			Game.PlayersExtra[ind].Debuffs[cond].ExpireTime = expiryTime
 			local fhp = pl:GetFullHP()
-			local damage = config.calcDamage(cond, fhp)
-			evt.DamagePlayer{Player = slot, DamageType = config.damageType, Damage = damage}
+			local damage = math.max(1, math.floor(config.calcDamage(cond, fhp)))
+			evt.DamagePlayer{Player = pl:GetSlot(), DamageType = config.damageType, Damage = damage}
 			config.onTick(pl, cond, expiryTime, ind)
 		end
 
@@ -745,12 +738,21 @@
 				if pl.HP > 0 then
 					debuff.ExpireTime = 0
 					pl.Conditions[13] = 0
-					pl.Conditions[1] = Game.Time
+					if pl.Conditions[const.Condition.Weak] == 0 then
+						pl.Conditions[const.Condition.Weak] = Game.Time
+					end
 					RemoveTimer(UnconsciousTimers[slot])
 					UnconsciousTimers[slot] = nil
 				end
 			else
 				pl.HP = pl.HP - math.random(1, 8)
+				-- bled out: same death threshold as the games (HP at or below -Endurance)
+				if pl.HP <= -pl:GetEndurance() then
+					pl.Conditions[const.Condition.Dead] = Game.Time
+					debuff.ExpireTime = 0
+					RemoveTimer(UnconsciousTimers[slot])
+					UnconsciousTimers[slot] = nil
+				end
 			end
 		end
 
@@ -817,7 +819,6 @@
 	end
 
 	-- Dead and Eradicated stat losses once per hour
-	local statLossTimerFunc = nil
 	local STAT_LOSS_INTERVAL = const.Hour
 	local statFields = {
 	    "MightBase", "IntellectBase", "PersonalityBase",
@@ -852,13 +853,11 @@
 					loss, condName = 2, "Eradicated"
 				elseif deadExp > Game.Time then
 					loss, condName = 1, "Dead"
-				else
-					return
 				end
 
 				local current = 0
 				pcall(function() current = pl[statName] or 0 end)
-				if current > 0 then
+				if loss and current > 0 then
 					pcall(function()
 						pl[statName] = math.max(0, current - loss)
 						Game.ShowStatusText(string.format("%s loses %d %s from being %s",
@@ -869,14 +868,16 @@
 		end
 	end
 
-	local function startStatLossTimer()
-		if statLossTimerFunc then
-			RemoveTimer(statLossTimerFunc)
+	-- Once per hour of game time; the next time is saved, so changing maps doesn't add losses
+	local function checkStatLoss()
+		if not vars.StatLossNext or vars.StatLossNext > Game.Time + STAT_LOSS_INTERVAL then
+			vars.StatLossNext = Game.Time + STAT_LOSS_INTERVAL
+			return
 		end
-		statLossTimerFunc = function()
+		if Game.Time >= vars.StatLossNext then
+			vars.StatLossNext = Game.Time + STAT_LOSS_INTERVAL
 			applyStatLoss()
 		end
-		Timer(statLossTimerFunc, STAT_LOSS_INTERVAL, const.Minute*6)
 	end
 
 
@@ -917,11 +918,6 @@
 			UnconsciousTimers[slot] = nil
 		end
 
-		-- Start weakness timers
-		for _, pl in Party do
-			startWeaknessTimer(pl)
-		end
-
 		-- Apply weakness from food depletion during travel
 		if Party.Food == 0 and DaysToTravel > vars.RemainingFood then
 			for _, pl in Party do
@@ -942,16 +938,17 @@
 
 		-- Scan for active conditions and launch missing timers
 		scanDebuffs()
-		
-		-- Launch stat loss timer
-		startStatLossTimer()
 
-		-- Periodic scanning (each minute ~ 2 sec real time)
+		-- Periodic scanning (each minute ~ 2 sec real time): debuffs, weakness, stat loss
 		if scanTimerFunc then
 			RemoveTimer(scanTimerFunc)
 		end
 		scanTimerFunc = function()
 			scanDebuffs()
+			for _, pl in Party do
+				checkWeakness(pl)
+			end
+			checkStatLoss()
 		end
 		Timer(scanTimerFunc, const.Minute, true)
 	end
@@ -1183,7 +1180,7 @@
 		local blasterType = itnum - select(base, 865, 1665)
 		local DMin    = select(blasterType, 10, 15)
 		local DMax    = select(blasterType, 20, 30)
-		local CDBase  = select(blasterType, 25, 50)
+		local CDBase  = 50
 		local CCBase  = 10
 
 		local modTier = math.floor(Player.Items[item].Charges / 1000)
@@ -1198,10 +1195,7 @@
 		end
 
 		-- Curse mult
-		local curseMult = 1
-		if Player:GetMainCondition() == 0 then
-			curseMult = 0.5
-		end
+		local curseMult = Player.Conditions[0] > 0 and 0.5 or 1
 
 		-- Mod Tier damage scaling
 		if modTier > 0 then
@@ -1226,15 +1220,15 @@
 		CritD = critDamageP
 
 		-- Crit hit check
-		local СritProc = 0
-		if math.random(0, 10000) <= critChance * 100 then
+		local critProc = 0
+		if critChance > 0 and math.random() * 100 < critChance then
 			local mult = critDamageP / 100
 			DMin = round(DMin * mult)
 			DMax = round(DMax * mult)
-			СritProc = 1
+			critProc = 1
 		end
 
-		return math.random(DMin, DMax), СritProc
+		return math.random(DMin, DMax), critProc
 	end
 	
 	-- =====================================================================
@@ -1305,140 +1299,111 @@
 		return pl.Conditions[0] > 0 and 0.5 or 1
 	end
 
-	function CalcCrits(Player, Melee, Mon)
-		local Pl = Player
-		local WCD = 1
-		local WCC = 0
-		local MonX, MonY = -1, 0
-		if Mon then
-			 MonX, MonY = Mon.X, Mon.Y
+	-- Crit sounds by weapon skill (33 = unarmed)
+	local CritSounds = {
+		[0] = {44640, 44641, 44642, 44643, 44644, 44645},
+		[1] = {44628, 44629, 44630, 44631, 44632, 44633},
+		[2] = {44622, 44623, 44624, 44625, 44626, 44627},
+		[3] = {44610, 44611, 44612, 44613, 44614, 44615},
+		[4] = {44646, 44647, 44648, 44649, 44650, 44651},
+		[5] = {44605, 44606, 44607, 44608, 44609, 44605},
+		[6] = {44616, 44617, 44618, 44619, 44620, 44621},
+		[7] = {44671, 44672, 44673, 44671, 44672, 44673},
+		[33] = {44634, 44635, 44636, 44637, 44638, 44639},
+	}
+
+	-- Weapon in a slot that can crit in melee: not broken, skill in the allowed set
+	local function critWeapon(pl, slot, allowed)
+		if slot <= 0 or pl.Items[slot].Broken then return nil end
+		local txt = Game.ItemsTxt[pl.Items[slot].Number]
+		if not allowed[txt.Skill] then return nil end
+		local S, M = SplitSkill(pl:GetSkill(txt.Skill))
+		return txt.Skill, S, M, txt
+	end
+	local MainCritSkills  = {[0] = true, [1] = true, [2] = true, [3] = true, [4] = true, [5] = true, [6] = true}
+	local ExtraCritSkills = {[1] = true, [2] = true}   -- swords and daggers
+
+	-- Crit chance (%, before curse) and damage multiplier of one weapon skill
+	local function skillCrit(pl, skill, S, M, specC, specD)
+		local idx = skill + 1
+		return WCCBase[idx] + WCCGrowth[idx] * S * M + pl:GetAccuracy() / 20 + specC,
+			1 + WCDBase[idx] + WCDGrowth[idx] * S * M + specD
+	end
+
+	-- Crit stats without rolling: chance (%, before curse), damage multiplier, skill for the sound.
+	-- Melee: main-hand weapon (two-handed: +50% crit damage bonus), main + extra-hand
+	-- (average of both), extra hand only (half crit damage bonus), unarmed (main hand empty,
+	-- no extra-hand weapon; a shield is fine). Ranged: bow / crossbow.
+	function MF.GetCritStats(Pl, Melee)
+		local specC, specD = getCritSpcBonus(Pl)
+
+		if not Melee then
+			local slot = Pl.ItemBow
+			if slot <= 0 or Pl.Items[slot].Broken then return 0, 1, nil end
+			local txt = Game.ItemsTxt[Pl.Items[slot].Number]
+			local S, M = SplitSkill(Pl:GetSkill(txt.Skill))
+			local c, d = skillCrit(Pl, txt.Skill, S, M, specC, specD)
+			if CrossbowNames[txt.NotIdentifiedName] then
+				c = c + 5 + 0.05 * S * M
+				d = d + 0.5 + 0.005 * S * M
+			end
+			return c, d, txt.Skill
 		end
 
-		local specC, specD = getCritSpcBonus(Pl)
-		local curseMult = getCurseMult(Pl)
-		
-		local Sounds = {[0] = {44640, 44641, 44642, 44643, 44644, 44645},
-						[1] = {44628, 44629, 44630, 44631, 44632, 44633},
-						[2] = {44622, 44623, 44624, 44625, 44626, 44627},
-						[3] = {44610, 44611, 44612, 44613, 44614, 44615},
-						[4] = {44646, 44647, 44648, 44649, 44650, 44651},
-						[5] = {44605, 44606, 44607, 44608, 44609, 44605},
-						[6] = {44616, 44617, 44618, 44619, 44620, 44621},
-						[7]	= {44671, 44672, 44673, 44671, 44672, 44673},
-						[33] = {44634, 44635, 44636, 44637, 44638, 44639}
-						}
+		local sk1, S1, M1, txt1 = critWeapon(Pl, Pl.ItemMainHand, MainCritSkills)
+		local sk2, S2, M2 = critWeapon(Pl, Pl.ItemExtraHand, ExtraCritSkills)
+
+		if sk1 then
+			local c, d = skillCrit(Pl, sk1, S1, M1, specC, specD)
+			if txt1.EquipStat == 1 then
+				d = (d - 1) * 1.5 + 1
+			end
+			if sk2 then
+				local c2, d2 = skillCrit(Pl, sk2, S2, M2, specC, specD)
+				c, d = (c + c2) / 2, (d + d2) / 2
+			end
+			return c, d, sk1
+		end
+
+		if sk2 then
+			local c, d = skillCrit(Pl, sk2, S2, M2, specC, 0)
+			return c, 1 + (d - 1) / 2 + specD, sk2
+		end
+
+		local main = Pl.ItemMainHand
+		if main == 0 or Pl.Items[main].Broken then
+			local US, UM = SplitSkill(Pl:GetSkill(const.Skills.Unarmed))
+			if US > 0 and UM > 0 then
+				local c, d = skillCrit(Pl, 7, US, UM, specC, specD)  -- index 8 = unarmed
+				return c, d, 33
+			end
+		end
+
+		return 0, 1, nil
+	end
+
+	-- Updates the character screen values; with a monster also rolls the crit and
+	-- returns the damage multiplier (1 when no crit)
+	function CalcCrits(Player, Melee, Mon)
+		local c, d, sndSkill = MF.GetCritStats(Player, Melee)
+		local chance = c * getCurseMult(Player)
 
 		if Melee then
-			local Weapon  = Pl.ItemMainHand
-			local Weapon2 = Pl.ItemExtraHand
-
-			-- Main hand
-			if Weapon > 0 and not Pl.Items[Weapon].Broken then
-				local WNum = Pl.Items[Weapon].Number
-				local WSkill = Game.ItemsTxt[WNum].Skill
-				if WSkill >= 0 and WSkill < 7 then
-					local WS, WM = SplitSkill(Pl:GetSkill(WSkill))
-					local idx = WSkill + 1
-					WCD = 1 + WCDBase[idx] + WCDGrowth[idx] * WS * WM + specD
-					if Game.ItemsTxt[WNum].EquipStat == 1 then
-						-- Two-handed: (WCD - 1) * 1.5 + 1
-						WCD = (WCD - 1) * 1.5 + 1
-					end
-					CritD = WCD * 100
-					WCC = WCCBase[idx] + WCCGrowth[idx] * WS * WM + Pl:GetAccuracy() / 20 + specC
-					CritC = WCC * curseMult
-				end
-			elseif Weapon2 == 0 then
-				-- Unarmed: both hands empty
-				local US, UM = SplitSkill(Pl:GetSkill(const.Skills.Unarmed))
-				if US > 0 and UM > 0 then
-					WCD = 1 + WCDBase[8] + WCDGrowth[8] * US * UM + specD
-					CritD = WCD * 100
-					WCC = WCCBase[8] + WCCGrowth[8] * US * UM + Pl:GetAccuracy() / 20 + specC
-					CritC = WCC * curseMult
-				end
-			end
-
-			-- Extra hand (sword and dagger only)
-			if Weapon2 > 0 and not Pl.Items[Weapon2].Broken then
-				local WSkill2 = Game.ItemsTxt[Pl.Items[Weapon2].Number].Skill
-				if WSkill2 == 1 or WSkill2 == 2 then
-					local WS2, WM2 = SplitSkill(Pl:GetSkill(WSkill2))
-					local idx2 = WSkill2 + 1
-					local hasMain = Weapon > 0 and not Pl.Items[Weapon].Broken
-					if hasMain then
-						WCD = WCD / 2 + 0.5 + WCDBase[idx2] / 2 + WCDGrowth[idx2] * WS2 * WM2 / 2
-						WCC = WCC / 2 + WCCBase[idx2] / 2 + WCCGrowth[idx2] * WS2 * WM2 / 2
-					else
-						WCD = 1 + WCDBase[idx2] / 2 + WCDGrowth[idx2] * WS2 * WM2 / 2
-						WCC = WCCBase[idx2] + WCCGrowth[idx2] * WS2 * WM2
-					end
-					CritD = WCD * 100
-					CritC = WCC * curseMult
-				end
-			end
+			CritC, CritD = chance, d * 100
 		else
-			-- Ranged
-			local WeaponB = Pl.ItemBow
-			if WeaponB > 0 and not Pl.Items[WeaponB].Broken then
-				local WNumB = Pl.Items[WeaponB].Number
-				local WSkillB = Game.ItemsTxt[WNumB].Skill
-				local BowType = Game.ItemsTxt[WNumB].NotIdentifiedName
-				local WSB, WMB = SplitSkill(Pl:GetSkill(WSkillB))
-				local idxB = WSkillB + 1
-
-				if CrossbowNames[BowType] then
-					WCD = 1 + WCDBase[idxB] + 0.5 + WCDGrowth[idxB] * WSB * WMB
-						+ 0.005 * WSB * WMB + specD
-					WCC = WCCBase[idxB] + 5 + WCCGrowth[idxB] * WSB * WMB
-						+ 0.05 * WSB * WMB + Pl:GetAccuracy() / 20 + specC
-				else
-					WCD = 1 + WCDBase[idxB] + WCDGrowth[idxB] * WSB * WMB + specD
-					WCC = WCCBase[idxB] + WCCGrowth[idxB] * WSB * WMB + Pl:GetAccuracy() / 20 + specC
-				end
-				CritDB = WCD * 100
-				CritCB = WCC * curseMult
-			end
+			CritCB, CritDB = chance, d * 100
 		end
 
-		-- Crit roll
-		local function CritSound(Pl, Melee)
-			if Melee then
-				local Hands = {[1] = Pl.ItemMainHand > 0,
-							   [2] = Pl.ItemExtraHand > 0}
-				local Weapon, Weapon2
-				if Hands[1] then 
-					Weapon = Game.ItemsTxt[Pl.Items[Pl.ItemMainHand].Number].Skill
-				elseif Hands[2] then
-					Weapon2 = Game.ItemsTxt[Pl.Items[Pl.ItemExtraHand].Number].Skill
-				else
-					Weapon, Weapon2 = nil, nil
-				end
-				if Weapon then
-					if Weapon > 6 then
-						return 0
-					else	
-						return Sounds[Weapon][math.random(1,6)]
-					end
-				elseif Weapon2 then
-					if Weapon2 > 6 then
-						return 0
-					else
-						return Sounds[Weapon2][math.random(1,6)]
-					end
-				elseif not Weapon and not Weapon2 then
-					return Sounds[33][math.random(1,6)]
-				end
-			else
-				return Sounds[5][math.random(1,6)]
-			end
+		if not Mon then
+			return 1
 		end
-				
-		if math.random(0, 10000) <= WCC * 100 * curseMult then
-			if Game.CurrentScreen ~= 7 then
-				Game.PlaySound(CritSound(Pl, Melee), -1, 0,MonX, MonY)
+
+		if chance > 0 and math.random() * 100 < chance then
+			local snd = sndSkill and CritSounds[sndSkill]
+			if snd and Game.CurrentScreen ~= 7 then
+				Game.PlaySound(snd[math.random(1, 6)], -1, 0, Mon.X, Mon.Y)
 			end
-			return WCD
+			return d
 		end
 		return 1
 	end
@@ -1493,8 +1458,8 @@
 		if t.DamageKind == const.Damage.Phys or Melee then
 			if not Melee then
 				local HighGround = Party.Z - t.Monster.Z
-				local rangedWeap = Game.ItemsTxt[Pl.Items[Pl.ItemBow].Number]
-				local isCrossbow = table.find(CrossbowNames, rangedWeap.NotIdentifiedName)
+				local isCrossbow = Pl.ItemBow > 0
+					and CrossbowNames[Game.ItemsTxt[Pl.Items[Pl.ItemBow].Number].NotIdentifiedName]
 				local DamageBonusStat = {
 					[1] = Game.GetStatisticEffect(Pl:GetMight()),
 					[2] = math.floor(Game.GetStatisticEffect(Pl:GetMight())/2),
@@ -1522,12 +1487,12 @@
 
 				if CritProc == 1 then
 					eradicationChance = eradicationChance * (2 + modTier*2)
-					Game.PlaySound(math.random(44671,44673), -1, 0, MonX, MonY)
+					Game.PlaySound(math.random(44671,44673), -1, 0, Mon.X, Mon.Y)
 				end
 
 				if math.random(1, 10000) <= eradicationChance then
 					t.Result = Mon.HP
-					Game.PlaySound(math.random(44671,44673), -1, 0, MonX, MonY)
+					Game.PlaySound(math.random(44671,44673), -1, 0, Mon.X, Mon.Y)
 					Mon:ChangeLook(241)
 					Mon:SetCustomFrames(nil, nil, nil, nil, nil, nil, 'm203x', 'm207d', nil)
 					mem.u4[CombatMsgAddr] = mem_cstring(string.format(
@@ -1739,105 +1704,94 @@
 	end
 
 	-- Weapon Parry calculations
-	local function CalcWeaponParry(pl, weapon, weapon2, curseMult)
-		local cond = pl:GetMainCondition()
-		local isImpaired = (cond >= const.Condition.Paralyzed and cond <= const.Condition.Eradicated) or cond == const.Condition.Asleep
-		
-		local hasMain  = weapon > 0 and not pl.Items[weapon].Broken and not isImpaired
-		local hasExtra = weapon2 > 0 and not pl.Items[weapon2].Broken and not isImpaired
+	-- One source of truth for parry: used by the combat roll (CalcWeaponParry) and by the
+	-- character screen (Par value). Covers: one weapon in the main hand, a two-handed weapon,
+	-- one weapon in the extra hand only, and dual-wielded weapons.
+	local NoParrySkills = {
+		[const.Skills.Bow] = true, [const.Skills.Blaster] = true, [const.Skills.Shield] = true,
+		[const.Skills.Unarmed] = true, [const.Skills.DragonAbility] = true,
+	}
 
-		if not hasMain and not hasExtra then
+	-- Usable parrying weapon in a slot, or nil (empty, broken, shield, blaster, ...)
+	local function ParryWeapon(pl, slot)
+		if slot <= 0 then return nil end
+		local it = pl.Items[slot]
+		if it.Broken then return nil end
+		local txt = Game.ItemsTxt[it.Number]
+		if NoParrySkills[txt.Skill] or (txt.EquipStat ~= 0 and txt.EquipStat ~= 1) then
+			return nil
+		end
+		local s, m = SplitSkill(pl:GetSkill(txt.Skill))
+		return {Num = it.Number, Txt = txt, Skill = txt.Skill, S = s, M = m,
+			Damage = txt.Mod1DiceCount * txt.Mod1DiceSides + txt.Mod2}
+	end
+
+	-- Returns nil if the character can't parry, otherwise a table:
+	-- Chance (%, before curse), Phys/Magic/Energy (parry power, %), Mastery (gates magic/energy
+	-- parry), Skill (weapon skill, for sounds)
+	function MF.GetParryProfile(pl)
+		local cond = pl:GetMainCondition()
+		if cond == const.Condition.Asleep
+				or (cond >= const.Condition.Paralyzed and cond <= const.Condition.Eradicated) then
+			return nil
+		end
+
+		local w1 = ParryWeapon(pl, pl.ItemMainHand)
+		local w2 = ParryWeapon(pl, pl.ItemExtraHand)
+		if not w1 and not w2 then
+			return nil
+		end
+
+		local p = {}
+		if w1 and w2 then
+			-- dual-wield: half of each weapon's chance, average of their power, +10 / +20 base
+			p.Chance = 10
+				+ 0.5 * (w1.S * w1.M + CalcWeaponStatBonusByWType(w1.Num, 1))
+				+ 0.5 * (w2.S * w2.M + CalcWeaponStatBonusByWType(w2.Num, 1))
+			p.Phys = 20
+				+ 0.5 * (w1.Damage + CalcWeaponStatBonusByWType(w1.Num, 3))
+				+ 0.5 * (w2.Damage + CalcWeaponStatBonusByWType(w2.Num, 3))
+			-- magic/energy parry: the better of the two masteries (they only differ when the
+			-- weapons are of different types); the sound follows that weapon
+			if w2.M > w1.M then
+				p.Mastery, p.Skill = w2.M, w2.Skill
+			else
+				p.Mastery, p.Skill = w1.M, w1.Skill
+			end
+		else
+			-- single weapon: main hand, two-handed, or extra hand only
+			local w = w1 or w2
+			p.Chance = 20 + CalcWeaponStatBonusByWType(w.Num, 1) + 0.5 * w.S * w.M
+			p.Phys = 10 + CalcWeaponStatBonusByWType(w.Num, 3) + w.Damage
+			if w.Txt.EquipStat == 1 then
+				p.Phys = p.Phys * 1.25
+			end
+			p.Mastery = w.M
+			p.Skill = w.Skill
+		end
+		p.Magic = p.Phys * (2 / 3)
+		p.Energy = p.Phys / 3
+		return p
+	end
+
+	-- Returns physical, magic and energy damage multipliers and the parrying weapon skill
+	local function CalcWeaponParry(pl, curseMult)
+		local p = MF.GetParryProfile(pl)
+		if not p then
 			return 1, 1, 1
 		end
 
-		local parryChance, parryPhys, parryMagic, parryEnergy
-
-		if hasMain then
-			local wIt = pl.Items[weapon]
-			local wNum = wIt.Number
-			local wSkill = Game.ItemsTxt[wNum].Skill
-			
-			if wSkill == const.Skills.Blaster or wSkill == const.Skills.DragonAbility or wSkill == const.Skills.Unarmed then
-				if not hasExtra then
-					return 1, 1, 1
-				end
-				return CalcWeaponParry(pl, 0, weapon2, curseMult)
-			end
-
-			local wS, wM = SplitSkill(pl:GetSkill(wSkill))
-			parryChance = 20 + CalcWeaponStatBonusByWType(wNum, 1) + 0.5 * wS * wM
-			parryPhys = 10 + CalcWeaponStatBonusByWType(wNum, 3) + Game.ItemsTxt[wNum].Mod2
-				+ Game.ItemsTxt[wNum].Mod1DiceCount * Game.ItemsTxt[wNum].Mod1DiceSides
-			parryMagic = parryPhys * (2 / 3)
-			parryEnergy = parryPhys / 3
-
-			if Game.ItemsTxt[wNum].EquipStat == 1 then
-				parryPhys = parryPhys * 1.25
-				parryMagic = parryPhys * (2 / 3)
-				parryEnergy = parryPhys / 3
-			end
-
-			if hasExtra then
-				local w2Num = pl.Items[weapon2].Number
-				local w2Skill = Game.ItemsTxt[w2Num].Skill
-				if w2Skill ~= const.Skills.Blaster and w2Skill ~= const.Skills.DragonAbility
-				   and w2Skill ~= const.Skills.Unarmed and w2Skill ~= const.Skills.Shield then
-					
-					local w2S, w2M = SplitSkill(pl:GetSkill(w2Skill))
-					parryChance = 10 + 0.5 * wS * wM
-						+ 0.5 * CalcWeaponStatBonusByWType(wNum, 1)
-						+ 0.5 * w2S * w2M
-						+ 0.5 * CalcWeaponStatBonusByWType(w2Num, 1)
-
-					parryPhys = 20 + (Game.ItemsTxt[wNum].Mod2 / 2)
-						+ (Game.ItemsTxt[w2Num].Mod2 / 2)
-						+ (Game.ItemsTxt[wNum].Mod1DiceCount * Game.ItemsTxt[wNum].Mod1DiceSides / 2)
-						+ (Game.ItemsTxt[w2Num].Mod1DiceCount * Game.ItemsTxt[w2Num].Mod1DiceSides / 2)
-						+ (CalcWeaponStatBonusByWType(wNum, 3) / 2)
-						+ (CalcWeaponStatBonusByWType(w2Num, 3) / 2)
-					parryMagic = parryPhys * (2 / 3)
-					parryEnergy = parryPhys / 3
-				end
-			end
-		else
-			-- Extra hand only (Main hand empty or broken)
-			local w2Num = pl.Items[weapon2].Number
-			local w2Skill = Game.ItemsTxt[w2Num].Skill
-			if w2Skill == const.Skills.Blaster or w2Skill == const.Skills.DragonAbility
-			   or w2Skill == const.Skills.Unarmed or w2Skill == const.Skills.Shield then
-				return 1, 1, 1
-			end
-
-			local w2S, w2M = SplitSkill(pl:GetSkill(w2Skill))
-			parryChance = 20 + CalcWeaponStatBonusByWType(w2Num, 1) + 0.5 * w2S * w2M
-			parryPhys = 10 + CalcWeaponStatBonusByWType(w2Num, 3)
-				+ Game.ItemsTxt[w2Num].Mod2
-				+ Game.ItemsTxt[w2Num].Mod1DiceCount * Game.ItemsTxt[w2Num].Mod1DiceSides
-			parryMagic = parryPhys * (2 / 3)
-			parryEnergy = parryPhys / 3
-
-			if Game.ItemsTxt[w2Num].EquipStat == 1 then
-				parryPhys = parryPhys * 1.25
-				parryMagic = parryPhys * (2 / 3)
-				parryEnergy = parryPhys / 3
-			end
-		end
-
-		parryChance = parryChance * curseMult
 		local physDR, magicDR, energyDR = 1, 1, 1
-
-		if math.random(0, 100) <= parryChance then
-			physDR = 1 - 0.01 * parryPhys
-			local activeSlot = hasMain and weapon or weapon2
-			local activeSkill = Game.ItemsTxt[pl.Items[activeSlot].Number].Skill
-			local _, wM = SplitSkill(pl:GetSkill(activeSkill))
-			
-			if wM >= const.Master then
-				magicDR = 1 - 0.01 * parryMagic
+		if math.random() * 100 < p.Chance * curseMult then
+			-- parry power above 100% must not turn damage into healing
+			physDR = math.max(0, 1 - 0.01 * p.Phys)
+			if p.Mastery >= const.Master then
+				magicDR = math.max(0, 1 - 0.01 * p.Magic)
 			end
-			if wM == const.GM then
-				energyDR = 1 - 0.01 * parryEnergy
+			if p.Mastery == const.GM then
+				energyDR = math.max(0, 1 - 0.01 * p.Energy)
 			end
+			return physDR, magicDR, energyDR, p.Skill
 		end
 
 		return physDR, magicDR, energyDR
@@ -1847,7 +1801,7 @@
 	local function CalcShieldBlock(pl, shield, shieldS, shieldM, curseMult)
 		local cond = pl:GetMainCondition()
 		if shield <= 0 or cond == const.Condition.Asleep or (cond >= const.Condition.Paralyzed and cond <= const.Condition.Eradicated) then
-			return 1, 1, 1, 0
+			return 1, 1, 1
 		end
 
 		local shNum = pl.Items[shield].Number
@@ -1878,16 +1832,16 @@
 		blockChance = blockChance * curseMult
 		local physDR, magicDR, energyDR = 1, 1, 1
 
-		if math.random(0, 100) <= blockChance then
-			physDR = 1 - 0.01 * blockStrength
+		if math.random() * 100 < blockChance then
+			physDR = math.max(0, 1 - 0.01 * blockStrength)
 			if shieldM >= const.Master then
-				magicDR = 1 - 0.01 * magicStr
+				magicDR = math.max(0, 1 - 0.01 * magicStr)
 			end
 			if shieldM == const.GM then
 				if shNum == 968 then -- Energy Shield Relic
 					energyStr = blockStrength
 				end
-				energyDR = 1 - 0.01 * energyStr
+				energyDR = math.max(0, 1 - 0.01 * energyStr)
 			end
 		end
 
@@ -1922,7 +1876,7 @@
 	function events.CalcDamageToPlayer(t)
 		local pl = t.Player
 		local damageTotal = DamageBeforeRes
-		local curseMult = pl:GetMainCondition() == const.Condition.Cursed and 0.5 or 1
+		local curseMult = pl.Conditions[const.Condition.Cursed] > 0 and 0.5 or 1  -- cursed at all
 
 		-- --- Resistances ---
 		local resStat = DamageKindToRes[t.DamageKind]
@@ -1945,13 +1899,12 @@
 		local dodgeDR = 1
 
 		local dodgeChance = CalcDodgeChance(pl, pl.ItemArmor, pl.ItemExtraHand, shieldM, dodgeS, dodgeM, curseMult)
-		if dodgeChance >= 0 and math.random(0, 100) <= dodgeChance then
+		if dodgeChance > 0 and math.random() * 100 < dodgeChance then
 			dodgeDR = 1 - 0.01 * (10 + 10 * dodgeM)
 		end
 
 		-- --- Weapon Parry & Shield Block ---
-		local weapon, weapon2 = pl.ItemMainHand, pl.ItemExtraHand
-		local weaponPhysDR, weaponMagicDR, weaponEnergyDR = CalcWeaponParry(pl, weapon, weapon2, curseMult)
+		local weaponPhysDR, weaponMagicDR, weaponEnergyDR, parrySkill = CalcWeaponParry(pl, curseMult)
 		local shieldPhysDR, shieldMagicDR, shieldEnergyDR = CalcShieldBlock(pl, pl.ItemExtraHand, shieldS, shieldM, curseMult)
 
 		-- --- Energy Shield ---
@@ -2018,14 +1971,22 @@
 
 		-- --- Sound Effects Processing ---
 		local playedSound = false
-		local ParrySkill = (pl.ItemMainHand > 0 and Game.ItemsTxt[pl.Items[pl.ItemMainHand].Number].Skill) or (pl.ItemExtraHand > 0 and Game.ItemsTxt[pl.Items[pl.ItemExtraHand].Number].Skill) or nil
 
 		if category == "physical" then
 			if shieldPhysDR < 1 and shieldPhysDR < weaponPhysDR and shieldPhysDR < dodgeDR then
 				Game.PlaySound(44587, -2)
 				playedSound = true
 			elseif weaponPhysDR < 1 and weaponPhysDR < shieldPhysDR and weaponPhysDR < dodgeDR then
-				Game.PlaySound((ParrySkill and (ParrySkill == 1 or ParrySkill == 2) and math.random(44598, 44601)) or (ParrySkill and ParrySkill == 0 and math.random(44658, 44663)) or (ParrySkill and (ParrySkill == 3 or ParrySkill == 4 or ParrySkill == 6) and math.random(44652, 44657)), -2)
+				-- sound of the weapon that actually parried (staff / sword, dagger / axe, spear, mace)
+				local snd
+				if parrySkill == const.Skills.Staff then
+					snd = math.random(44658, 44663)
+				elseif parrySkill == const.Skills.Sword or parrySkill == const.Skills.Dagger then
+					snd = math.random(44598, 44601)
+				else
+					snd = math.random(44652, 44657)
+				end
+				Game.PlaySound(snd, -2)
 				playedSound = true
 			end
 		elseif category == "elemental" then
@@ -2132,43 +2093,52 @@
 		mem.asmpatch(0x4902d8, "lea eax, [eax+esi+" .. Charisma .. "]")	--Starting merchant skill bonus is 0.5% per +1 Stat bonus of Personality (default: 7% [eax+esi+7])
 	end)
 	
-	-- Add a bit of sp regeneration by meditation skill
-	local SPReg = {0,0,0,0,0}
-	function events.RegenTick(Player)
+	-- Regeneration only works for the living (and zombies)
+	local function CanRegen(Player)
 		local Cond = Player:GetMainCondition()
-		if Cond >= 17 or Cond < 14 then
-			local RegS, RegM = SplitSkill(Player:GetSkill(const.Skills.Meditation))
-			RegS = RegS + Player:CalcStatBonusByItems(const.Stats.Meditation)
-			if RegM > 0 then
-				local FSP	= Player:GetFullSP()
-				--local RegP	= 0.25*(2^(RegM-1))/100
-				--Player.SP	= math.min(FSP, Player.SP + math.ceil(FSP*RegP))
-				local Add = RegM + RegS/10
-				Add = round(Add + Add*Player:GetIntellect()/50 + Add*Player:GetPersonality()/100)
-				Player.SP = math.min(FSP, Player.SP + Add)
-				SPReg[Player:GetSlot()+1] = Add
-			end
+		return Cond >= const.Condition.Zombie or Cond < const.Condition.Dead
+	end
+
+	-- SP per regen tick from Meditation (0 if none). Used by the tick and the character screen.
+	local function CalcMeditationSPRegen(Player)
+		if not CanRegen(Player) then return 0 end
+		local RegS, RegM = SplitSkill(Player:GetSkill(const.Skills.Meditation))
+		if RegM <= 0 then return 0 end
+		RegS = RegS + Player:CalcStatBonusByItems(const.Stats.Meditation)
+		local Add = RegM + RegS/10
+		return round(Add + Add*Player:GetIntellect()/50 + Add*Player:GetPersonality()/100)
+	end
+
+	-- HP per regen tick from the Regeneration skill (0 if none)
+	local function CalcSkillHPRegen(Player)
+		if not CanRegen(Player) then return 0 end
+		local RegS, RegM = SplitSkill(Player:GetSkill(const.Skills.Regeneration))
+		local RegP = (RegS > 0 and 0.5 or 0) + RegS/10*RegM
+		return RegP > 0 and math.ceil(Player:GetFullHP()*RegP/100) or 0
+	end
+
+	-- HP per regen tick from an active Regeneration spell (healed by the game itself)
+	local function CalcSpellHPRegen(Player)
+		if not CanRegen(Player) then return 0 end
+		local Buff = Player.SpellBuffs[const.PlayerBuff.Regeneration]
+		return Game.Time < Buff.ExpireTime and Buff.Power or 0
+	end
+
+	-- Add a bit of sp regeneration by meditation skill
+	function events.RegenTick(Player)
+		local Add = CalcMeditationSPRegen(Player)
+		if Add > 0 then
+			Player.SP = math.min(Player:GetFullSP(), Player.SP + Add)
 		end
 	end
 	
 	-- Make regeneration skill and spell mm7-alike
 	-- TODO: move everything into regeneration part of mm8 proc?
-	local HPReg = {0,0,0,0,0}
 	function events.RegenTick(Player)
-		local Cond = Player:GetMainCondition()
-		if Cond >= const.Condition.Zombie or Cond < const.Condition.Dead then
-			local RegS, RegM = SplitSkill(Player:GetSkill(const.Skills.Regeneration))
-			local RegP = RegS > 0 and 0.5 or 0
-			RegP = RegP + RegS/10*RegM
-			local FHP = Player:GetFullHP()
-	
-			if RegP > 0 then
-				Player.HP = math.min(Player.HP + math.ceil(FHP*RegP/100), FHP)
-			end
-			HPReg[Player:GetSlot()+1] = math.ceil(FHP*RegP/100)
-			local Buff = Player.SpellBuffs[const.PlayerBuff.Regeneration]
-			if Game.Time < Buff.ExpireTime then
-				HPReg[Player:GetSlot()+1] = HPReg[Player:GetSlot()+1] + Buff.Power
+		if CanRegen(Player) then
+			local Add = CalcSkillHPRegen(Player)
+			if Add > 0 then
+				Player.HP = math.min(Player.HP + Add, Player:GetFullHP())
 			end
 			if Player.HP > 0 then
 				Player.Conditions[13] = 0
@@ -2179,7 +2149,7 @@
 	mem.autohook(0x4273fc, function(d)			-- Regeneration spell MM7-alike effect
 		local Target = Party[mem.u4[d.ebx+4]]
 		local Cond = Target:GetMainCondition()
-		if Cond >= 18 or Cond < 14 then
+		if Cond >= 17 or Cond < 14 then
 			local RegS = mem.i4[d.ebp-0x14]/3600
 			local RegM = mem.i4[d.ebp-0xC]
 			local FHP = Target:GetFullHP()
@@ -2500,11 +2470,11 @@
 			
 			local DamageBonusStat = {
 			[1] = Game.GetStatisticEffect(pl:GetMight()),
-			[2] = Game.GetStatisticEffect(pl:GetMight())/2,
+			[2] = math.floor(Game.GetStatisticEffect(pl:GetMight())/2),
 			}
 			
 			local Bow = Game.ItemsTxt[pl.Items[pl.ItemBow].Number]
-			local isCrossbow = table.find(CrossbowNames, Bow.NotIdentifiedName)
+			local isCrossbow = CrossbowNames[Bow.NotIdentifiedName]
 			local BowS, BowM = SplitSkill(pl.Skills[5])
 			local minD, maxD = Bow.Mod1DiceCount + Bow.Mod2, Bow.Mod1DiceCount*Bow.Mod1DiceSides + Bow.Mod2
 			
@@ -2721,12 +2691,10 @@
 		return dur
 	end
 
-	-- Single weapon parry
-	local function calcSingleParry(pl, slot, curseMult)
-		local wNum = getItemNum(pl, slot)
-		local wSkill = getItemSkill(pl, slot)
-		local wS, wM = SplitSkill(pl.Skills[wSkill])
-		return (20 + 0.5 * wS * wM + CalcWeaponStatBonusByWType(wNum, 1)) * curseMult
+	-- Parry chance for the character screen: same rules as the combat roll
+	local function calcParryChanceUI(pl, curseMult)
+		local p = MF.GetParryProfile(pl)
+		return p and math.min(math.max(p.Chance * curseMult, 0), 100) or 0
 	end
 	
 	-- =====================================================================
@@ -2892,7 +2860,24 @@
 			sigCur[23 + i] = (slotIdx > 0 and pl.Items[slotIdx].Broken) and 1 or 0
 		end
 
-		for i = 1, 31 do
+		-- Weapon and shield skills (parry / block chance)
+		local mSk, oSk = getItemSkill(pl, pl.ItemMainHand), getItemSkill(pl, pl.ItemExtraHand)
+		sigCur[32] = mSk and pl:GetSkill(mSk) or -1
+		sigCur[33] = oSk and pl:GetSkill(oSk) or -1
+		sigCur[34] = pl:GetSkill(const.Skills.Shield)
+
+		-- Regeneration inputs (HP/SP regen line)
+		sigCur[35] = pl:GetSkill(const.Skills.Regeneration)
+		sigCur[36] = pl:GetSkill(const.Skills.Meditation)
+		sigCur[37] = pl:GetFullHP()
+		sigCur[38] = pl:GetFullSP()
+		local rgBuff = pl.SpellBuffs[const.PlayerBuff.Regeneration]
+		sigCur[39] = Game.Time < rgBuff.ExpireTime and rgBuff.Power or 0
+
+		-- Curse halves parry / dodge / block / crit even when it isn't the main condition
+		sigCur[40] = pl.Conditions[const.Condition.Cursed] > 0 and 1 or 0
+
+		for i = 1, 40 do
 			if sigCur[i] ~= sigLast[i] then
 				sigLast, sigCur = sigCur, sigLast
 				return true
@@ -3007,10 +2992,10 @@
 
 		-- Always: check for buff expiry
 		if Game.PlayersExtra[PlInd].SpellBuffs2[31].ExpireTime < Game.Time then
-			MV.PotionHPReg[PlIndex] = 0
+			MV.PotionHPReg[PlIndex + 1] = 0
 		end
 		if Game.PlayersExtra[PlInd].SpellBuffs2[32].ExpireTime < Game.Time then
-			MV.PotionSPReg[PlIndex] = 0
+			MV.PotionSPReg[PlIndex + 1] = 0
 		end
 		
 		local equipChg = checkEquipChanged(Pl, PlIndex)
@@ -3029,7 +3014,7 @@
 		-- Skip recalc if signature is unchanged
 		if not sigChanged(Pl, PlIndex) then return end
 
-		local curseMult = Pl:GetMainCondition() == 0 and 0.5 or 1
+		local curseMult = Pl.Conditions[const.Condition.Cursed] > 0 and 0.5 or 1  -- cursed at all
 		local mainSlot = Pl.ItemMainHand
 		local mainSkill = getItemSkill(Pl, mainSlot)
 		local offSlot = Pl.ItemExtraHand
@@ -3047,17 +3032,12 @@
 		elseif mainSkill and mainSkill < 7 then
 			CalcCrits(Pl, true)
 			WMH = 1
-			ParryC = calcSingleParry(Pl, mainSlot, curseMult)
 		elseif US > 0 and UM > 0 and (mainSlot == 0 or Pl.Items[mainSlot].Broken) then
 			CalcCrits(Pl, true)
 		else
 			CritD = 100
 			CritC = 0
 			if offSkill and offSkill < 7 then
-				local offNum = getItemNum(Pl, offSlot)
-				local wS2, wM2 = SplitSkill(Pl.Skills[offSkill])
-				ParryC = (20 + 0.5 * wS2 * wM2
-					+ CalcWeaponStatBonusByWType(offNum, 1)) * curseMult
 				CalcCrits(Pl, true)
 			end
 		end
@@ -3072,33 +3052,21 @@
 			CritCB = 0
 		end
 
-		if offSkill and offSkill < 7 and WMH == 1 then
-			local mainNum = getItemNum(Pl, mainSlot)
-			local offNum = getItemNum(Pl, offSlot)
-			local wS, wM = SplitSkill(Pl.Skills[mainSkill])
-			local wS2, wM2 = SplitSkill(Pl.Skills[offSkill])
-			ParryC = (10
-				+ 0.5 * CalcWeaponStatBonusByWType(mainNum, 1) + 0.5 * wS * wM
-				+ 0.5 * CalcWeaponStatBonusByWType(offNum, 1)  + 0.5 * wS2 * wM2
-			) * curseMult
-			BlockC = 0
-		elseif offSkill == 8 then
-			local sS, sM = SplitSkill(Pl.Skills[8])
+		-- Parry: one weapon in either hand, two-handed weapon or dual-wield
+		ParryC = calcParryChanceUI(Pl, curseMult)
+
+		-- Block: same conditions as CalcShieldBlock in combat
+		local blkCond = Pl:GetMainCondition()
+		if offSkill == const.Skills.Shield and Game.ItemsTxt[getItemNum(Pl, offSlot)].EquipStat == 4
+				and blkCond ~= const.Condition.Asleep
+				and not (blkCond >= const.Condition.Paralyzed and blkCond <= const.Condition.Eradicated) then
+			local sS, sM = SplitSkill(Pl:GetSkill(const.Skills.Shield))
 			local offNum = getItemNum(Pl, offSlot)
 			BlockC = 20 + 0.5 * sS * sM
 			if LargeShieldNames[Game.ItemsTxt[offNum].NotIdentifiedName] then
 				BlockC = 30 + 0.75 * sS * sM
 			end
-			BlockC = BlockC * curseMult
-			if WMH == 1 then
-				ParryC = calcSingleParry(Pl, mainSlot, curseMult)
-			else
-				ParryC = 0
-			end
-		end
-
-		if mainSlot == 0 and US > 0 then
-			ParryC = 0
+			BlockC = math.min(BlockC * curseMult, 100)
 		end
 
 		local DodgeC = calcDodgeChanceUI(Pl, Pl.ItemArmor, Pl.ItemExtraHand) * curseMult
@@ -3149,8 +3117,10 @@
 
 		-- HP/SP Regen
 		local HPRegFromItems, SPRegFromItems = CalcHPSPRegen(Pl)
-		local totalHPR = HPReg[PlIndex + 1] + HPRegFromItems + MV.PotionHPReg[PlIndex + 1] - (MV.ZombieHPDegen[Pl.Name] or 0)
-		local totalSPR = SPReg[PlIndex + 1] + SPRegFromItems + MV.PotionSPReg[PlIndex + 1] - (MV.ZombieSPDegen[Pl.Name] or 0)
+		local totalHPR = CalcSkillHPRegen(Pl) + CalcSpellHPRegen(Pl) + HPRegFromItems
+			+ (MV.PotionHPReg[PlIndex + 1] or 0) - math.floor(MV.ZombieHPDegen[Pl.Name] or 0)
+		local totalSPR = CalcMeditationSPRegen(Pl) + SPRegFromItems
+			+ (MV.PotionSPReg[PlIndex + 1] or 0) - math.floor(MV.ZombieSPDegen[Pl.Name] or 0)
 
 		MV.HPR = cachedCstring(string.format('HP\t30 (%s%d/RTick)',
 			totalHPR >= 1 and '+' or '', totalHPR))

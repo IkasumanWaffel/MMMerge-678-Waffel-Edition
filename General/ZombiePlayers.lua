@@ -476,12 +476,12 @@ end
 
 	-- Zombies slowly rot away with time
 	MV.ZombieHPDegen = MV.ZombieHPDegen or {}
-	MV.ZombieSPDegen = MV.ZombieHPDegen or {}
+	MV.ZombieSPDegen = MV.ZombieSPDegen or {}
 	function events.RegenTick(Player)
 		if Player.Conditions[const.Condition.Zombie] > 0 then
 			local FHP, FSP = Player:GetFullHP(), Player:GetFullSP()
-			MV.ZombieHPDegen[Player.Name] = (Player.HP > math.ceil(FHP/2)) and math.max(1, FHP*0.02) or 0
-			MV.ZombieSPDegen[Player.Name] = math.max(1, FSP*0.02)
+			MV.ZombieHPDegen[Player.Name] = (Player.HP > math.ceil(FHP/2)) and math.max(1, math.floor(FHP*0.02)) or 0
+			MV.ZombieSPDegen[Player.Name] = math.max(1, math.floor(FSP*0.02))
 			Player.HP = (Player.HP > math.ceil(FHP/2)) and Player.HP - MV.ZombieHPDegen[Player.Name] or Player.HP
 			Player.SP = math.max(0, Player.SP - MV.ZombieSPDegen[Player.Name])
 		else

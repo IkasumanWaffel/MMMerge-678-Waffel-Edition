@@ -127,7 +127,7 @@ local function classify(n, txt)
 	if o then return o end
 
 	local name = txt.NotIdentifiedName or ""
-	if name:find("^Relic ") or name:find("^Ancient Relic ") then return "relic" end
+	if name:find("^Relic ") or name:find("^Ancient") then return "relic" end
 	if name:find("^Artifact ") then return "artifact" end
 	if name:find("^Special ") then return "special" end
 
