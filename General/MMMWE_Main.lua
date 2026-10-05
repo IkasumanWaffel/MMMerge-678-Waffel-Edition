@@ -747,8 +747,7 @@
 			else
 				pl.HP = pl.HP - math.random(1, 8)
 				-- bled out: same death threshold as the games (HP at or below -Endurance)
-				if pl.HP <= -pl:GetEndurance() then
-					pl.Conditions[const.Condition.Dead] = Game.Time
+				if pl.HP <= -pl:GetEndurance() and pl.SpellBuffs[const.PlayerBuff.Preservation].ExpireTime < Game.Time then
 					debuff.ExpireTime = 0
 					RemoveTimer(UnconsciousTimers[slot])
 					UnconsciousTimers[slot] = nil
@@ -1312,6 +1311,12 @@
 		[33] = {44634, 44635, 44636, 44637, 44638, 44639},
 	}
 
+	-- Sound object reference of a map monster (index*8 + 3): the game plays the sound on the
+	-- monster channels (0-3) at the monster's position, so it doesn't cut off interface sounds
+	local function MonSoundRef(Mon)
+		return Mon:GetIndex() * 8 + 3
+	end
+
 	-- Weapon in a slot that can crit in melee: not broken, skill in the allowed set
 	local function critWeapon(pl, slot, allowed)
 		if slot <= 0 or pl.Items[slot].Broken then return nil end
@@ -1401,7 +1406,7 @@
 		if chance > 0 and math.random() * 100 < chance then
 			local snd = sndSkill and CritSounds[sndSkill]
 			if snd and Game.CurrentScreen ~= 7 then
-				Game.PlaySound(snd[math.random(1, 6)], -1, 0, Mon.X, Mon.Y)
+				Game.PlaySound(snd[math.random(1, 6)], MonSoundRef(Mon))
 			end
 			return d
 		end
@@ -1487,12 +1492,12 @@
 
 				if CritProc == 1 then
 					eradicationChance = eradicationChance * (2 + modTier*2)
-					Game.PlaySound(math.random(44671,44673), -1, 0, Mon.X, Mon.Y)
+					Game.PlaySound(math.random(44671,44673), MonSoundRef(Mon))
 				end
 
 				if math.random(1, 10000) <= eradicationChance then
 					t.Result = Mon.HP
-					Game.PlaySound(math.random(44671,44673), -1, 0, Mon.X, Mon.Y)
+					Game.PlaySound(math.random(44671,44673), MonSoundRef(Mon))
 					Mon:ChangeLook(241)
 					Mon:SetCustomFrames(nil, nil, nil, nil, nil, nil, 'm203x', 'm207d', nil)
 					mem.u4[CombatMsgAddr] = mem_cstring(string.format(
@@ -1970,11 +1975,14 @@
 		end
 
 		-- --- Sound Effects Processing ---
+		-- Object 0 plays on the party channels (10-12); channel 14 (object -2) is reserved for
+		-- the ambience loop of MMMWE_Music.lua
+		local DEF_SND = 0
 		local playedSound = false
 
 		if category == "physical" then
 			if shieldPhysDR < 1 and shieldPhysDR < weaponPhysDR and shieldPhysDR < dodgeDR then
-				Game.PlaySound(44587, -2)
+				Game.PlaySound(44587, DEF_SND)
 				playedSound = true
 			elseif weaponPhysDR < 1 and weaponPhysDR < shieldPhysDR and weaponPhysDR < dodgeDR then
 				-- sound of the weapon that actually parried (staff / sword, dagger / axe, spear, mace)
@@ -1986,24 +1994,24 @@
 				else
 					snd = math.random(44652, 44657)
 				end
-				Game.PlaySound(snd, -2)
+				Game.PlaySound(snd, DEF_SND)
 				playedSound = true
 			end
 		elseif category == "elemental" then
 			if math.min(shieldMagicDR, weaponMagicDR) < 1 and math.min(shieldMagicDR, weaponMagicDR) < dodgeDR then
-				Game.PlaySound(44588, -2)
+				Game.PlaySound(44588, DEF_SND)
 				playedSound = true
 			end
 		elseif category == "energy" then
 			if math.min(shieldEnergyDR, weaponEnergyDR) < 1 and math.min(shieldEnergyDR, weaponEnergyDR) < dodgeDR then
-				Game.PlaySound(44589, -2)
+				Game.PlaySound(44589, DEF_SND)
 				playedSound = true
 			end
 		end
 
 		if not playedSound and dodgeDR < 1 then
 			pl:ShowFaceAnimation(6)
-			Game.PlaySound(16060, -2)
+			Game.PlaySound(16060, DEF_SND)
 		end
 
 		-- --- Display Status Text ---
@@ -2106,7 +2114,7 @@
 		if RegM <= 0 then return 0 end
 		RegS = RegS + Player:CalcStatBonusByItems(const.Stats.Meditation)
 		local Add = RegM + RegS/10
-		return round(Add + Add*Player:GetIntellect()/50 + Add*Player:GetPersonality()/100)
+		return round(Add + Add*Game.GetStatisticEffect(Player:GetIntellect())/10 + Add*Game.GetStatisticEffect(Player:GetPersonality())/20)
 	end
 
 	-- HP per regen tick from the Regeneration skill (0 if none)
@@ -3441,20 +3449,8 @@
 		MapMusicSets[138] = {51,	58						}			--Paradise Valley
 		MapMusicSets[144] = {51,77,92,93,127,130,131	    }			--Free Haven
 
-			function events.PlayMapTrack(t)
-				local set = MapMusicSets[t.MapIndex]
-			if set then
-				if evt.CheckSeason{Season = 3} and Map.IsOutdoor() and table.find({63, 64, 65, 69, 70, 71, 72, 73, 137, 146, 147, 148, 149, 150, 151}, t.MapIndex) then
-					if Game.Hour > 5 and Game.Hour < 19 then 
-						set[#set+1] = 82
-					else
-						set[#set+1] = 22
-					end
-				end
-				t.Track = set[math.random(1, #set)]
-			end
-		end
-
+		-- These are each map's "any time" tracks. Track choice, day / night and seasonal
+		-- tracks (incl. the winter tracks 82 / 22) are handled by MMMWE_Music.lua.
 		Game.MapMusicSets = MapMusicSets
 	end
 	
