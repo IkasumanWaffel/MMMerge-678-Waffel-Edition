@@ -442,7 +442,7 @@ function events.CalcDamageToMonster(t)
     if not t.ByPlayer then return end
     
     -- Не изнашиваем оружие от вторичных вызовов (зачарования)
-    if _G.CE_SecondaryResist and _G.CE_SecondaryResist > 0 then return end
+    if t.IsSecondary then return end  -- marked by MMMWE_ConcurrentEnchantments.lua
     
 	local pl = t.Player
 	if not pl then return end
