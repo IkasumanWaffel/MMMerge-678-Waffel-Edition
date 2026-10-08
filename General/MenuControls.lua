@@ -250,88 +250,7 @@ function events.GameInitialized2()
 		X = 100, Y = 180,
 		Condition = HideForDialog}
 
-	-- === Hardcore Mode button + dialog ===
-
-	UI.HardcoreButton = CustomUI.CreateButton{
-		IconUp        = ((MV.HCM or 0) == 0) and "hcm_off" or "hcm_on",
-		IconDown      = "hcm_ht",
-		IconMouseOver = "hcm_ht",
-		Action = function(t)
-			Game.PlaySound(23)
-			if vars.HardCoreMode == 1 then
-				vars.HardCoreMode = 0
-				MV.HCM = 0
-				Game.NeedRedraw = true
-				UI.HardcoreButton.IUpSrc = "hcm_off"
-			else
-				HCMDialogShown = true
-				Game.NeedRedraw = true
-			end
-		end,
-		Condition = function(t) return not HCMDialogShown end,
-		Layer = 0,
-		Screen = const.Screens.MergeInterfaceSettings,
-		X = 350, Y = 320,
-		DynLoad = true
-	}
-
-		-- Базовые координаты: подняли на 50 пикселей относительно прошлого варианта (было 220, стало 170)
-	local HCM_TEXT_X, HCM_TEXT_Y = 200, 120
-	local HCM_TEXT_W, HCM_TEXT_H = 240, 240
-
-	-- Текст предупреждения (без фонового битмапа, прозрачный фон, белый цвет)
-	CustomUI.CreateText{
-		Text = "HARDCORE MODE\n\n" ..
-			"Saving, loading and quitting to main menu " ..
-			StrColor(255, 180, 32, "are blocked ").."while enemies are nearby.\n" ..
-			"All save files "..
-			StrColor(255,180,32, "will be deleted ").."if the entire party is killed.\n\n"..
-			"\nEnable Hardcore Mode?",
-		Layer     = 0,
-		Screen    = const.Screens.MergeInterfaceSettings,
-		X         = HCM_TEXT_X, Y = HCM_TEXT_Y,
-		Width     = HCM_TEXT_W, Height = HCM_TEXT_H,
-		ColorStd  = RGB(255, 255, 255),      -- Белый цвет текста
-		ColorHigh = RGB(255, 255, 255),      -- Цвет при выделении (если движок использует)
-		AlignLeft = false,
-		Font = Game.Smallnum_fnt,
-		Condition = function() return HCMDialogShown end
-	}
-
-	-- Confirm (кнопки ниже текста, с увеличенным отступом)
-	CustomUI.CreateText{
-		Text           = "Confirm",
-		ColorStd       = RGB(255, 200, 50),
-		ColorMouseOver = RGB(255, 255, 150),
-		Action = function(t)
-			Game.PlaySound(23)
-			HCMDialogShown = false
-			vars.HardCoreMode = 1
-			MV.HCM = 1
-			Game.NeedRedraw = true
-			UI.HardcoreButton.IUpSrc = "hcm_on"
-		end,
-		Layer     = 0,
-		Screen    = const.Screens.MergeInterfaceSettings,
-		X         = 240, Y = 330,            -- Y=300: отступ от текста ~130px
-		Condition = function() return HCMDialogShown end
-	}
-
-	-- Cancel (на одной линии с Confirm)
-	CustomUI.CreateText{
-		Text           = "Cancel",
-		ColorStd       = RGB(180, 180, 180),
-		ColorMouseOver = RGB(255, 255, 150),
-		Action = function(t)
-			Game.PlaySound(24)
-			HCMDialogShown = false
-			Game.NeedRedraw = true
-		end,
-		Layer     = 0,
-		Screen    = const.Screens.MergeInterfaceSettings,
-		X         = 340, Y = 330,
-		Condition = function() return HCMDialogShown end
-	}
+	-- Hardcore Mode button and dialog: moved to their own page in MMMWE_HardcoreSettings.lua
 
 	-- === UI depends on continent ===
 
@@ -353,8 +272,6 @@ function events.GameInitialized2()
 	function events.OpenExtraSettingsMenu()
 		UI.SwapUIText.CStd = Game.UIDependsOnContinent and 58980 or 65535
 		UI.CustomUIText.Text = tostring(Game.CustomInterface)
-		HCMDialogShown = false
-		UI.HardcoreButton.IUpSrc = (vars.HardCoreMode == 1) and "hcm_on" or "hcm_off"
 	end
 end
 
