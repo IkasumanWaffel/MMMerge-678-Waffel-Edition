@@ -108,6 +108,7 @@ local gameOffsetX = 0
 local gameOffsetY = 0
 local baseScaleX  = 1
 local baseScaleY  = 1
+local baseScaleUI = 1   -- game UI scale: uniform, centered horizontally (same as MMMWE_HPSPDisplay)
 
 local toBaseX = CONFIG.baseW / CONFIG.gameW
 local toBaseY = CONFIG.baseH / CONFIG.gameH
@@ -469,6 +470,9 @@ local function syncPosition()
         gameOffsetX = 0
         baseScaleX = screenW / CONFIG.baseW
 
+        -- game UI: uniform scale, centered horizontally (used by anchor = "game")
+        baseScaleUI = gameScale * CONFIG.gameW / CONFIG.baseW
+
         needRedraw = true
         createFont()
     end
@@ -529,20 +533,24 @@ local function drawOverlay()
 
     needRedraw = true
 
-    local cw = screenScale(CONFIG.textW)
     local ch = math.max(1, math.floor(CONFIG.textH * baseScaleY))
     local lineH = math.max(1, math.floor(CONFIG.lineSpacing * baseScaleY))
 
-    local baseX, baseY
+    local cw, sx, sy
     if CONFIG.anchor == "game" then
-        baseX = CONFIG.gx * toBaseX
-        baseY = CONFIG.gy * toBaseY
+        -- game coordinates (640x480): the game UI is scaled uniformly and centered,
+        -- so X is measured from the screen center with the same scale
+        local baseX = (CONFIG.gx - CONFIG.gameW / 2) * toBaseX
+        local baseY = CONFIG.gy * toBaseY
+        cw = math.max(1, math.floor(CONFIG.textW * baseScaleUI))
+        sx = math.floor(screenW / 2 + baseX * baseScaleUI)
+        sy = math.floor(gameOffsetY + baseY * baseScaleY)
     else
-        baseX = CONFIG.ax
-        baseY = CONFIG.ay
+        -- absolute (1920x1200): X follows the full window width
+        cw = screenScale(CONFIG.textW)
+        sx = math.floor(gameOffsetX + CONFIG.ax * baseScaleX)
+        sy = math.floor(gameOffsetY + CONFIG.ay * baseScaleY)
     end
-    local sx = math.floor(gameOffsetX + baseX * baseScaleX)
-    local sy = math.floor(gameOffsetY + baseY * baseScaleY)
 
     local n = CONFIG.maxMessages
 

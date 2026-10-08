@@ -64,6 +64,9 @@ local CONFIG = {
     buffH        = 18,
     buffLineH   = 24,
     maxBuffLines = 8,
+    -- Temporary weapon enchantments in the buff column ("Infernos 2h 14m", "Swiftness (bow) 40m")
+    showWeaponEnchants = true,
+    weaponEnchantColor = nil,   -- nil = colored by time left like the other buffs
 
     --=== Party buffs (Party.SpellBuffs2) ===
     partyBuffDY       = 970,
@@ -335,6 +338,7 @@ local gameOffsetX = 0
 local gameOffsetY = 0
 local baseScaleX  = 1
 local baseScaleY  = 1
+local baseScaleUI = 1   -- scale of the portrait bar: uniform game scale, centered horizontally
 local centerOffset = 0
 
 --====================================================
@@ -431,8 +435,12 @@ local function labelScreenXY(cfg, portraitX_i, hpBarX_i, spBarX_i, portraitY, ba
             gameX = portraitX_i + centerOffset
             gameY = portraitY
         end
-        baseX = gameX * toBaseX + (cfg.dx or 0)
+        -- the portrait bar is drawn with the uniform game scale and centered on the screen,
+        -- so portrait-anchored widgets use the same scale, measured from the screen center
+        baseX = (gameX - CONFIG.gameW / 2) * toBaseX + (cfg.dx or 0)
         baseY = gameY * toBaseY + (cfg.dy or 0)
+        return math.floor(screenW / 2 + baseX * baseScaleUI),
+               math.floor(gameOffsetY + baseY * baseScaleY)
     end
     return math.floor(gameOffsetX + baseX * baseScaleX),
            math.floor(gameOffsetY + baseY * baseScaleY)
@@ -441,8 +449,8 @@ end
 -- Portrait column X coord in screen coordinate system
 local function columnScreenX(portraitX_i)
     local gameX = portraitX_i + centerOffset
-    local baseX = gameX * toBaseX
-    return math.floor(gameOffsetX + baseX * baseScaleX)
+    local baseX = (gameX - CONFIG.gameW / 2) * toBaseX
+    return math.floor(screenW / 2 + baseX * baseScaleUI)
 end
 
 --====================================================
@@ -483,6 +491,13 @@ end
 --====================================================
 -- DATA COLLECTION: BUFFS (SpellBuffs + SpellBuffs2)
 --====================================================
+-- Weapon slots shown in the buff column: field, label suffix
+local WEAPON_SLOTS = {
+    {"ItemMainHand",  ""},
+    {"ItemExtraHand", " (off)"},
+    {"ItemBow",       " (bow)"},
+}
+
 local function getBuffs(player, playerIndex, currentTime)
     local active = {}
     if not player then return active end
@@ -534,6 +549,27 @@ local function getBuffs(player, playerIndex, currentTime)
         end
     end)
 
+    -- Temporary weapon enchantments (Fire Aura, weapon potions, Vampiric Weapon).
+    -- Name and expiry come from MMMWE_ConcurrentEnchantments.lua (MF.GetTempEnchant).
+    if CONFIG.showWeaponEnchants and MF.GetTempEnchant then
+        for _, slot in ipairs(WEAPON_SLOTS) do
+            pcall(function()
+                local idx = player[slot[1]]
+                if not idx or idx <= 0 then return end
+                local name, expireTime = MF.GetTempEnchant(player.Items[idx])
+                if name and expireTime > currentTime then
+                    active[#active + 1] = {
+                        label = name .. slot[2],
+                        name = name,
+                        power = 0,
+                        timeStr = formatTime(expireTime, currentTime),
+                        expireTime = expireTime,
+                        color = CONFIG.weaponEnchantColor,
+                    }
+                end
+            end)
+        end
+    end
 
     -- Descending sort by expireTime
     table.sort(active, function(a, b) return a.expireTime > b.expireTime end)
@@ -921,6 +957,9 @@ local function syncPosition()
         gameOffsetX = 0
         baseScaleX = screenW / CONFIG.baseW
 
+        -- portrait bar: same uniform scale as the game UI (used by per-character widgets)
+        baseScaleUI = gameScale * CONFIG.gameW / CONFIG.baseW
+
         needRedraw = true
         createFont()
     end
@@ -938,6 +977,11 @@ end
 -- Widget scale on screen
 local function screenScale(val)
     return math.max(1, math.floor(val * baseScaleX))
+end
+
+-- Widget scale for per-character widgets (follows the portraits)
+local function uiScale(val)
+    return math.max(1, math.floor(val * baseScaleUI))
 end
 
 local function drawOverlay()
@@ -964,15 +1008,15 @@ local function drawOverlay()
     needRedraw = false
 
     -- Widget scale on screen
-    local cw = screenScale(CONFIG.textW)
+    local cw = uiScale(CONFIG.textW)
     local ch = math.max(1, math.floor(CONFIG.textH * baseScaleY))
 
-    local debuffW = screenScale(CONFIG.debuffW)
+    local debuffW = uiScale(CONFIG.debuffW)
     local debuffH = math.max(1, math.floor(CONFIG.debuffH * baseScaleY))
     local debuffLineH = math.max(1, math.floor(CONFIG.debuffLineH * baseScaleY))
     local debuffScreenY = math.floor(gameOffsetY + CONFIG.debuffDY * baseScaleY)
 
-    local buffW = screenScale(CONFIG.buffW)
+    local buffW = uiScale(CONFIG.buffW)
     local buffH = math.max(1, math.floor(CONFIG.buffH * baseScaleY))
     local buffLineH = math.max(1, math.floor(CONFIG.buffLineH * baseScaleY))
     local buffStartScreenY = math.floor(gameOffsetY + CONFIG.buffStartDY * baseScaleY)
@@ -1019,7 +1063,7 @@ local function drawOverlay()
         for i = 0, nPlayers - 1 do
             local d = lastValues[i]
             if d and d.exists and #d.debuffs > 0 then
-                local colX = columnScreenX(portraitX[i]) + math.floor(CONFIG.debuffDX * baseScaleX)
+                local colX = columnScreenX(portraitX[i]) + math.floor(CONFIG.debuffDX * baseScaleUI)
 				for line = 1, math.min(#d.debuffs, CONFIG.maxDebuffLines) do
                     local db = d.debuffs[line]
                     local ly
@@ -1038,7 +1082,7 @@ local function drawOverlay()
         for i = 0, nPlayers - 1 do
             local d = lastValues[i]
             if d and d.exists and #d.buffs > 0 then
-                 local colX = columnScreenX(portraitX[i]) + math.floor(CONFIG.buffDX * baseScaleX)
+                 local colX = columnScreenX(portraitX[i]) + math.floor(CONFIG.buffDX * baseScaleUI)
                 for line = 1, math.min(#d.buffs, CONFIG.maxBuffLines) do
                     local buff = d.buffs[line]
                     local by = buffStartScreenY + (line - 1) * buffLineH
