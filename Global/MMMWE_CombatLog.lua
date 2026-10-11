@@ -188,52 +188,91 @@ local function getPlayerName(playerIndex)
     return name
 end
 
-local lastDamageTick = 0
-local damageAccum = {}
+-- Damage is collected per ATTACK: every CalcDamageToMonster call of one player against one
+-- monster that arrives within ATTACK_WINDOW seconds (the weapon hit, then each weapon's
+-- enchantment, including the permanent ones MMMWE_ConcurrentEnchantments.lua deals directly).
+-- The attack is posted as soon as a different player / monster is hit or the window passes,
+-- as ONE line ("Alice hits Goblin for 17 damage (12 Phys, 5 Fire)"), so a dual-wield hit
+-- with two enchantments can't push its own parts (or other players' hits) out of the log.
+local ATTACK_WINDOW = 0.15          -- seconds (real time)
+local KIND_ORDER = {4, 12, 0, 1, 2, 3, 6, 7, 8, 9, 10, 5, 50}   -- Phys first, then the rest
 
-local function flushDamageAccum()
-    if not overlayActive then
-        damageAccum = {}
-        if _G.CE_PermHitQueue then _G.CE_PermHitQueue = {} end
-        return
+local attack = nil                  -- {key, playerName, monsterName, parts = {[kind] = part}, last}
+
+local function postAttack(a)
+    local parts, total, biggest = {}, 0, nil
+    local listed = {}
+    local function add(kind, part)
+        if listed[kind] then return end
+        listed[kind] = true
+        parts[#parts + 1] = string.format("%d %s%s", part.damage,
+            damageTypes[kind] or "?", part.enchant and " (enchant)" or "")
+        total = total + part.damage
+        if not biggest or part.damage > a.parts[biggest].damage then biggest = kind end
     end
-    -- Flush any remaining perm enchantment hits that weren't
-    -- consumed by CalcDamageToMonster (e.g. if CalcDamageToMonster
-    -- didn't fire for the temp element, or fired before ItemAdditionalDamage)
-    if _G.CE_PermHitQueue and #_G.CE_PermHitQueue > 0 then
-        for i = #_G.CE_PermHitQueue, 1, -1 do
-            local ph = _G.CE_PermHitQueue[i]
-            local pIdx = ph.playerIndex or 0
-            local permKey = tostring(pIdx) .. "_" .. tostring(ph.monsterIndex) .. "_" .. tostring(ph.damageKind) .. "_perm"
-            if damageAccum[permKey] then
-                damageAccum[permKey].totalDamage = damageAccum[permKey].totalDamage + ph.damage
-            else
-                damageAccum[permKey] = {
-                    playerName = getPlayerName(pIdx),
-                    monsterName = getMonsterName(ph.monsterIndex),
-                    totalDamage = ph.damage,
-                    damageKind = ph.damageKind,
-                    isEnchant = true,
-                }
-            end
-            table.remove(_G.CE_PermHitQueue, i)
+    for _, kind in ipairs(KIND_ORDER) do
+        if a.parts[kind] then add(kind, a.parts[kind]) end
+    end
+    for kind, part in pairs(a.parts) do add(kind, part) end   -- kinds not in KIND_ORDER
+    if total <= 0 then return end
+    local msg
+    if #parts == 1 then
+        msg = string.format("%s hits %s for %s damage", a.playerName, a.monsterName, parts[1])
+    else
+        msg = string.format("%s hits %s for %d damage (%s)", a.playerName, a.monsterName,
+            total, table.concat(parts, ", "))
+    end
+    pushMessage(msg, biggest)
+end
+
+local function addPart(a, kind, damage, enchant)
+    local part = a.parts[kind]
+    if part then
+        part.damage = part.damage + damage
+        part.enchant = part.enchant and enchant
+    else
+        a.parts[kind] = {damage = damage, enchant = enchant}
+    end
+end
+
+-- Permanent-enchantment damage that MMMWE_ConcurrentEnchantments.lua took off the monster
+-- directly (different element from the temporary enchantment)
+local function takePermHits(a, playerIdx, monIdx)
+    local q = _G.CE_PermHitQueue
+    if not q or #q == 0 then return end
+    for i = #q, 1, -1 do
+        local ph = q[i]
+        if ph.monsterIndex == monIdx and (ph.playerIndex or playerIdx) == playerIdx then
+            addPart(a, ph.damageKind, ph.damage, true)
+            table.remove(q, i)
         end
     end
-    for key, info in pairs(damageAccum) do
-        local suffix = info.isEnchant and " (enchant)" or ""
-        local msg = string.format("%s hits %s for %d %s damage%s",
-            info.playerName, info.monsterName,
-            info.totalDamage, damageTypes[info.damageKind] or "", suffix)
-        pushMessage(msg, info.damageKind)
+end
+
+local function flushDamageAccum()
+    if attack then
+        if overlayActive then
+            postAttack(attack)
+        end
+        attack = nil
     end
-    damageAccum = {}
+    -- leftovers that belong to no attack (posted on their own)
+    local q = _G.CE_PermHitQueue
+    if q and #q > 0 then
+        if overlayActive then
+            for _, ph in ipairs(q) do
+                local a = {playerName = getPlayerName(ph.playerIndex or 0),
+                    monsterName = getMonsterName(ph.monsterIndex), parts = {}}
+                addPart(a, ph.damageKind, ph.damage, true)
+                postAttack(a)
+            end
+        end
+        _G.CE_PermHitQueue = {}
+    end
 end
 
 function events.CalcDamageToMonster(t)
     if not overlayActive then return end
-    if _G.CE_SecondaryResist and _G.CE_SecondaryResist > 0 then
-        return
-    end
     local pl = nil
     pcall(function() pl = t.Player end)
     if not pl then return end
@@ -242,10 +281,6 @@ function events.CalcDamageToMonster(t)
     pcall(function() playerIdx = pl:GetSlot() end)
     if not playerIdx or type(playerIdx) ~= "number" then return end
     if playerIdx < 0 or playerIdx > 4 then return end
-
-    local result = nil
-    pcall(function() result = t.Result end)
-    if not result or result <= 0 then return end
 
     local monIdx = nil
     pcall(function() monIdx = t.MonsterIndex end)
@@ -258,59 +293,33 @@ function events.CalcDamageToMonster(t)
         monIdx = realIdx
     end
 
-    local dmgKind = 0
-    pcall(function() dmgKind = t.DamageKind or 0 end)
-
-    local pName = getPlayerName(playerIdx)
-    local mName = getMonsterName(monIdx)
-    local key = tostring(playerIdx) .. "_" .. tostring(monIdx) .. "_" .. tostring(dmgKind)
-
-    local tick = os.clock()
-    if tick - lastDamageTick > 2.0 then
+    local key = tostring(playerIdx) .. "_" .. tostring(monIdx)
+    local now = os.clock()
+    if attack and (attack.key ~= key or now - attack.last > ATTACK_WINDOW) then
         flushDamageAccum()
     end
-    lastDamageTick = tick
-
-    if damageAccum[key] then
-        damageAccum[key].totalDamage = damageAccum[key].totalDamage + result
-    else
-        damageAccum[key] = {
-            playerName = pName,
-            monsterName = mName,
-            totalDamage = result,
-            damageKind = dmgKind,
-        }
+    if not attack then
+        attack = {key = key, playerName = getPlayerName(playerIdx),
+            monsterName = getMonsterName(monIdx), parts = {}}
     end
+    attack.last = now
 
-    -- Check for permanent enchantment damage from Concurrent Enchantments
-    if _G.CE_PermHitQueue and #_G.CE_PermHitQueue > 0 then
-        for i = #_G.CE_PermHitQueue, 1, -1 do
-            local ph = _G.CE_PermHitQueue[i]
-            if ph.monsterIndex == monIdx then
-                local permKey = tostring(playerIdx) .. "_" .. tostring(monIdx) .. "_" .. tostring(ph.damageKind) .. "_perm"
-                if damageAccum[permKey] then
-                    damageAccum[permKey].totalDamage = damageAccum[permKey].totalDamage + ph.damage
-                else
-                    damageAccum[permKey] = {
-                        playerName = pName,
-                        monsterName = mName,
-                        totalDamage = ph.damage,
-                        damageKind = ph.damageKind,
-                        isEnchant = true,
-                    }
-                end
-                table.remove(_G.CE_PermHitQueue, i)
-            end
-        end
+    -- the permanent-enchantment part comes right before this call, even when this
+    -- call's own damage was fully resisted
+    takePermHits(attack, playerIdx, monIdx)
+
+    local result = nil
+    pcall(function() result = t.Result end)
+    if result and result > 0 then
+        local dmgKind = 0
+        pcall(function() dmgKind = t.DamageKind or 0 end)
+        addPart(attack, dmgKind, result, t.IsSecondary == true)
     end
 end
 
 local function checkDamageFlush()
-    if next(damageAccum) then
-        local tick = os.clock()
-        if tick - lastDamageTick > 2.0 then
-            flushDamageAccum()
-        end
+    if attack and os.clock() - attack.last > ATTACK_WINDOW then
+        flushDamageAccum()
     end
 end
 
