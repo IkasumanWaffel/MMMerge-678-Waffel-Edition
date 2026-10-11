@@ -1,7 +1,12 @@
 -- ========================================
--- Concurrent Enchantments v5.9
+-- Concurrent Enchantments v5.10
 -- Permanent + Temporary enchantment stacking
 --
+-- v5.10: item flags (Identified, Broken, Stolen, Hardened ...) are kept as they were when a
+--   temporary enchantment expires - only the temporary-bonus flag is removed. Unidentified
+--   items whose bonuses MMMWE_Main.lua keeps packed in Charges are handled: the packed
+--   enchantment is saved with the record, gives no bonus while the item is unidentified,
+--   and is packed back (or restored, if the item was identified meanwhile) on expiry.
 -- v5.9: the temporary enchantment is named in the item tooltip ("Temp. Infernos: 2:hr 14:mn"
 --   instead of "Duration: ...") and MF.GetTempEnchant(item) tells other scripts (the HP/SP
 --   overlay) which temporary enchantment an item has and when it expires.
@@ -88,6 +93,33 @@ local function hasTemp(ptr)
     return bit.band(mem.u4[ptr + 0x14], TEMP_BIT) ~= 0
 end
 
+local IDENTIFIED_BIT = 0x1
+
+local function isIdentified(ptr)
+    return bit.band(mem.u4[ptr + 0x14], IDENTIFIED_BIT) ~= 0
+end
+
+-- MMMWE_Main.lua ("unidentified items don't give bonuses") keeps the bonuses of an
+-- unidentified item packed in Charges: flag * 1e8 + Bonus2 * 1e5 + BonusStrength * 1e3 + Bonus
+-- (flag: 1 = Bonus present, 2 = Bonus2 present). Returns the unpacked bonuses or nil.
+local PACK_FLAG = 100000000
+local function packedBonuses(ptr)
+    if isIdentified(ptr) then return nil end
+    local ch = mem.i4[ptr + 0x10]
+    if ch < PACK_FLAG then return nil end
+    local flag = math.floor(ch / PACK_FLAG)
+    local rem = math.fmod(ch, PACK_FLAG)
+    local b = {Bonus = 0, Bonus2 = 0, BonusStrength = 0, Charges = ch}
+    if flag % 2 == 1 then
+        b.Bonus = math.fmod(rem, 1000)
+        b.BonusStrength = math.floor(math.fmod(rem, 100000) / 1000)
+    end
+    if flag >= 2 then
+        b.Bonus2 = math.floor(rem / 100000)
+    end
+    return b
+end
+
 -- Key of an item with a temporary enchantment (nil if it has none)
 local function itemKey(ptr)
     if not hasTemp(ptr) then return nil end
@@ -99,6 +131,16 @@ local function recordOf(ptr)
     local store = Store()
     local key = store and itemKey(ptr)
     return key and store[key], key
+end
+
+-- Saved enchantment that should work right now: none while the item is unidentified and the
+-- enchantment came from packed (hidden) bonuses
+local function activeRecordOf(ptr)
+    local rec, key = recordOf(ptr)
+    if rec and rec.Packed and not isIdentified(ptr) then
+        return nil, key
+    end
+    return rec, key
 end
 
 -- Give a freshly enchanted item an expiry time no other record uses (two identical items
@@ -301,7 +343,20 @@ local function doSaveAndClear(itemPtr, spellName)
     local bonus2   = mem.u4[itemPtr + 0xC]
     local bonusStr = mem.u4[itemPtr + 8]
 
-    if bonus == 0 and bonus2 == 0 and bonusStr == 0 then return end
+    if bonus == 0 and bonus2 == 0 and bonusStr == 0 then
+        -- an unidentified item: its enchantment may be packed in Charges (MMMWE_Main.lua);
+        -- the engine sees an empty item and will apply the temporary enchantment
+        local packed = not hasTemp(itemPtr) and packedBonuses(itemPtr)
+        if packed and not PendingChecks[itemPtr] then
+            log("%s: unidentified item %d with packed bonuses B=%d B2=%d S=%d",
+                spellName, mem.u4[itemPtr], packed.Bonus, packed.Bonus2, packed.BonusStrength)
+            PendingChecks[itemPtr] = {
+                Cleared = {Bonus = 0, Bonus2 = 0, BonusStrength = 0},
+                Packed = packed,
+            }
+        end
+        return
+    end
 
     if not PendingChecks[itemPtr] then
         local pending = {
@@ -348,27 +403,48 @@ mem.hookfunction(0x455B40, 1, 2, function(d, def, this, timeLo, timeHi)
     local store = Store()
     local key = store and itemKey(this)
     local expireBefore = key and mem.u8[this + 0x1C]
+    local condBefore = key and mem.u4[this + 0x14]
     local r = def(this, timeLo, timeHi)
     if key and (not hasTemp(this) or mem.u8[this + 0x1C] ~= expireBefore) then
         local rec = store[key]
         store[key] = nil
+        -- the item keeps every flag it had (Identified, Broken, Stolen, Hardened ...);
+        -- only the temporary-bonus flag goes
+        local condAfter = mem.u4[this + 0x14]
+        local keep = bit.band(condBefore, bit.bnot(TEMP_BIT))
+        if bit.band(condAfter, bit.bnot(TEMP_BIT)) ~= keep then
+            log("Expire: item %d flags changed by the engine 0x%X -> 0x%X, kept 0x%X",
+                mem.u4[this], condBefore, condAfter, keep)
+        end
+        mem.u4[this + 0x14] = keep
         local p = PendingChecks[this]
         if p then
             -- expired right before a new enchantment is applied (Part 1 already emptied
             -- the slots): what was cleared is now just the permanent state
             p.OldKey, p.HasRecord = nil, nil
-            if rec then
+            if rec and rec.Packed and not isIdentified(this) then
+                -- unidentified: put the enchantment back into Charges and treat it as packed
+                p.Cleared = {Bonus = 0, Bonus2 = 0, BonusStrength = 0}
+                mem.i4[this + 0x10] = rec.Packed
+                p.Packed = packedBonuses(this)
+            elseif rec then
                 p.Cleared = {Bonus = rec.Bonus, Bonus2 = rec.Bonus2,
                     BonusStrength = rec.BonusStrength}
             else
                 p.Cleared.Bonus2 = 0   -- it was the temporary enchantment itself
             end
         elseif rec then
-            writeBack(this, rec)
-            mem.u4[this + 0x14] = bit.band(mem.u4[this + 0x14], bit.bnot(TEMP_BIT))
             mem.u8[this + 0x1C] = 0
-            log("Expire: restored {B=%d B2=%d S=%d} for item %d",
-                rec.Bonus, rec.Bonus2, rec.BonusStrength, rec.Number)
+            if rec.Packed and not isIdentified(this) then
+                -- still unidentified: its enchantment goes back into Charges, hidden
+                writeBack(this, {Bonus = 0, Bonus2 = 0, BonusStrength = 0})
+                mem.i4[this + 0x10] = rec.Packed
+                log("Expire: item %d still unidentified, enchantment packed back", rec.Number)
+            else
+                writeBack(this, rec)
+                log("Expire: restored {B=%d B2=%d S=%d} for item %d",
+                    rec.Bonus, rec.Bonus2, rec.BonusStrength, rec.Number)
+            end
         end
     end
     return r
@@ -392,7 +468,7 @@ function events.ItemAdditionalDamage(t)
     local ptr = item["?ptr"]
     if not ptr then return end
 
-    local saved = recordOf(ptr)
+    local saved = activeRecordOf(ptr)
     if not saved then return end
 
     -- the enchantment the engine doesn't see: the hidden permanent one, or (Mode "inv")
@@ -490,7 +566,7 @@ function events.GetAttackDelay(t)
     if not pl then return end
     local it = recoveryWeapon(pl, t.Ranged)
     if not it or it.Number == 0 then return end
-    local rec = recordOf(it["?ptr"])
+    local rec = activeRecordOf(it["?ptr"])
     if not rec then return end
     local hiddenB2 = rec.Mode == "inv" and rec.TempBonus2 or rec.Bonus2
     if SwiftB2[hiddenB2] and not SwiftB2[it.Bonus2] and not SwiftItems[it.Number] then
@@ -513,7 +589,7 @@ local function swapInSlaying(pl, slots)
         local idx = pl[slot]
         if idx > 0 then
             local ptr = pl.Items[idx]["?ptr"]
-            local rec, key = recordOf(ptr)
+            local rec, key = activeRecordOf(ptr)
             if rec then
                 local hidden = rec.Mode == "inv" and rec.TempBonus2 or rec.Bonus2
                 local visible = mem.u4[ptr + 0xC]
@@ -647,6 +723,8 @@ end
 local function tryInvert(ptr, rec)
     rec.Mode, rec.TempBonus2 = nil, nil
     if not INVERT_WHEN_POSSIBLE or rec.Bonus2 == 0 then return end
+    -- an unidentified item shows no enchantment: keep its hidden one hidden
+    if rec.Packed and not isIdentified(ptr) then return end
     local tempB2 = mem.u4[ptr + 0xC]
     if tempB2 == 0 or not (EnchantDmg[tempB2 - 1] or VampiricB2[tempB2] or SwiftB2[tempB2]
             or SlayB2[tempB2]) then
@@ -686,6 +764,14 @@ local function resolvePending()
             restoreStandard(ptr, p)
             local key, number, expire = uniqueKey(ptr, store)
             local rec = p.Cleared
+            if p.Packed then
+                -- unidentified item: its packed enchantment becomes the saved one, and
+                -- Charges is emptied so MMMWE_Main.lua won't unpack it over the temporary
+                -- enchantment when the item gets identified
+                rec = {Bonus = p.Packed.Bonus, Bonus2 = p.Packed.Bonus2,
+                    BonusStrength = p.Packed.BonusStrength, Packed = p.Packed.Charges}
+                mem.i4[ptr + 0x10] = 0
+            end
             rec.Number, rec.Expire = number, expire
             store[key] = rec
             tryInvert(ptr, rec)
@@ -731,4 +817,4 @@ function events.AfterLoadMap()
     end
 end
 
-log("Concurrent Enchantments v5.9 loaded.")
+log("Concurrent Enchantments v5.10 loaded.")

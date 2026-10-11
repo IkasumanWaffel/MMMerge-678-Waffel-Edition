@@ -92,6 +92,12 @@
 		if Game.ItemsTxt[it.Number].EquipStat >= 12 then
 			return false
 		end
+		-- A temporary enchantment (Fire Aura, weapon potions) is not a hidden bonus: packing it
+		-- would make it permanent once the item is identified. MMMWE_ConcurrentEnchantments.lua
+		-- keeps the item's own packed enchantment while a temporary one is on it.
+		if it.TemporaryBonus then
+			return false
+		end
 		return true
 	end
 
