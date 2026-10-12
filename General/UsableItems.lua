@@ -145,6 +145,35 @@ for id in pairs(OreLookup) do
   evt.UseItemEffects[id] = Ore
 end
 
+-- Tooltip line for the upgrade ores and gems above, shown only while the selected
+-- character has learned the Blaster skill. The item descriptions (ItemsTxt Notes) are
+-- switched when the selected character changes; nothing is hooked.
+local UPGRADE_NOTE = "\n\nCan be used for blaster upgrade."
+local BaseNotes, NoteShown
+
+local function setUpgradeNotes(show)
+  if show == NoteShown then return end
+  if not BaseNotes then
+    BaseNotes = {}
+    local ids = {}
+    for id in pairs(OreLookup) do ids[id] = true end
+    for id in pairs(GemLookup) do ids[id] = true end
+    for id in pairs(ids) do
+      local ok, txt = pcall(function() return Game.ItemsTxt[id].Notes end)
+      if ok and txt then BaseNotes[id] = txt end
+    end
+  end
+  for id, txt in pairs(BaseNotes) do
+    Game.ItemsTxt[id].Notes = show and (txt .. UPGRADE_NOTE) or txt
+  end
+  NoteShown = show
+end
+
+function events.Tick()
+  local pl = Party:GetCurrentPlayer()
+  setUpgradeNotes(pl ~= nil and SplitSkill(pl.Skills[const.Skills.Blaster]) > 0)
+end
+
 --[[
 	Reusable "bulk container" items: apothecary satchels and ore bags.
 

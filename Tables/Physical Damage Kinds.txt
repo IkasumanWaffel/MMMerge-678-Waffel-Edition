@@ -1,0 +1,653 @@
+#	Monster	Picture	Slashing	Piercing	Blunt	Phys (reference)	Profile (reference)	Melee Kind
+1	Lizardman Peasant	Lizardmen Male (Peasant)	0	0	0	0	-	Blunt
+2	Lizardman Farmer	Lizardmen Male (Peasant)	0	0	0	0	-	Blunt
+3	Lizardman Villager	Lizardmen Male (Peasant)	0	0	0	0	-	Blunt
+4	Lizardman Soldier	Lizardmen Warrior	10	-5	5	20	Leather armor	Slashing
+5	Lizardman Sergeant	Lizardmen Warrior	10	-5	5	20	Leather armor	Slashing
+6	Lizardman Captain	Lizardmen Warrior	10	-5	5	20	Leather armor	Slashing
+7	Young Couatl	Couatl (winged snake)	0	0	0	7	-	Piercing
+8	Couatl	Couatl (winged snake)	0	0	0	7	-	Piercing
+9	Winged Serpent	Couatl (winged snake)	0	0	0	7	-	Piercing
+10	Regnan Bandit	Pirate Warrior Male	10	-5	5	7	Leather armor	Slashing
+11	Regnan Pirate	Pirate Warrior Male	10	-5	5	11	Leather armor	Slashing
+12	Regnan Brigadier	Pirate Warrior Male	10	-5	5	15	Leather armor	Slashing
+13	Regnan Crossbowman	Pirate Crossbowman (Female)	10	-5	5	3	Leather armor	Slashing
+14	Regnan Arbalester	Pirate Crossbowman (Female)	10	-5	5	7	Leather armor	Slashing
+15	Regnan Lieutenant	Pirate Crossbowman (Female)	10	-5	5	11	Leather armor	Slashing
+16	Regnan Sorcerer	Pirate Mage Male	10	-5	5	0	Leather armor	Blunt
+17	Regnan Battlemage	Pirate Mage Male	10	-5	5	0	Leather armor	Blunt
+18	Regnan Archmage	Pirate Mage Male	10	-5	5	0	Leather armor	Blunt
+19	Dark Elf Peasant	Dark Elf Pesant Male	0	0	0	0	-	Slashing
+20	Dark Elf Peasant	Dark Elf Pesant Male	0	0	0	0	-	Slashing
+21	Dark Elf Peasant	Dark Elf Pesant Male	0	0	0	0	-	Slashing
+22	Dark Elf Peasant	Dark Elf Pesant Female	0	0	0	0	-	Slashing
+23	Dark Elf Peasant	Dark Elf Pesant Female	0	0	0	0	-	Slashing
+24	Dark Elf Peasant	Dark Elf Pesant Female	0	0	0	0	-	Slashing
+25	Dark Elven Warrior	Dark Elf Warrior	15	-10	0	11	Chain armor	Slashing
+26	Dark Elven Defender	Dark Elf Warrior	15	-10	0	15	Chain armor	Slashing
+27	Dark Elven Crusader	Dark Elf Warrior	15	-10	0	20	Chain armor	Slashing
+28	Ogre Peasant	Ogre Pesant Male	0	0	0	15	-	Blunt
+29	Ogre Peasant	Ogre Pesant Male	0	0	0	15	-	Blunt
+30	Ogre Peasant	Ogre Pesant Male	0	0	0	15	-	Blunt
+31	Ogre Brawler	Ogre Warrior	10	-5	5	15	Leather armor	Blunt
+32	Ogre Warrior	Ogre Warrior	10	-5	5	20	Leather armor	Blunt
+33	Ogre Warleader	Ogre Warrior	10	-5	5	40	Leather armor	Blunt
+34	Animalist	Wererat Human Form Male	0	0	0	3	-	Slashing
+35	Shapeshifter	Wererat Human Form Male	0	0	0	7	-	Slashing
+36	Lycanthrope	Wererat Human Form Male	0	0	0	11	-	Slashing
+37	Ratman	Wererat Ratman Form Male	0	0	0	3	-	Slashing
+38	Wererat	Wererat Ratman Form Male	0	0	0	7	-	Slashing
+39	Greater Wererat	Wererat Ratman Form Male	0	0	0	11	-	Slashing
+40	Bestial Animalist	Wererat Rat Form Male	0	0	0	0	-	Piercing
+41	Bestial Shapeshifter	Wererat Rat Form Male	0	0	0	7	-	Piercing
+42	Bestial Lycanthrope	Wererat Rat Form Male	0	0	0	15	-	Piercing
+43	Dragon Hunter	Dragon Hunter	20	-10	-10	20	Plate armor	Slashing
+44	Crusader	Dragon Hunter	20	-10	-10	26	Plate armor	Slashing
+45	Dragonslayer	Dragon Hunter	20	-10	-10	40	Plate armor	Slashing
+46	Acolyte of the Sun	Cleric (human male)	0	0	0	0	-	Blunt
+47	Cleric of the Sun	Cleric (human male)	0	0	0	0	-	Blunt
+48	Priest of the Sun	Cleric (human male)	0	0	0	0	-	Blunt
+49	Peasant	Vampire Female Peasant	0	0	0	0	-	Blunt
+50	Peasant	Vampire Female Peasant	0	0	0	0	-	Blunt
+51	Peasant	Vampire Female Peasant	0	0	0	0	-	Blunt
+52	Vampire Minion	Vampire (monster)	15	0	15	11	Vampire	Slashing
+53	Vampire	Vampire (monster)	15	0	15	20	Vampire	Slashing
+54	Greater Vampire	Vampire (monster)	15	0	15	33	Vampire	Slashing
+55	Dark Path Journeyman	Necromancer (monster)	0	0	0	0	-	Blunt
+56	Necromancer	Necromancer (monster)	0	0	0	0	-	Blunt
+57	Master Necromancer	Necromancer (monster)	0	0	0	0	-	Blunt
+58	Troll Clubman	Troll	10	-5	5	33	Leather armor	Blunt
+59	Troll Warrior	Troll	10	-5	5	50	Leather armor	Blunt
+60	Troll Chieftain	Troll	10	-5	5	76	Leather armor	Blunt
+61	Troll Peasant	Troll Pesant	0	0	0	15	-	Blunt
+62	Troll Peasant	Troll Pesant	0	0	0	33	-	Blunt
+63	Troll Peasant	Troll Pesant	0	0	0	50	-	Blunt
+64	Minotaur Guard	Minotaur	15	-10	0	7	Chain armor	Slashing
+65	Minotaur Warrior	Minotaur	15	-10	0	20	Chain armor	Slashing
+66	Minotaur Battleleader	Minotaur	15	-10	0	40	Chain armor	Slashing
+67	Minotaur Peasant	Minotaur Pesant	0	0	0	0	-	Slashing
+68	Minotaur Peasant	Minotaur Pesant	0	0	0	0	-	Slashing
+69	Minotaur Peasant	Minotaur Pesant	0	0	0	0	-	Slashing
+70	Dragon	Dragon	20	-10	10	15	Scales	Slashing
+71	Dragon Flightleader	Dragon	20	-10	10	33	Scales	Slashing
+72	Great Wyrm	Dragon	20	-10	10	50	Scales	Slashing
+73	Lesser Fire Elemental	Fire Elemental	20	30	10	15	Elemental (air/fire/light)	Blunt
+74	Fire Elemental	Fire Elemental	20	30	10	33	Elemental (air/fire/light)	Blunt
+75	Greater Fire Elemental	Fire Elemental	20	30	10	50	Elemental (air/fire/light)	Blunt
+76	Lesser Water Elemental	Water Elemental	20	30	30	15	Elemental (water)	Blunt
+77	Water Elemental	Water Elemental	20	30	30	33	Elemental (water)	Blunt
+78	Greater Water Elemental	Water Elemental	20	30	30	50	Elemental (water)	Blunt
+79	Lesser Earth Elemental	Earth Elemental	30	30	-20	15	Stone/metal	Blunt
+80	Earth Elemental	Earth Elemental	30	30	-20	33	Stone/metal	Blunt
+81	Greater Earth Elemental	Earth Elemental	30	30	-20	50	Stone/metal	Blunt
+82	Lesser Air Elemental	Air Elemental	20	30	10	15	Elemental (air/fire/light)	Blunt
+83	Air Elemental	Air Elemental	20	30	10	33	Elemental (air/fire/light)	Blunt
+84	Greater Air Elemental	Air Elemental	20	30	10	50	Elemental (air/fire/light)	Blunt
+85	Dire Wolf Yearling	Dire Wolf	10	5	10	0	Beast hide	Piercing
+86	Dire Wolf	Dire Wolf	10	5	10	7	Beast hide	Piercing
+87	Pack Leader	Dire Wolf	10	5	10	15	Beast hide	Piercing
+88	Young Basilisk	Thunder Lizard	20	-10	10	7	Scales	Piercing
+89	Basilisk	Thunder Lizard	20	-10	10	15	Scales	Piercing
+90	Elder Basilisk	Thunder Lizard	20	-10	10	20	Scales	Piercing
+91	Cyclops	Cyclops	0	0	0	7	-	Blunt
+92	Cyclops Hunter	Cyclops	0	0	0	15	-	Blunt
+93	Cyclops Warrior	Cyclops	0	0	0	20	-	Blunt
+94	Serpentman	Serpentmen	0	0	0	0	-	Slashing
+95	Serpentman Elder	Serpentmen	0	0	0	0	-	Slashing
+96	Serpentman Warrior	Serpentmen	0	0	0	0	-	Slashing
+97	Dancing Light	Will ' O Wisp	20	30	10	0	Elemental (air/fire/light)	Blunt
+98	Wisp	Will ' O Wisp	20	30	10	0	Elemental (air/fire/light)	Blunt
+99	Will O' Wisp	Will ' O Wisp	20	30	10	0	Elemental (air/fire/light)	Blunt
+100	Centaur	Centaur	0	0	0	20	-	Piercing
+101	Centaur Warrior	Centaur	0	0	0	33	-	Piercing
+102	Centaur Warlord	Centaur	0	0	0	40	-	Piercing
+103	Efreeti Soldier	Efreeti	20	30	10	33	Elemental (air/fire/light)	Slashing
+104	Efreeti Knight	Efreeti	20	30	10	50	Elemental (air/fire/light)	Slashing
+105	Efreeti Lord	Efreeti	20	30	10	76	Elemental (air/fire/light)	Slashing
+106	Ogre Mage Apprentice	Ogre Mage	0	0	0	0	-	Blunt
+107	Ogre Mage	Ogre Mage	0	0	0	0	-	Blunt
+108	Ogre Magi	Ogre Mage	0	0	0	0	-	Blunt
+109	Unicorn Foal	Unicorn	10	5	10	15	Beast hide	Piercing
+110	Unicorn	Unicorn	10	5	10	33	Beast hide	Piercing
+111	Unicorn Herd Leader	Unicorn	10	5	10	50	Beast hide	Piercing
+112	Emerald Dragon	Crystal Dragon	20	-10	10	33	Scales	Slashing
+113	Sapphire Dragon	Crystal Dragon	20	-10	10	50	Scales	Slashing
+114	Ruby Dragon	Crystal Dragon	20	-10	10	76	Scales	Slashing
+115	Mist Hawk	Thunderbird	10	5	10	7	Beast hide	Slashing
+116	Storm Eagle	Thunderbird	10	5	10	15	Beast hide	Slashing
+117	Thunderbird	Thunderbird	10	5	10	33	Beast hide	Slashing
+118	Wasp Worker	Wasp Warrior	10	0	-10	0	Exoskeleton	Piercing
+119	Wasp Sentry	Wasp Warrior	10	0	-10	0	Exoskeleton	Piercing
+120	Wasp Warrior	Wasp Warrior	10	0	-10	0	Exoskeleton	Piercing
+121	Wyvern	Wyvern	20	-10	10	20	Scales	Piercing
+122	Horned Wyvern	Wyvern	20	-10	10	33	Scales	Piercing
+123	Ancient Wyvern	Wyvern	20	-10	10	40	Scales	Piercing
+124	Brass Gorgon	Gorgon	30	30	-20	33	Stone/metal	Piercing
+125	Bronze Gorgon	Gorgon	30	30	-20	40	Stone/metal	Piercing
+126	Iron Gorgon	Gorgon	30	30	-20	50	Stone/metal	Piercing
+127	Fire Newt	Salamander	0	0	0	15	-	Piercing
+128	Fire Lizard	Salamander	0	0	0	20	-	Piercing
+129	Salamander	Salamander	0	0	0	33	-	Piercing
+130	Fire Bird	Phoenix	0	0	0	15	-	Slashing
+131	Phoenix	Phoenix	0	0	0	20	-	Slashing
+132	Grand Phoenix	Phoenix	0	0	0	33	-	Slashing
+133	Triton	Triton	0	0	0	7	-	Piercing
+134	Triton Warrior	Triton	0	0	0	15	-	Piercing
+135	Triton Crusader	Triton	0	0	0	20	-	Piercing
+136	Young Dragon Turtle	Dragon Turtle	30	20	-10	15	Shell	Piercing
+137	Dragon Turtle	Dragon Turtle	30	20	-10	33	Shell	Piercing
+138	Elder Tortoise	Dragon Turtle	30	20	-10	50	Shell	Piercing
+139	Rook	Raven Man	0	0	0	15	-	Slashing
+140	Corbie	Raven Man	0	0	0	33	-	Slashing
+141	Raven	Raven Man	0	0	0	50	-	Slashing
+142	Boulder	Malevolent Boulder	30	30	-20	7	Stone/metal	Blunt
+143	Boulder	Malevolent Boulder	30	30	-20	15	Stone/metal	Blunt
+144	Boulder	Malevolent Boulder	30	30	-20	20	Stone/metal	Blunt
+145	Plane Guardian	Plane Guardian	30	30	-20	0	Stone/metal	Blunt
+146	Plane Protector	Plane Guardian	30	30	-20	0	Stone/metal	Blunt
+147	Plane Overlord	Plane Guardian	30	30	-20	0	Stone/metal	Blunt
+148	Crystal Walker	Crystal Walker	30	30	-20	0	Stone/metal	Piercing
+149	Crystal Sentry	Crystal Walker	30	30	-20	0	Stone/metal	Piercing
+150	Crystal Guardian	Crystal Walker	30	30	-20	0	Stone/metal	Piercing
+151	Fear	Nightmare	0	20	20	Imm	Incorporeal	Blunt
+152	Terror	Nightmare	0	20	20	Imm	Incorporeal	Blunt
+153	Nightmare	Nightmare	0	20	20	Imm	Incorporeal	Blunt
+154	Ether Knight	Ether Knight	20	-10	-10	0	Plate armor	Slashing
+155	Ether Champion	Ether Knight	20	-10	-10	0	Plate armor	Slashing
+156	Ether Lord	Ether Knight	20	-10	-10	0	Plate armor	Slashing
+157	Charger	Juggernaut	30	30	-20	120	Stone/metal	Blunt
+158	Juggernaut	Juggernaut	30	30	-20	120	Stone/metal	Blunt
+159	Demolisher	Juggernaut	30	30	-20	120	Stone/metal	Blunt
+160	Smoke Gog	Gog	5	5	5	0	Gog hide	Blunt
+161	Ember Gog	Gog	5	5	5	0	Gog hide	Blunt
+162	Fire Gog	Gog	5	5	5	0	Gog hide	Blunt
+163	Skeletal Dragon	Bone Dragon	20	40	-20	7	Skeletal	Slashing
+164	Bone Dragon	Bone Dragon	20	40	-20	15	Skeletal	Slashing
+165	Undead Dragon	Bone Dragon	20	40	-20	20	Skeletal	Slashing
+166	Human Peasant	Bedraggled Human (peasant)	0	0	0	0	-	Blunt
+167	Human Peasant	Bedraggled Human (peasant)	0	0	0	0	-	Blunt
+168	Human Peasant	Bedraggled Human (peasant)	0	0	0	0	-	Blunt
+169	Naga	Naga	0	0	0	11	-	Slashing
+170	Naga Warrior	Naga	0	0	0	20	-	Slashing
+171	Naga Queen	Naga	0	0	0	33	-	Slashing
+172	Skeleton Bowman	Skeletons Archer	20	40	-20	0	Skeletal	Slashing
+173	Skeleton Hunter	Skeletons Archer	20	40	-20	0	Skeletal	Slashing
+174	Skeleton Archer	Skeletons Archer	20	40	-20	0	Skeletal	Slashing
+175	Dark Dwarf Grunt	Dark Dwarf	15	-10	0	15	Chain armor	Slashing
+176	Dark Dwarf Pounder	Dark Dwarf	15	-10	0	20	Chain armor	Slashing
+177	Dark Dwarf Berserker	Dark Dwarf	15	-10	0	33	Chain armor	Slashing
+178	Fish	School of Fish (non-combatant)	0	0	0	0	-	Blunt
+179	Fish	School of Fish (non-combatant)	0	0	0	0	-	Blunt
+180	Fish	School of Fish (non-combatant)	0	0	0	0	-	Blunt
+181	Pirate	Wimpy Pirate Warrior Male	10	-5	5	3	Leather armor	Slashing
+182	Buccaneer	Wimpy Pirate Warrior Male	10	-5	5	7	Leather armor	Slashing
+183	Corsair	Wimpy Pirate Warrior Male	10	-5	5	11	Leather armor	Slashing
+184	Regnan Crossbowman	Wimpy Pirate Crossbowman (Female)	10	-5	5	3	Leather armor	Slashing
+185	Regnan Arbalester	Wimpy Pirate Crossbowman (Female)	10	-5	5	7	Leather armor	Slashing
+186	Regnan Lieutenant	Wimpy Pirate Crossbowman (Female)	10	-5	5	11	Leather armor	Slashing
+187	Pirate Seer	Wimpy Pirate Mage Male	10	-5	5	0	Leather armor	Blunt
+188	Pirate Magi	Wimpy Pirate Mage Male	10	-5	5	0	Leather armor	Blunt
+189	Pirate Wizard	Wimpy Pirate Mage Male	10	-5	5	0	Leather armor	Blunt
+190	Hatchling	Wimpy Dragon	20	-10	10	15	Scales	Slashing
+191	Dragonette	Wimpy Dragon	20	-10	10	20	Scales	Slashing
+192	Young Dragon	Wimpy Dragon	20	-10	10	33	Scales	Slashing
+193	Soldier of Fortune	Human Mercenary	10	-5	5	7	Leather armor	Slashing
+194	Mercenary	Human Mercenary	10	-5	5	11	Leather armor	Slashing
+195	Mercenary Captain	Human Mercenary	10	-5	5	15	Leather armor	Slashing
+196	Chaos Guardian	Wimpy Plane Guardian	30	30	-20	0	Stone/metal	Blunt
+197	Chaos Protector	Wimpy Plane Guardian	30	30	-20	0	Stone/metal	Blunt
+198	Chaos Overlord	Wimpy Plane Guardian	30	30	-20	0	Stone/metal	Blunt
+199	Angel	Angel	35	25	-5	33	Angel (plate construct)	Slashing
+200	Angel Lord	Angel	35	25	-5	33	Angel (plate construct)	Slashing
+201	Archangel	Angel	35	25	-5	33	Angel (plate construct)	Slashing
+202	Archer	Archer	10	-5	5	7	Leather armor	Slashing
+203	Bowman	Archer	10	-5	5	15	Leather armor	Slashing
+204	Elite Archer	Archer	10	-5	5	20	Leather armor	Slashing
+205	Giant Bat	Bat	0	0	0	0	-	Piercing
+206	Vampire Bat	Bat	0	0	0	0	-	Piercing
+207	Inferno Bat	Bat	0	0	0	0	-	Piercing
+208	Young Behemoth	Behemoth	10	5	10	33	Beast hide	Slashing
+209	Behemoth	Behemoth	10	5	10	40	Beast hide	Slashing
+210	Ancient Behemoth	Behemoth	10	5	10	50	Beast hide	Slashing
+211	Floating Eye	Beholder	0	0	0	50	-	Piercing
+212	Gazer	Beholder	0	0	0	76	-	Piercing
+213	Evil Eye	Beholder	0	0	0	120	-	Piercing
+214	Acolyte of the Moon	Cleric Moon	0	0	0	15	-	Blunt
+215	Cleric of the Moon	Cleric Moon	0	0	0	20	-	Blunt
+216	Priest of the Moon	Cleric Moon	0	0	0	33	-	Blunt
+217	Acolyte of the Sun	Cleric Sun	0	0	0	15	-	Blunt
+218	Cleric of the Sun	Cleric Sun	0	0	0	20	-	Blunt
+219	Priest of the Sun	Cleric Sun	0	0	0	33	-	Blunt
+220	Devil Worker	Devil	20	20	20	33	Kreegan hide	Slashing
+221	Devil Warrior	Devil	20	20	20	50	Kreegan hide	Slashing
+222	Devil Captain	Devil	20	20	20	76	Kreegan hide	Slashing
+223	Green Dragon	ADragon	20	-10	10	120	Scales	Slashing
+224	Blue Dragon	ADragon	20	-10	10	156	Scales	Slashing
+225	Red Dragon	ADragon	20	-10	10	211	Scales	Slashing
+226	Dragonfly	Dragonfly	10	0	-10	0	Exoskeleton	Piercing
+227	Fire Dragonfly	Dragonfly	10	0	-10	0	Exoskeleton	Piercing
+228	Queen Dragonfly	Dragonfly	10	0	-10	0	Exoskeleton	Piercing
+229	Dwarven Soldier	Dwarf	20	-10	-10	50	Plate armor	Slashing
+230	Dwarven Lieutenant	Dwarf	20	-10	-10	76	Plate armor	Slashing
+231	Dwarven Commander	Dwarf	20	-10	-10	120	Plate armor	Slashing
+232	Tempest	Elemental Air	20	30	10	15	Elemental (air/fire/light)	Blunt
+233	Cyclone	Elemental Air	20	30	10	20	Elemental (air/fire/light)	Blunt
+234	Air Elemental	Elemental Air	20	30	10	33	Elemental (air/fire/light)	Blunt
+235	Clay Elemental	Elemental Earth	30	30	-20	15	Stone/metal	Blunt
+236	Stone Elemental	Elemental Earth	30	30	-20	20	Stone/metal	Blunt
+237	Earth Elemental	Elemental Earth	30	30	-20	33	Stone/metal	Blunt
+238	Warden of Fire	Elemental Fire	20	30	10	15	Elemental (air/fire/light)	Blunt
+239	Guardian of Flame	Elemental Fire	20	30	10	20	Elemental (air/fire/light)	Blunt
+240	Fire Elemental	Elemental Fire	20	30	10	33	Elemental (air/fire/light)	Blunt
+241	Lesser Light Elemental	Elemental Light	20	30	10	15	Elemental (air/fire/light)	Blunt
+242	Light Elemental	Elemental Light	20	30	10	20	Elemental (air/fire/light)	Blunt
+243	Greater Light Elemental	Elemental Light	20	30	10	33	Elemental (air/fire/light)	Blunt
+244	Sprite	Elemental Water	20	30	30	15	Elemental (water)	Blunt
+245	Sylph	Elemental Water	20	30	30	20	Elemental (water)	Blunt
+246	Water Elemental	Elemental Water	20	30	30	33	Elemental (water)	Blunt
+247	Elven Archer	Elf Archer	10	-5	5	7	Leather armor	Slashing
+248	Elven Scout	Elf Archer	10	-5	5	15	Leather armor	Slashing
+249	Elven Ranger	Elf Archer	10	-5	5	20	Leather armor	Slashing
+250	Elven Warrior	Elf Spearman	10	-5	5	7	Leather armor	Piercing
+251	Elven Defender	Elf Spearman	10	-5	5	15	Leather armor	Piercing
+252	Elven Lancer	Elf Spearman	10	-5	5	20	Leather armor	Piercing
+253	Conscript	Fighter Chain	15	-10	0	15	Chain armor	Slashing
+254	Soldier	Fighter Chain	15	-10	0	33	Chain armor	Slashing
+255	Fighter	Fighter Chain	15	-10	0	50	Chain armor	Slashing
+256	Robber	Fighter Leather	10	-5	5	7	Leather armor	Slashing
+257	Raider	Fighter Leather	10	-5	5	15	Leather armor	Slashing
+258	Bandit	Fighter Leather	10	-5	5	20	Leather armor	Slashing
+259	Initiate of the Sword	Fighter Plate	20	-10	-10	33	Plate armor	Slashing
+260	Champion of the Sword	Fighter Plate	20	-10	-10	50	Plate armor	Slashing
+261	Master of the Sword	Fighter Plate	20	-10	-10	120	Plate armor	Slashing
+262	Stone Gargoyle	Gargoyle	30	30	-20	33	Stone/metal	Slashing
+263	Marble Gargoyle	Gargoyle	30	30	-20	76	Stone/metal	Slashing
+264	Obsidian Gargoyle	Gargoyle	30	30	-20	Imm	Stone/metal	Slashing
+265	Djinni	Genie	20	30	10	50	Elemental (air/fire/light)	Slashing
+266	Genie	Genie	20	30	10	50	Elemental (air/fire/light)	Slashing
+267	Efreet	Genie	20	30	10	120	Elemental (air/fire/light)	Slashing
+268	Shade	Ghost	0	20	20	62	Incorporeal	Blunt
+269	Specter	Ghost	0	20	20	62	Incorporeal	Blunt
+270	Ghost	Ghost	0	20	20	62	Incorporeal	Blunt
+271	Goblin	Goblin	10	-5	5	7	Leather armor	Slashing
+272	Hobgoblin	Goblin	10	-5	5	11	Leather armor	Slashing
+273	Goblin Lord	Goblin	10	-5	5	15	Leather armor	Slashing
+274	Gogling	AGog	5	5	5	15	Gog hide	Blunt
+275	Gog	AGog	5	5	5	20	Gog hide	Blunt
+276	Magog	AGog	5	5	5	33	Gog hide	Blunt
+277	Bronze Golem	Golem	30	30	-20	50	Stone/metal	Blunt
+278	Brass Golem	Golem	30	30	-20	50	Stone/metal	Blunt
+279	Gold Golem	Golem	30	30	-20	120	Stone/metal	Blunt
+280	Griffin	Griffin	10	5	10	7	Beast hide	Slashing
+281	Hunting Griffin	Griffin	10	5	10	15	Beast hide	Slashing
+282	Royal Griffin	Griffin	10	5	10	20	Beast hide	Slashing
+283	Harpy	Harpy	0	0	0	7	-	Slashing
+284	Harpy Hag	Harpy	0	0	0	15	-	Slashing
+285	Harpy Queen	Harpy	0	0	0	20	-	Slashing
+286	Fire Hydra	Hydra	20	-10	10	33	Scales	Piercing
+287	Air Hydra	Hydra	20	-10	10	50	Scales	Piercing
+288	Chaos Hydra	Hydra	20	-10	10	76	Scales	Piercing
+289	Lich	Lich	20	40	-20	33	Skeletal	Blunt
+290	Power Lich	Lich	20	40	-20	40	Skeletal	Blunt
+291	Lich King	Lich	20	40	-20	50	Skeletal	Blunt
+292	Sorcerer	Mage	0	0	0	15	-	Blunt
+293	Wizard	Mage	0	0	0	33	-	Blunt
+294	Archmage	Mage	0	0	0	50	-	Blunt
+295	Minicore	Manticore	10	5	10	15	Beast hide	Piercing
+296	Manticore	Manticore	10	5	10	33	Beast hide	Piercing
+297	Scorpicore	Manticore	10	5	10	50	Beast hide	Piercing
+298	Medusa	Medusa	0	0	0	0	-	Slashing
+299	Queen Medusa	Medusa	0	0	0	0	-	Slashing
+300	Empress Medusa	Medusa	0	0	0	0	-	Slashing
+301	Minotaur	AMinotaur	10	-5	5	26	Leather armor	Slashing
+302	Minotaur Headsman	AMinotaur	10	-5	5	40	Leather armor	Slashing
+303	Minotaur Lord	AMinotaur	10	-5	5	62	Leather armor	Slashing
+304	Monk	Monk	0	0	0	7	-	Blunt
+305	Initiate	Monk	0	0	0	15	-	Blunt
+306	Master	Monk	0	0	0	20	-	Blunt
+307	Necromancer	Necromancer	0	0	0	15	-	Blunt
+308	Speaker for the Dead	Necromancer	0	0	0	33	-	Blunt
+309	Queen of the Dead	Necromancer	0	0	0	50	-	Blunt
+310	Emerald Ooze	Ooze	-20	20	40	Imm	Ooze	Blunt
+311	Sapphire Ooze	Ooze	-20	20	40	Imm	Ooze	Blunt
+312	Bloodstone Ooze	Ooze	-20	20	40	Imm	Ooze	Blunt
+313	Peasant	Peasant Dwarf FemaleA	0	0	0	0	-	Blunt
+314	Peasant	Peasant Dwarf FemaleA	0	0	0	0	-	Blunt
+315	Peasant	Peasant Dwarf FemaleA	0	0	0	0	-	Blunt
+316	Peasant	Peasant Dwarf FemaleB	0	0	0	0	-	Blunt
+317	Peasant	Peasant Dwarf FemaleB	0	0	0	0	-	Blunt
+318	Peasant	Peasant Dwarf FemaleB	0	0	0	0	-	Blunt
+319	Peasant	Peasant Dwarf FemaleC	0	0	0	0	-	Blunt
+320	Peasant	Peasant Dwarf FemaleC	0	0	0	0	-	Blunt
+321	Peasant	Peasant Dwarf FemaleC	0	0	0	0	-	Blunt
+322	Peasant	Peasant Dwarf MaleA	0	0	0	0	-	Blunt
+323	Peasant	Peasant Dwarf MaleA	0	0	0	0	-	Blunt
+324	Peasant	Peasant Dwarf MaleA	0	0	0	0	-	Blunt
+325	Peasant	Peasant Dwarf MaleB	0	0	0	0	-	Blunt
+326	Peasant	Peasant Dwarf MaleB	0	0	0	0	-	Blunt
+327	Peasant	Peasant Dwarf MaleB	0	0	0	0	-	Blunt
+328	Peasant	Peasant Dwarf MaleC	0	0	0	0	-	Blunt
+329	Peasant	Peasant Dwarf MaleC	0	0	0	0	-	Blunt
+330	Peasant	Peasant Dwarf MaleC	0	0	0	0	-	Blunt
+331	Peasant	Peasant Elf FemaleA	0	0	0	0	-	Blunt
+332	Peasant	Peasant Elf FemaleA	0	0	0	0	-	Blunt
+333	Peasant	Peasant Elf FemaleA	0	0	0	0	-	Blunt
+334	Peasant	Peasant Elf FemaleB	0	0	0	0	-	Blunt
+335	Peasant	Peasant Elf FemaleB	0	0	0	0	-	Blunt
+336	Peasant	Peasant Elf FemaleB	0	0	0	0	-	Blunt
+337	Peasant	Peasant Elf FemaleC	0	0	0	0	-	Blunt
+338	Peasant	Peasant Elf FemaleC	0	0	0	0	-	Blunt
+339	Peasant	Peasant Elf FemaleC	0	0	0	0	-	Blunt
+340	Peasant	Peasant Elf MaleA	0	0	0	0	-	Blunt
+341	Peasant	Peasant Elf MaleA	0	0	0	0	-	Blunt
+342	Peasant	Peasant Elf MaleA	0	0	0	0	-	Blunt
+343	Peasant	Peasant Elf MaleB	0	0	0	0	-	Blunt
+344	Peasant	Peasant Elf MaleB	0	0	0	0	-	Blunt
+345	Peasant	Peasant Elf MaleB	0	0	0	0	-	Blunt
+346	Peasant	Peasant Elf MaleC	0	0	0	0	-	Blunt
+347	Peasant	Peasant Elf MaleC	0	0	0	0	-	Blunt
+348	Peasant	Peasant Elf MaleC	0	0	0	0	-	Blunt
+349	Peasant	Peasant Human1 FemaleA	0	0	0	0	-	Blunt
+350	Peasant	Peasant Human1 FemaleA	0	0	0	0	-	Blunt
+351	Peasant	Peasant Human1 FemaleA	0	0	0	0	-	Blunt
+352	Peasant	Peasant Human1 FemaleB	0	0	0	0	-	Blunt
+353	Peasant	Peasant Human1 FemaleB	0	0	0	0	-	Blunt
+354	Peasant	Peasant Human1 FemaleB	0	0	0	0	-	Blunt
+355	Peasant	Peasant Human1 FemaleC	0	0	0	0	-	Blunt
+356	Peasant	Peasant Human1 FemaleC	0	0	0	0	-	Blunt
+357	Peasant	Peasant Human1 FemaleC	0	0	0	0	-	Blunt
+358	Peasant	Peasant Human1 MaleA	0	0	0	0	-	Blunt
+359	Peasant	Peasant Human1 MaleA	0	0	0	0	-	Blunt
+360	Peasant	Peasant Human1 MaleA	0	0	0	0	-	Blunt
+361	Peasant	Peasant Human1 MaleB	0	0	0	0	-	Blunt
+362	Peasant	Peasant Human1 MaleB	0	0	0	0	-	Blunt
+363	Peasant	Peasant Human1 MaleB	0	0	0	0	-	Blunt
+364	Peasant	Peasant Human1 MaleC	0	0	0	0	-	Blunt
+365	Peasant	Peasant Human1 MaleC	0	0	0	0	-	Blunt
+366	Peasant	Peasant Human1 MaleC	0	0	0	0	-	Blunt
+367	Peasant	Peasant Human2 MaleA	0	0	0	0	-	Blunt
+368	Peasant	Peasant Human2 MaleA	0	0	0	0	-	Blunt
+369	Peasant	Peasant Human2 MaleA	0	0	0	0	-	Blunt
+370	Peasant	Peasant Human2 MaleB	0	0	0	0	-	Blunt
+371	Peasant	Peasant Human2 MaleB	0	0	0	0	-	Blunt
+372	Peasant	Peasant Human2 MaleB	0	0	0	0	-	Blunt
+373	Peasant	Peasant Human2 MaleC	0	0	0	0	-	Blunt
+374	Peasant	Peasant Human2 MaleC	0	0	0	0	-	Blunt
+375	Peasant	Peasant Human2 MaleC	0	0	0	0	-	Blunt
+376	Peasant	Peasant Human2 FemaleA	0	0	0	0	-	Blunt
+377	Peasant	Peasant Human2 FemaleA	0	0	0	0	-	Blunt
+378	Peasant	Peasant Human2 FemaleA	0	0	0	0	-	Blunt
+379	Peasant	Peasant Human2 FemaleB	0	0	0	0	-	Blunt
+380	Peasant	Peasant Human2 FemaleB	0	0	0	0	-	Blunt
+381	Peasant	Peasant Human2 FemaleB	0	0	0	0	-	Blunt
+382	Peasant	Peasant Human2 FemaleC	0	0	0	0	-	Blunt
+383	Peasant	Peasant Human2 FemaleC	0	0	0	0	-	Blunt
+384	Peasant	Peasant Human2 FemaleC	0	0	0	0	-	Blunt
+385	Giant Rat	Rat	0	0	0	0	-	Piercing
+386	Lightning Rat	Rat	0	0	0	0	-	Piercing
+387	Fire Rat	Rat	0	0	0	0	-	Piercing
+388	Seeker Droid	Robot	30	30	-20	33	Stone/metal	Blunt
+389	Sentinel Droid	Robot	30	30	-20	50	Stone/metal	Blunt
+390	Assassin Droid	Robot	30	30	-20	120	Stone/metal	Blunt
+391	Roc	Roc	10	5	10	33	Beast hide	Slashing
+392	Greater Roc	Roc	10	5	10	50	Beast hide	Slashing
+393	Thunderbird	Roc	10	5	10	76	Beast hide	Slashing
+394	Giant Shark	Sea Monster	0	0	0	50	-	Piercing
+395	Piranha Shark	Sea Monster	0	0	0	76	-	Piercing
+396	Dragon Shark	Sea Monster	0	0	0	120	-	Piercing
+397	Skeleton	Skeleton Warrior	20	40	-20	7	Skeletal	Slashing
+398	Skeleton Warrior	Skeleton Warrior	20	40	-20	7	Skeletal	Slashing
+399	Skeleton Lord	Skeleton Warrior	20	40	-20	7	Skeletal	Slashing
+400	Giant Spider	Spider	10	0	-10	0	Exoskeleton	Piercing
+401	Venemous Spider	Spider	10	0	-10	0	Exoskeleton	Piercing
+402	Widowmaker	Spider	10	0	-10	0	Exoskeleton	Piercing
+403	Swordsman	Swordsman	18	-10	-5	15	Partial chain/plate	Slashing
+404	Guard	Swordsman	18	-10	-5	20	Partial chain/plate	Slashing
+405	Adventurer	Swordsman	18	-10	-5	26	Partial chain/plate	Slashing
+406	Thief	Thief	10	-5	5	3	Leather armor	Piercing
+407	Rogue	Thief	10	-5	5	7	Leather armor	Piercing
+408	Master Thief	Thief	10	-5	5	11	Leather armor	Piercing
+409	Titan	Titan	20	-10	-10	50	Plate armor	Slashing
+410	Storm Titan	Titan	20	-10	-10	120	Plate armor	Slashing
+411	Blood Titan	Titan	20	-10	-10	211	Plate armor	Slashing
+412	Troglodyte Drone	Troglodyte	0	0	0	7	-	Slashing
+413	Troglodyte Soldier	Troglodyte	0	0	0	15	-	Slashing
+414	Troglodyte Queen	Troglodyte	0	0	0	20	-	Slashing
+415	Minion Vampire	Vampire	15	0	15	15	Vampire	Slashing
+416	Vampire	Vampire	15	0	15	33	Vampire	Slashing
+417	Elder Vampire	Vampire	15	0	15	50	Vampire	Slashing
+418	Fire Warlock	Warlock	0	0	0	15	-	Blunt
+419	Water Warlock	Warlock	0	0	0	33	-	Blunt
+420	Air Warlock	Warlock	0	0	0	50	-	Blunt
+421	Wight	Wight	0	20	20	62	Incorporeal	Piercing
+422	Wraith	Wight	0	20	20	62	Incorporeal	Piercing
+423	Barrow Wight	Wight	0	20	20	62	Incorporeal	Piercing
+424	Wyvern	AWyvern	20	-10	10	15	Scales	Piercing
+425	Horned Wyvern	AWyvern	20	-10	10	33	Scales	Piercing
+426	Ancient Wyvern	AWyvern	20	-10	10	50	Scales	Piercing
+427	Rotted Corpse	Zombie	-10	30	0	15	Rotting flesh	Blunt
+428	Walking Dead	Zombie	-10	30	0	33	Rotting flesh	Blunt
+429	Zombie	Zombie	-10	30	0	50	Rotting flesh	Blunt
+430	peasant	Peasant Goblin female A	0	0	0	0	-	Blunt
+431	peasant	Peasant Goblin female A	0	0	0	0	-	Blunt
+432	peasant	Peasant Goblin female A	0	0	0	0	-	Blunt
+433	peasant	Peasant Goblin female B	0	0	0	0	-	Blunt
+434	peasant	Peasant Goblin female B	0	0	0	0	-	Blunt
+435	peasant	Peasant Goblin female B	0	0	0	0	-	Blunt
+436	peasant	Peasant Goblin female C	0	0	0	0	-	Blunt
+437	peasant	Peasant Goblin female C	0	0	0	0	-	Blunt
+438	peasant	Peasant Goblin female C	0	0	0	0	-	Blunt
+439	peasant	Peasant Goblin Male A	0	0	0	0	-	Blunt
+440	peasant	Peasant Goblin Male A	0	0	0	0	-	Blunt
+441	peasant	Peasant Goblin Male A	0	0	0	0	-	Blunt
+442	peasant	Peasant Goblin Male B	0	0	0	0	-	Blunt
+443	peasant	Peasant Goblin Male B	0	0	0	0	-	Blunt
+444	peasant	Peasant Goblin Male B	0	0	0	0	-	Blunt
+445	peasant	Peasant Goblin Male C	0	0	0	0	-	Blunt
+446	peasant	Peasant Goblin Male C	0	0	0	0	-	Blunt
+447	peasant	Peasant Goblin Male C	0	0	0	0	-	Blunt
+448	Swamp Troll	ATroll	0	0	0	15	-	Blunt
+449	River Troll	ATroll	0	0	0	33	-	Blunt
+450	Mountain Troll	ATroll	0	0	0	50	-	Blunt
+451	Tree	Treant	-20	30	20	33	Wood	Blunt
+452	Tree	Treant	-20	30	20	50	Wood	Blunt
+453	Tree	Treant	-20	30	20	76	Wood	Blunt
+454	Ghast	Ghoul	-10	30	0	0	Rotting flesh	Slashing
+455	Ghoul	Ghoul	-10	30	0	0	Rotting flesh	Slashing
+456	Revenant	Ghoul	-10	30	0	0	Rotting flesh	Slashing
+457	Tolberti	zBlasterGuy	0	0	0	120	-	Slashing
+458	Robert the Wise	zBlasterGuy	0	0	0	120	-	Slashing
+459	Blaster Guy C	zBlasterGuy	0	0	0	120	-	Slashing
+460	Mega-Dragon	zUltra Dragon	20	-10	10	211	Scales	Slashing
+461	Mega-Dragon	zUltra Dragon	20	-10	10	211	Scales	Slashing
+462	Mega-Dragon	zUltra Dragon	20	-10	10	211	Scales	Slashing
+463	Cat A	zcat	0	0	0	0	-	Slashing
+464	Cat B	zcat	0	0	0	0	-	Slashing
+465	Cat C	zcat	0	0	0	0	-	Slashing
+466	Chicken A	zchicken	0	0	0	0	-	Piercing
+467	Chicken B	zchicken	0	0	0	0	-	Piercing
+468	Chicken C	zchicken	0	0	0	0	-	Piercing
+469	Dog A	zdog	0	0	0	0	-	Piercing
+470	Dog B	zdog	0	0	0	0	-	Piercing
+471	Dog C	zdog	0	0	0	0	-	Piercing
+472	Rat A	zrat	0	0	0	0	-	Piercing
+473	Rat B	zrat	0	0	0	0	-	Piercing
+474	Rat C	zrat	0	0	0	0	-	Piercing
+475	Archer	BArcher	10	-5	5	0	Leather armor	Slashing
+476	Master Archer	BArcher	10	-5	5	0	Leather armor	Slashing
+477	Fire Archer	BArcher	10	-5	5	0	Leather armor	Slashing
+478	Magyar	Barbarian	10	-5	5	15	Leather armor	Slashing
+479	Magyar Soldier	Barbarian	10	-5	5	33	Leather armor	Slashing
+480	Magyar Matron	Barbarian	10	-5	5	50	Leather armor	Slashing
+481	Bat	BBat	0	0	0	0	-	Piercing
+482	Giant Bat	BBat	0	0	0	0	-	Piercing
+483	Vampire Bat	BBat	0	0	0	0	-	Piercing
+484	Flying Eye	BBeholder	0	0	0	50	-	Piercing
+485	Terrible Eye	BBeholder	0	0	0	76	-	Piercing
+486	Maddening Eye	BBeholder	0	0	0	120	-	Piercing
+487	Blood Sucker	Bloodsucker	0	0	0	0	-	Piercing
+488	Brain Sucker	Bloodsucker	0	0	0	0	-	Piercing
+489	Soul Sucker	Bloodsucker	0	0	0	0	-	Piercing
+490	Acolyte of Baa	Cleric	0	0	0	0	-	Blunt
+491	Cleric of Baa	Cleric	0	0	0	0	-	Blunt
+492	Priest of Baa	Cleric	0	0	0	0	-	Blunt
+493	Cobra	Cobra	0	0	0	0	-	Piercing
+494	King Cobra	Cobra	0	0	0	0	-	Piercing
+495	Queen Cobra	Cobra	0	0	0	0	-	Piercing
+496	Agar's Pet	Cockatrice	10	5	10	0	Beast hide	Piercing
+497	Agar's Monster	Cockatrice	10	5	10	0	Beast hide	Piercing
+498	Agar's Abomination	Cockatrice	10	5	10	0	Beast hide	Piercing
+499	Devil Captain	DemonFly	20	20	20	120	Kreegan hide	Slashing
+500	Devil Master	DemonFly	20	20	20	120	Kreegan hide	Slashing
+501	Devil King	DemonFly	20	20	20	120	Kreegan hide	Slashing
+502	Devil Spawn	Demon	20	20	20	120	Kreegan hide	Slashing
+503	Devil Worker	Demon	20	20	20	120	Kreegan hide	Slashing
+504	Devil Warrior	Demon	20	20	20	120	Kreegan hide	Slashing
+505	Fire Lizard	DragonCave	20	-10	10	33	Scales	Piercing
+506	Lightning Lizard	DragonCave	20	-10	10	50	Scales	Piercing
+507	Thunder Lizard	DragonCave	20	-10	10	76	Scales	Piercing
+508	Flame Drake	BDragonFly	20	-10	10	33	Scales	Piercing
+509	Frost Drake	BDragonFly	20	-10	10	50	Scales	Piercing
+510	Energy Drake	BDragonFly	20	-10	10	76	Scales	Piercing
+511	Wyrm	DragonLand	20	-10	10	50	Scales	Slashing
+512	Giant Wyrm	DragonLand	20	-10	10	76	Scales	Slashing
+513	Great Wyrm	DragonLand	20	-10	10	120	Scales	Slashing
+514	Red Dragon	DragonCover	20	-10	10	120	Scales	Slashing
+515	Blue Dragon	DragonCover	20	-10	10	156	Scales	Slashing
+516	Gold Dragon	DragonCover	20	-10	10	211	Scales	Slashing
+517	Druid	Druidess	10	-5	5	0	Leather armor	Blunt
+518	Great Druid	Druidess	10	-5	5	0	Leather armor	Blunt
+519	Grand Druid	Druidess	10	-5	5	0	Leather armor	Blunt
+520	Dwarf	BDwarf	0	0	0	0	-	Slashing
+521	Dwarf Warrior	BDwarf	0	0	0	0	-	Slashing
+522	Dwarf Lord	BDwarf	0	0	0	0	-	Slashing
+523	Dust Devil	ElemAir	20	30	10	15	Elemental (air/fire/light)	Blunt
+524	Twister	ElemAir	20	30	10	15	Elemental (air/fire/light)	Blunt
+525	Air Elemental	ElemAir	20	30	10	15	Elemental (air/fire/light)	Blunt
+526	Rock Beast	ElemEarth	30	30	-20	40	Stone/metal	Blunt
+527	Earth Spirit	ElemEarth	30	30	-20	50	Stone/metal	Blunt
+528	Earth Elemental	ElemEarth	30	30	-20	62	Stone/metal	Blunt
+529	Fire Beast	ElemFire	20	30	10	15	Elemental (air/fire/light)	Blunt
+530	Fire Spirit	ElemFire	20	30	10	15	Elemental (air/fire/light)	Blunt
+531	Fire Elemental	ElemFire	20	30	10	15	Elemental (air/fire/light)	Blunt
+532	Water Beast	ElemWater	20	30	30	15	Elemental (water)	Blunt
+533	Water Spirit	ElemWater	20	30	30	15	Elemental (water)	Blunt
+534	Water Elemental	ElemWater	20	30	30	15	Elemental (water)	Blunt
+535	Fighter	FighterChain	15	-10	0	15	Chain armor	Slashing
+536	Soldier	FighterChain	15	-10	0	33	Chain armor	Slashing
+537	Veteran	FighterChain	15	-10	0	50	Chain armor	Slashing
+538	Thug	FighterLeath	10	-5	5	7	Leather armor	Blunt
+539	Ruffian	FighterLeath	10	-5	5	11	Leather armor	Blunt
+540	Brigand	FighterLeath	10	-5	5	15	Leather armor	Blunt
+541	Stone Gargoyle	BGargoyle	30	30	-20	33	Stone/metal	Slashing
+542	Marble Gargoyle	BGargoyle	30	30	-20	50	Stone/metal	Slashing
+543	Diamond Gargoyle	BGargoyle	30	30	-20	Imm	Stone/metal	Slashing
+544	Genie	BGenie	20	30	10	50	Elemental (air/fire/light)	Slashing
+545	Djinn	BGenie	20	30	10	50	Elemental (air/fire/light)	Slashing
+546	Efreet	BGenie	20	30	10	50	Elemental (air/fire/light)	Slashing
+547	Ghost	BGhost	0	20	20	62	Incorporeal	Blunt
+548	Evil Spirit	BGhost	0	20	20	62	Incorporeal	Blunt
+549	Specter	BGhost	0	20	20	62	Incorporeal	Blunt
+550	Goblin	BGoblin	10	-5	5	7	Leather armor	Slashing
+551	Goblin Shaman	BGoblin	10	-5	5	11	Leather armor	Slashing
+552	Goblin King	BGoblin	10	-5	5	15	Leather armor	Slashing
+553	Guard	Guard	15	-10	0	7	Chain armor	Piercing
+554	Lieutenant	Guard	15	-10	0	15	Chain armor	Piercing
+555	Captain	Guard	15	-10	0	33	Chain armor	Piercing
+556	Harpy	BHarpy	0	0	0	0	-	Slashing
+557	Harpy Hag	BHarpy	0	0	0	0	-	Slashing
+558	Harpy Witch	BHarpy	0	0	0	0	-	Slashing
+559	Hydra	BHydra	20	-10	10	15	Scales	Piercing
+560	Venomous Hydra	BHydra	20	-10	10	33	Scales	Piercing
+561	Colossal Hydra	BHydra	20	-10	10	62	Scales	Piercing
+562	Defender of VARN	Jackalman	30	30	-20	26	Construct	Slashing
+563	Sentinel of VARN	Jackalman	30	30	-20	40	Construct	Slashing
+564	Guardian of VARN	Jackalman	30	30	-20	62	Construct	Slashing
+565	Death Knight	KnightPlate	20	-10	-10	50	Plate armor	Slashing
+566	Doom Knight	KnightPlate	20	-10	-10	76	Plate armor	Slashing
+567	Cuisinart	KnightPlate	20	-10	-10	120	Plate armor	Slashing
+568	Lich	BLich	20	40	-20	0	Skeletal	Blunt
+569	Greater Lich	BLich	20	40	-20	7	Skeletal	Blunt
+570	Power Lich	BLich	20	40	-20	15	Skeletal	Blunt
+571	Lizard Man	LizardArch	10	-5	5	0	Leather armor	Piercing
+572	Lizard Archer	LizardArch	10	-5	5	0	Leather armor	Piercing
+573	Lizard Wizard	LizardArch	10	-5	5	0	Leather armor	Piercing
+574	Medusa	BMedusa	0	0	0	0	-	Slashing
+575	Medusa Enchantress	BMedusa	0	0	0	0	-	Slashing
+576	Gorgon	BMedusa	0	0	0	0	-	Slashing
+577	Peasant	Merchant	0	0	0	0	-	Blunt
+578	Peasant	Merchant	0	0	0	0	-	Blunt
+579	Peasant	Merchant	0	0	0	0	-	Blunt
+580	Minotaur	BMinotaur	10	-5	5	40	Leather armor	Slashing
+581	Minotaur Mage	BMinotaur	10	-5	5	62	Leather armor	Slashing
+582	Minotaur King	BMinotaur	10	-5	5	95	Leather armor	Slashing
+583	Novice Monk	BMonk	0	0	0	0	-	Blunt
+584	Initiate Monk	BMonk	0	0	0	0	-	Blunt
+585	Master Monk	BMonk	0	0	0	0	-	Blunt
+586	Swordsman	Nobleman	15	-10	0	20	Chain armor	Slashing
+587	Expert Swordsman	Nobleman	15	-10	0	33	Chain armor	Slashing
+588	Master Swordsman	Nobleman	15	-10	0	50	Chain armor	Slashing
+589	Ooze	BOoze	-20	20	40	Imm	Ooze	Blunt
+590	Acidic Ooze	BOoze	-20	20	40	Imm	Ooze	Blunt
+591	Corrosive Ooze	BOoze	-20	20	40	Imm	Ooze	Blunt
+592	Ogre	Ogre	10	-5	5	15	Leather armor	Slashing
+593	Ogre Raider	Ogre	10	-5	5	26	Leather armor	Slashing
+594	Ogre Chieftain	Ogre	10	-5	5	40	Leather armor	Slashing
+595	Peasant	PeasantF1	0	0	0	0	-	Blunt
+596	Peasant	PeasantF1	0	0	0	0	-	Blunt
+597	Peasant	Peasantf1	0	0	0	0	-	Blunt
+598	Peasant	PeasantF2	0	0	0	0	-	Blunt
+599	Peasant	PeasantF2	0	0	0	0	-	Blunt
+600	Peasant	PeasantF2	0	0	0	0	-	Blunt
+601	Cutpurse	PeasantF3	10	-5	5	0	Leather armor	Piercing
+602	Bounty Hunter	PeasantF3	10	-5	5	0	Leather armor	Piercing
+603	Assassin	PeasantF3	10	-5	5	0	Leather armor	Piercing
+604	Cannibal	PeasantF4	0	0	0	0	-	Piercing
+605	Head Hunter	PeasantF4	0	0	0	0	-	Piercing
+606	Witch Doctor	PeasantF4	0	0	0	0	-	Piercing
+607	Peasant	PeasantM1	0	0	0	0	-	Blunt
+608	Peasant	PeasantM1	0	0	0	0	-	Blunt
+609	Peasant	PeasantM1	0	0	0	0	-	Blunt
+610	Apprentice Mage	PeasantM2	0	0	0	0	-	Blunt
+611	Journeyman Mage	PeasantM2	0	0	0	0	-	Blunt
+612	Mage	PeasantM2	0	0	0	0	-	Blunt
+613	Follower of Baa	PeasantM3	0	0	0	0	-	Blunt
+614	Mystic of Baa	PeasantM3	0	0	0	3	-	Blunt
+615	Fanatic of Baa	PeasantM3	0	0	0	7	-	Blunt
+616	Cannibal	PeasantM4	0	0	0	0	-	Piercing
+617	Head Hunter	PeasantM4	0	0	0	3	-	Piercing
+618	Witch Doctor	PeasantM4	0	0	0	7	-	Piercing
+619	Common Rat	BRat	0	0	0	0	-	Piercing
+620	Large Rat	BRat	0	0	0	0	-	Piercing
+621	Giant Rat	BRat	0	0	0	0	-	Piercing
+622	Patrol Unit	BRobot	30	30	-20	33	Stone/metal	Blunt
+623	Enforcer Unit	BRobot	30	30	-20	50	Stone/metal	Blunt
+624	Terminator Unit	BRobot	30	30	-20	120	Stone/metal	Blunt
+625	Sea Serpent	SeaSerpent	0	0	0	0	-	Piercing
+626	Sea Monster	SeaSerpent	0	0	0	0	-	Piercing
+627	Sea Terror	SeaSerpent	0	0	0	0	-	Piercing
+628	Skeleton	Skeleton	20	40	-20	0	Skeletal	Slashing
+629	Skeleton Knight	Skeleton	20	40	-20	0	Skeletal	Slashing
+630	Skeleton Lord	Skeleton	20	40	-20	0	Skeletal	Slashing
+631	Sorcerer	Sorcerer	0	0	0	0	-	Blunt
+632	Magician	Sorcerer	0	0	0	0	-	Blunt
+633	Warlock	Sorcerer	0	0	0	0	-	Blunt
+634	Spider	BSpider	10	0	-10	0	Exoskeleton	Piercing
+635	Giant Spider	BSpider	10	0	-10	0	Exoskeleton	Piercing
+636	Huge Spider	BSpider	10	0	-10	0	Exoskeleton	Piercing
+637	Thief	BThief	10	-5	5	7	Leather armor	Piercing
+638	Burglar	BThief	10	-5	5	11	Leather armor	Piercing
+639	Rogue	BThief	10	-5	5	15	Leather armor	Piercing
+640	Titan	BTitan	20	-10	-10	50	Plate armor	Slashing
+641	Noble Titan	BTitan	20	-10	-10	120	Plate armor	Slashing
+642	Supreme Titan	BTitan	20	-10	-10	211	Plate armor	Slashing
+643	Wolfman	Werewolf	10	5	10	7	Beast hide	Slashing
+644	Werewolf	Werewolf	10	5	10	15	Beast hide	Slashing
+645	Greater Werewolf	Werewolf	10	5	10	20	Beast hide	Slashing
+646	Demon Queen	zDemonQueen	20	20	20	120	Kreegan hide	Slashing
+647	Reactor	zReactor	30	30	-20	Imm	Stone/metal	Blunt
+648	Reactor	zReactor	30	30	-20	Imm	Stone/metal	Blunt
+649	Cactus	Cactus	-10	20	0	0	Cactus	Piercing
+650	Cactus	Cactus	-10	20	0	0	Cactus	Piercing
+651	Cactus	Cactus	-10	20	0	0	Cactus	Piercing
+652	Reactor	zReactor	30	30	-20	Imm	Stone/metal	Blunt

@@ -774,23 +774,8 @@ GetBonusList(967).Stats = {
 --------------------------------
 ---- Can wear conditions
 
--- Jetpack
-WearItemConditions[966] = function(Player, RosterId, Available)
-	return Available and
-		Game.ClassesExtra[Player.Class].Kind == const.ClassKind.Technician
-end
-
--- Power Shield
-WearItemConditions[967] = function(Player, RosterId, Available)
-	BS,BM = SplitSkill(Player:GetSkill(7))
-	return Available and
-		Game.ClassesExtra[Player.Class].Kind == const.ClassKind.Technician
-end
-
-WearItemConditions[968] = function(Player, RosterId, Available)
-	return Available and
-		Game.ClassesExtra[Player.Class].Kind == const.ClassKind.Technician
-end
+-- Jetpack (966), Power Shield (967) and item 968 used to be Technician-only;
+-- the restriction has been removed, anyone can wear them now.
 
 -- Elderaxe
 WearItemConditions[504] = function(Player, RosterId, Available)

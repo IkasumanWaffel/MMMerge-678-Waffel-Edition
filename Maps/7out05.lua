@@ -1,21 +1,21 @@
 -- Deyja
 
 function events.LoadMap()
+	
+end
+function events.AfterLoadMap()
+	Party.QBits[820] = true	-- DDMapBuff
+	
+	LocalHostileTxt()
+	Game.HostileTxt[91][0] = 0
 	if Party.QBits[633] then
 		function events.SetOutdoorLight(t)
 			t.Hour, t.Minute = 5, 0
 		end
-	end
-end
-function events.AfterLoadMap()
-	Party.QBits[820] = true	-- DDMapBuff
-
-	LocalHostileTxt()
-	Game.HostileTxt[91][0] = 0
-	if Party.QBits[633] then
 		SetSkyTexture("sky007")
-		Game.Weather.SetFog(100,8192)
-		Game.PlayTrack(math.random(58,124,125))
+		Game.Weather.SetFog(100,1024)
+		Map.OutdoorExtra.AlwaysFoggy = true
+		-- music after this quest: MMMWE_Music.lua (Music.QuestMusic)
 		Game.HostileTxt[153][0] = 0
 		Game.HostileTxt[130] = Game.HostileTxt[153]
 		for i,v in Map.Monsters do

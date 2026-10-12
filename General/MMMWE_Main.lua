@@ -146,10 +146,30 @@
 		HHSM[1], HHSM[2] = d.edi, mem.u4[d.ebp - 0xC]
 	end)
 	
+	-- Dodging gives no Armor Class: it works through the dodge (mitigation) chance only.
+	-- The game's own skill AC is computed again with Dodging set to 0 and used instead.
+	-- Registered before the armor skill handler below, so the Result it sees is the game's.
+	local DODGING = const.Skills.Dodging
+	local NoDodgeACPass = false
+	function events.CalcStatBonusBySkills(t)
+		if t.Stat ~= const.Stats.ArmorClass or NoDodgeACPass then return end
+		local pl = t.Player
+		local raw = pl.Skills[DODGING]
+		if raw == 0 then return end
+		NoDodgeACPass = true
+		pl.Skills[DODGING] = 0
+		local ok, without = pcall(pl.CalcStatBonusBySkills, pl, const.Stats.ArmorClass)
+		pl.Skills[DODGING] = raw
+		NoDodgeACPass = false
+		if ok and type(without) == "number" then
+			t.Result = without
+		end
+	end
+
 		-- Armor skill bonus changes
 	function events.CalcStatBonusBySkills(t)
 		-- Stat 9 = ArmorClass
-		if t.Stat ~= 9 or t.Result == 0 then
+		if t.Stat ~= 9 or t.Result == 0 or NoDodgeACPass then
 			return
 		end
 
@@ -1475,8 +1495,13 @@
 					[1] = Game.GetStatisticEffect(Pl:GetMight()),
 					[2] = math.floor(Game.GetStatisticEffect(Pl:GetMight())/2),
 				}
-				t.Result = round(t.Result + t.Result*HighGround/4000)
-					+ (isCrossbow and DamageBonusStat[2] or DamageBonusStat[1])
+				-- t.Result has already passed the monster's resistance (t.Damage is the
+				-- damage before it), so the Might bonus added here goes through the same
+				-- check: it is scaled by the fraction of this hit's damage that got through
+				-- (0 for an immune monster).
+				local resFactor = t.Damage and t.Damage > 0 and math.max(0, t.Result) / t.Damage or 0
+				local mightBonus = (isCrossbow and DamageBonusStat[2] or DamageBonusStat[1]) * resFactor
+				t.Result = round(t.Result + t.Result*HighGround/4000 + mightBonus)
 			end
 			t.Result = math.max(0, round(t.Result * CalcCrits(Pl, Melee, t.Monster)))
 
@@ -1659,6 +1684,79 @@
 	end
 
 	-- Dodge chance calculation
+	-- =====================================================================
+	-- Dodging extras
+	-- =====================================================================
+	local DODGE = {
+		SpeedPerPoint  = 0.5,   -- +% dodge chance per point of Speed bonus (negative bonus lowers it)
+		CondPenalty    = {      -- -% dodge chance while the character has the condition
+			[const.Condition.Weak] = 10, [const.Condition.Afraid] = 10, [const.Condition.Drunk] = 10,
+		},
+		HasteBonus     = 10,    -- +% while the party is hasted
+		KindBonus      = {Blunt = 10},  -- +% against melee hits of this kind (slow, heavy blows)
+		MissilePenalty = 10,    -- -% against arrows, bolts and other physical projectiles
+		ElementalMissilePenalty = 20,  -- -% against elemental projectiles (fire arrows, breath, bolt spells)
+		FullDodge      = {[2] = 10, [3] = 20, [4] = 30},  -- % of successful dodges that avoid the hit completely (by mastery)
+		RiposteChance  = 50,    -- Grand Master: % chance to strike back after fully dodging a melee hit
+		RiposteDamage  = 0.5,   -- share of the counterattack's normal damage
+		-- spells that can be dodged (single-target bolts); area spells and Armageddon can't
+		BoltSpells = {[2] = true, [15] = true, [18] = true, [26] = true, [29] = true, [37] = true,
+			[39] = true, [59] = true, [65] = true, [70] = true, [76] = true, [78] = true,
+			[93] = true, [103] = true, [111] = true},
+	}
+	MF.DodgeSettings = DODGE
+
+	-- Speed, conditions and Haste (also used by the character screen)
+	function MF.DodgeChanceMods(pl)
+		local m = DODGE.SpeedPerPoint * Game.GetStatisticEffect(pl:GetSpeed())
+		for cond, pen in pairs(DODGE.CondPenalty) do
+			if pl.Conditions[cond] ~= 0 then m = m - pen end
+		end
+		local haste = Party.SpellBuffs[const.PartyBuff.Haste]
+		if haste and haste.ExpireTime > Game.Time then m = m + DODGE.HasteBonus end
+		return m
+	end
+
+	-- Can the hit being dealt to the party right now be dodged? Weapon hits, projectiles of
+	-- any kind (elemental ones with a bigger penalty) and bolt spells: yes. Area spells,
+	-- traps, falling, Armageddon (no attacker): no. Second value: the attacker info.
+	local function CanDodgeHit(t)
+		if not WhoHitPlayer then return true end
+		local who = WhoHitPlayer()
+		if type(who) ~= "table" then return false end
+		if who.Spell and who.Spell ~= 0 then return DODGE.BoltSpells[who.Spell] == true, who end
+		if who.Object then return true, who end
+		if who.Monster then return true, who end
+		return false, who
+	end
+
+	-- Grand Master riposte: carried out on the next tick, outside the monster's attack
+	local RiposteQueue, RiposteActive = {}, false
+	local RiposteVec = mem.StaticAlloc(12)   -- zero velocity for the hit routine
+	function events.Tick()
+		if #RiposteQueue == 0 then return end
+		local q = RiposteQueue
+		RiposteQueue = {}
+		for _, r in ipairs(q) do
+			local pl, mon = Party.PlayersArray[r.pi], Map.Monsters[r.mi]
+			if pl and mon and mon.HP > 0 and pl:IsConscious() then
+				Game.ShowStatusText(string.format("%s dodges and strikes back!", pl.Name), 3)
+				RiposteActive = true
+				local ok, err = pcall(mem.call, 0x436E26, 2, r.pi * 8 + 4, r.mi, RiposteVec)  -- party hits monster
+				RiposteActive = false
+				if not ok then MF.LogWarning("Riposte failed: %s", tostring(err)) end
+			end
+		end
+	end
+	-- the counterattack deals only a share of its damage; registered late so it scales the final value
+	function events.GameInitialized2()
+		function events.CalcDamageToMonster(t)
+			if RiposteActive and t.ByPlayer then
+				t.Result = round(t.Result * DODGE.RiposteDamage)
+			end
+		end
+	end
+
 	local function CalcDodgeChance(pl, armorChest, shield, shieldM, dodgeS, dodgeM, curseMult)
 		local cond = pl:GetMainCondition()
 		if dodgeM <= 0 or cond == const.Condition.Asleep or (cond >= const.Condition.Paralyzed and cond <= const.Condition.Eradicated) then
@@ -1910,8 +2008,36 @@
 		local dodgeDR = 1
 
 		local dodgeChance = CalcDodgeChance(pl, pl.ItemArmor, pl.ItemExtraHand, shieldM, dodgeS, dodgeM, curseMult)
+		local dodgeable, hitBy = CanDodgeHit(t)
+		if not dodgeable then
+			dodgeChance = 0
+		elseif dodgeChance >= 0 then
+			dodgeChance = dodgeChance + MF.DodgeChanceMods(pl) * curseMult
+			if hitBy and hitBy.Object and t.DamageKind ~= const.Damage.Phys then
+				dodgeChance = dodgeChance - DODGE.ElementalMissilePenalty
+			elseif t.DamageKind == const.Damage.Phys then
+				if hitBy and hitBy.Object then
+					dodgeChance = dodgeChance - DODGE.MissilePenalty
+				else
+					local kind = MF.IncomingPhysKind and MF.IncomingPhysKind()
+					dodgeChance = dodgeChance + (kind and DODGE.KindBonus[kind] or 0)
+				end
+			end
+			dodgeChance = math.min(math.max(0, dodgeChance), 95)
+		end
+		local fullDodge = false
 		if dodgeChance > 0 and math.random() * 100 < dodgeChance then
 			dodgeDR = 1 - 0.01 * (10 + 10 * dodgeM)
+			local full = DODGE.FullDodge[dodgeM]
+			if full and math.random() * 100 < full then
+				dodgeDR, fullDodge = 0, true
+				-- Grand Master: chance to strike back at a monster that missed in melee
+				if dodgeM >= 4 and hitBy and hitBy.Monster and not hitBy.Object
+						and (hitBy.MonsterAction or 0) <= 1 and hitBy.MonsterIndex
+						and t.PlayerIndex and math.random() * 100 < DODGE.RiposteChance then
+					RiposteQueue[#RiposteQueue + 1] = {pi = t.PlayerIndex, mi = hitBy.MonsterIndex}
+				end
+			end
 		end
 
 		-- --- Weapon Parry & Shield Block ---
@@ -1966,7 +2092,15 @@
 
 		enshDR, spDrain = CalcEnergyShieldDR(pl, damageTotal, dodgeDR, wDR, shDR, absStr)
 
-		t.Result = round(t.Result * math.min(dodgeDR, math.min(wDR, shDR)) * enshDR * arDR * stDR)
+		-- Slashing / piercing / blunt (MMMWE_DamageKinds.lua): body armor protects
+		-- differently against each kind of physical hit
+		local physKind, kindDR = nil, 1
+		if category == "physical" and MF.IncomingPhysKind then
+			physKind = MF.IncomingPhysKind()
+			if physKind then kindDR = MF.ArmorKindFactor(pl, physKind) end
+		end
+
+		t.Result = round(t.Result * math.min(dodgeDR, math.min(wDR, shDR)) * enshDR * arDR * stDR * kindDR)
 		local negated = damageTotal - t.Result
 		local negPercent = damageTotal > 0 and (1 - (t.Result / damageTotal)) * 100 or 100
 
@@ -2025,11 +2159,16 @@
 		local _, idMonMastery = SplitSkill(pl:GetSkill(const.Skills.IdentifyMonster))
 		if idMonMastery >= const.Expert and DamageTypeNames[t.DamageKind] then
 			dmgTypeName = DamageTypeNames[t.DamageKind]
+			if physKind then dmgTypeName = physKind:lower() end
 		end
 
-		Game.ShowStatusText(string.format(
-			"%s takes %d %s damage (%d negated, %.1f%%)",
-			pl.Name, t.Result, dmgTypeName, negated, negPercent), 5)
+		if fullDodge then
+			Game.ShowStatusText(string.format("%s dodges the attack!", pl.Name), 5)
+		else
+			Game.ShowStatusText(string.format(
+				"%s takes %d %s damage (%d negated, %.1f%%)",
+				pl.Name, t.Result, dmgTypeName, negated, negPercent), 5)
+		end
 	end
 
 
@@ -2246,10 +2385,14 @@
 			return "Indestructible"
 		end
 		local maxDur, curDur = calcDurability2(itemNum, divisor)
-		maxDur, curDur = round(maxDur), round(curDur)
-		if curDur >= maxDur then
-			return string.format("%d", maxDur)
+		if (MF.TipWear or 0) <= 0 then
+			return string.format("%d", round(maxDur))
 		end
+		-- worn: never round the wear away (half points on helms / belts / gauntlets / boots,
+		-- fractional max on Hardened items), so any item the R repair would charge for
+		-- shows as worn
+		maxDur = round(maxDur)
+		curDur = math.min(math.floor(curDur), maxDur - 1)
 		local tag = MF.GetDurabilityLabel and MF.GetDurabilityLabel(curDur, maxDur) or ""
 		return string.format("%d/%d%s", curDur, maxDur, tag)
 	end
@@ -2438,8 +2581,29 @@
 		return 0
 	end
 
+	-- Display range after the durability penalty of `it` (0 for anything not worn)
+	local function penalizedRange(it, minD, maxD)
+		local p = MF.GetWeaponPenalty and MF.GetWeaponPenalty(it) or 0
+		if p <= 0 then return minD, maxD end
+		return math.max(0, round(minD * (1 - p))), math.max(0, round(maxD * (1 - p)))
+	end
+
 	local function UnarmedDamageHook(ret)
 		return function(d)
+			-- Armed character with a worn / damaged main-hand weapon: take the game's own
+			-- range (GetMeleeDamageMin / Max, as print_melee_damage does) and apply the same
+			-- penalty as in combat (applyPenalty). Anything else is left to the game.
+			local armed = Party.PlayersArray[(d.ecx - Party.PlayersArray["?ptr"]) / Party.PlayersArray[0]["?size"]]
+			if armed.ItemMainHand ~= 0 then
+				local it = armed.Items[armed.ItemMainHand]
+				local p = MF.GetWeaponPenalty and MF.GetWeaponPenalty(it) or 0
+				if p > 0 then
+					d.edi, d.eax = penalizedRange(it, armed:GetMeleeDamageMin(), armed:GetMeleeDamageMax())
+					d:push(ret)
+					return true
+				end
+			end
+
 			local pl = isUnarmedMonk(d.ecx)
 			if not pl then
 				return
@@ -2493,6 +2657,8 @@
 			
 			minD = isCrossbow and minD + DamageBonusStat[2] + (BowM >= 4 and BowS or 0) or minD + DamageBonusStat[1] + (BowM >= 4 and BowS or 0)
 			maxD = isCrossbow and maxD + DamageBonusStat[2] + (BowM >= 4 and BowS or 0) or maxD + DamageBonusStat[1] + (BowM >= 4 and BowS or 0)
+			-- worn / damaged bow: same penalty as in combat (applyPenalty)
+			minD, maxD = penalizedRange(pl.Items[pl.ItemBow], minD, maxD)
 			d.edi = minD
 			d.eax = maxD
 			d:push(ret)
@@ -2502,14 +2668,18 @@
 	
 	mem.autohook(0x48CCAA, RangedDamageHook(0x48CCCF))
 
-	-- Widget V-offset patches
+	-- Widget V-offset patches
+	-- The edited fr_stats backgrounds (Data/Icons) have the HP box and the box below it
+	-- 8 px higher; everything from the HP line down follows. 0 = original backgrounds.
+	local STATS_BOX_SHIFT = 8
+
 	local WidgetVPatches = {
 		-- General widgets
-		{addr = 0x418037, asm = "lea ebp, [ebp+eax*2-1]", desc = "HP"},
+		{addr = 0x418037, asm = "lea ebp, [ebp+eax*2-" .. (1 + STATS_BOX_SHIFT) .. "]", desc = "HP"},
 		{addr = 0x4180af, asm = "lea eax, [eax+ebp-4]", desc = "SP"},
 		{addr = 0x418131, asm = "lea eax, [eax+ebp-4]", desc = "Armor Class"},
 		{addr = 0x41819f, asm = "lea eax, [eax+ebp-5]", desc = "Condition (replaced by HR and Phys Res)"},
-		{addr = 0x4181f0, asm = "lea ebp, [ebp+eax*2+9]", desc = "Quick spell (replaced by resistances and chances)"},
+		{addr = 0x4181f0, asm = "lea ebp, [ebp+eax*2+5]", desc = "Quick spell (replaced by resistances and chances; 4 px higher for the Sla/Pie/Blu line)"},
 		{addr = 0x4183a4, asm = "lea eax, [ecx+eax*2]", desc = "Attack"},
 		{addr = 0x4183f0, asm = "lea eax, [ecx+eax-4]", desc = "Melee damage"},
 		{addr = 0x41843c, asm = "lea eax, [ecx+eax+10]", desc = "Shoot"},
@@ -2679,6 +2849,9 @@
 			end
 		end
 
+		if ddgM > 0 and MF.DodgeChanceMods then
+			chance = chance + MF.DodgeChanceMods(pl)   -- Speed, conditions, Haste
+		end
 		return math.max(chance, 0)
 	end
 
@@ -2979,6 +3152,9 @@
 				chance = chance - AuxArmorDodgePenalty[skill][math.max(m, 1)]
 			end
 		end
+		if ddgM > 0 and MF.DodgeChanceMods then
+			chance = chance + MF.DodgeChanceMods(pl)   -- Speed, conditions, Haste
+		end
 		return math.max(chance, 0)
 	end
 
@@ -3159,9 +3335,19 @@
 		MO.UpperResValues = cachedCstring(lightLine .. "\n" .. darkLine .. " ")
 
 		-- Dodge/Parry/Block
+		-- Physical resistance against slashing / piercing / blunt hits: the Phys value
+		-- above with the body armor's kind factor (MMMWE_DamageKinds.lua)
+		local kindLine = ""
+		if MF.ArmorKindFactor then
+			local function kr(kind)
+				return (1 - strengthDR * armrDR * MF.ArmorKindFactor(Pl, kind)) * 100
+			end
+			kindLine = string.format('\n\t   Sla\t30 %3.1f%%\t85 Pie\t106 %3.1f%%\t155 Blu\t180 %3.1f%%',
+				kr("Slashing"), kr("Piercing"), kr("Blunt"))
+		end
 		MO.LowerResValues = cachedCstring(string.format(
-			'\t   Eva\t30 %3.1f%%\t80 Par\t105 %3.1f%%\t155 Blk\t180 %3.1f%%',
-			DodgeC, ParryC, BlockC))
+			'\t   Eva\t30 %3.1f%%\t85 Par\t106 %3.1f%%\t155 Blk\t180 %3.1f%%',
+			DodgeC, ParryC, BlockC) .. kindLine)
 		MO.ResFmt = cachedCstring("%s\n%s")
 
 		-- Crits

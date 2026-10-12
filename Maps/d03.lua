@@ -23,9 +23,7 @@ function events.LoadMap()
 end
 
 function events.AfterLoadMap()
-	if Party.QBits[630] then
-		Game.PlayTrack(math.random(22,124,125))
-	end
+	-- music after QBit 630: MMMWE_Music.lua (Music.QuestMusic)
 	if Party.QBits[633] then
 		LocalHostileTxt()
 		Game.HostileTxt[153][0] = 0

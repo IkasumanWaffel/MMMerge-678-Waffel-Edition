@@ -4,7 +4,7 @@ function events.AfterLoadMap()
 	Party.QBits[723] = true	-- TP Buff The Pit
 	
 	if Party.QBits[633] then
-		Game.PlayTrack(math.random(22,72,117,121,134,124,125))
+		-- music after this quest: MMMWE_Music.lua (Music.QuestMusic)
 		LocalHostileTxt()
 		Game.HostileTxt[153][0] = 0
 		Game.HostileTxt[130] = Game.HostileTxt[153]

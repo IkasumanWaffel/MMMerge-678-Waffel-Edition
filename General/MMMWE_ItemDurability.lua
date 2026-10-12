@@ -83,6 +83,7 @@ local CONFIG = {
 	-- ---- field repair (hotkey, costs gold) -------------------------------
 	-- Repairs the current character's items. Needs the Repair skill; restores up to
 	-- 50% / 75% / 100% of max durability (Normal / Expert / Master and above).
+	-- Grand Master repairs for free.
 	-- Broken items still need a shop/Repair-skill repair.
 	-- NOTE: R is also the stock "Rest" key. While it is bound here the game never
 	-- sees it on the main view (rest with the button instead).
@@ -277,6 +278,13 @@ local function setByte(it, b)   mem.u1[it["?ptr"] + WEAR_OFFSET] = math.max(0, m
 
 local function setWearPoints(it, points)
 	setByte(it, math.min(BROKEN_MARK - 1, round(points / unitOf(it.Number))))
+end
+
+-- Repair: wear is rounded DOWN, so the item always reaches the repair target. (Rounding
+-- to nearest left items with a fractional max durability - Hardened ones, x1.25 - half a
+-- point short: they stayed "needing repair" and every R press charged gold again.)
+local function setWearPointsAtMost(it, points)
+	setByte(it, math.min(BROKEN_MARK - 1, math.floor(math.max(0, points) / unitOf(it.Number))))
 end
 
 -- adds wear in points; 2-point units use stochastic rounding so the expectation stays exact
@@ -532,7 +540,7 @@ end
 -- Repairs pl's items up to `limit` (fraction of max durability), most important first:
 -- equipped before backpack, most worn first. Stops at the first item the party can't afford.
 -- Returns repaired, gold spent, items needing repair, cost of the item it could not afford.
-local function fieldRepair(pl, limit)
+local function fieldRepair(pl, limit, free)
 	local FR = CONFIG.fieldRepair
 
 	local equipped = {}
@@ -552,7 +560,7 @@ local function fieldRepair(pl, limit)
 				jobs[#jobs + 1] = {
 					it = it, max = max, target = target,
 					eq = equipped[j] and 1 or 0, frac = cur / max,
-					cost = repairCost(it, target - cur, max),
+					cost = free and 0 or repairCost(it, target - cur, max),
 				}
 			end
 		end
@@ -565,7 +573,7 @@ local function fieldRepair(pl, limit)
 	local gold, spent, done, blockedCost = Party.Gold, 0, 0, nil
 	for _, job in ipairs(jobs) do
 		if spent + job.cost > gold then blockedCost = job.cost; break end
-		setWearPoints(job.it, math.max(0, job.max - job.target))
+		setWearPointsAtMost(job.it, job.max - job.target)
 		spent, done = spent + job.cost, done + 1
 	end
 	if spent > 0 then Party.Gold = gold - spent end
@@ -588,7 +596,8 @@ if CONFIG.repairHotkey then
 		end
 
 		local limit = (m >= 3 and 1.0) or (m == 2 and 0.75) or 0.50
-		local done, spent, total, blocked = fieldRepair(pl, limit)
+		local free = m >= 4   -- Grand Master: no gold charged
+		local done, spent, total, blocked = fieldRepair(pl, limit, free)
 
 		if total == 0 then
 			Game.PlaySound(27,-1,0)
@@ -601,7 +610,11 @@ if CONFIG.repairHotkey then
 			Game.ShowStatusText(string.format("Repaired %d of %d items for %d gold - out of gold", done, total, spent))
 		else
 			Game.PlaySound(146,-1,0)
-			Game.ShowStatusText(string.format("Repaired %d item(s) for %d gold", done, spent))
+			if free then
+				Game.ShowStatusText(string.format("Repaired %d item(s) for free", done))
+			else
+				Game.ShowStatusText(string.format("Repaired %d item(s) for %d gold", done, spent))
+			end
 		end
 		log("Field repair: %d/%d items, %d gold (mastery=%d)", done, total, spent, m)
 	end

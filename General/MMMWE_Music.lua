@@ -9,6 +9,8 @@
 	  2. + the current part of the day          Music.Maps[id].Day / .Night
 	  3. + the current season                   Music.Maps[id].Seasons[s].Day / .Night / .Any
 	  4. + every matching rule                  Music.Rules (groups of maps, outdoor/indoor, season...)
+	  4b. quest music                           Music.QuestMusic (replaces the day / night tracks
+	                                            of a map once a quest bit is set)
 	  5. events.ChooseMapTrack(t)               other scripts may set t.Track (t.Pool, t.Night,
 	                                            t.Season, t.MapIndex, t.Reason are for reference;
 	                                            Reason = "map", "loop" or "daynight")
@@ -93,6 +95,17 @@ M.Rules = M.Rules or {
 	},
 }
 
+-- Quest music: once Party.QBits[QBit] is set, the listed tracks replace the map's music
+-- for that part of the day (Exclusive = false adds them instead). Map is a map file name
+-- ("7d26.blv") or a map index. These replace the Game.PlayTrack calls that used to be in
+-- the map scripts (Scripts/Maps/7d26.lua, 7out05.lua, d03.lua).
+--   {Map = "7d26.blv", QBit = 633, Day = {...}, Night = {...}, Any = {...}, Exclusive = true}
+M.QuestMusic = M.QuestMusic or {}
+
+function M.AddQuestMusic(entry)
+	table.insert(M.QuestMusic, entry)
+end
+
 function M.SetMap(mapIndex, layers)
 	M.Maps[mapIndex] = layers
 end
@@ -134,6 +147,30 @@ local function addTracks(pool, list, exclusive)
 	return pool
 end
 
+local MapIndexByName = {}
+local function mapIndexOf(map)
+	if type(map) == "number" then
+		return map
+	end
+	map = map:lower()
+	if MapIndexByName[map] == nil then
+		MapIndexByName[map] = false
+		for i, m in Game.MapStats do
+			if m.FileName and m.FileName:lower() == map then
+				MapIndexByName[map] = i
+				break
+			end
+		end
+	end
+	return MapIndexByName[map] or nil
+end
+
+local function questMatches(q, mapIndex)
+	if q.QBit and not Party.QBits[q.QBit] then return false end
+	if q.Map ~= nil and mapIndexOf(q.Map) ~= mapIndex then return false end
+	return true
+end
+
 local function ruleMatches(rule, mapIndex, outdoor, season)
 	if rule.Maps and not table.find(rule.Maps, mapIndex) then return false end
 	if rule.Outdoor ~= nil and rule.Outdoor ~= outdoor then return false end
@@ -164,6 +201,13 @@ function M.GetPool(mapIndex)
 		if ruleMatches(rule, mapIndex, outdoor, season) then
 			local list = addTracks(addTracks({}, rule.Any), rule[part])
 			pool = addTracks(pool, list, rule.Exclusive)
+		end
+	end
+
+	for _, q in ipairs(M.QuestMusic) do
+		if questMatches(q, mapIndex) then
+			local list = addTracks(addTracks({}, q.Any), q[part])
+			pool = addTracks(pool, list, q.Exclusive ~= false)
 		end
 	end
 
@@ -642,3 +686,8 @@ end
 	Music.SetMap(203, {Any = {37,38,39}})											-- New World Computing
 	Music.SetMap(204, {Any = {37,38,39}})											-- The Breach
 	Music.SetMap(206, {Any = {42}})													-- Basement of the Breach
+
+	---- Quest music (moved here from the map scripts): replaces the daytime music once the quest is done
+	Music.AddQuestMusic{Map = "7d26.blv",   QBit = 633, Day = {22,72,117,121,134,124,125}}	-- The Pit
+	Music.AddQuestMusic{Map = "7out05.blv", QBit = 633, Day = {58,124,125}}				-- Deyja
+	Music.AddQuestMusic{Map = "d03.blv",    QBit = 630, Day = {22,124,125}}				-- d03 (Throne Room map)

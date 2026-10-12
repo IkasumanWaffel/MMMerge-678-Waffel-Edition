@@ -18,12 +18,12 @@ local CONFIG = {
     gameH    = 480,
 
     fontSize = 16,
-    maxMessages = 6,
+    maxMessages = 10,
     lineSpacing = 20,
 
     anchor = "absolute",
-    ax = 1600,
-    ay = 830,
+    ax = 1480,
+    ay = 620,
     gx = 160,
     gy = 144,
 
@@ -146,7 +146,10 @@ local damageTypes = {
     [4]  = "Phys",    [5]  = "Magic",   [6]  = "Spirit",  [7]  = "Mind",
     [8]  = "Body",    [9]  = "Light",   [10] = "Dark",    [12] = "Energy",
     [50] = "Dragon",
+    -- physical damage dealt by the party, split by MMMWE_DamageKinds.lua (t.PhysDamageKind)
+    [101] = "Slashing", [102] = "Piercing", [103] = "Blunt",
 }
+local PHYS_KIND_KEY = {Slashing = 101, Piercing = 102, Blunt = 103}
 
 -- Color per damage type (BGR format for Win32 SetTextColor)
 local damageTypeColors = {
@@ -163,6 +166,9 @@ local damageTypeColors = {
     [10] = 0x990099,   -- Dark: dark purple
     [12] = 0xD0C220,   -- Energy: teal
     [50] = 0x0033AA,   -- Dragon: dark red
+    [101] = 0xE0E0E0,  -- Slashing: near white
+    [102] = 0xA8C8D8,  -- Piercing: light tan
+    [103] = 0xA0A0A0,  -- Blunt: mid gray
 }
 local function getMonsterName(monsterIndex)
     local name = "?"
@@ -195,7 +201,7 @@ end
 -- as ONE line ("Alice hits Goblin for 17 damage (12 Phys, 5 Fire)"), so a dual-wield hit
 -- with two enchantments can't push its own parts (or other players' hits) out of the log.
 local ATTACK_WINDOW = 0.15          -- seconds (real time)
-local KIND_ORDER = {4, 12, 0, 1, 2, 3, 6, 7, 8, 9, 10, 5, 50}   -- Phys first, then the rest
+local KIND_ORDER = {101, 102, 103, 4, 12, 0, 1, 2, 3, 6, 7, 8, 9, 10, 5, 50}   -- Phys first, then the rest
 
 local attack = nil                  -- {key, playerName, monsterName, parts = {[kind] = part}, last}
 
@@ -313,6 +319,9 @@ function events.CalcDamageToMonster(t)
     if result and result > 0 then
         local dmgKind = 0
         pcall(function() dmgKind = t.DamageKind or 0 end)
+        if dmgKind == 4 and t.PhysDamageKind and PHYS_KIND_KEY[t.PhysDamageKind] then
+            dmgKind = PHYS_KIND_KEY[t.PhysDamageKind]   -- Slashing / Piercing / Blunt
+        end
         addPart(attack, dmgKind, result, t.IsSecondary == true)
     end
 end

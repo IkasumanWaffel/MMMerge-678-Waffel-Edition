@@ -466,6 +466,23 @@ local function SetSpellsExtraHooks()
 		return DelayBonus
 	end
 	
+	-- SP cost growth per (skill x mastery), by spell. Damage spells: +2.5% per skill point
+	-- per mastery rank. Skill-scaled buffs, heals and control spells: +1.25%. Spells with a
+	-- fixed effect (cures, portals, Armageddon...): no growth, base cost from Spells2.txt.
+	local CostFactorDefault = 0.025
+	local CostFactor = {}
+	for _, n in ipairs{1, 3, 4, 5, 13, 14, 17, 19, 21, 25, 27, 28, 30, 34, 35, 36, 38, 45, 46, 47,
+			48, 50, 51, 54, 58, 60, 62, 63, 66, 68, 69, 71, 73, 75, 77, 81, 82, 83, 85, 86, 89, 91,
+			92, 94, 95, 96, 100, 101, 102, 112, 113, 114, 122, 124, 125} do
+		CostFactor[n] = 0.0125
+	end
+	for _, n in ipairs{12, 16, 23, 31, 33, 40, 42, 49, 53, 55, 56, 57, 61, 64, 67, 72, 74, 80, 88, 98} do
+		CostFactor[n] = 0
+	end
+	function SpellCostFactor(spell)
+		return CostFactor[spell] or CostFactorDefault
+	end
+
 	local function GetPlayerFromPtr(ptr)
 		local PlayerId = (ptr - Party.PlayersArray["?ptr"])/Party.PlayersArray[0]["?size"]
 		return Party.PlayersArray[PlayerId], PlayerId
@@ -478,7 +495,7 @@ local function SetSpellsExtraHooks()
 			local Pl = Party[math.max(0, d.eax-35)]
 			local MS,MM = SplitSkill(Pl:GetSkill(math.floor(t.Spell/11 - 1/11) + 12))
 			local spdBonus = Game.GetStatisticEffect(Pl:GetSpeed())
-			d.esi = t.Cost + t.Cost*0.025*MS*MM
+			d.esi = t.Cost + t.Cost*SpellCostFactor(t.Spell)*MS*MM
 			d.edi = math.max(30, t.Recovery - t.Recovery*0.01*MS + t.Recovery*0.01*CalcSpellDelay(Pl, t.Spell))
 			if vars.ManaCost == nil then vars.ManaCost = 0 end
 			vars.ManaCost = d.esi
@@ -528,7 +545,7 @@ local function SetSpellsExtraHooks()
 			castCh = math.min(baseChance + MS * MM, math.min(baseChance + 20 * MM, 100))
 		end
 
-		local ManaCost = Game.Spells[SpellNum].SpellPoints[MM] * (1 + 0.025 * MS * MM)
+		local ManaCost = Game.Spells[SpellNum].SpellPoints[MM] * (1 + SpellCostFactor(SpellNum) * MS * MM)
 		local BaseDelay = Game.Spells[SpellNum].Delay[MM]
 		local SpellRecovery = math.max(30, BaseDelay - BaseDelay*0.01*MS + BaseDelay*0.01*CalcSpellDelay(Pl, SpellNum))
 
