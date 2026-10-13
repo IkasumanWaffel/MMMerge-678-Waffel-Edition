@@ -16,6 +16,14 @@
 	  clears it in the giver's (delete_from_backpack is not used: it wipes the record).
 
 	A layout is written only if every item fits; otherwise the backpack is left as it was.
+
+	Three more buttons on the Chest screen:
+	  "Take all"     every item and all gold
+	  "Take gold"    only gold
+	  "Take valued"  gold and valuable items (see VALUED below)
+	Items go to the current character first, then to the others in party order, each into
+	the first free spot of the backpack. Gold is added like picking it up by hand (Banker
+	bonus, followers' share). Items that fit nowhere stay in the chest.
 --]]
 
 local MF = Merge.Functions
@@ -34,6 +42,24 @@ local SORT_X        = 180
 local GATHER_X      = 220
 local COLOR_STD     = RGB(150, 140, 110)   -- dim, so they don't draw attention
 local COLOR_OVER    = RGB(255, 255, 150)
+
+-- Chest screen buttons (640x480 screen coordinates)
+local CHEST_BUTTON_Y = 330
+local TAKE_ALL_X     = 180
+local TAKE_GOLD_X    = 250
+local TAKE_VALUED_X  = 325
+
+-- "Take valued": an item is taken if any of these holds
+local VALUED = {
+	MinValue    = 500,    -- worth at least this much (the value shown in the shop, enchantments included)
+	Special     = true,   -- artifacts, relics and other special items (ItemsTxt Material ~= 0)
+	Unidentified = true,  -- unidentified items (their worth is unknown)
+	Kinds = {             -- item kinds always taken, by ItemsTxt.EquipStat
+		[10] = true,      -- rings
+		[11] = true,      -- amulets
+		[16] = true,      -- books
+	},
+}
 
 -- Group order by ItemsTxt.EquipStat (= const.ItemType - 1). Lower = earlier in the backpack.
 local GROUP_RANK = {
@@ -466,6 +492,157 @@ local function doGather()
 	Game.NeedRedraw = true
 end
 
+---------------------------------------------------------------------------
+-- Taking items from a chest
+---------------------------------------------------------------------------
+-- Map.Chests[id].Items[1..140] holds the records, .Inventory[0..139] the grid
+-- (row * width + column, same cell encoding as a backpack); the grid size comes from
+-- the chest picture (Game.ChestBin, Chest.txt). The id of the open chest is remembered
+-- from the OpenChest event.
+
+local GOLD_EQUIPSTAT = const.ItemType.Gold - 1
+local OpenChestId
+
+function events.OpenChest(id)
+	OpenChestId = id
+end
+
+local function onChestScreen()
+	return Game.CurrentScreen == const.Screens.Chest and OpenChestId ~= nil
+end
+
+-- Items in the open chest: list of {idx, cell, w, h}
+local function chestItems(chest)
+	local bin = Game.ChestBin[chest.ChestPicture]
+	local W = bin and bin.Width or COLS
+	if W <= 0 then W = COLS end
+	local boxes = {}
+	for c = 0, 139 do
+		local v = chest.Inventory[c]
+		local main = v > 0 and c or (v < 0 and -v - 1) or nil
+		if main and main <= 139 then
+			local idx = v > 0 and v or chest.Inventory[main]
+			if idx > 0 and idx <= 140 and chest.Items[idx].Number ~= 0 then
+				local b = boxes[main]
+				if not b then
+					b = {idx = idx, cell = main, c0 = 1000, r0 = 1000, c1 = -1, r1 = -1}
+					boxes[main] = b
+				end
+				local col, row = c % W, math.floor(c / W)
+				b.c0, b.c1 = math.min(b.c0, col), math.max(b.c1, col)
+				b.r0, b.r1 = math.min(b.r0, row), math.max(b.r1, row)
+			end
+		end
+	end
+	local list = {}
+	for _, b in pairs(boxes) do
+		b.w, b.h = b.c1 - b.c0 + 1, b.r1 - b.r0 + 1
+		list[#list + 1] = b
+	end
+	table.sort(list, function(a, b) return a.cell < b.cell end)
+	return list
+end
+
+local function removeFromChest(chest, b)
+	for c = 0, 139 do
+		local v = chest.Inventory[c]
+		if c == b.cell or v == -(b.cell + 1) then
+			chest.Inventory[c] = 0
+		end
+	end
+	chest.Items[b.idx]:Clear()
+end
+
+local function isValued(it, txt)
+	if VALUED.Special and txt.Material ~= 0 then return true end
+	if VALUED.Unidentified and not it.Identified then return true end
+	if VALUED.Kinds[txt.EquipStat] then return true end
+	local ok, value = pcall(it.GetValue, it)
+	value = ok and value or txt.Value or 0
+	return value >= VALUED.MinValue
+end
+
+-- Party members in the order they receive items: the current one first
+local function receivers()
+	local list, cur = {}, Party:GetCurrentPlayer()
+	if cur then list[1] = cur end
+	for i = 0, Party.Count - 1 do
+		local pl = Party[i]
+		if pl ~= cur and (not cur or pl["?ptr"] ~= cur["?ptr"]) then
+			list[#list + 1] = pl
+		end
+	end
+	return list
+end
+
+-- Take items from the open chest; mode = "all", "gold" or "valued"
+local function takeFromChest(mode)
+	local chest = OpenChestId and Map.Chests[OpenChestId]
+	if not chest then return nil end
+	local gold, taken, left = 0, 0, 0
+	local party = receivers()
+	local grids = {}
+	for i, pl in ipairs(party) do grids[i] = readGrid(pl) end
+
+	for _, b in ipairs(chestItems(chest)) do
+		local it = chest.Items[b.idx]
+		local txt = Game.ItemsTxt[it.Number]
+		if txt and txt.EquipStat == GOLD_EQUIPSTAT then
+			gold = gold + it.Bonus2
+			removeFromChest(chest, b)
+		elseif txt and (mode == "all" or (mode == "valued" and isValued(it, txt))) then
+			local done = false
+			for i, pl in ipairs(party) do
+				local col, row = findSpot(grids[i], b.w, b.h)
+				local slot = col and freeItemSlot(pl)
+				if slot then
+					mem.copy(pl.Items[slot]["?ptr"], it["?ptr"], ITEM_SIZE)
+					pl.Items[slot].Refundable = false
+					put(grids[i], col, row, b.w, b.h, slot)
+					writeGrid(pl, grids[i])
+					removeFromChest(chest, b)
+					taken, done = taken + 1, true
+					break
+				end
+			end
+			if not done then left = left + 1 end
+		end
+	end
+	if gold > 0 then
+		local before = Party.Gold
+		Party.AddGold(gold, 0)
+		gold = math.max(0, Party.Gold - before)   -- after the Banker bonus and followers' share
+	end
+	return gold, taken, left
+end
+
+local function doTake(mode)
+	if busy() then
+		Game.ShowStatusText("Put down the item you are holding first")
+		return
+	end
+	local gold, taken, left = takeFromChest(mode)
+	if not gold then return end
+	if gold == 0 and taken == 0 and left == 0 then
+		Game.ShowStatusText(mode == "gold" and "There is no gold here" or "Nothing to take")
+		return
+	end
+	Game.PlaySound(23)
+	local parts = {}
+	if taken > 0 then
+		parts[#parts + 1] = string.format("%d item%s", taken, taken == 1 and "" or "s")
+	end
+	if gold > 0 then
+		parts[#parts + 1] = string.format("%d gold", gold)
+	end
+	local msg = #parts > 0 and ("Took " .. table.concat(parts, " and ")) or "Took nothing"
+	if left > 0 then
+		msg = msg .. string.format(", %d didn't fit", left)
+	end
+	Game.ShowStatusText(msg)
+	Game.NeedRedraw = true
+end
+
 function events.GameInitialized2()
 	if not CustomUI then return end
 	local function button(text, x, action)
@@ -483,8 +660,26 @@ function events.GameInitialized2()
 	end
 	button("Sort", SORT_X, doSort)
 	button("Gather", GATHER_X, doGather)
+
+	local function chestButton(text, x, action)
+		return CustomUI.CreateText{
+			Text           = text,
+			Font           = Game.Smallnum_fnt,
+			X = x, Y = CHEST_BUTTON_Y,
+			ColorStd       = COLOR_STD,
+			ColorMouseOver = COLOR_OVER,
+			Layer          = 0,
+			Screen         = const.Screens.Chest,
+			Condition      = onChestScreen,
+			Action         = action,
+		}
+	end
+	chestButton("Take all", TAKE_ALL_X, function() doTake("all") end)
+	chestButton("Take gold", TAKE_GOLD_X, function() doTake("gold") end)
+	chestButton("Take valued", TAKE_VALUED_X, function() doTake("valued") end)
 end
 
 -- for the console / other scripts
 MF.SortInventory = sortPlayer
 MF.GatherPartyItems = gatherParty
+MF.TakeFromChest = takeFromChest
