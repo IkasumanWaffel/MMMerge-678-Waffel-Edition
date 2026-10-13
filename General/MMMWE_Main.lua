@@ -2156,7 +2156,12 @@
 
 		-- --- Display Status Text ---
 		local dmgTypeName = category
-		local _, idMonMastery = SplitSkill(pl:GetSkill(const.Skills.IdentifyMonster))
+		-- Identify Monster at Expert in anyone in the party names the kind of damage for everyone
+		local idMonMastery = 0
+		for i = 0, Party.Count - 1 do
+			local _, m = SplitSkill(Party[i]:GetSkill(const.Skills.IdentifyMonster))
+			if m > idMonMastery then idMonMastery = m end
+		end
 		if idMonMastery >= const.Expert and DamageTypeNames[t.DamageKind] then
 			dmgTypeName = DamageTypeNames[t.DamageKind]
 			if physKind then dmgTypeName = physKind:lower() end
