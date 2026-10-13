@@ -43,11 +43,12 @@ local GATHER_X      = 220
 local COLOR_STD     = RGB(150, 140, 110)   -- dim, so they don't draw attention
 local COLOR_OVER    = RGB(255, 255, 150)
 
--- Chest screen buttons (640x480 screen coordinates)
-local CHEST_BUTTON_Y = 330
-local TAKE_ALL_X     = 180
-local TAKE_GOLD_X    = 250
-local TAKE_VALUED_X  = 325
+-- Chest screen buttons (640x480 screen coordinates): stacked in the empty stone panel
+-- above the Close button
+local CHEST_BUTTON_X = 498
+local TAKE_ALL_Y     = 377
+local TAKE_GOLD_Y    = 393
+local TAKE_VALUED_Y  = 409
 
 -- "Take valued": an item is taken if any of these holds
 local VALUED = {
@@ -508,7 +509,7 @@ function events.OpenChest(id)
 end
 
 local function onChestScreen()
-	return Game.CurrentScreen == const.Screens.Chest and OpenChestId ~= nil
+	return Game.CurrentScreen == const.Screens.Chest
 end
 
 -- Items in the open chest: list of {idx, cell, w, h}
@@ -577,7 +578,8 @@ end
 
 -- Take items from the open chest; mode = "all", "gold" or "valued"
 local function takeFromChest(mode)
-	local chest = OpenChestId and Map.Chests[OpenChestId]
+	local chest = OpenChestId and OpenChestId >= 0 and OpenChestId < Map.Chests.count
+		and Map.Chests[OpenChestId]
 	if not chest then return nil end
 	local gold, taken, left = 0, 0, 0
 	local party = receivers()
@@ -622,7 +624,10 @@ local function doTake(mode)
 		return
 	end
 	local gold, taken, left = takeFromChest(mode)
-	if not gold then return end
+	if not gold then
+		Game.ShowStatusText("Can't tell which chest is open")
+		return
+	end
 	if gold == 0 and taken == 0 and left == 0 then
 		Game.ShowStatusText(mode == "gold" and "There is no gold here" or "Nothing to take")
 		return
@@ -661,11 +666,11 @@ function events.GameInitialized2()
 	button("Sort", SORT_X, doSort)
 	button("Gather", GATHER_X, doGather)
 
-	local function chestButton(text, x, action)
+	local function chestButton(text, y, action)
 		return CustomUI.CreateText{
 			Text           = text,
 			Font           = Game.Smallnum_fnt,
-			X = x, Y = CHEST_BUTTON_Y,
+			X = CHEST_BUTTON_X, Y = y,
 			ColorStd       = COLOR_STD,
 			ColorMouseOver = COLOR_OVER,
 			Layer          = 0,
@@ -674,9 +679,9 @@ function events.GameInitialized2()
 			Action         = action,
 		}
 	end
-	chestButton("Take all", TAKE_ALL_X, function() doTake("all") end)
-	chestButton("Take gold", TAKE_GOLD_X, function() doTake("gold") end)
-	chestButton("Take valued", TAKE_VALUED_X, function() doTake("valued") end)
+	chestButton("Take all", TAKE_ALL_Y, function() doTake("all") end)
+	chestButton("Take gold", TAKE_GOLD_Y, function() doTake("gold") end)
+	chestButton("Take valued", TAKE_VALUED_Y, function() doTake("valued") end)
 end
 
 -- for the console / other scripts
