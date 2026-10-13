@@ -43,12 +43,12 @@ local GATHER_X      = 220
 local COLOR_STD     = RGB(150, 140, 110)   -- dim, so they don't draw attention
 local COLOR_OVER    = RGB(255, 255, 150)
 
--- Chest screen buttons (640x480 screen coordinates): stacked on the chest lid, right of
--- the chest grid
-local CHEST_BUTTON_X = 382
-local TAKE_ALL_Y     = 175
-local TAKE_GOLD_Y    = 193
-local TAKE_VALUED_Y  = 211
+-- Chest screen buttons (640x480 screen coordinates): stacked in the empty stone panel
+-- above the Close button
+local CHEST_BUTTON_X = 498
+local TAKE_ALL_Y     = 377
+local TAKE_GOLD_Y    = 393
+local TAKE_VALUED_Y  = 409
 
 -- "Take valued": an item is taken if any of these holds
 local VALUED = {

@@ -39,10 +39,13 @@ local NO_ARMOR_THREAT = 1.0
 local SHIELD_BONUS    = 0.25
 local MASTERY_BONUS   = 0.2      -- per mastery rank of the worn body armor's skill
 
--- Hint under the paperdoll on every page of the character screen (640x480 screen coordinates)
-local HINT_X     = 532
+-- Hint under the paperdoll on every page of the character screen (640x480 screen coordinates).
+-- The text is centered in a HINT_WIDTH wide box starting at HINT_X: the box is centered
+-- on the Dismiss button (x 520..594).
+local HINT_WIDTH = 120
+local HINT_X     = 557 - HINT_WIDTH / 2
 local HINT_Y     = 376
-local HINT_COLOR = RGB(150, 140, 110)
+local HINT_COLOR = RGB(255, 255, 155)   -- like the character's name
 
 ---------------------------------------------------------------------------
 -- Threat
@@ -127,7 +130,7 @@ function events.GameInitialized2()
 		Text      = "Threat 100%",
 		Font      = Game.Smallnum_fnt,
 		X = HINT_X, Y = HINT_Y,
-		Width     = 120,          -- wide enough to keep "Threat NN%" on one line
+		Width     = HINT_WIDTH,   -- wide enough to keep "Threat NN%" on one line
 		Height    = 16,
 		ColorStd  = HINT_COLOR,
 		ColorMouseOver = HINT_COLOR,
