@@ -34,8 +34,8 @@
 	Weapon enchantments, blasters, spells and monster-to-party damage are not affected.
 
 	Monster card: with the Identify Monster rank that shows resistances, the Physical line
-	keeps the game's own value (the Phys number at Grand Master) and adds
-	"S 30% P 10% B 25%" - the damage reduction against each kind (only for monsters
+	keeps the game's own value (the Phys number at Grand Master) and lists below it
+	"Sla 30%", "Pie 10%", "Blu 25%" - the damage reduction against each kind (only for monsters
 	with modifiers; immune monsters keep "Immune").
 
 	Monsters hitting the party: projectiles are Piercing, melee hits use the table's
@@ -180,8 +180,9 @@ end
 -- card show them). The value text ("Resistant" / "None" / "Immune") is pushed just
 -- before 0x41E88A; [ebp-14h] is the line offset (0, 4 ... 24h = Physical), [ebp-10h]
 -- the monster shown. For the Physical line of a monster with modifiers the value text
--- gets "S 30% P 10% B 25%" (its damage reduction against each kind) after the game's
--- own value text, e.g. "33  S 45% P 25% B 30%".
+-- gets its damage reduction against each kind on three lines under the game's own
+-- value text: "33", "Sla 45%", "Pie 25%", "Blu 30%" (the value column is too narrow
+-- for one line).
 
 local CardText = mem.StaticAlloc(64)
 
@@ -197,7 +198,7 @@ end
 
 local function cardLine(mon)
 	if not Mods[mon.Id] or mon.PhysResistance >= 65000 then return nil end   -- keeps "Immune"
-	return string.format("S %d%% P %d%% B %d%%",
+	return string.format("Sla %d%%\nPie %d%%\nBlu %d%%",
 		round(kindReduction(mon, "Slashing")), round(kindReduction(mon, "Piercing")),
 		round(kindReduction(mon, "Blunt")))
 end
@@ -212,7 +213,7 @@ mem.autohook(0x41E88A, function(d)
 	local orig = mem.u4[d.esp]
 	if orig ~= 0 and orig ~= CardText then
 		local ok2, s = pcall(mem.string, orig)
-		if ok2 and s and s ~= "" then text = s .. "  " .. text end
+		if ok2 and s and s ~= "" then text = s .. "\n" .. text end
 	end
 	for i = 1, math.min(#text, 63) do mem.u1[CardText + i - 1] = text:byte(i) end
 	mem.u1[CardText + math.min(#text, 63)] = 0
