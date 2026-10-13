@@ -11,21 +11,31 @@
 	Each monster keeps its normal physical resistance (MONSTERS.txt "Phys", bolster
 	included) and gets a modifier per kind from Data/Tables/Physical Damage Kinds.txt:
 	  #  Monster  Picture  Slashing  Piercing  Blunt  Phys (reference)
-	The modifiers are added to the monster's physical resistance for that kind of hit,
-	e.g. a skeleton with Phys 7 and Blunt -20 has -13 against maces. The "Picture" and
-	"Phys (reference)" columns are only for reading; editing them changes nothing.
+	The modifiers are percentage points of damage reduction. The monster's Phys value is
+	turned into its damage reduction (resistance curve below), the modifier is added, and
+	the hit is reduced by the result, e.g. a skeleton with Phys 15 (20%) and Blunt -20
+	takes full damage from maces, and with Piercing +40 takes 40% less from arrows.
+	The "Picture", "Phys (reference)" and "Profile (reference)" columns are only for
+	reading; editing them changes nothing.
 
-	Resistance curve: the same as MMMWE_Main.lua for 0 and above (30 resists about a
-	third of the damage). Below 0 the monster is vulnerable: -20 = +20% damage, up to
-	+100% at -100. Monsters immune to physical damage stay immune.
+	Phys in MONSTERS.txt is the resistance to physical damage of no particular kind
+	(monster against monster, physical spells). For monsters with modifiers it was
+	lowered by the average of their three modifiers, so the average protection over the
+	three kinds stays about where it was.
+
+	Resistance curve (the same as CalcMonResPercent in MMMWE_Main.lua):
+	  Phys   0   3   7  11  15  20  26  33  40  50  62  76  95 120 156 211 306 509 1254
+	  %      0   5  10  15  20  25  30  35  40  45  50  55  60  65  70  75  80  85   90
+	Reduction for a kind is capped at MAX_REDUCTION. Below 0 the monster is vulnerable:
+	-20% = +20% damage, up to +100%. Monsters immune to physical damage stay immune.
 
 	Runs before MMMWE_Main.lua's CalcDamageToMonster handler (file load order), so the
 	Might bonus, high ground, crits and the worn weapon penalty work on the new value.
 	Weapon enchantments, blasters, spells and monster-to-party damage are not affected.
 
 	Monster card: with the Identify Monster rank that shows resistances, the Physical line
-	reads "S 38  P 10  B 15" - the resistance against each kind (only for monsters with
-	modifiers; immune monsters keep "Immune").
+	reads "S 30% P 10% B 25%" - the damage reduction against each kind (only for monsters
+	with modifiers; immune monsters keep "Immune").
 
 	Monsters hitting the party: projectiles are Piercing, melee hits use the table's
 	"Melee Kind" column. Body armor changes the damage taken by kind (ARMOR_KIND_FACTOR
@@ -116,14 +126,24 @@ MF.PhysDamageKindOf = kindOf
 -- resistance
 ---------------------------------------------------------------------------
 
--- fraction of damage that gets through (same curve as CalcMonResPercent in MMMWE_Main.lua)
-local function passFraction(res)
-	if res >= 65000 then return 0 end
-	if res < 0 then return 1 + math.min(100, -res) / 100 end
-	if res == 0 then return 1 end
+local MAX_REDUCTION = 95   -- percent, for a kind (base + modifier)
+
+-- damage reduction (0..1) of a resistance value (same curve as CalcMonResPercent in MMMWE_Main.lua)
+local function reductionOf(res)
+	if res >= 65000 then return 1 end
+	if res <= 0 then return 0 end
 	local p = 1 - 30 / (res + 30)
-	return 1 - (0.5 * p + 0.25 * p^2 + 0.125 * p^3 + 0.0625 * p^4)
+	return 0.5 * p + 0.25 * p^2 + 0.125 * p^3 + 0.0625 * p^4
 end
+
+-- damage reduction in percent of monster mon against a kind (nil if it has no modifiers)
+local function kindReduction(mon, kind)
+	local mods = Mods[mon.Id]
+	if not mods then return nil end
+	local r = reductionOf(mon.PhysResistance) * 100 + (mods[kind] or 0)
+	return math.max(-100, math.min(MAX_REDUCTION, r))
+end
+MF.PhysKindReduction = kindReduction
 
 function events.CalcDamageToMonster(t)
 	if not t.ByPlayer or t.IsSecondary then return end
@@ -136,17 +156,15 @@ function events.CalcDamageToMonster(t)
 	t.PhysDamageKind = kind
 
 	if not Enabled then return end
-	local mods = Mods[mon.Id]
-	if not mods then return end
-	local mod = mods[kind] or 0
-	if mod == 0 then return end
-
 	local base = mon.PhysResistance
 	if base >= 65000 then return end   -- immune stays immune
+	local r = kindReduction(mon, kind)
+	if not r then return end
 
 	-- t.Result already passed the normal physical resistance: swap its factor for the
 	-- factor of this kind (keeps anything else the game applied to the hit)
-	local old, new = passFraction(base), passFraction(base + mod)
+	local old, new = 1 - reductionOf(base), 1 - r / 100
+	if old == new then return end
 	if old > 0 then
 		t.Result = math.max(0, round(t.Result * new / old))
 	else
@@ -161,7 +179,7 @@ end
 -- card show them). The value text ("Resistant" / "None" / "Immune") is pushed just
 -- before 0x41E88A; [ebp-14h] is the line offset (0, 4 ... 24h = Physical), [ebp-10h]
 -- the monster shown. For the Physical line of a monster with modifiers the value text
--- is replaced with "S 38 P 10 B 15" (its resistance against each kind).
+-- is replaced with "S 30% P 10% B 25%" (its damage reduction against each kind).
 
 local CardText = mem.StaticAlloc(64)
 
@@ -176,12 +194,10 @@ local function monsterFromPtr(ptr)
 end
 
 local function cardLine(mon)
-	local mods = Mods[mon.Id]
-	if not mods then return nil end
-	local base = mon.PhysResistance
-	if base >= 65000 then return nil end   -- keeps "Immune"
-	return string.format("S %d  P %d  B %d",
-		base + mods.Slashing, base + mods.Piercing, base + mods.Blunt)
+	if not Mods[mon.Id] or mon.PhysResistance >= 65000 then return nil end   -- keeps "Immune"
+	return string.format("S %d%% P %d%% B %d%%",
+		round(kindReduction(mon, "Slashing")), round(kindReduction(mon, "Piercing")),
+		round(kindReduction(mon, "Blunt")))
 end
 MF.PhysDamageKindsCardLine = cardLine
 
