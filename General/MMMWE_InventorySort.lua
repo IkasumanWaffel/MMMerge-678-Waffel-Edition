@@ -544,6 +544,29 @@ local function chestItems(chest)
 	return list
 end
 
+-- Backpack size of an item in cells, from its icon (the game's own rule:
+-- cells = (pixels - 14) / 32 + 1, at least 1); nil if the icon can't be loaded
+local CellsCache = {}
+local function cellsOf(px)
+	return math.floor((math.max(px, 14) - 14) / 32) + 1
+end
+local function itemCells(number)
+	local c = CellsCache[number]
+	if c == nil then
+		c = false
+		local txt = Game.ItemsTxt[number]
+		local ok, idx = pcall(function() return Game.IconsLod:LoadBitmap(txt.Picture) end)
+		if ok and idx and idx >= 0 then
+			local bmp = Game.IconsLod.Bitmaps[idx]
+			if bmp and bmp.Width > 0 and bmp.Height > 0 then
+				c = {cellsOf(bmp.Width), cellsOf(bmp.Height)}
+			end
+		end
+		CellsCache[number] = c
+	end
+	if c then return c[1], c[2] end
+end
+
 local function removeFromChest(chest, b)
 	for c = 0, 139 do
 		local v = chest.Inventory[c]
@@ -593,6 +616,10 @@ local function takeFromChest(mode)
 			gold = gold + it.Bonus2
 			removeFromChest(chest, b)
 		elseif txt and (mode == "all" or (mode == "valued" and isValued(it, txt))) then
+			-- the chest grid can't be trusted for the size (its width per chest picture
+			-- may differ): use the item's icon like the game does
+			local w, h = itemCells(it.Number)
+			if w then b.w, b.h = w, h end
 			local done = false
 			for i, pl in ipairs(party) do
 				local col, row = findSpot(grids[i], b.w, b.h)
