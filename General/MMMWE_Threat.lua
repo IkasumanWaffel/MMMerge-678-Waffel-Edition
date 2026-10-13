@@ -14,8 +14,7 @@
 	  mastery of the worn armor's skill: Novice +20%, Expert +40%, Master +60%, Grand +80%
 	  e.g. Grand Master in plate with a shield: 2.25 x 1.8 = 4.05 times a robed caster
 
-	Hint: on the inventory page of the character screen, "Threat NN%" next to the Sort and
-	Gather buttons - the share of attacks this character draws from a monster with no
+	Hint: "Threat NN%" under the paperdoll on the character screen - the share of attacks this character draws from a monster with no
 	preferences (characters who are dead, stoned, eradicated or unconscious draw none,
 	paralyzed ones almost none).
 
@@ -40,9 +39,9 @@ local NO_ARMOR_THREAT = 1.0
 local SHIELD_BONUS    = 0.25
 local MASTERY_BONUS   = 0.2      -- per mastery rank of the worn body armor's skill
 
--- Hint on the inventory page (640x480 screen coordinates)
-local HINT_X     = 270
-local HINT_Y     = 322
+-- Hint under the paperdoll on every page of the character screen (640x480 screen coordinates)
+local HINT_X     = 532
+local HINT_Y     = 376
 local HINT_COLOR = RGB(150, 140, 110)
 
 ---------------------------------------------------------------------------
@@ -111,7 +110,7 @@ end
 MF.PlayerThreatShare = threatShare
 
 ---------------------------------------------------------------------------
--- Hint on the inventory page
+-- Hint under the paperdoll
 ---------------------------------------------------------------------------
 
 local function currentIndex()
@@ -125,15 +124,16 @@ end
 function events.GameInitialized2()
 	if not CustomUI or not ENABLED then return end
 	CustomUI.CreateText{
-		Text      = "Threat",
+		Text      = "Threat 100%",
 		Font      = Game.Smallnum_fnt,
 		X = HINT_X, Y = HINT_Y,
+		Width     = 120,          -- wide enough to keep "Threat NN%" on one line
+		Height    = 16,
 		ColorStd  = HINT_COLOR,
 		ColorMouseOver = HINT_COLOR,
 		Layer     = 0,
 		Screen    = const.Screens.Inventory,
 		Condition = function(self)
-			if Game.CurrentCharScreen ~= const.CharScreens.Inventory then return false end
 			local i = currentIndex()
 			if not i then return false end
 			local ok, share = pcall(threatShare, i)
