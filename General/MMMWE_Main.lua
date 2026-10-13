@@ -2092,7 +2092,7 @@
 
 		enshDR, spDrain = CalcEnergyShieldDR(pl, damageTotal, dodgeDR, wDR, shDR, absStr)
 
-		-- Slashing / piercing / blunt (MMMWE_DamageKinds.lua): body armor protects
+		-- Slashing / piercing / blunt (MMMWE_DamageKinds.lua): the armor worn protects
 		-- differently against each kind of physical hit
 		local physKind, kindDR = nil, 1
 		if category == "physical" and MF.IncomingPhysKind then
@@ -3336,7 +3336,7 @@
 
 		-- Dodge/Parry/Block
 		-- Physical resistance against slashing / piercing / blunt hits: the Phys value
-		-- above with the body armor's kind factor (MMMWE_DamageKinds.lua)
+		-- above with the armor kind factor of all worn pieces (MMMWE_DamageKinds.lua)
 		local kindLine = ""
 		if MF.ArmorKindFactor then
 			local function kr(kind)

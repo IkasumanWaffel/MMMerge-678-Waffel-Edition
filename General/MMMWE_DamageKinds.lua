@@ -217,9 +217,15 @@ end)
 ---------------------------------------------------------------------------
 -- Kind of a monster's physical hit: projectiles (arrows, bolts, thrown weapons) are
 -- Piercing; melee uses the "Melee Kind" column of the table (Slashing if empty).
--- The body armor changes the damage taken by kind (multiplier, applied by
--- MMMWE_Main.lua's CalcDamageToPlayer after all other reductions). Above 1 = weakness;
--- with REMOVE_WEAKNESS_AT_GM a Grand Master in that armor skill takes no extra damage.
+-- The armor worn changes the damage taken by kind (multiplier, applied by
+-- MMMWE_Main.lua's CalcDamageToPlayer after all other reductions, and shown on the
+-- Character Screen). Each piece counts with its weight (ARMOR_SLOT_WEIGHT, sums to 1):
+-- body armor half, helm and boots 15% each, gauntlets and belt 10% each. A piece's type
+-- is its Skill Group in ITEMS.txt (Leather / Chain / Plate); an empty slot, a broken
+-- piece or a hat (Misc) counts as 1 (no change). A full set of one type gives that
+-- type's factor below; mixed pieces give a blend.
+-- Above 1 = weakness; with REMOVE_WEAKNESS_AT_GM a piece whose armor skill the
+-- character has at Grand Master has no weakness.
 
 local ARMOR_KIND_FACTOR = {
 	[SK.Leather] = {Slashing = 0.90, Piercing = 1.05, Blunt = 0.95},
@@ -227,6 +233,14 @@ local ARMOR_KIND_FACTOR = {
 	[SK.Plate]   = {Slashing = 0.80, Piercing = 0.90, Blunt = 1.10},
 }
 local REMOVE_WEAKNESS_AT_GM = true
+
+local ARMOR_SLOT_WEIGHT = {
+	{"ItemArmor",     0.50},
+	{"ItemHelm",      0.15},
+	{"ItemBoots",     0.15},
+	{"ItemGauntlets", 0.10},
+	{"ItemBelt",      0.10},
+}
 
 -- kind of the physical hit the party is taking right now (nil if not from a monster or a missile)
 function MF.IncomingPhysKind()
@@ -238,19 +252,29 @@ function MF.IncomingPhysKind()
 	if mon then return MeleeKind[mon.Id] or "Slashing" end
 end
 
--- damage multiplier of pl's body armor against a kind
-function MF.ArmorKindFactor(pl, kind)
-	local slot = pl.ItemArmor
-	if not kind or slot == 0 then return 1 end
+-- damage multiplier of one worn piece against a kind (1 if none)
+local function pieceFactor(pl, slot, kind)
+	if not slot or slot == 0 then return 1 end
 	local it = pl.Items[slot]
-	if it.Broken then return 1 end
-	local skill = Game.ItemsTxt[it.Number].Skill
-	local f = ARMOR_KIND_FACTOR[skill]
+	if it.Number <= 0 or it.Broken then return 1 end
+	local txt = Game.ItemsTxt[it.Number]
+	local f = txt and ARMOR_KIND_FACTOR[txt.Skill]
 	local v = f and f[kind] or 1
 	if v > 1 and REMOVE_WEAKNESS_AT_GM then
-		local _, m = SplitSkill(pl:GetSkill(skill))
+		local _, m = SplitSkill(pl:GetSkill(txt.Skill))
 		if m >= 4 then v = 1 end
 	end
 	return v
 end
+
+-- damage multiplier of pl's armor (all pieces, weighted) against a kind
+function MF.ArmorKindFactor(pl, kind)
+	if not kind then return 1 end
+	local v = 0
+	for _, sw in ipairs(ARMOR_SLOT_WEIGHT) do
+		v = v + sw[2] * pieceFactor(pl, pl[sw[1]], kind)
+	end
+	return v
+end
+MF.ArmorSlotWeights = ARMOR_SLOT_WEIGHT
 MF.ArmorKindFactors = ARMOR_KIND_FACTOR
