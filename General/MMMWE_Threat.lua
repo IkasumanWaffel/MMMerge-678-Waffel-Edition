@@ -8,11 +8,15 @@
 	threat and picks again, so the monster preference tables keep working; threat only
 	tilts the odds. It applies to melee and ranged monster attacks alike.
 
-	Threat = (body armor factor + shield bonus) x (1 + MASTERY_BONUS x armor skill mastery)
-	  no body armor (or broken) 1.0, leather 1.2, chain 1.5, plate 2.0
+	Threat = sum over armor pieces of  weight x type factor x (1 + MASTERY_BONUS x mastery)
+	         + shield bonus x (1 + MASTERY_BONUS x shield mastery)
+	  pieces and weights as in MMMWE_DamageKinds.lua (ARMOR_SLOT_WEIGHT): body armor 50%,
+	  helm 15%, boots 15%, gauntlets 10%, belt 10%
+	  type factor: none / broken / hat 1.0, leather 1.2, chain 1.5, plate 2.0
+	  mastery of the piece's armor skill: Novice +20%, Expert +40%, Master +60%, Grand +80%
 	  shield +0.25
-	  mastery of the worn armor's skill: Novice +20%, Expert +40%, Master +60%, Grand +80%
-	  e.g. Grand Master in plate with a shield: 2.25 x 1.8 = 4.05 times a robed caster
+	  e.g. Grand Master in a full plate set with a GM shield: 2 x 1.8 + 0.25 x 1.8 = 4.05
+	  times a robed caster; plate body armor alone (GM): 0.5 x 3.6 + 0.5 = 2.3
 
 	Hint: "Threat NN%" under the paperdoll on the character screen - the share of attacks this character draws from a monster with no
 	preferences (characters who are dead, stoned, eradicated or unconscious draw none,
@@ -37,7 +41,13 @@ local ARMOR_THREAT = {
 }
 local NO_ARMOR_THREAT = 1.0
 local SHIELD_BONUS    = 0.25
-local MASTERY_BONUS   = 0.2      -- per mastery rank of the worn body armor's skill
+local MASTERY_BONUS   = 0.2      -- per mastery rank of the piece's armor skill
+
+-- used if MMMWE_DamageKinds.lua doesn't provide the weights
+local DEFAULT_SLOT_WEIGHT = {
+	{"ItemArmor", 0.50}, {"ItemHelm", 0.15}, {"ItemBoots", 0.15},
+	{"ItemGauntlets", 0.10}, {"ItemBelt", 0.10},
+}
 
 -- Hint under the paperdoll on every page of the character screen (640x480 screen coordinates).
 -- The text is centered in a HINT_WIDTH wide box starting at HINT_X: the box is centered
@@ -59,18 +69,22 @@ local function wornSkill(pl, slot)
 	return txt and txt.Skill
 end
 
+local function masteryMul(pl, skill)
+	local _, m = SplitSkill(pl:GetSkill(skill))
+	return 1 + MASTERY_BONUS * (m or 0)
+end
+
 local function playerThreat(pl)
-	local armor = wornSkill(pl, pl.ItemArmor)
-	local base = armor and ARMOR_THREAT[armor] or NO_ARMOR_THREAT
+	local threat = 0
+	for _, sw in ipairs(MF.ArmorSlotWeights or DEFAULT_SLOT_WEIGHT) do
+		local skill = wornSkill(pl, pl[sw[1]])
+		local f = skill and ARMOR_THREAT[skill]
+		threat = threat + sw[2] * (f and f * masteryMul(pl, skill) or NO_ARMOR_THREAT)
+	end
 	if wornSkill(pl, pl.ItemExtraHand) == SK.Shield then
-		base = base + SHIELD_BONUS
+		threat = threat + SHIELD_BONUS * masteryMul(pl, SK.Shield)
 	end
-	local mastery = 0
-	if armor and ARMOR_THREAT[armor] then
-		local _, m = SplitSkill(pl:GetSkill(armor))
-		mastery = m or 0
-	end
-	return base * (1 + MASTERY_BONUS * mastery)
+	return threat
 end
 MF.PlayerThreat = playerThreat
 
