@@ -28,7 +28,8 @@
 	               otherwise belongs to player hits (the player check in Core may fail)
 	    CE-LEFT    Core's CE_PendingResistKind is still set after the tick
 
-	  each line: time, caller address, player, monster, kind (and physical kind),
+	  each line: time, caller address, player, monster, source (who launched the
+	  projectile / spell, or whose attack it is), kind (and physical kind),
 	  input damage, curve passes (res: in->out), engine result, final result, flags
 
 	Console:
@@ -96,6 +97,59 @@ local function monsterName(mon)
 	return ok and name or ("#" .. tostring(mon.Id))
 end
 
+-- index of ptr in a struct array (array capacity, not the current count), or nil
+local function indexIn(arr, ptr, cap)
+	if not ptr or ptr == 0 then return nil end
+	local ok, base, size = pcall(function() return arr["?ptr"], arr[0]["?size"] end)
+	if not ok then return nil end
+	local i = (ptr - base) / size
+	if i >= 0 and i < cap and i % 1 == 0 then return i end
+end
+
+-- "party member X" / "monster Name[i]" / "object" from an owner id (index * 8 + kind)
+local function ownerText(owner)
+	local kind, idx = owner % 8, math.floor(owner / 8)
+	if kind == 4 then
+		local ok, pl = pcall(function() return Party[idx] end)
+		return "party " .. (ok and pl and pl.Name or ("#" .. idx))
+	elseif kind == 3 then
+		local ok, mon = pcall(function() return Map.Monsters[idx] end)
+		return "monster " .. (ok and mon and monsterName(mon) or "?") .. "[" .. idx .. "]"
+	elseif kind == 2 then
+		return "object[" .. idx .. "]"
+	elseif kind == 5 then
+		return "sprite[" .. idx .. "]"
+	end
+	return string.format("owner %d (kind %d)", owner, kind)
+end
+
+-- who caused this damage: the projectile's owner and spell, else the attacker pointer
+local function sourceText(t)
+	local oi = indexIn(Map.Objects, t.ObjectPtr, 1000)
+	if oi then
+		local ok, s = pcall(function()
+			local o = Map.Objects[oi]
+			local txt = ownerText(o.Owner)
+			if o.Spell and o.Spell > 0 then
+				local name = Game.SpellsTxt[o.Spell] and Game.SpellsTxt[o.Spell].Name or ""
+				txt = txt .. string.format(" via spell %d %s", o.Spell, name)
+			else
+				txt = txt .. string.format(" via object type %d", o.Type)
+			end
+			return txt
+		end)
+		if ok then return s end
+	end
+	local pi = indexIn(Party.PlayersArray, t.AttackerPtr, Party.PlayersArray.count or 50)
+	if pi then return "party (attacker ptr)" end
+	local mi = indexIn(Map.Monsters, t.AttackerPtr, 500)
+	if mi then
+		local ok, mon = pcall(function() return Map.Monsters[mi] end)
+		return "monster " .. (ok and mon and monsterName(mon) or "?") .. "[" .. mi .. "] (attacker ptr)"
+	end
+	return string.format("unknown (attacker %08X, object %08X)", t.AttackerPtr or 0, t.ObjectPtr or 0)
+end
+
 ---------------------------------------------------------------------------
 -- First handler: sees the engine's result before any script changes it
 -- (this file loads before MMMWE_DamageKinds / _ItemDurability / _Main)
@@ -121,6 +175,7 @@ function events.CalcDamageToMonster(t)
 		Secondary = t.IsSecondary,
 		Melee = t.Melee,
 		Passes = passes,
+		Source = sourceText(t),
 		Flags = {},
 		T = t,
 	}
@@ -241,8 +296,8 @@ local function flush()
 	for _, r in ipairs(TickCalls) do
 		for _, f in ipairs(r.Flags) do count(Stats.Flags, f:match("^[%w%-%?]+")) end
 		if LOG_ALL or #r.Flags > 0 then
-			out(string.format("%s caller=%08X %s -> %s[%s] %s%s%s dmg=%s curve=[%s] engine=%s final=%s%s %s",
-				tostring(Game.Time), r.Caller, r.Player, r.Monster, tostring(r.MonsterIndex),
+			out(string.format("%s caller=%08X %s -> %s[%s] source=%s %s%s%s dmg=%s curve=[%s] engine=%s final=%s%s %s",
+				tostring(Game.Time), r.Caller, r.Player, r.Monster, tostring(r.MonsterIndex), r.Source,
 				kindName(r.Kind), r.PhysKind and ("/" .. r.PhysKind) or "",
 				r.Secondary and " (enchant)" or (r.Melee and " (melee)" or " (ranged/spell)"),
 				tostring(r.Damage), passesText(r.Passes), tostring(r.Engine), tostring(r.Final),

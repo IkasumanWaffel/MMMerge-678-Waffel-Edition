@@ -2383,6 +2383,9 @@ mem.hookfunction(mmv(0x421DC0, 0x427522, 0x425951), 0, 3, function(d, def, mon, 
         t.ByPlayer = aptr >= Party.PlayersArray["?ptr"]
             and aptr < (Party.PlayersArray["?ptr"] + Party.PlayersArray["?size"])
         t.Melee = objptr == 0
+        -- raw pointers from the caller's frame (diagnostics; only meaningful for some callers)
+        t.AttackerPtr = aptr
+        t.ObjectPtr = objptr
         if t.ByPlayer then
             t.PlayerIndex, t.Player = GetPlayer(aptr)
         end
