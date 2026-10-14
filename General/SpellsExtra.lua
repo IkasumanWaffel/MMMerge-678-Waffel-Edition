@@ -559,13 +559,16 @@ local function SetSpellsExtraHooks()
 	--     starts and kept for its whole duration:
 	--       spell  mastery * (5 + skill)   (e.g. Novice 1: 6, Grand Master 20: 100)
 	--       potion 2 * (5 + power)         (as an Expert cast at skill = potion power)
-	--     SpellBuffs2[27] mirrors Preservation (buff icon).
 	--   Pain Reflection (spell 95, potion): Light and Dark + the buff's power
 	--     (skill * PowerPerLevel + PowerBonus; potion 25).
 	--   Day of Protection (spell 85): Spirit + its resistance power (the same as the other
 	--     six resistances), Light and Dark + half of it. Day of Protection is recognized
 	--     by its six party resistance buffs (same power and expiry) together with Feather
 	--     Fall or Wizard Eye expiring at the same moment.
+	-- The bonuses are kept in the extra buffs SpellBuffs2[27] Spirit, [28] Light and
+	-- [29] Dark Resistance (Power = the bonus, ExpireTime = the latest source's expiry),
+	-- refreshed every tick from their sources, so they are listed with the other buffs.
+	-- CalcStatBonusByMagic adds the Power of an active extra buff.
 	local PreservationDur      = {60, 300, 300, 900}       -- defaults if the table has no value
 	local PreservationDurConst = {1800, 3600, 3600, 3600}
 	local PRESERVATION_POTION_MASTERY = 2                  -- potion bonus = this * (5 + power)
@@ -595,24 +598,6 @@ local function SetSpellsExtraHooks()
 	local function presRecords()
 		vars.MMMWE_PreservationRes = vars.MMMWE_PreservationRes or {}
 		return vars.MMMWE_PreservationRes
-	end
-
-	-- a new or renewed Preservation buff gets its bonus fixed right away
-	function events.Tick()
-		if not vars then return end
-		local recs
-		for i = 0, Party.count - 1 do
-			local pl = Party[i]
-			local buff = pl.SpellBuffs[PB.Preservation]
-			if buff.ExpireTime > Game.Time then
-				recs = recs or presRecords()
-				local id = pl:GetIndex()
-				local rec = recs[id]
-				if not rec or rec.Expire ~= buff.ExpireTime then
-					recs[id] = {Expire = buff.ExpireTime, Bonus = preservationBonusAtStart(buff)}
-				end
-			end
-		end
 	end
 
 	-- Preservation potion (231): 30 minutes per point of power, spirit bonus by power
@@ -648,31 +633,66 @@ local function SetSpellsExtraHooks()
 	end
 	MF.DayOfProtectionPower = dayOfProtectionPower
 
+	local XB_SPIRIT, XB_LIGHT, XB_DARK = 27, 28, 29
+
+	local function setExtraBuff(xb, power, expire)
+		if power > 0 and expire > Game.Time then
+			xb.ExpireTime = expire
+			xb.Power = min(power, 32767)
+		elseif xb.ExpireTime > Game.Time then
+			xb.ExpireTime = 0     -- the source ended early (dispel, cure)
+			xb.Power = 0
+		end
+	end
+
+	-- refresh the Spirit / Light / Dark extra buffs of every party member from their sources;
+	-- a new or renewed Preservation buff gets its bonus fixed right away
+	function events.Tick()
+		if not vars then return end
+		local recs = presRecords()
+		local dop = dayOfProtectionPower()
+		local dopExpire = dop > 0 and Party.SpellBuffs[PartyB.FireResistance].ExpireTime or 0
+		local dopLD = floor(dop * DOP_LIGHT_DARK_SHARE)
+		for i = 0, Party.count - 1 do
+			local pl = Party[i]
+			local id = pl:GetIndex()
+			local xbs = Game.PlayersExtra[id].SpellBuffs2
+
+			-- Spirit: Preservation + Day of Protection
+			local spirit, spiritExp = dop, dopExpire
+			local pres = pl.SpellBuffs[PB.Preservation]
+			if pres.ExpireTime > Game.Time then
+				local rec = recs[id]
+				if not rec or rec.Expire ~= pres.ExpireTime then
+					rec = {Expire = pres.ExpireTime, Bonus = preservationBonusAtStart(pres)}
+					recs[id] = rec
+				end
+				spirit = spirit + rec.Bonus
+				spiritExp = max(spiritExp, pres.ExpireTime)
+			end
+			setExtraBuff(xbs[XB_SPIRIT], spirit, spiritExp)
+
+			-- Light and Dark: Pain Reflection + half of Day of Protection
+			local ld, ldExp = dopLD, dopExpire
+			local pr = pl.SpellBuffs[PB.PainReflection]
+			if pr.ExpireTime > Game.Time and pr.Power > 0 then
+				ld = ld + pr.Power
+				ldExp = max(ldExp, pr.ExpireTime)
+			end
+			setExtraBuff(xbs[XB_LIGHT], ld, ldExp)
+			setExtraBuff(xbs[XB_DARK], ld, ldExp)
+		end
+	end
+
+	local XB_OF_STAT = {[ST.SpiritResistance] = XB_SPIRIT, [ST.LightResistance] = XB_LIGHT,
+		[ST.DarkResistance] = XB_DARK}
+
 	function events.CalcStatBonusByMagic(t)
-		local Pl = t.Player
-		if not Pl then return end
-
-		if t.Stat == ST.SpiritResistance then
-			local buff = Pl.SpellBuffs[PB.Preservation]
-			local extraBuff = Game.PlayersExtra[Pl:GetIndex()].SpellBuffs2[27]
-			if buff.ExpireTime > Game.Time then
-				local rec = vars and vars.MMMWE_PreservationRes and vars.MMMWE_PreservationRes[Pl:GetIndex()]
-				local bonus = (rec and rec.Expire == buff.ExpireTime) and rec.Bonus
-					or preservationBonusAtStart(buff)
-				t.Result = t.Result + bonus
-				extraBuff.ExpireTime = buff.ExpireTime
-			elseif extraBuff.ExpireTime > Game.Time then
-				-- Preservation ended early (dispel, cure): drop the mirrored buff too
-				extraBuff.ExpireTime = 0
-			end
-			t.Result = t.Result + dayOfProtectionPower()
-
-		elseif t.Stat == ST.LightResistance or t.Stat == ST.DarkResistance then
-			local pr = Pl.SpellBuffs[PB.PainReflection]
-			if pr.ExpireTime > Game.Time then
-				t.Result = t.Result + max(pr.Power, 0)
-			end
-			t.Result = t.Result + floor(dayOfProtectionPower() * DOP_LIGHT_DARK_SHARE)
+		local k = XB_OF_STAT[t.Stat]
+		if not k or not t.Player then return end
+		local xb = Game.PlayersExtra[t.Player:GetIndex()].SpellBuffs2[k]
+		if xb.ExpireTime > Game.Time and xb.Power > 0 then
+			t.Result = t.Result + xb.Power
 		end
 	end
 
