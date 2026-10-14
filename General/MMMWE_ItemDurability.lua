@@ -83,11 +83,12 @@ local CONFIG = {
 	-- ---- field repair (hotkey, costs gold) -------------------------------
 	-- Repairs the current character's items. Needs the Repair skill; restores up to
 	-- 50% / 75% / 100% of max durability (Normal / Expert / Master and above).
-	-- Grand Master repairs for free.
+	-- Grand Master pays half the price (gmCostMultiplier).
 	-- Broken items still need a shop/Repair-skill repair.
 	-- NOTE: R is also the stock "Rest" key. While it is bound here the game never
 	-- sees it on the main view (rest with the button instead).
 	repairHotkey = const.Keys.R,      -- nil = disabled
+	gmCostMultiplier = 0.5,           -- Grand Master in Repair Item: share of the normal field repair price
 	fieldRepair = {
 		costMult     = 0.5,           -- gold = item Value x (fraction of max durability restored) x costMult
 		minCost      = 1,             -- gold, per item
@@ -537,10 +538,18 @@ local function repairCost(it, restoredPoints, max)
 	return math.max(FR.minCost, math.ceil(value * (restoredPoints / max) * FR.costMult))
 end
 
+-- price times costMult (Grand Master: CONFIG.gmCostMultiplier), at least 1 gold if not free
+local function scaledCost(cost, costMult)
+	costMult = costMult or 1
+	if costMult >= 1 or cost <= 0 then return cost end
+	if costMult <= 0 then return 0 end
+	return math.max(1, math.floor(cost * costMult + 0.5))
+end
+
 -- Repairs pl's items up to `limit` (fraction of max durability), most important first:
 -- equipped before backpack, most worn first. Stops at the first item the party can't afford.
 -- Returns repaired, gold spent, items needing repair, cost of the item it could not afford.
-local function fieldRepair(pl, limit, free)
+local function fieldRepair(pl, limit, costMult)
 	local FR = CONFIG.fieldRepair
 
 	local equipped = {}
@@ -560,7 +569,7 @@ local function fieldRepair(pl, limit, free)
 				jobs[#jobs + 1] = {
 					it = it, max = max, target = target,
 					eq = equipped[j] and 1 or 0, frac = cur / max,
-					cost = free and 0 or repairCost(it, target - cur, max),
+					cost = scaledCost(repairCost(it, target - cur, max), costMult),
 				}
 			end
 		end
@@ -596,8 +605,8 @@ if CONFIG.repairHotkey then
 		end
 
 		local limit = (m >= 3 and 1.0) or (m == 2 and 0.75) or 0.50
-		local free = m >= 4   -- Grand Master: no gold charged
-		local done, spent, total, blocked = fieldRepair(pl, limit, free)
+		local costMult = m >= 4 and (CONFIG.gmCostMultiplier or 0.5) or 1   -- Grand Master: half price
+		local done, spent, total, blocked = fieldRepair(pl, limit, costMult)
 
 		if total == 0 then
 			Game.PlaySound(27,-1,0)
@@ -610,7 +619,7 @@ if CONFIG.repairHotkey then
 			Game.ShowStatusText(string.format("Repaired %d of %d items for %d gold - out of gold", done, total, spent))
 		else
 			Game.PlaySound(146,-1,0)
-			if free then
+			if spent == 0 then
 				Game.ShowStatusText(string.format("Repaired %d item(s) for free", done))
 			else
 				Game.ShowStatusText(string.format("Repaired %d item(s) for %d gold", done, spent))
