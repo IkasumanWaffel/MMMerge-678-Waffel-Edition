@@ -3089,6 +3089,19 @@
 	end
 	
 	-- File-scope functions
+
+	-- Text color of a resistance value against its base, like the game colors the other
+	-- resistances: bonus (buffs) green, penalty red, otherwise the default color.
+	-- The game draws the Spirit, Light and Dark lines from the strings below, not with its
+	-- own color code, so the color is added here.
+	local RES_BONUS_COLOR   = RGB(0, 255, 0)
+	local RES_PENALTY_COLOR = RGB(255, 0, 0)
+	local function resColor(cur, base)
+		if cur > base then return RES_BONUS_COLOR end
+		if cur < base then return RES_PENALTY_COLOR end
+		return 0
+	end
+
 	local function spiritString(pl, spiritRes, spiritBase, shortFormat)
 		local resME = CalcResME(pl, 33)
 		if spiritRes >= IMMUNE_THRESHOLD then
@@ -3096,11 +3109,11 @@
 		end
 		local pct = "%%"
 		if shortFormat then
-			return string.format("\t   Spirit\t55 %3.1f%s\t115%d\f00000 / %d",
-				resME, pct, spiritRes, spiritBase)
+			return string.format("\t   Spirit\t55 %3.1f%s\t115\f%05d%d\f00000 / %d",
+				resME, pct, resColor(spiritRes, spiritBase), spiritRes, spiritBase)
 		else
-			return string.format("\t   Spirit\t55 %3.1f%s\r185%d\f00000 / %d",
-				resME, pct, spiritRes, spiritBase)
+			return string.format("\t   Spirit\t55 %3.1f%s\r185\f%05d%d\f00000 / %d",
+				resME, pct, resColor(spiritRes, spiritBase), spiritRes, spiritBase)
 		end
 	end
 
@@ -3108,8 +3121,8 @@
 		if resVal >= IMMUNE_THRESHOLD then
 			return string.format("\t   %s\t160%s", name, "Immune")
 		end
-		return string.format("\t   %s\t90 %3.1f%%\t160%d\f00000 / %d",
-			name, resME, resVal, resBase)
+		return string.format("\t   %s\t90 %3.1f%%\t160\f%05d%d\f00000 / %d",
+			name, resME, resColor(resVal, resBase), resVal, resBase)
 	end
 
 	function CalcHPSPRegen(Player)
