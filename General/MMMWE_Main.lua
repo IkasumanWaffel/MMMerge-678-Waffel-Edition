@@ -2892,6 +2892,7 @@
 		end
 		return dur
 	end
+	MF.CalcTotalArmorDurability = calcTotalArmorDurability   -- MMMWE_Drains.lua
 
 	-- Parry chance for the character screen: same rules as the combat roll
 	local function calcParryChanceUI(pl, curseMult)

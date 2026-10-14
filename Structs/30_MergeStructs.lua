@@ -33,7 +33,7 @@ end
 
 MC.PlayerBuffs2Count = 7
 MC.PlayerBuffsCount = 27 + MC.PlayerBuffs2Count
-MC.PlayerDebuffsCount = 20 -- Conditions 0-12,15,17-19
+MC.PlayerDebuffsCount = 33 -- Conditions 0-12,15,17-19; 20-32 drains (MMMWE_Drains.lua)
 
 MC.PartyBuffs2Count = 6
 MC.PartyBuffsCount = 20 + MC.PartyBuffs2Count
@@ -1247,6 +1247,20 @@ local function SetBuffs2DebuffsNames()
 	mem.u4[MO.PlayerDebuffsNames + 17 * 4] = mem_cstring(string.format("%s", "Morbid Transformation"))  --mem.u4[0x601448 + 601 * 4] -- Zombie
 	mem.u4[MO.PlayerDebuffsNames + 18 * 4] = mem_cstring(string.format("%s", "Feeblemind"			))	--mem.u4[0x601448 + 594 * 4] -- Feebleminded
 	mem.u4[MO.PlayerDebuffsNames + 19 * 4] = mem_cstring(string.format("%s", "Unarmed"				))	--mem.u4[0x601448 + 77 * 4] -- Unarmed
+	-- 20-32: drains by monsters (MMMWE_Drains.lua)
+	local drainNames = {"Might Drain", "Intellect Drain", "Personality Drain", "Endurance Drain",
+		"Accuracy Drain", "Speed Drain", "Luck Drain", "Armor Corrosion", "Fire Res. Drain",
+		"Air Res. Drain", "Water Res. Drain", "Earth Res. Drain", "Light Res. Drain"}
+	local drainColors = {0xCC3333, 0xFF8800, 0x3366FF, 0x00AA44, 0xFFFF00, 0x9933CC, 0x22AAAA,
+		0x996633, 0xFF4400, 0x66CCFF, 0x2244CC, 0x887744, 0xFAFAFA}
+	for k = 1, #drainNames do
+		local idx = 19 + k
+		if idx < MC.PlayerDebuffsCount then
+			mem.u4[MO.PlayerDebuffsNames + idx * 4] = mem_cstring(drainNames[k])
+			local c, o = drainColors[k], MO.PlayerDebuffsColors + idx * 3
+			mem.u1[o], mem.u1[o + 1], mem.u1[o + 2] = c % 256, math.floor(c / 256) % 256, math.floor(c / 65536)
+		end
+	end
 	
 	mem.u4[MO.PlayerDebuffsColors + 0 * 3] 	= tonumber('AA0055',16)
 	mem.u4[MO.PlayerDebuffsColors + 1 * 3] 	= tonumber('00AA88',16)

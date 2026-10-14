@@ -135,6 +135,20 @@ local debuffExtraLabels = {
     [17] = {label = "Morbid Transform", color = 0x717919},  -- Morbid Transformation
     [18] = {label = "Feeblemind", color = 0x00DDFF},  -- Feebleminded
     [19] = {label = "Unarmed", color = 0xCCCCCC},  -- Unarmed
+    -- drains by monsters (MMMWE_Drains.lua)
+    [20] = {label = "Might Drain", color = 0xCC3333},
+    [21] = {label = "Int. Drain", color = 0xFF8800},
+    [22] = {label = "Pers. Drain", color = 0x3366FF},
+    [23] = {label = "End. Drain", color = 0x00AA44},
+    [24] = {label = "Acc. Drain", color = 0xFFFF00},
+    [25] = {label = "Speed Drain", color = 0x9933CC},
+    [26] = {label = "Luck Drain", color = 0x22AAAA},
+    [27] = {label = "Armor Corrosion", color = 0x996633},
+    [28] = {label = "Fire Res Drain", color = 0xFF4400},
+    [29] = {label = "Air Res Drain", color = 0x66CCFF},
+    [30] = {label = "Water Res Drain", color = 0x2244CC},
+    [31] = {label = "Earth Res Drain", color = 0x887744},
+    [32] = {label = "Light Res Drain", color = 0xFAFAFA},
 }
 
 -- Extra buffs2 colors
