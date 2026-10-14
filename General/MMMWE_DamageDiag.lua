@@ -158,6 +158,36 @@ local function frameScan(t)
 	return table.concat(found, " | ")
 end
 
+-- Monster-vs-monster damage (found with the frame scan, 14.10.26): both callers keep the
+-- attacker's id at [ebp-4] - a monster id (index * 8 + 3) for melee (0x438F1B), a
+-- projectile id (index * 8 + 2) for spells and missiles (0x438CF4, area damage too).
+local MVM_CALLERS = {[0x438CF4] = true, [0x438F1B] = true}
+
+local function mvmSource(t)
+	if not MVM_CALLERS[t.Caller] or not t.CallerEbp then return nil end
+	local ok, v = pcall(function() return mem.i4[t.CallerEbp - 4] end)
+	if not ok or not v or v <= 0 then return nil end
+	local kind, idx = v % 8, math.floor(v / 8)
+	if kind == 3 and idx < Map.Monsters.count then
+		return "monster-vs-monster: " .. ownerText(v) .. " (melee)"
+	elseif kind == 2 and idx < Map.Objects.count then
+		local ok2, txt = pcall(function()
+			local o = Map.Objects[idx]
+			local what = (o.Spell and o.Spell > 0)
+				and string.format("spell %d %s", o.Spell, Game.SpellsTxt[o.Spell] and Game.SpellsTxt[o.Spell].Name or "")
+				or string.format("missile type %d", o.Type)
+			-- a monster's spell keeps its caster in Owner; area damage objects may not
+			local ok3, ow = o.Owner % 8, math.floor(o.Owner / 8)
+			local caster = (ok3 == 3 and ow < Map.Monsters.count) and ownerText(o.Owner)
+				or (ok3 == 4 and ownerText(o.Owner))
+				or "caster not recorded"
+			return string.format("%s from object[%d] (%s)", what, idx, caster)
+		end)
+		if ok2 then return "monster-vs-monster: " .. txt end
+	end
+	return nil
+end
+
 -- who caused this damage: the projectile's owner and spell, else the attacker pointer
 local function sourceText(t)
 	local oi = indexIn(Map.Objects, t.ObjectPtr, 1000)
@@ -178,8 +208,10 @@ local function sourceText(t)
 	local pi = indexIn(Party.PlayersArray, t.AttackerPtr, Party.PlayersArray.count or 50)
 	if pi then return "party (attacker ptr)" end
 	if not t.ByPlayer then
+		local fixed = mvmSource(t)
+		if fixed then return fixed end
 		local scan = frameScan(t)
-		if scan then return "monster-vs-monster: " .. scan end
+		if scan then return "monster-vs-monster (frame scan): " .. scan end
 	end
 	local mi = indexIn(Map.Monsters, t.AttackerPtr, 500)
 	if mi then
