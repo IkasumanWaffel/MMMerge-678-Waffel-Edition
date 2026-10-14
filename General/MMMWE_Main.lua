@@ -3090,16 +3090,14 @@
 	
 	-- File-scope functions
 
-	-- Text color of a resistance value against its base, like the game colors the other
-	-- resistances: bonus (buffs) green, penalty red, otherwise the default color.
-	-- The game draws the Spirit, Light and Dark lines from the strings below, not with its
-	-- own color code, so the color is added here.
-	local RES_BONUS_COLOR   = RGB(0, 255, 0)
-	local RES_PENALTY_COLOR = RGB(255, 0, 0)
+	-- Text color of a resistance value against its base, from the game's own color_stat
+	-- (0x416F77, fastcall: ecx = current, edx = base): above base green, equal default,
+	-- below base yellow, below 25% of base red. The game draws the Spirit, Light and Dark
+	-- lines from the strings below, not with its own color code, so the color is added
+	-- here. color_stat divides by base, so a value below a base of 0 or less is red here.
 	local function resColor(cur, base)
-		if cur > base then return RES_BONUS_COLOR end
-		if cur < base then return RES_PENALTY_COLOR end
-		return 0
+		if cur < base and base <= 0 then return RGB(255, 0, 0) end
+		return mem.call(0x416F77, 2, cur, base)
 	end
 
 	local function spiritString(pl, spiritRes, spiritBase, shortFormat)
