@@ -123,6 +123,41 @@ local function ownerText(owner)
 	return string.format("owner %d (kind %d)", owner, kind)
 end
 
+-- Callers whose frame doesn't have the party-attack layout (ebp-8 = attacker player,
+-- ebp-0x34 = projectile): monster-vs-monster damage. Their frame is searched for an
+-- object id (index * 8 + kind) naming another monster or a projectile; the offset found
+-- is printed so it can be fixed in place once it proves stable.
+local SCAN_FROM, SCAN_TO = -0x60, 0x18
+
+local function frameScan(t)
+	local ebp = t.CallerEbp
+	if not ebp or ebp == 0 then return nil end
+	local found = {}
+	for off = SCAN_FROM, SCAN_TO, 4 do
+		local ok, v = pcall(function() return mem.i4[ebp + off] end)
+		if ok and v and v > 0 then
+			local kind, idx = v % 8, math.floor(v / 8)
+			local hit
+			if kind == 3 and idx ~= t.MonsterIndex and idx < Map.Monsters.count then
+				hit = ownerText(v)
+			elseif kind == 2 and idx < Map.Objects.count then
+				local ok2, o = pcall(function() return Map.Objects[idx] end)
+				if ok2 and o and o.Type ~= 0 then
+					local by = (o.Owner and o.Owner > 0) and ownerText(o.Owner) or "?"
+					hit = string.format("%s via object[%d]%s", by, idx,
+						(o.Spell and o.Spell > 0) and string.format(" spell %d %s", o.Spell,
+							Game.SpellsTxt[o.Spell] and Game.SpellsTxt[o.Spell].Name or "") or "")
+				end
+			end
+			if hit then
+				found[#found + 1] = string.format("%s @ebp%s0x%X", hit, off < 0 and "-" or "+", math.abs(off))
+			end
+		end
+	end
+	if #found == 0 then return nil end
+	return table.concat(found, " | ")
+end
+
 -- who caused this damage: the projectile's owner and spell, else the attacker pointer
 local function sourceText(t)
 	local oi = indexIn(Map.Objects, t.ObjectPtr, 1000)
@@ -142,6 +177,10 @@ local function sourceText(t)
 	end
 	local pi = indexIn(Party.PlayersArray, t.AttackerPtr, Party.PlayersArray.count or 50)
 	if pi then return "party (attacker ptr)" end
+	if not t.ByPlayer then
+		local scan = frameScan(t)
+		if scan then return "monster-vs-monster: " .. scan end
+	end
 	local mi = indexIn(Map.Monsters, t.AttackerPtr, 500)
 	if mi then
 		local ok, mon = pcall(function() return Map.Monsters[mi] end)

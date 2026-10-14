@@ -2386,6 +2386,7 @@ mem.hookfunction(mmv(0x421DC0, 0x427522, 0x425951), 0, 3, function(d, def, mon, 
         -- raw pointers from the caller's frame (diagnostics; only meaningful for some callers)
         t.AttackerPtr = aptr
         t.ObjectPtr = objptr
+        t.CallerEbp = d.ebp         -- frame of the function that called monster_resists
         if t.ByPlayer then
             t.PlayerIndex, t.Player = GetPlayer(aptr)
         end
