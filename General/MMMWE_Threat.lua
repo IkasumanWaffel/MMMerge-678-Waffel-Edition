@@ -139,17 +139,16 @@ local function currentIndex()
 end
 
 -- right-click tooltip of the hint (shown while the right button is held over it)
-local TIP_X, TIP_Y, TIP_W = 300, 200, 330
+local TIP_X, TIP_Y, TIP_W = 230, 60, 400
 local function tipText(pl, share)
-	return string.format("Threat\n \n"
-		.. "Monsters prefer to attack characters in heavier armor. The percent is the share of "
-		.. "attacks this character draws from a monster with no preferences of its own (a "
-		.. "monster's taste for some classes, races or party positions comes on top).\n \n"
-		.. "Each armor piece adds threat by its type - leather x1.2, chain x1.5, plate x2 - and "
-		.. "weight: body armor half, helm and boots 15%% each, gauntlets and belt 10%% each; "
-		.. "+20%% per mastery rank in its armor skill. A shield adds 0.25 (more with Shield "
-		.. "mastery). Characters who are dead, stoned, eradicated or unconscious draw no attacks."
-		.. "\n \nThreat factor: %.2f (a robed caster has 1.00)", playerThreat(pl))
+	return string.format(
+		"Monsters prefer characters in heavier armor. The percent is this character's share "
+		.. "of attacks from a monster with no preferences of its own.\n \n"
+		.. "Armor pieces add threat by type (leather x1.2, chain x1.5, plate x2) and slot "
+		.. "(body armor half, helm and boots 15%%, gauntlets and belt 10%%), +20%% per mastery "
+		.. "rank in the armor skill; a shield adds 0.25. Dead, stoned, eradicated or "
+		.. "unconscious characters draw no attacks.\n \n"
+		.. "Threat factor: %.2f (a robed caster: 1.00)", playerThreat(pl))
 end
 
 local function mouseOverHint()
@@ -177,7 +176,10 @@ function events.GameInitialized2()
 			self.Text = string.format("Threat %d%%", math.floor(share * 100 + 0.5))
 			if Keys.IsPressed(const.Keys.RBUTTON) and mouseOverHint() then
 				local ok2, txt = pcall(tipText, Party[i], share)
-				if ok2 then CustomUI.ShowTooltip(txt, TIP_X, TIP_Y, TIP_W) end
+				if ok2 then
+					CustomUI.ShowTooltip(txt, TIP_X, TIP_Y, TIP_W)
+					return false   -- the label would show through the tooltip
+				end
 			end
 			return true
 		end,
