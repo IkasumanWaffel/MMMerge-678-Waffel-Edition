@@ -45,7 +45,7 @@ local MF = Merge.Functions
 -- Settings
 ---------------------------------------------------------------------------
 
-local ENABLED    = true
+local ENABLED    = false
 local LOG_ALL    = true      -- false: only lines with flags
 local SHOW_FLAGS = true      -- status line message when a hit is flagged
 local LOG_FILE   = "MMMWE_DamageDiag.log"
@@ -176,11 +176,12 @@ local function mvmSource(t)
 			local what = (o.Spell and o.Spell > 0)
 				and string.format("spell %d %s", o.Spell, Game.SpellsTxt[o.Spell] and Game.SpellsTxt[o.Spell].Name or "")
 				or string.format("missile type %d", o.Type)
-			-- a monster's spell keeps its caster in Owner; area damage objects may not
+			-- a monster's spell keeps its caster in Owner; spells launched by map events
+			-- (evt.CastSpell: traps, the cannon-like structures) have no caster
 			local ok3, ow = o.Owner % 8, math.floor(o.Owner / 8)
 			local caster = (ok3 == 3 and ow < Map.Monsters.count) and ownerText(o.Owner)
 				or (ok3 == 4 and ownerText(o.Owner))
-				or "caster not recorded"
+				or "no caster - map event / trap"
 			return string.format("%s from object[%d] (%s)", what, idx, caster)
 		end)
 		if ok2 then return "monster-vs-monster: " .. txt end
