@@ -1290,6 +1290,12 @@
 		MF.LogInfo("[RES] elem=%d res=%d dmg=%d -> %d (pct=%.3f)",
 			element, res, damage, newDmg, pct)
 
+		-- MMMWE_DamageDiag.lua: every pass of the resistance curve is recorded
+		local diag = MF.DamageDiagRes
+		if diag then
+			diag[#diag + 1] = {Elem = element, Res = res, In = damage, Out = newDmg}
+		end
+
 		d.eax = 0
 		d.edx = 0
 	end)

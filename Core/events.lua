@@ -2374,6 +2374,7 @@ mem.hookfunction(mmv(0x421DC0, 0x427522, 0x425951), 0, 3, function(d, def, mon, 
         Damage = dmg,
         Result = def(mon, effectiveKind, dmg),
         IsSecondary = isSecondary,  -- новый флаг для обработчиков
+        Caller = u4[d.esp],         -- return address of the monster_resists call (diagnostics)
     }
 
     if mmver == 8 then
