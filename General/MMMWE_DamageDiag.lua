@@ -161,7 +161,8 @@ function events.CalcDamageToMonster(t)
 	for _, r in ipairs(TickCalls) do
 		if r.ByPlayer and rec.ByPlayer and r.PlayerIndex == rec.PlayerIndex
 				and r.MonsterIndex == rec.MonsterIndex and r.Kind == rec.Kind
-				and r.Damage == rec.Damage and r.Secondary == rec.Secondary then
+				and r.Damage == rec.Damage and r.Secondary == rec.Secondary
+				and (rec.Damage or 0) > 0 then   -- 0-damage calls: weapons without enchantment
 			rec.Flags[#rec.Flags + 1] = "SAME-HIT"
 			break
 		end

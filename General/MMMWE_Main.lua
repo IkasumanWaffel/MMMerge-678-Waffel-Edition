@@ -1276,9 +1276,14 @@
 		return ResPercent
 	end
 
-	-- autohook2 at 0x4259CF (lea esi, [edx+eax+1Eh])
-	-- Executed only for non-immune monsters (standard code if immune)
-	mem.autohook2(0x4259CF, function(d)
+	-- autohook at 0x4259CF (lea esi, [edx+eax+1Eh]), BEFORE the instruction.
+	-- Executed only for non-immune monsters (standard code if immune).
+	-- eax + edx is the resistance; zeroing them makes the lea give esi = 30, so the
+	-- engine's random halving loop that follows (rand() % (res + 30) >= 30 halves the
+	-- damage, up to 4 times) never halves. This was autohook2 (after the lea): esi
+	-- already held res + 30, so the old random halving still ran on top of the curve -
+	-- found with MMMWE_DamageDiag.lua (ENGINE? lines: curve 15 -> engine 7, 42 -> 10).
+	mem.autohook(0x4259CF, function(d)
 		local res = d.eax + d.edx
 		local damage = mem.i4[d.ebp + 0x10]
 		local element = mem.i4[d.ebp + 0x0C]  -- второй параметр monster_resists
