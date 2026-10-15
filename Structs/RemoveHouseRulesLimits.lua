@@ -485,8 +485,9 @@ local function RemoveLimits()
 	--   Shrinking it somehow affects items from 'Complex Item Pictures' (like armor offsets became garbage or item pic not loaded).
 	--   0x200 bytes seem to be enough for them to work. Need to investigate further.
 	NewSize = WepRSize + ArmRSize + MagRSize + AlcRSize + SbRSize + TrHRSize + TavRSize
-				-- + TavTopicsPtrsSize + WepAsrtSize + ArmAsrtSize + MagAsrtSize + AlcAsrtSize + SbAsrtSize + TranIndexSize + FillStateSBSize + RepSize*2 + 0x10
-				+ TavTopicsPtrsSize + WepAsrtSize + ArmAsrtSize + MagAsrtSize + AlcAsrtSize + TranIndexSize + FillStateSBSize + RepSize*2 + 0x200
+				-- + TavTopicsPtrsSize + WepAsrtSize + ArmAsrtSize + MagAsrtSize + AlcAsrtSize + SbAsrtSize + TranIndexSize + FillStateSBSize + RepSize*2 + 0x200
+				+ TavTopicsPtrsSize + WepAsrtSize + ArmAsrtSize + MagAsrtSize + AlcAsrtSize + TranIndexSize
+				+ FillState1Size + FillState2Size + FillStateSBSize + RepSize + 0x10
 	NewSpace = StaticAlloc(NewSize)
 
 	if GuildAssortCount > OldGuildAssortCount then
