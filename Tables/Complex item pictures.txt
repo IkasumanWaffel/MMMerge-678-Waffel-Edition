@@ -1,20 +1,20 @@
 		Armors	Settings	t0		t1		t2		t3		t4		t5		t0		t1		t2		t3		t4		t5
 Id	Item id	Notes		X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y
-1	84	Leather Jerkin		47	78	50	93	44	108	0	0	-2	0		
-2	85	Hardened Leather Vest		30	84	60	95	45	111	0	0	0	0		
-3	86	Caravaner's Leather		29	72	57	86	40	101	0	0	0	0		
-4	87	Regnan Leather		29	78	47	90	29	107	0	0	0	0		
-5	88	Alvarian Leather		46	78	42	88	38	103	0	0	0	0		
-6	89	Rusty Mail Vest		61	82	61	98	46	111	0	0	0	0		
-7	90	Steel Chainmail		55	82	60	98	45	116	0	0	0	0		
-8	91	Minotaur Chainmail		45	76	57	91	46	107	0	0	0	0		
-9	92	Siertal Chainmail		49	76	52	90	36	100	0	0	0	0		
-10	93	Erudine Chainmail		49	76	44	85	28	105	0	0	0	0		
-11	94	Rusty Breastplate		62	81	52	94	41	115	0	0	0	0		
-12	95	Banded Plate		55	79	51	91	39	109	0	0	0	0		
-13	96	Minotaur Plate		46	73	47	90	34	109	0	0	0	0		
-14	97	Dark Knight Plate		50	60	54	65	39	96	0	0	0	0		
-15	98	Dragoning Plate		53	70	48	82	39	100	0	0	0	0		
+1	84	Leather Jerkin		0	0	0	0	0	0	0	0	0	0		
+2	85	Hardened Leather Vest		0	0	0	0	0	0	0	0	0	0		
+3	86	Caravaner's Leather		0	0	0	0	0	0	0	0	0	0		
+4	87	Regnan Leather		0	0	0	0	0	0	0	0	0	0		
+5	88	Alvarian Leather		0	0	0	0	0	0	0	0	0	0		
+6	89	Rusty Mail Vest		0	0	0	0	0	0	0	0	0	0		
+7	90	Steel Chainmail		0	0	0	0	0	0	0	0	0	0		
+8	91	Minotaur Chainmail		0	0	0	0	0	0	0	0	0	0		
+9	92	Siertal Chainmail		0	0	0	0	0	0	0	0	0	0		
+10	93	Erudine Chainmail		0	0	0	0	0	0	0	0	0	0		
+11	94	Rusty Breastplate		0	0	0	0	0	0	0	0	0	0		
+12	95	Banded Plate		0	0	0	0	0	0	0	0	0	0		
+13	96	Minotaur Plate		0	0	0	0	0	0	0	0	0	0		
+14	97	Dark Knight Plate		0	0	0	0	0	0	0	0	0	0		
+15	98	Dragoning Plate		0	0	0	0	0	0	0	0	0	0		
 16	513	Serendine's Preservation		29	57	47	70	27	100	0	0	33	96		
 17	514	Glomenmail		29	68	49	86	36	103	0	0	29	96		
 18	515	Supreme Plate		30	69	52	82	35	107	0	0	30	94		
@@ -34,7 +34,7 @@ Id	Item id	Notes		X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y
 32	880	Noble Plate Armor		31	73	39	92	22	103	20	95	35	110	
 33	1306	Governor's Armor		39	75	60	97	41	103	35	96	45	110		
 34	1307	Yoruba		31	73	39	89	37	103	35	95	45	110		
-35	1318	Hareck's Leather		38	80	54	93	25	108	23	92	35	109		
+35	1318	Hareck's Leather		26	75	56	84	25	108	23	92	35	109		
 36	1335	Elven Chainmail		44	75	59	97	40	105	38	94	47	110		
 37	1406	Wetsuit		0	-1	0	0	9	23	0	17	15	44		
 38	1668	Leather Armor		46	73	60	97	37	103	0	0	40	110
