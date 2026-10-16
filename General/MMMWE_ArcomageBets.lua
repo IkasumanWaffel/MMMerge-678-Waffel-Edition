@@ -2,7 +2,7 @@
 	MMMWE_ArcomageBets.lua — play Arcomage for a stake
 
 	The tavern's Arcomage menu (Rules / Victory Conditions / Play) gets two more lines:
-	  Stake: N gold      click to choose the next stake the party can afford
+	  Stake: N           click to choose the next stake the party can afford (in gold)
 	  Play for a bet     start a match for that stake
 	Stakes scale with the tavern: its Val (2DEvents, the same value the first-win prize
 	of Val x 100 comes from) times STAKE_STEPS.
@@ -33,6 +33,10 @@ local LINE_HEIGHT      = 20
 local GAP              = 6                        -- pixels between Play and the new lines
 
 local PLAY_TOPIC  = 104   -- const.HouseScreens.ArcomagePlay
+-- the Arcomage menu and its Rules / Victory Conditions pages; during and after a match
+-- Game.HouseScreen is 104 (Play)
+local MENU_SCREENS = {[101] = true, [102] = true, [103] = true}
+local EXTRA_WIDTH  = 20   -- the lines are this much wider than the menu items
 local HOUSE_ACTION = 405  -- house dialog item action
 
 ---------------------------------------------------------------------------
@@ -61,7 +65,7 @@ end
 
 -- the Play item of the Arcomage menu on screen now, or nil
 local function playItem()
-	if Game.CurrentScreen ~= const.Screens.House then return end
+	if Game.CurrentScreen ~= const.Screens.House or not MENU_SCREENS[Game.HouseScreen] then return end
 	local ok, it = pcall(function()
 		local dlg = Game.CurrentNPCDialog
 		if not dlg or dlg.LastItemPtr == 0 then return end
@@ -81,7 +85,7 @@ function events.GameInitialized2()
 	local function place(self, line)
 		local it = playItem()
 		if not it then return false end
-		self.X, self.Wt = it.Left, it.Width
+		self.X, self.Wt = it.Left - EXTRA_WIDTH / 2, it.Width + EXTRA_WIDTH
 		self.Y, self.Ht = it.Top + it.Height + GAP + (line - 1) * LINE_HEIGHT, LINE_HEIGHT
 		return true
 	end
@@ -95,7 +99,7 @@ function events.GameInitialized2()
 			if not place(self, 1) then return false end
 			local house = Game.GetCurrentHouse()
 			local stake = currentStake(house)
-			self.Text = stake and string.format("Stake: %d gold", stake) or "Stake: not enough gold"
+			self.Text = stake and string.format("Stake: %d", stake) or "Not enough gold"
 			return true
 		end,
 		Action = function(self)
