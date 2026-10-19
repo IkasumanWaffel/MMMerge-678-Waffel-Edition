@@ -1184,8 +1184,26 @@
 	local CritCB = 0
 	local CritDB = 0
 	
-	local CritChanceBSMods  = {0, 0.01, 0.015, 0.02}
-	local CritDamageBSMods  = {0, 0,    0.02,  0.04}
+	-- Blaster balance (19.10.26). Damage grows with skill and upgrade tier separately
+	-- (it used to be skill x tier, which left T1-T2 weak and made T4 explode); crit chance
+	-- and crit damage grow with skill; eradication depends on the share of the target's HP
+	-- each hit takes, so long fights (bosses) are not eradicated more often than short ones.
+	local BLASTER = {
+		DmgPerTier       = 0.25,   -- x base damage per upgrade tier
+		DmgPerSkill      = 0.11,   -- x base damage per point of Blaster skill
+		CritChancePerSkill = 0.6,  -- % crit chance per point of skill
+		CritDamagePerSkill = 3,    -- % crit damage per point of skill
+		EradPerTier      = 0.12,   -- eradication strength per tier (about 1 - exp(-0.12 x tier) of kills with no Body resistance)
+		EradCritMul      = 1.5,    -- a critical hit's eradication chance multiplier
+		EradMaxPerHit    = 0.5,    -- cap per hit
+	}
+	MF.BlasterBalance = BLASTER
+
+	-- damage multiplier of a blaster with upgrade tier T at Blaster skill BS
+	local function blasterScale(T, BS)
+		return 1 + BLASTER.DmgPerTier * T + BLASTER.DmgPerSkill * BS
+	end
+	MF.BlasterScale = blasterScale
 
 	function CalcBlasterDamage(Player)
 		local item = Player.ItemMainHand
@@ -1222,26 +1240,19 @@
 		-- Curse mult
 		local curseMult = Player.Conditions[0] > 0 and 0.5 or 1
 
-		-- Mod Tier damage scaling
-		if modTier > 0 then
-			local scale = 1 + modTier * 0.05 * BS
-			DMin = round(DMin * scale)
-			DMax = round(DMax * scale)
-		end
+		-- Damage scaling by skill and upgrade tier
+		local scale = blasterScale(modTier, BS)
+		DMin = round(DMin * scale)
+		DMax = round(DMax * scale)
 
 		-- Crit chance
 		local critChance = CCBase + Player:GetAccuracy() / 20 + specCritC
-		if modTier > 0 then
-			critChance = critChance + CCBase * CritChanceBSMods[modTier] * BS
-		end
+			+ BLASTER.CritChancePerSkill * BS
 		critChance = critChance * curseMult
 		CritC = critChance
 
 		-- Crit damage mult (percent)
-		local critDamageP = CDBase + 100 + specCritD
-		if modTier > 0 then
-			critDamageP = critDamageP + CDBase * CritDamageBSMods[modTier] * BS
-		end
+		local critDamageP = CDBase + 100 + specCritD + BLASTER.CritDamagePerSkill * BS
 		CritD = critDamageP
 
 		-- Crit hit check
@@ -1529,15 +1540,22 @@
 
 				local modTier = math.floor(Pl.Items[mainHand].Charges / 1000)
 				local Mon = t.Monster
-				local eradicationChance = (1 - Mon.HP / Mon.FullHP) * 100
-					* modTier * CalcMonResPercent(Mon.BodyResistance)
-
-				if CritProc == 1 then
-					eradicationChance = eradicationChance * (2 + modTier*2)
-					Game.PlaySound(math.random(44671,44673), MonSoundRef(Mon))
+				-- Eradication: tier x Body resistance factor x (share of the full HP this hit
+				-- takes) x (share of HP already lost) x 2. Over a whole fight the shares add up
+				-- to about 1, so the chance per kill does not depend on how many hits it takes.
+				local eradicationChance = 0
+				if modTier > 0 and Mon.FullHP > 0 and Mon.HP > 0 then
+					local lost = math.max(0, 1 - Mon.HP / Mon.FullHP)
+					local share = math.min(t.Result, Mon.HP) / Mon.FullHP
+					eradicationChance = BLASTER.EradPerTier * modTier
+						* CalcMonResPercent(Mon.BodyResistance) * share * lost * 2
+					if CritProc == 1 then
+						eradicationChance = eradicationChance * BLASTER.EradCritMul
+					end
+					eradicationChance = math.min(eradicationChance, BLASTER.EradMaxPerHit)
 				end
 
-				if math.random(1, 10000) <= eradicationChance then
+				if eradicationChance > 0 and math.random() < eradicationChance then
 					t.Result = Mon.HP
 					Game.PlaySound(math.random(44671,44673), MonSoundRef(Mon))
 					Mon:ChangeLook(241)
@@ -2515,10 +2533,9 @@
 		local dMax = bt == 1 and 20 or 30
 		local cBase = bt == 1 and 8 or 12
 
-		if modTier > 0 then
-			dMin = round(dMin + modTier * 0.05 * dMin * BS)
-			dMax = round(dMax + modTier * 0.05 * dMax * BS)
-		end
+		local scale = blasterScale(modTier, BS)
+		dMin = round(dMin * scale)
+		dMax = round(dMax * scale)
 
 		return {
 			cachedCstring(string.format('Shoot: +%d    Damage: %d-%d', cBase, dMin, dMax)),
