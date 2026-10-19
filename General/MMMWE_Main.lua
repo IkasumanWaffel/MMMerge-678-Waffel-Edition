@@ -277,73 +277,117 @@
 		'Saber'
 	}
 
+	-- Weapon subtypes (19.10.26): within a family there is a fast crit-chance subtype, a slow
+	-- crit-damage one and a defensive one. Tables 4 and 5 are added to the weapon's crit
+	-- chance (%) and crit damage multiplier (MF.GetCritStats).
 	local WEAPON_BONUSES = {
 		-- Parry Chance Bonus
 		[1] = {
-			5, 5, 5, 5,     -- Longswords
-			10, 10, 10, 10, -- Two-Handed Swords
-			3, 3, 3, 3,     -- Broadswords
-			7, 7, 7, 7,     -- Cutlasses
-			12, 12, 12, 12, -- Daggers
-			15, 15, 15, 15, -- Long Daggers
-			2, 2, 2, 2,     -- Axes
-			10, 10, 10, 10, -- Two-Handed Axes
-			15, 15, 15, 15, -- Spears
-			10, 10, 10, 10, -- Halberds
-			20, 20, 20, 20, -- Tridents
-			9, 9, 9, 9,     -- Maces
-			0, 0, 0, 0,     -- Flails
-			6, 6, 6, 6,     -- Hammers
-			20, 20, 20, 20, -- Staves
-			10, 10,         -- Warhammers
-			10, 10,         -- Greatswords
-			12             	-- Sabers
+			10, 10, 10, 10,	-- Longswords
+			10, 10, 10, 10,	-- Two-Handed Swords
+			3, 3, 3, 3,	-- Broadswords
+			8, 8, 8, 8,	-- Cutlasses
+			12, 12, 12, 12,	-- Daggers
+			18, 18, 18, 18,	-- Long Daggers
+			2, 2, 2, 2,	-- Axes
+			4, 4, 4, 4,	-- Two-Handed Axes
+			15, 15, 15, 15,	-- Spears
+			10, 10, 10, 10,	-- Halberds
+			22, 22, 22, 22,	-- Tridents
+			9, 9, 9, 9,	-- Maces
+			0, 0, 0, 0,	-- Flails
+			6, 6, 6, 6,	-- Hammers
+			22, 22, 22, 22,	-- Staves
+			10, 10,	-- Warhammers
+			10, 10,	-- Greatswords
+			14	-- Sabers
 		},
-		
-		-- Attack Delay Penalty
+		-- Attack Delay Penalty (recovery; negative = faster)
 		[2] = {
-			0, 0, 0, 0,     -- Longswords
-			0, 0, 0, 0,     -- Two-Handed Swords
-			5, 5, 5, 5,     -- Broadswords
-			-5, -5, -5, -5, -- Cutlasses
-			-5, -5, -5, -5, -- Daggers
-			3, 3, 3, 3,     -- Long Daggers
-			0, 0, 0, 0,     -- Axes
-			0, 0, 0, 0,     -- Two-Handed Axes
-			-5, -5, -5, -5, -- Spears
-			5, 5, 5, 5,     -- Halberds
-			0, 0, 0, 0,     -- Tridents
-			0, 0, 0, 0,     -- Maces
-			3, 3, 3, 3,     -- Flails
-			-5, -5, -5, -5, -- Hammers
-			0, 0, 0, 0,     -- Staves
-			0, 0,           -- Warhammers
-			5, 5,           -- Greatswords
-			-7             	-- Sabers
+			0, 0, 0, 0,	-- Longswords
+			0, 0, 0, 0,	-- Two-Handed Swords
+			8, 8, 8, 8,	-- Broadswords
+			-6, -6, -6, -6,	-- Cutlasses
+			-5, -5, -5, -5,	-- Daggers
+			0, 0, 0, 0,	-- Long Daggers
+			0, 0, 0, 0,	-- Axes
+			3, 3, 3, 3,	-- Two-Handed Axes
+			-5, -5, -5, -5,	-- Spears
+			8, 8, 8, 8,	-- Halberds
+			0, 0, 0, 0,	-- Tridents
+			0, 0, 0, 0,	-- Maces
+			4, 4, 4, 4,	-- Flails
+			-5, -5, -5, -5,	-- Hammers
+			0, 0, 0, 0,	-- Staves
+			2, 2,	-- Warhammers
+			8, 8,	-- Greatswords
+			-8	-- Sabers
 		},
-    
-    -- Parry Strength Bonus
+		-- Parry Strength Bonus
 		[3] = {
-			2, 2, 2, 2,     -- Longswords
-			8, 8, 8, 8,     -- Two-Handed Swords
-			5, 5, 5, 5,     -- Broadswords
-			0, 0, 0, 0,     -- Cutlasses
-			1, 1, 1, 1,     -- Daggers
-			3, 3, 3, 3,     -- Long Daggers
-			5, 5, 5, 5,     -- Axes
-			10, 10, 10, 10, -- Two-Handed Axes
-			7, 7, 7, 7,     -- Spears
-			10, 10, 10, 10, -- Halberds
-			7, 7, 7, 7,     -- Tridents
-			12, 12, 12, 12, -- Maces
-			6, 6, 6, 6,     -- Flails
-			10, 10, 10, 10, -- Hammers
-			12, 12, 12, 12, -- Staves
-			8, 8,           -- Warhammers
-			12, 12,         -- Greatswords
-			0              	-- Sabers
+			5, 5, 5, 5,	-- Longswords
+			10, 10, 10, 10,	-- Two-Handed Swords
+			6, 6, 6, 6,	-- Broadswords
+			0, 0, 0, 0,	-- Cutlasses
+			1, 1, 1, 1,	-- Daggers
+			4, 4, 4, 4,	-- Long Daggers
+			5, 5, 5, 5,	-- Axes
+			10, 10, 10, 10,	-- Two-Handed Axes
+			7, 7, 7, 7,	-- Spears
+			12, 12, 12, 12,	-- Halberds
+			7, 7, 7, 7,	-- Tridents
+			12, 12, 12, 12,	-- Maces
+			6, 6, 6, 6,	-- Flails
+			8, 8, 8, 8,	-- Hammers
+			13, 13, 13, 13,	-- Staves
+			8, 8,	-- Warhammers
+			14, 14,	-- Greatswords
+			0	-- Sabers
+		},
+		-- Crit Chance Bonus (%)
+		[4] = {
+			0, 0, 0, 0,	-- Longswords
+			0, 0, 0, 0,	-- Two-Handed Swords
+			-2, -2, -2, -2,	-- Broadswords
+			4, 4, 4, 4,	-- Cutlasses
+			3, 3, 3, 3,	-- Daggers
+			-3, -3, -3, -3,	-- Long Daggers
+			0, 0, 0, 0,	-- Axes
+			-2, -2, -2, -2,	-- Two-Handed Axes
+			0, 0, 0, 0,	-- Spears
+			-3, -3, -3, -3,	-- Halberds
+			3, 3, 3, 3,	-- Tridents
+			0, 0, 0, 0,	-- Maces
+			2, 2, 2, 2,	-- Flails
+			2, 2, 2, 2,	-- Hammers
+			0, 0, 0, 0,	-- Staves
+			-3, -3,	-- Warhammers
+			-3, -3,	-- Greatswords
+			6	-- Sabers
+		},
+		-- Crit Damage Bonus (added to the multiplier)
+		[5] = {
+			0, 0, 0, 0,	-- Longswords
+			0.30, 0.30, 0.30, 0.30,	-- Two-Handed Swords
+			0.35, 0.35, 0.35, 0.35,	-- Broadswords
+			0, 0, 0, 0,	-- Cutlasses
+			0, 0, 0, 0,	-- Daggers
+			-0.10, -0.10, -0.10, -0.10,	-- Long Daggers
+			0.15, 0.15, 0.15, 0.15,	-- Axes
+			0.45, 0.45, 0.45, 0.45,	-- Two-Handed Axes
+			0, 0, 0, 0,	-- Spears
+			0.45, 0.45, 0.45, 0.45,	-- Halberds
+			-0.05, -0.05, -0.05, -0.05,	-- Tridents
+			0, 0, 0, 0,	-- Maces
+			0.30, 0.30, 0.30, 0.30,	-- Flails
+			0.10, 0.10, 0.10, 0.10,	-- Hammers
+			0, 0, 0, 0,	-- Staves
+			0.45, 0.45,	-- Warhammers
+			0.60, 0.60,	-- Greatswords
+			-0.05	-- Sabers
 		}
 	}
+	MF.WeaponSubtypeBonuses = WEAPON_BONUSES
 
 	function CalcWeaponStatBonusByWType(WeaponNum, WeaponStat)
 
@@ -1321,9 +1365,11 @@
 
 	-- index = skill + 1
 	local WCDBase   = {0.500, 0.300, 1.000, 0.500, 0.400, 0.500, 0.700, 0.250}
-	local WCDGrowth = {0.010, 0.010, 0.020, 0.012, 0.011, 0.015, 0.014, 0.013}
+	-- 19.10.26: Sword chance 0.100 -> 0.120 and damage 0.010 -> 0.014, Dagger damage
+	-- 0.020 -> 0.012, Axe chance 0.115 -> 0.090 and damage 0.012 -> 0.016, Bow damage 0.015 -> 0.012
+	local WCDGrowth = {0.010, 0.014, 0.012, 0.016, 0.011, 0.012, 0.014, 0.013}
 	local WCCBase   = {5.000, 7.000, 10.00, 8.000, 7.000, 5.000, 6.000, 6.000}
-	local WCCGrowth = {0.050, 0.100, 0.150, 0.115, 0.125, 0.150, 0.085, 0.120}
+	local WCCGrowth = {0.050, 0.120, 0.150, 0.090, 0.125, 0.150, 0.085, 0.120}
 
 	local CrossbowNames = {['Crossbow'] = true, ['Relic Crossbow'] = true}
 
@@ -1434,21 +1480,32 @@
 		local sk1, S1, M1, txt1 = critWeapon(Pl, Pl.ItemMainHand, MainCritSkills)
 		local sk2, S2, M2 = critWeapon(Pl, Pl.ItemExtraHand, ExtraCritSkills)
 
+		-- subtype crit bonuses (WEAPON_BONUSES 4 and 5)
+		local function subtype(slot)
+			local num = Pl.Items[slot].Number
+			return CalcWeaponStatBonusByWType(num, 4), CalcWeaponStatBonusByWType(num, 5)
+		end
+
 		if sk1 then
 			local c, d = skillCrit(Pl, sk1, S1, M1, specC, specD)
-			if txt1.EquipStat == 1 then
+			local mc, md = subtype(Pl.ItemMainHand)
+			c, d = c + mc, d + md
+			-- two-handed weapons, and a spear held in both hands (nothing in the other hand)
+			if txt1.EquipStat == 1 or (sk1 == const.Skills.Spear and Pl.ItemExtraHand == 0) then
 				d = (d - 1) * 1.5 + 1
 			end
 			if sk2 then
 				local c2, d2 = skillCrit(Pl, sk2, S2, M2, specC, specD)
-				c, d = (c + c2) / 2, (d + d2) / 2
+				local mc2, md2 = subtype(Pl.ItemExtraHand)
+				c, d = (c + c2 + mc2) / 2, (d + d2 + md2) / 2
 			end
 			return c, d, sk1
 		end
 
 		if sk2 then
 			local c, d = skillCrit(Pl, sk2, S2, M2, specC, 0)
-			return c, 1 + (d - 1) / 2 + specD, sk2
+			local mc, md = subtype(Pl.ItemExtraHand)
+			return c + mc, 1 + (d + md - 1) / 2 + specD, sk2
 		end
 
 		local main = Pl.ItemMainHand
