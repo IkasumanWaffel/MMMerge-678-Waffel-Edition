@@ -350,11 +350,20 @@ local MinimalRangedAttackDelay = Merge and Merge.Settings and Merge.Settings.Att
 local MinimalBlasterAttackDelay = Merge and Merge.Settings and Merge.Settings.Attack
 		and Merge.Settings.Attack.MinimalBlasterAttackDelay or 15
 
+-- Artifact attack delay mods of a player (ranged or melee). MMMWE_Main.lua applies them as a
+-- percentage of the attack delay (and the minimal delays) in its own GetAttackDelay handler.
+Merge.Functions.ArtifactAttackDelay = function(PlayerIndex, Ranged)
+	local PLT = PlayerEffects[PlayerIndex]
+	return PLT and PLT.AttackDelay[Ranged and 1 or 2] or 0
+end
+
 function events.GetAttackDelay(t)
 	local Player = t.Player
 	--local PLT = PlayerEffects[Pl]
 	local PLT = PlayerEffects[t.PlayerIndex]
-	if PLT then
+	if PLT and Merge.Functions.RecoverySettings then
+		-- handled by MMMWE_Main.lua (percentages)
+	elseif PLT then
 		t.Result = t.Result + (PLT.AttackDelay[t.Ranged and 1 or 2] or 0)
 		local MHItem = Player.ItemMainHand > 0 and Player.Items[Player.ItemMainHand] or false
 		--local AD = 0
@@ -1207,7 +1216,7 @@ GetBonusList(1313).Skills =	{	[const.Skills.Unarmed] = 10,
 GetBonusList(1317).Skills =	{	[const.Skills.Meditation] = 15}
 -- Hareck's Leather
 GetBonusList(1318).Skills =	{	[const.Skills.DisarmTraps] = 5,
-								[const.Skills.Unarmed] = 5,}
+								[const.Skills.Perception] = 5,}
 -- Old Nick
 GetBonusList(1319).Skills =	{	[const.Skills.DisarmTraps] = 5}
 -- Glory shield

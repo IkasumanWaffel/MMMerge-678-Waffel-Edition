@@ -463,114 +463,161 @@
 	end
 	MF.ArmorRecoveryPct = ArmorRecoveryPct
 
-	-- Common Attack Recovery Delay modifiers
-	local function applySpeed(Pl, result)
-		local spd = Game.GetStatisticEffect(Pl:GetSpeed())
-		result = result + spd
-		return result - 0.01 * result * spd
+	-- =====================================================================
+	-- Attack recovery (non-blaster attacks): everything as percentages
+	-- =====================================================================
+	-- The game's get_attack_delay (0x48D62A) adds and subtracts flat values:
+	--   weapon recovery (the skill's SkillRecoveryTimes; dual-wield: the slower hand; ranged: the
+	--   bow) - Speed effect - weapon skill (sword / axe / bow at Expert+) - Arms Master (melee)
+	--   - 25 Haste - 20 Swiftness / of Darkness / some artifacts + 20 Finality (+ armor and
+	--   shield, which are 0 in SkillRecoveryTimes now).
+	-- Here the flat values are taken back out to get the weapon's base recovery, which is then
+	-- multiplied by one factor per modifier:
+	--   delay = base x (1 + weapon subtype %) x (1 + armor %) x (1 - skill %) x (1 - Arms Master %)
+	--           x (1 - Speed %) x (1 - 25% Haste) x (1 - 20% Swiftness) x ... (see RECOVERY)
+	-- The weapon subtype values in WEAPON_BONUSES[2] and the two-handed penalty were set as a
+	-- share of the weapon family's base recovery (+20 for a two-handed sword is 20% of 100), so
+	-- they are used as value / family base.
+	local RECOVERY = {
+		TwoHandedPct    = 20,        -- two-handed swords, axes and maces (was +20 / +23 / +26)
+		TwoHandedSkills = {[1] = true, [3] = true, [6] = true},
+		SkillPct        = 1,         -- % per point: sword, axe (melee) and bow (ranged), Expert+
+		SkillBonusSkills = {[1] = true, [3] = true, [5] = true},
+		ArmsMasterPct   = {1, 1, 1, 2},  -- % per point by mastery, melee only
+		SpeedPct        = 1,         -- % per point of Speed effect (a negative effect slows)
+		HastePct        = 25,
+		SwiftPct        = 20,        -- of Swiftness, of Darkness, Elderaxe, Wyrm Spitter, ...
+		FinalityPct     = 20,        -- Finality (slower)
+		CrossbowPct     = 50,        -- crossbows, Might effect takes it off again
+		ArtifactPct     = 1,         -- % per point of artifact attack delay mods (ExtraArtifacts.lua)
+		MinMelee        = MS.Attack and MS.Attack.MinimalMeleeAttackDelay or 30,
+		MinRanged       = MS.Attack and MS.Attack.MinimalRangedAttackDelay or 15,
+	}
+	MF.RecoverySettings = RECOVERY
+	local SwiftB2 = {[0x3B] = true, [0x29] = true}
+	local SwiftItems = {[0x1F8] = true, [0x1FA] = true, [0x200] = true, [0x203] = true, [0x206] = true, [0x214] = true}
+	local FinalityItem = 0x20D
+
+	local function equipped(pl, slot)
+		local idx = pl[slot]
+		if idx > 0 then return pl.Items[idx] end
 	end
 
-	local function applyArmsMaster(Pl, result)
-		local AS, AM = SplitSkill(Pl.Skills[35])
-		if AM >= 1 and AM < 4 then
-			result = result - 0.01 * result * AS + AS
-		elseif AM == 4 then
-			result = result - 0.02 * result * AS + 2 * AS
-		end
-		return result
+	local function skillRec(item)
+		return Game.SkillRecoveryTimes[Game.ItemsTxt[item.Number].Skill] or 0
 	end
 
-	local function applyHaste(Pl, result)
-		local Buff = Pl.SpellBuffs[const.PlayerBuff.Haste]
-		if Buff.ExpireTime > Game.Time then
-			result = result + 25
-			return result * 0.75
-		end
-		return result
+	-- weapon subtype and two-handed %, as a share of the weapon family's base recovery
+	local function subtypePct(item)
+		if not item or item.Broken then return 0 end
+		local txt = Game.ItemsTxt[item.Number]
+		if txt.EquipStat > 1 then return 0 end         -- weapons only (not shields, wands, ...)
+		local base = Game.SkillRecoveryTimes[txt.Skill] or 0
+		local p = 0
+		if base > 0 then p = 100 * CalcWeaponStatBonusByWType(item.Number, 2) / base end
+		if txt.EquipStat == 1 and RECOVERY.TwoHandedSkills[txt.Skill] then p = p + RECOVERY.TwoHandedPct end
+		return p
 	end
+	MF.WeaponSubtypeRecoveryPct = subtypePct
+
+	local function hasted(pl)
+		local b = pl.SpellBuffs[const.PlayerBuff.Haste]
+		local pb = Party.SpellBuffs[const.PartyBuff.Haste]
+		return b.ExpireTime > 0 or pb.ExpireTime > 0      -- as the game checks it
+	end
+
+	local function factor(p) return math.max(0.05, 1 + 0.01 * p) end
 
 	function events.GetAttackDelay(t)
 		local Pl = t.Player
-		local WeapSlot = Pl.ItemMainHand
-		local ShieldSlot = Pl.ItemExtraHand
-		local BowSlot = Pl.ItemBow
+		local main, off, bow = equipped(Pl, "ItemMainHand"), equipped(Pl, "ItemExtraHand"), equipped(Pl, "ItemBow")
 
-		-- Armor, shield and armor type effects: % of the attack delay, applied at the end
+		-- Armor, shield and armor type effects (%)
 		local armorPct = ArmorRecoveryPct(Pl)
 		-- blaster accuracy penalty (CalcStatBonusBySkills): the blaster's 75 plus the armor
 		-- penalty, the same numbers as when they were flat (armor type effects left out)
 		MV.AuxArmorRecoveryPenalty[Pl.Name] = 75 + armorPct - (MF.ArmorRecoveryMod and MF.ArmorRecoveryMod(Pl) or 0)
 
-		local hasWeapon = WeapSlot > 0 and not Pl.Items[WeapSlot].Broken
-
-		-- Non-blaster weapon in main hand
-		if hasWeapon then
-			local WeapNum = Pl.Items[WeapSlot].Number
-			local WeapEquipStat = Game.ItemsTxt[WeapNum].EquipStat
-			local WeapType = Game.ItemsTxt[WeapNum].Skill
-
-			t.Result = t.Result + CalcWeaponStatBonusByWType(WeapNum, 2)
-
-			if WeapEquipStat == 1 and WeapType then
-				local WeapSkills = {1, 3, 6}  -- Sword, Axe, Mace
-				if table.find(WeapSkills, WeapType) then
-					t.Result = t.Result + select(table.ifind(WeapSkills, WeapType), 20, 23, 26)
-					local WS, WM = SplitSkill(Pl.Skills[WeapType])
-					if WeapType ~= 6 and WM >= 2 then
-						t.Result = t.Result - 0.01 * t.Result * WS + WS
-					end
-				end
-			end
-
-			t.Result = applySpeed(Pl, t.Result)
-			t.Result = applyArmsMaster(Pl, t.Result)
-			t.Result = applyHaste(Pl, t.Result)
-		end
-
-		-- Ranged weapon (bows and crossbows)
-		if t.Ranged and BowSlot > 0 and not Pl.Items[BowSlot].Broken then
-			local BowType = Game.ItemsTxt[Pl.Items[BowSlot].Number].NotIdentifiedName
-			if BowType == 'Crossbow' or BowType == 'Relic Crossbow' then
-				t.Result = t.Result + 50 - t.Result*Game.GetStatisticEffect(Pl:GetMight())/100
-			end
-
-			local BS, BM = SplitSkill(Pl.Skills[5])
-			if BM >= 2 then
-				t.Result = t.Result - 0.01 * t.Result * BS + BS
-			end
-
-			t.Result = applySpeed(Pl, t.Result)
-			t.Result = applyHaste(Pl, t.Result)
-		end
-
-		-- Unarmed / Extra hand weapon
-		if (WeapSlot == 0 or Pl.Items[WeapSlot].Broken)
-		   and (ShieldSlot == 0 or Pl.Items[ShieldSlot].Broken) then
-			t.Result = applySpeed(Pl, t.Result)
-			t.Result = applyHaste(Pl, t.Result)
-		elseif ShieldSlot > 0 and not Pl.Items[ShieldSlot].Broken
-		   and Game.ItemsTxt[Pl.Items[ShieldSlot].Number].Skill ~= 8 then
-			t.Result = t.Result + CalcWeaponStatBonusByWType(Pl.Items[ShieldSlot].Number, 2)
-			t.Result = applySpeed(Pl, t.Result)
-			t.Result = applyArmsMaster(Pl, t.Result)
-			t.Result = applyHaste(Pl, t.Result)
-		end
-
-		-- Armor and shield: percentage of the delay (not for blasters, fixed below)
-		if armorPct ~= 0 then
-			t.Result = math.max(0, t.Result * (1 + 0.01 * armorPct))
-		end
-
-		-- Blaster fixed Attack Recovery Delay
-		if hasWeapon and Game.ItemsTxt[Pl.Items[WeapSlot].Number].Skill == 7 then
-			local item = Pl.Items[WeapSlot]
-			local base = select(math.floor(item.Number / 800), 865, 1665)
-			local idx = item.Number - base
-			local chargeMod = math.floor(item.Charges / 1000) * 5
+		-- Blaster: fixed recovery
+		if main and not main.Broken and Game.ItemsTxt[main.Number].Skill == const.Skills.Blaster then
+			local base = select(math.floor(main.Number / 800), 865, 1665)
+			local idx = main.Number - base
+			local chargeMod = math.floor(main.Charges / 1000) * 5
 			t.Result = select(idx, 50 - chargeMod, 35 - chargeMod)
+			return
 		end
+		-- wands keep the game's recovery (their spell's)
+		if not t.Ranged and main and Game.ItemsTxt[main.Number].EquipStat == 12 then return end
+
+		-- the item that sets the game's recovery (local_c in get_attack_delay)
+		local used
+		if t.Ranged then
+			used = bow
+		elseif not (not main and (not off or Game.ItemsTxt[off.Number].EquipStat == 4)
+				and Pl:GetSkill(const.Skills.Unarmed) ~= 0) then
+			used = main
+			local cur = main and skillRec(main) or Game.SkillRecoveryTimes[0]
+			if off and skillRec(off) > cur then used = off end
+		end
+		local usedTxt = used and Game.ItemsTxt[used.Number]
+
+		-- take the game's flat bonuses back out: the weapon's base recovery
+		local speedFx = Game.GetStatisticEffect(Pl:GetSpeed())
+		local skillLvl = 0
+		if usedTxt and RECOVERY.SkillBonusSkills[usedTxt.Skill] then
+			local S, M = SplitSkill(Pl:GetSkill(usedTxt.Skill))
+			if M >= 2 then skillLvl = S end
+		end
+		local amPct, amFlat = 0, 0
+		if not t.Ranged then
+			local AS, AM = SplitSkill(Pl:GetSkill(const.Skills.Armsmaster))
+			if AS > 0 then
+				amFlat = AM >= 4 and 2 * AS or AS
+				amPct = AS * (RECOVERY.ArmsMasterPct[math.max(AM, 1)] or 1)
+			end
+		end
+		local haste = hasted(Pl)
+		local swift = used and (SwiftB2[used.Bonus2] or SwiftItems[used.Number]) or false
+		local finality = used and used.Number == FinalityItem or false
+		local base = t.Result + speedFx + skillLvl + amFlat + (haste and 25 or 0) + (swift and 20 or 0)
+			- (finality and 20 or 0)
+		if t.Result <= 0 or base <= 0 then   -- the game cut it at 0: use the recovery table
+			base = used and skillRec(used) or Game.SkillRecoveryTimes[0]
+		end
+
+		-- percentages
+		local d = base
+		if t.Ranged then
+			local name = usedTxt and usedTxt.NotIdentifiedName or ""
+			if name == "Crossbow" or name == "Relic Crossbow" then
+				d = d * factor(RECOVERY.CrossbowPct) * factor(-Game.GetStatisticEffect(Pl:GetMight()))
+			end
+		else
+			local wp = subtypePct(main)
+			if off and off ~= main then wp = wp + subtypePct(off) end
+			d = d * factor(wp)
+			d = d * factor(-amPct)
+		end
+		d = d * factor(armorPct)
+		d = d * factor(-RECOVERY.SkillPct * skillLvl)
+		d = d * factor(-RECOVERY.SpeedPct * speedFx)
+		if haste then d = d * factor(-RECOVERY.HastePct) end
+		if swift or (used and MF.HiddenSwift and MF.HiddenSwift(Pl, used)) then
+			d = d * factor(-RECOVERY.SwiftPct)
+		end
+		if finality then d = d * factor(RECOVERY.FinalityPct) end
+		local art = MF.ArtifactAttackDelay and MF.ArtifactAttackDelay(t.PlayerIndex, t.Ranged) or 0
+		if art ~= 0 then d = d * factor(RECOVERY.ArtifactPct * art) end
+
+		t.Result = math.max(t.Ranged and RECOVERY.MinRanged or RECOVERY.MinMelee, d)
 	end
-	
+
+	-- Character screen / console
+	function MF.RecoveryInfo(pl)
+		pl = pl or Party[math.max(Game.CurrentPlayer, 0)]
+		return string.format("melee %d, ranged %d, armor %+d%%", pl:GetAttackDelay(false), pl:GetAttackDelay(true), ArmorRecoveryPct(pl))
+	end
+
 	-- Immersive conditions module
 	
 	---- Temple heal costs per condition: moved to MMMWE_Economy.lua (Economy.Settings.Heal)

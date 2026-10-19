@@ -561,15 +561,23 @@ local function recoveryWeapon(pl, ranged)
     return main or off
 end
 
+-- Does the weapon carry a hidden Swiftness / Darkness enchantment the engine doesn't see?
+-- MMMWE_Main.lua's GetAttackDelay handler asks this for the weapon that sets the recovery
+-- and takes 20% off (the same as the visible enchantment).
+function Merge.Functions.HiddenSwift(pl, it)
+    if not it or it.Number == 0 then return false end
+    local rec = activeRecordOf(it["?ptr"])
+    if not rec then return false end
+    local hiddenB2 = rec.Mode == "inv" and rec.TempBonus2 or rec.Bonus2
+    return SwiftB2[hiddenB2] and not SwiftB2[it.Bonus2] and not SwiftItems[it.Number] or false
+end
+
 function events.GetAttackDelay(t)
+    if Merge.Functions.RecoverySettings then return end   -- MMMWE_Main.lua: percentages
     local pl = t.Player
     if not pl then return end
     local it = recoveryWeapon(pl, t.Ranged)
-    if not it or it.Number == 0 then return end
-    local rec = activeRecordOf(it["?ptr"])
-    if not rec then return end
-    local hiddenB2 = rec.Mode == "inv" and rec.TempBonus2 or rec.Bonus2
-    if SwiftB2[hiddenB2] and not SwiftB2[it.Bonus2] and not SwiftItems[it.Number] then
+    if Merge.Functions.HiddenSwift(pl, it) then
         t.Result = math.max(0, t.Result - SWIFT_BONUS)
     end
 end
