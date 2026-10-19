@@ -1320,6 +1320,20 @@
 	end
 	MF.BlasterScale = blasterScale
 
+	-- Damage range of the blaster in the main hand before crits (as CalcBlasterDamage
+	-- rolls it), or nil. Also shown on the Stats screen.
+	local function blasterRange(Player)
+		local slot = Player.ItemMainHand
+		if slot <= 0 then return end
+		local it = Player.Items[slot]
+		if Game.ItemsTxt[it.Number].Skill ~= 7 then return end
+		local BS = SplitSkill(Player:GetSkill(const.Skills.Blaster))
+		local blasterType = it.Number - select(math.floor(it.Number / 800), 865, 1665)
+		local scale = blasterScale(math.floor(it.Charges / 1000), BS)
+		return round(select(blasterType, 10, 15) * scale), round(select(blasterType, 20, 30) * scale)
+	end
+	MF.BlasterDamageRange = blasterRange
+
 	function CalcBlasterDamage(Player)
 		local item = Player.ItemMainHand
 		if item <= 0 then
@@ -2729,6 +2743,13 @@
 			-- range (GetMeleeDamageMin / Max, as print_melee_damage does) and apply the same
 			-- penalty as in combat (applyPenalty). Anything else is left to the game.
 			local armed = Party.PlayersArray[(d.ecx - Party.PlayersArray["?ptr"]) / Party.PlayersArray[0]["?size"]]
+			-- Blaster: the range CalcBlasterDamage rolls (skill and upgrade tier), not the item dice
+			local bMin, bMax = blasterRange(armed)
+			if bMin then
+				d.edi, d.eax = bMin, bMax
+				d:push(ret)
+				return true
+			end
 			if armed.ItemMainHand ~= 0 then
 				local it = armed.Items[armed.ItemMainHand]
 				local p = MF.GetWeaponPenalty and MF.GetWeaponPenalty(it) or 0
@@ -2777,6 +2798,14 @@
 	
 	local function RangedDamageHook(ret)
 		return function(d)
+			-- a blaster in the main hand is what shoots (Blaster skill and upgrade tier)
+			local shooter = Party.PlayersArray[(d.ecx - Party.PlayersArray["?ptr"]) / Party.PlayersArray[0]["?size"]]
+			local bMin, bMax = blasterRange(shooter)
+			if bMin then
+				d.edi, d.eax = bMin, bMax
+				d:push(ret)
+				return true
+			end
 			local pl = hasBow(d.ecx)
 			if not pl then
 				return
