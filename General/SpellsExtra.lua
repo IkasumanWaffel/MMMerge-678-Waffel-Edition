@@ -435,8 +435,10 @@ local function SetSpellsExtraHooks()
 				local _, sm = SplitSkill(Player:GetSkill(8))
 				sm = math.max(sm, 1)
 				local shieldPen = ArmorDelayTable[8][sm]
-				-- Large shield additional penalty
-				if LargeShieldNames[Game.ItemsTxt[shieldNum].NotIdentifiedName] then
+				-- Medium / large shield additional penalty (MMMWE_Shields.lua)
+				if Merge.Functions.ShieldExtraPenalty then
+					shieldPen = shieldPen + Merge.Functions.ShieldExtraPenalty(shieldNum, sm)
+				elseif LargeShieldNames[Game.ItemsTxt[shieldNum].NotIdentifiedName] then
 					shieldPen = shieldPen + LargeShieldDelayPenalty[sm]
 				end
 				DelayBonus = DelayBonus + shieldPen

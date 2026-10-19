@@ -186,8 +186,8 @@
 				local itemTxt = Game.ItemsTxt[Pl.Items[slotIdx].Number]
 				local skill = itemTxt.Skill
 				local rating
-				if skill == 8 and slotIdx == Pl.ItemExtraHand then
-					rating = itemTxt.Mod1DiceCount * itemTxt.Mod1DiceSides + itemTxt.Mod2
+				if skill == 8 and slotIdx == Pl.ItemExtraHand and MF.ItemArmorBase then
+					rating = MF.ItemArmorBase(itemTxt) + itemTxt.Mod2   -- MMMWE_Shields.lua
 				else
 					rating = itemTxt.Mod1DiceCount + itemTxt.Mod2
 				end
@@ -420,12 +420,6 @@
 		[11] = {15, 7.5, 7.5, 0},
 	}
 
-	local LargeShieldNames = {
-		['Large Shield'] = true,
-		['Artifact Large Shield'] = true,
-		['Relic Large Shield'] = true,
-	}
-
 	-- Common Attack Recovery Delay modifiers
 	local function applySpeed(Pl, result)
 		local spd = Game.GetStatisticEffect(Pl:GetSpeed())
@@ -471,14 +465,11 @@
 			end
 		end
 
-		-- Large shield penalty
+		-- Medium and large shield penalty (MMMWE_Shields.lua)
 		if ShieldSlot > 0 and not Pl.Items[ShieldSlot].Broken
 		   and Game.ItemsTxt[Pl.Items[ShieldSlot].Number].Skill == 8 then
-			local shieldName = Game.ItemsTxt[Pl.Items[ShieldSlot].Number].NotIdentifiedName
-			if LargeShieldNames[shieldName] then
-				local _, ShieldM = SplitSkill(Pl:GetSkill(8))
-				t.Result = t.Result + select(math.max(ShieldM, 1), 15, 15, 10, 0)
-			end
+			local _, ShieldM = SplitSkill(Pl:GetSkill(8))
+			t.Result = t.Result + MF.ShieldExtraPenalty(Pl.Items[ShieldSlot].Number, ShieldM)
 		end
 
 		MV.AuxArmorRecoveryPenalty[Pl.Name] = t.Result
@@ -1700,12 +1691,6 @@
 		[const.Skills.Plate]		= {15, 7.5, 7.5, 0},
 	}
 
-	local LargeShieldNames = {
-		["Large Shield"]			= true,
-		["Artifact Large Shield"]	= true,
-		["Relic Large Shield"]		= true,
-	}
-
 	local AbsorbStrength = {0.2, 0.4, 0.6, 0.8, 1.0}
 
 	-- Helper function to fetch stat values using correct MMExtension Player methods
@@ -1865,13 +1850,17 @@
 		for _, r in ipairs(q) do
 			local pl, mon = Party.PlayersArray[r.pi], Map.Monsters[r.mi]
 			if pl and mon and mon.HP > 0 and pl:IsConscious() then
-				Game.ShowStatusText(string.format("%s dodges and strikes back!", pl.Name), 3)
+				Game.ShowStatusText(r.msg or string.format("%s dodges and strikes back!", pl.Name), 3)
 				RiposteActive = true
 				local ok, err = pcall(mem.call, 0x436E26, 2, r.pi * 8 + 4, r.mi, RiposteVec)  -- party hits monster
 				RiposteActive = false
 				if not ok then MF.LogWarning("Riposte failed: %s", tostring(err)) end
 			end
 		end
+	end
+	-- counterattack of other origins (small shields, MMMWE_Shields.lua): the same rules
+	function MF.QueueCounterAttack(pi, mi, msg)
+		RiposteQueue[#RiposteQueue + 1] = {pi = pi, mi = mi, msg = msg}
 	end
 	-- the counterattack deals only a share of its damage; registered late so it scales the final value
 	function events.GameInitialized2()
@@ -1902,11 +1891,8 @@
 		if shield > 0 and not pl.Items[shield].Broken then
 			local shTxt = Game.ItemsTxt[pl.Items[shield].Number]
 			if shTxt.Skill == const.Skills.Shield then
-				if LargeShieldNames[shTxt.NotIdentifiedName] then
-					local extraPen = ({15, 15, 10, 0})[shieldM] or 0
-					penalties[shieldM] = penalties[shieldM] + extraPen
-				end
-				chance = chance - penalties[shieldM]
+				chance = chance - (penalties[math.max(shieldM, 1)] or 0)
+					- MF.ShieldExtraPenalty(pl.Items[shield].Number, shieldM)   -- MMMWE_Shields.lua
 			end
 		end
 
@@ -2031,56 +2017,7 @@
 		return physDR, magicDR, energyDR
 	end
 
-	-- Shield Block calculation
-	local function CalcShieldBlock(pl, shield, shieldS, shieldM, curseMult)
-		local cond = pl:GetMainCondition()
-		if shield <= 0 or cond == const.Condition.Asleep or (cond >= const.Condition.Paralyzed and cond <= const.Condition.Eradicated) then
-			return 1, 1, 1
-		end
-
-		local shNum = pl.Items[shield].Number
-		if Game.ItemsTxt[shNum].EquipStat ~= 4 or pl.Items[shield].Broken then
-			return 1, 1, 1
-		end
-
-		local blockChance = 20 + 0.5 * shieldS * shieldM
-		if LargeShieldNames[Game.ItemsTxt[shNum].NotIdentifiedName] then
-			blockChance = 30 + 0.75 * shieldS * shieldM
-		end
-
-		local blockStrength = 30 + Game.ItemsTxt[shNum].Mod1DiceSides + Game.ItemsTxt[shNum].Mod2
-		local shItem = pl.Items[shield]
-		
-		if shItem.Bonus == 10 then
-			blockStrength = blockStrength + shItem.BonusStrength
-		else
-			local shieldEnchants = {[42] = 1, [43] = 10, [48] = 5}
-			if shieldEnchants[shItem.Bonus2] then
-				blockStrength = blockStrength + shieldEnchants[shItem.Bonus2]
-			end
-		end
-
-		local magicStr = blockStrength * (2 / 3)
-		local energyStr = blockStrength / 3
-
-		blockChance = blockChance * curseMult
-		local physDR, magicDR, energyDR = 1, 1, 1
-
-		if math.random() * 100 < blockChance then
-			physDR = math.max(0, 1 - 0.01 * blockStrength)
-			if shieldM >= const.Master then
-				magicDR = math.max(0, 1 - 0.01 * magicStr)
-			end
-			if shieldM == const.GM then
-				if shNum == 968 then -- Energy Shield Relic
-					energyStr = blockStrength
-				end
-				energyDR = math.max(0, 1 - 0.01 * energyStr)
-			end
-		end
-
-		return physDR, magicDR, energyDR
-	end
+	-- Shield block: MF.ShieldBlock (MMMWE_Shields.lua)
 
 	-- Energy Shield Absorb
 	local function CalcEnergyShieldDR(pl, damageTotal, dodgeDR, weaponDR, shieldDR, absStr)
@@ -2167,7 +2104,7 @@
 
 		-- --- Weapon Parry & Shield Block ---
 		local weaponPhysDR, weaponMagicDR, weaponEnergyDR, parrySkill = CalcWeaponParry(pl, curseMult)
-		local shieldPhysDR, shieldMagicDR, shieldEnergyDR = CalcShieldBlock(pl, pl.ItemExtraHand, shieldS, shieldM, curseMult)
+		local shieldPhysDR, shieldMagicDR, shieldEnergyDR = MF.ShieldBlock(pl, t, curseMult)   -- MMMWE_Shields.lua
 
 		-- --- Energy Shield ---
 		local _, medM = SplitSkill(pl:GetSkill(const.Skills.Meditation))
@@ -2471,12 +2408,6 @@
 		[969] = 6, [974] = 6, [979] = 6,
 	}
 
-	local ShieldEnchBonus = {
-		[42] = 1,
-		[43] = 10,
-		[48] = 5,
-	}
-
 	mem.autohook(0x41d3b3, function(d)
 		DICharge = mem.i4[d.ecx + 0x10]
 	end)
@@ -2554,17 +2485,13 @@
 			return cachedCstring("%s: +%lu")
 		end
 
-		local armor = item.Mod1DiceCount + item.Mod2
-		local block = 30 + armor
+		local armor = MF.ItemArmorBase(item) + item.Mod2
 		local plItem = pl.Items[itSlot]
+		local shS, shM = SplitSkill(pl:GetSkill(const.Skills.Shield))
+		local block = MF.ShieldBlockPower(ItNumber, plItem, shS, math.max(shM, 1))
+		local class = MF.ShieldClassInfo(ItNumber).Name
 
-		if plItem.Bonus == 10 then
-			block = block + plItem.BonusStrength
-		elseif ShieldEnchBonus[plItem.Bonus2] then
-			block = block + ShieldEnchBonus[plItem.Bonus2]
-		end
-
-		return cachedCstring(string.format("Armor: +%d   Block Power: %d%s", armor, block,"%%"))
+		return cachedCstring(string.format("Armor: +%d   Block Power: %d%s (%s)", armor, block, "%%", class))
 	end
 
 	function DefineWeaponString(ItNumber)
@@ -2954,10 +2881,7 @@
 		if shSkill == 8 then
 			local _, shM = SplitSkill(pl:GetSkill(8))
 			shM = math.max(shM, 1)
-			local pen = DodgePenalties[shM] or 0
-			if LargeShieldNames[Game.ItemsTxt[getItemNum(pl, shieldSlot)].NotIdentifiedName] then
-				pen = pen + select(shM, 15, 15, 10, 0)
-			end
+			local pen = (DodgePenalties[shM] or 0) + MF.ShieldExtraPenalty(getItemNum(pl, shieldSlot), shM)
 			chance = chance - pen
 		end
 
@@ -3275,10 +3199,7 @@
 		if shSkill == 8 then
 			local _, shM = SplitSkill(pl:GetSkill(8))
 			shM = math.max(shM, 1)
-			local pen = DodgePenalties[shM] or 0
-			if LargeShieldNames[Game.ItemsTxt[getItemNum(pl, shieldSlot)].NotIdentifiedName] then
-				pen = pen + select(shM, 15, 15, 10, 0)
-			end
+			local pen = (DodgePenalties[shM] or 0) + MF.ShieldExtraPenalty(getItemNum(pl, shieldSlot), shM)
 			chance = chance - pen
 		end
 		local armSkill = getItemSkill(pl, armorSlot)
@@ -3390,18 +3311,14 @@
 		-- Parry: one weapon in either hand, two-handed weapon or dual-wield
 		ParryC = calcParryChanceUI(Pl, curseMult)
 
-		-- Block: same conditions as CalcShieldBlock in combat
+		-- Block: same conditions as MF.ShieldBlock in combat (MMMWE_Shields.lua)
 		local blkCond = Pl:GetMainCondition()
 		if offSkill == const.Skills.Shield and Game.ItemsTxt[getItemNum(Pl, offSlot)].EquipStat == 4
 				and blkCond ~= const.Condition.Asleep
 				and not (blkCond >= const.Condition.Paralyzed and blkCond <= const.Condition.Eradicated) then
 			local sS, sM = SplitSkill(Pl:GetSkill(const.Skills.Shield))
 			local offNum = getItemNum(Pl, offSlot)
-			BlockC = 20 + 0.5 * sS * sM
-			if LargeShieldNames[Game.ItemsTxt[offNum].NotIdentifiedName] then
-				BlockC = 30 + 0.75 * sS * sM
-			end
-			BlockC = math.min(BlockC * curseMult, 100)
+			BlockC = math.min(MF.ShieldBlockChance(offNum, sS, math.max(sM, 1)) * curseMult, 100)   -- MMMWE_Shields.lua
 		end
 
 		local DodgeC = calcDodgeChanceUI(Pl, Pl.ItemArmor, Pl.ItemExtraHand) * curseMult
