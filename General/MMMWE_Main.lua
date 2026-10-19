@@ -1376,6 +1376,34 @@
 	local MainCritSkills  = {[0] = true, [1] = true, [2] = true, [3] = true, [4] = true, [5] = true, [6] = true}
 	local ExtraCritSkills = {[1] = true, [2] = true}   -- swords and daggers
 
+	-- Weapon skill damage (19.10.26): non-blaster weapons deal more damage with skill and
+	-- mastery, PerSkillMastery per point of skill x mastery (Novice 1 ... Grand Master 4),
+	-- like the weapon crits. Two weapons: the average of both. Unarmed and blasters: none.
+	local WEAPON_SKILL_DAMAGE = {PerSkillMastery = 0.02}
+	MF.WeaponSkillDamage = WEAPON_SKILL_DAMAGE
+
+	-- damage multiplier of the weapons used for a melee (Melee = true) or bow attack
+	local function weaponSkillDamageMult(Pl, Melee)
+		local k = WEAPON_SKILL_DAMAGE.PerSkillMastery
+		if k <= 0 then return 1 end
+		if not Melee then
+			local slot = Pl.ItemBow
+			if slot <= 0 or Pl.Items[slot].Broken then return 1 end
+			local txt = Game.ItemsTxt[Pl.Items[slot].Number]
+			if txt.Skill ~= const.Skills.Bow then return 1 end
+			local S, M = SplitSkill(Pl:GetSkill(txt.Skill))
+			return 1 + k * S * M
+		end
+		local sum, n = 0, 0
+		local sk1, S1, M1 = critWeapon(Pl, Pl.ItemMainHand, MainCritSkills)
+		if sk1 then sum, n = sum + S1 * M1, n + 1 end
+		local sk2, S2, M2 = critWeapon(Pl, Pl.ItemExtraHand, ExtraCritSkills)
+		if sk2 then sum, n = sum + S2 * M2, n + 1 end
+		if n == 0 then return 1 end
+		return 1 + k * sum / n
+	end
+	MF.WeaponSkillDamageMult = weaponSkillDamageMult
+
 	-- Crit chance (%, before curse) and damage multiplier of one weapon skill
 	local function skillCrit(pl, skill, S, M, specC, specD)
 		local idx = skill + 1
@@ -1525,6 +1553,7 @@
 				local mightBonus = (isCrossbow and DamageBonusStat[2] or DamageBonusStat[1]) * resFactor
 				t.Result = round(t.Result + t.Result*HighGround/4000 + mightBonus)
 			end
+			t.Result = t.Result * weaponSkillDamageMult(Pl, Melee)
 			t.Result = math.max(0, round(t.Result * CalcCrits(Pl, Melee, t.Monster)))
 
 			local slot = Melee and Pl.ItemMainHand or Pl.ItemBow
@@ -2630,8 +2659,11 @@
 			if armed.ItemMainHand ~= 0 then
 				local it = armed.Items[armed.ItemMainHand]
 				local p = MF.GetWeaponPenalty and MF.GetWeaponPenalty(it) or 0
-				if p > 0 then
-					d.edi, d.eax = penalizedRange(it, armed:GetMeleeDamageMin(), armed:GetMeleeDamageMax())
+				local mult = weaponSkillDamageMult(armed, true)
+				if p > 0 or mult ~= 1 then
+					local minD, maxD = armed:GetMeleeDamageMin(), armed:GetMeleeDamageMax()
+					minD, maxD = round(minD * mult), round(maxD * mult)
+					d.edi, d.eax = penalizedRange(it, minD, maxD)
 					d:push(ret)
 					return true
 				end
@@ -2690,7 +2722,9 @@
 			
 			minD = isCrossbow and minD + DamageBonusStat[2] + (BowM >= 4 and BowS or 0) or minD + DamageBonusStat[1] + (BowM >= 4 and BowS or 0)
 			maxD = isCrossbow and maxD + DamageBonusStat[2] + (BowM >= 4 and BowS or 0) or maxD + DamageBonusStat[1] + (BowM >= 4 and BowS or 0)
-			-- worn / damaged bow: same penalty as in combat (applyPenalty)
+			-- weapon skill damage, then a worn / damaged bow's penalty (as in combat)
+			local mult = weaponSkillDamageMult(pl, false)
+			minD, maxD = round(minD * mult), round(maxD * mult)
 			minD, maxD = penalizedRange(pl.Items[pl.ItemBow], minD, maxD)
 			d.edi = minD
 			d.eax = maxD
