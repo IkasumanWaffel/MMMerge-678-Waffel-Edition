@@ -206,7 +206,7 @@
 			-- Leather
 			{skill=9,  minM=1, highM=3,  lowC=0.025,  highC=0.05,   mC=0.125, perItem=true,  hiPenMul=2},
 			-- Chain
-			{skill=10, minM=1, highM=4,  lowC=0.025,  highC=0.0375, mC=0.125, perItem=true,  hiPenMul=1},
+			{skill=10, minM=1, highM=4,  lowC=0.025,  highC=0.05,   mC=0.125, perItem=true,  hiPenMul=1},
 			-- Plate
 			{skill=11, minM=1, highM=3,  lowC=0.025,  highC=0.05,   mC=0.125, perItem=true,  hiPenMul=1},
 			-- Shield
@@ -951,6 +951,7 @@
 
 
 	function events.DoBadThingToPlayer(t)
+		if t.Allow == false then return end   -- shrugged off (MMMWE_ArmorEffects.lua)
 		local cond = ThingToCond[t.Thing]
 		if not cond then return end
 
@@ -1837,6 +1838,7 @@
 		end
 		local haste = Party.SpellBuffs[const.PartyBuff.Haste]
 		if haste and haste.ExpireTime > Game.Time then m = m + DODGE.HasteBonus end
+		if MF.ArmorDodgeMod then m = m + MF.ArmorDodgeMod(pl) end   -- MMMWE_ArmorEffects.lua
 		return m
 	end
 

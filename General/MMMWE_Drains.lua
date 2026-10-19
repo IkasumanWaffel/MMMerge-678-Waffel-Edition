@@ -191,6 +191,7 @@ local function onHit(t)
 	local save = saveValue(pl, what, b)
 	local chance = BASE_CHANCE * (level + 30) / (level + 30 + save)
 	if math.random() * 100 >= chance then return end
+	if MF.ChainShrugsOff and MF.ChainShrugsOff(pl) then return end   -- MMMWE_ArmorEffects.lua
 	local ok, amount = applyDrain(pl, what)
 	if ok then
 		Game.ShowStatusText(string.format("%s's %s!", pl.Name,

@@ -236,9 +236,9 @@ end)
 -- character has at Grand Master has no weakness.
 
 local ARMOR_KIND_FACTOR = {
-	[SK.Leather] = {Slashing = 0.90, Piercing = 1.05, Blunt = 0.95},
-	[SK.Chain]   = {Slashing = 0.85, Piercing = 1.10, Blunt = 1.00},
-	[SK.Plate]   = {Slashing = 0.80, Piercing = 0.90, Blunt = 1.10},
+	[SK.Leather] = {Slashing = 0.95, Piercing = 1.10, Blunt = 0.85},   -- padding absorbs blows
+	[SK.Chain]   = {Slashing = 0.75, Piercing = 1.15, Blunt = 1.00},   -- turns blades
+	[SK.Plate]   = {Slashing = 0.75, Piercing = 0.85, Blunt = 1.15},   -- stops blades and points
 }
 local REMOVE_WEAKNESS_AT_GM = true
 
