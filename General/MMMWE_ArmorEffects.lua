@@ -8,7 +8,7 @@
 	  Dodge: at Expert and up, +0.1% dodge chance per point of Leather skill for every
 	         leather piece worn (+10% for a full set at skill 20). Needs the Dodging skill,
 	         like all dodging (MF.DodgeChanceMods).
-	  Speed: leather body armor at Master and up: -5 attack recovery.
+	  Speed: leather body armor at Master and up: attacks 5% faster (-5% attack delay).
 	Chain — resilient
 	  Shrug off: chance to ignore a monster's special effect (poison, disease, curse, sleep,
 	         paralysis, stoning, item breaking, aging, stat / armor / resistance drains, ...)
@@ -18,7 +18,7 @@
 	  Every physical hit taken is reduced by a flat amount after all other reductions: half
 	  the Plate skill at Master, the full skill at Grand Master, times the plate share of the
 	  set (a hit never goes below 1).
-	  Plate body armor at Grand Master keeps +5 attack recovery and a -10% dodge penalty.
+	  Plate body armor at Grand Master keeps +5% attack delay and a -10% dodge penalty.
 	Blasters are left out of the recovery changes (their recovery is fixed by design).
 
 	Console: Merge.Functions.ArmorEffectsInfo(player)
@@ -33,12 +33,12 @@ local SK = const.Skills
 
 local A = {
 	LeatherDodgePerSkill = 0.1,   -- % per skill point per leather piece, Expert and up
-	LeatherRecovery      = -5,    -- leather body armor, Master and up
+	LeatherRecovery      = -5,    -- % attack delay, leather body armor, Master and up
 	ChainShrugPerSM      = 0.5,   -- % per skill x mastery, full chain set
 	ChainGMDodge         = -5,    -- chain body armor at Grand Master
 	PlateFlatMaster      = 0.5,   -- x Plate skill, full plate set
 	PlateFlatGM          = 1.0,
-	PlateGMRecovery      = 5,     -- plate body armor at Grand Master
+	PlateGMRecovery      = 5,     -- % attack delay, plate body armor at Grand Master
 	PlateGMDodge         = -10,
 }
 MF.ArmorEffectSettings = A
@@ -157,14 +157,5 @@ function events.LoadMap()
 	end
 end
 
-function events.GameInitialized2()
-
-	-- Leather / Plate: attack recovery (not for blasters)
-	function events.GetAttackDelay(t)
-		local pl = t.Player
-		local main = pl.ItemMainHand
-		if main > 0 and Game.ItemsTxt[pl.Items[main].Number].Skill == SK.Blaster then return end
-		local m = MF.ArmorRecoveryMod(pl)
-		if m ~= 0 then t.Result = math.max(0, t.Result + m) end
-	end
-end
+-- Leather / Plate attack recovery: MF.ArmorRecoveryMod is added to the armor recovery
+-- percentage in MMMWE_Main.lua (GetAttackDelay), so it is -5% / +5% of the attack delay

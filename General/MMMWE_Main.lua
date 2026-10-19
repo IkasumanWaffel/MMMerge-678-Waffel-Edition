@@ -403,8 +403,10 @@
 	end
 
 	-- Change base attack delay values of weapon and armor types
+	-- Shield and armor are 0 here: the game would add them as flat values. Their penalties are
+	-- applied as percentages of the attack delay in GetAttackDelay below (ArmorRecoveryPct).
 --						 Staff	 Sword   Dagger Axe     Spear   Bow     Mace    Blaster  Shield Leather Chain  Plate  Unarmed w|o Skill	
-	local Delay_table = {110, 0, 100, 0, 60, 0, 115, 0, 110, 0, 100, 0, 130, 0, 75, 0,   10, 0, 10, 0,  20, 0, 30, 0, 100, 0}
+	local Delay_table = {110, 0, 100, 0, 60, 0, 115, 0, 110, 0, 100, 0, 130, 0, 75, 0,   0, 0,  0, 0,   0, 0,  0, 0,  100, 0}
 	
 	for i = 0, #Delay_table-1, 2 do
 		mem.i2[0x4FDF88 + i] = Delay_table[i + 1]
@@ -419,6 +421,47 @@
 		[10] = {10, 5, 0, 0},
 		[11] = {15, 7.5, 7.5, 0},
 	}
+
+	-- % of attack delay added by body armor and a shield (the game's own values and mastery
+	-- rules, formerly flat: Shield and Leather 10 at Novice, Chain 20 / 10, Plate 30 / 15 / 15)
+	local BodyArmorPenalties = {
+		[8]  = {10, 0, 0, 0},    -- Shield (+ medium / large shield extra, MMMWE_Shields.lua)
+		[9]  = {10, 0, 0, 0},    -- Leather
+		[10] = {20, 10, 0, 0},   -- Chain
+		[11] = {30, 15, 15, 0},  -- Plate
+	}
+
+	-- Total % added to (or, if negative, taken from) the attack delay of non-blaster attacks
+	-- by armor, shield and armor type effects (MMMWE_ArmorEffects.lua)
+	local function ArmorRecoveryPct(Pl)
+		local pct = 0
+		local function mastery(skill)
+			local _, M = SplitSkill(Pl:GetSkill(skill))
+			return math.max(M, 1)
+		end
+		local body = Pl.ItemArmor
+		if body > 0 and not Pl.Items[body].Broken then
+			local skill = Game.ItemsTxt[Pl.Items[body].Number].Skill
+			local pen = BodyArmorPenalties[skill]
+			if pen and skill ~= 8 then pct = pct + pen[mastery(skill)] end
+		end
+		for _, slotIdx in ipairs{Pl.ItemHelm, Pl.ItemBelt, Pl.ItemGauntlets, Pl.ItemBoots} do
+			if slotIdx > 0 and not Pl.Items[slotIdx].Broken then
+				local skill = Game.ItemsTxt[Pl.Items[slotIdx].Number].Skill
+				local pen = AuxArmorPenalties[skill]
+				if pen then pct = pct + pen[mastery(skill)] end
+			end
+		end
+		local sh = Pl.ItemExtraHand
+		if sh > 0 and not Pl.Items[sh].Broken and Game.ItemsTxt[Pl.Items[sh].Number].Skill == 8 then
+			local M = mastery(8)
+			pct = pct + BodyArmorPenalties[8][M]
+			if MF.ShieldExtraPenalty then pct = pct + MF.ShieldExtraPenalty(Pl.Items[sh].Number, M) end
+		end
+		if MF.ArmorRecoveryMod then pct = pct + MF.ArmorRecoveryMod(Pl) end
+		return pct
+	end
+	MF.ArmorRecoveryPct = ArmorRecoveryPct
 
 	-- Common Attack Recovery Delay modifiers
 	local function applySpeed(Pl, result)
@@ -452,27 +495,11 @@
 		local ShieldSlot = Pl.ItemExtraHand
 		local BowSlot = Pl.ItemBow
 
-		-- Auxiliary armor penalties (helm, gauntlets, belt, boots)
-		local auxSlots = {Pl.ItemHelm, Pl.ItemBelt, Pl.ItemGauntlets, Pl.ItemBoots}
-		for _, slotIdx in ipairs(auxSlots) do
-			if slotIdx > 0 and not Pl.Items[slotIdx].Broken then
-				local skill = Game.ItemsTxt[Pl.Items[slotIdx].Number].Skill
-				local pen = AuxArmorPenalties[skill]
-				if pen then
-					local _, M = SplitSkill(Pl:GetSkill(skill))
-					t.Result = t.Result + pen[math.max(M, 1)]
-				end
-			end
-		end
-
-		-- Medium and large shield penalty (MMMWE_Shields.lua)
-		if ShieldSlot > 0 and not Pl.Items[ShieldSlot].Broken
-		   and Game.ItemsTxt[Pl.Items[ShieldSlot].Number].Skill == 8 then
-			local _, ShieldM = SplitSkill(Pl:GetSkill(8))
-			t.Result = t.Result + MF.ShieldExtraPenalty(Pl.Items[ShieldSlot].Number, ShieldM)
-		end
-
-		MV.AuxArmorRecoveryPenalty[Pl.Name] = t.Result
+		-- Armor, shield and armor type effects: % of the attack delay, applied at the end
+		local armorPct = ArmorRecoveryPct(Pl)
+		-- blaster accuracy penalty (CalcStatBonusBySkills): the blaster's 75 plus the armor
+		-- penalty, the same numbers as when they were flat (armor type effects left out)
+		MV.AuxArmorRecoveryPenalty[Pl.Name] = 75 + armorPct - (MF.ArmorRecoveryMod and MF.ArmorRecoveryMod(Pl) or 0)
 
 		local hasWeapon = WeapSlot > 0 and not Pl.Items[WeapSlot].Broken
 
@@ -527,6 +554,11 @@
 			t.Result = applySpeed(Pl, t.Result)
 			t.Result = applyArmsMaster(Pl, t.Result)
 			t.Result = applyHaste(Pl, t.Result)
+		end
+
+		-- Armor and shield: percentage of the delay (not for blasters, fixed below)
+		if armorPct ~= 0 then
+			t.Result = math.max(0, t.Result * (1 + 0.01 * armorPct))
 		end
 
 		-- Blaster fixed Attack Recovery Delay
