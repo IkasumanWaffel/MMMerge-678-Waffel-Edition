@@ -1451,8 +1451,16 @@
 	MF.WeaponSkillDamageMult = weaponSkillDamageMult
 
 	-- Crit chance (%, before curse) and damage multiplier of one weapon skill
+	-- Master Dagger: crit chance per point of Dagger skill (replaces the engine's 10% triple
+	-- damage, removed in MMMWE_WeaponEffects.lua)
+	local DAGGER_MASTER_CRIT = 0.2
+	MF.DaggerMasterCrit = function() return DAGGER_MASTER_CRIT end
+
 	local function skillCrit(pl, skill, S, M, specC, specD)
 		local idx = skill + 1
+		if skill == const.Skills.Dagger and M >= 3 then
+			specC = specC + DAGGER_MASTER_CRIT * S
+		end
 		return WCCBase[idx] + WCCGrowth[idx] * S * M + pl:GetAccuracy() / 20 + specC,
 			1 + WCDBase[idx] + WCDGrowth[idx] * S * M + specD
 	end

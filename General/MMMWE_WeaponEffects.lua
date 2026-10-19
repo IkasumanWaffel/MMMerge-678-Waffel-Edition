@@ -19,6 +19,7 @@ local MF = Merge.Functions
 ---------------------------------------------------------------------------
 
 local UNARMED_STUN   = true
+local NO_DAGGER_TRIPLE = true
 local STUN_PER_SKILL = {0.25, 0.5, 0.75, 1}   -- % per point of Unarmed skill, by mastery
 
 ---------------------------------------------------------------------------
@@ -57,4 +58,16 @@ if UNARMED_STUN then
 			mem.i4[d.ebp - 0x24] = 1
 		end
 	end)
+end
+
+if NO_DAGGER_TRIPLE then
+	mem.IgnoreProtection(true)
+	for _, a in ipairs{0x48C89A, 0x48C9A6} do        -- jge short (7D) over the triple
+		if mem.u1[a] == 0x7D then
+			mem.u1[a] = 0xEB                             -- jmp short, same target
+		elseif MF.LogError then
+			MF.LogError("MMMWE_WeaponEffects: unexpected byte 0x%X at 0x%X, dagger triple left", mem.u1[a], a)
+		end
+	end
+	mem.IgnoreProtection(false)
 end
