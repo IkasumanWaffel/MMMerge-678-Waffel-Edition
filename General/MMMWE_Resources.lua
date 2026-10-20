@@ -346,13 +346,13 @@ end)
 
 -- right-click description of a spell in the book: the ability texts (also kept by the tick)
 mem.autohook(0x411F3A, function(d)
-	local i = Game.CurrentPlayer
+	local i = u4[0x519350] - 1
 	if i >= 0 and i < Party.count and pageOf(Party[i]) then swapTexts(Party[i]) end
 end)
 
 -- cost line of the right-click description (word_4F4884 read with the page skill's mastery)
 mem.autohook2(0x41216C, function(d)
-	local i = Game.CurrentPlayer
+	local i = u4[0x519350] - 1
 	if i < 0 or i >= Party.count then return end
 	local pl = Party[i]
 	local page = pl.SpellBookPage
@@ -608,8 +608,10 @@ function events.Tick()
 		for slot = 0, Party.count - 1 do updateSpells(Party[slot]) end
 	end
 	updateStatsLabel()
-	if Game.CurrentScreen == const.Screens.SpellBook and Game.CurrentPlayer >= 0 and Game.CurrentPlayer < Party.count then
-		local pl = Party[Game.CurrentPlayer]
+	-- the game's current_player (0x519350, 1-based): Game.CurrentPlayer can be -1 in the book
+	local bookSlot = u4[0x519350] - 1
+	if Game.CurrentScreen == const.Screens.SpellBook and bookSlot >= 0 and bookSlot < Party.count then
+		local pl = Party[bookSlot]
 		if pageOf(pl) then swapTexts(pl) else restoreTexts() end
 	elseif swappedFor then
 		restoreTexts()
