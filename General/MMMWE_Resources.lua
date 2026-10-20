@@ -36,7 +36,7 @@ local u1, u2, u4, i4 = mem.u1, mem.u2, mem.u4, mem.i4
 ---------------------------------------------------------------------------
 
 local ENABLED = true
-local DEBUG   = true    -- status line / log messages about ability casts (testing)
+local DEBUG   = false   -- status line / log messages about ability casts (testing)
 
 local RAGE = {
 	Max             = 100,
