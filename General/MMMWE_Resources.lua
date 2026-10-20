@@ -341,6 +341,7 @@ end
 local function swapIcons(pl)
 	restoreIcons()
 	local page = pageOf(pl)
+	debugMsg("icons: %s, ability page %s, book page %d", pl.Name, tostring(page), pl.SpellBookPage)
 	if not page or pl.SpellBookPage ~= page then return end
 	for spot = 1, 11 do
 		local _, a = abilityOf(pl, page * 11 + spot)
@@ -348,7 +349,7 @@ local function swapIcons(pl)
 			for k, base in ipairs{ICON_A, ICON_B} do
 				local ptr = bitmapPtr(a.Icon[k])
 				local addr = base + spot * 4
-				log("icon %s for spot %d: %s, table entry %X", a.Icon[k], spot, tostring(ptr), u4[addr])
+				debugMsg("icon %s for spot %d: %s, table entry %X", a.Icon[k], spot, tostring(ptr), u4[addr])
 				if ptr and u4[addr] ~= 0 then
 					iconSaved[addr] = {orig = u4[addr], ours = ptr}
 					u4[addr] = ptr
@@ -361,7 +362,7 @@ end
 mem.autohook(0x412414, function(d)
 	-- the game's current_player (0x519350, 1-based), as init_spellbook_dialog uses it
 	local i = u4[0x519350] - 1
-	log("spellbook init for slot %d", i)
+	debugMsg("spellbook init for slot %d", i)
 	if i >= 0 and i < Party.count then
 		local ok, err = pcall(swapIcons, Party[i])
 		if not ok then log("icons: %s", tostring(err)) end
