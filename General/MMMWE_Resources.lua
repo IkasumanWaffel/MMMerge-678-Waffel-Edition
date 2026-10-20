@@ -415,9 +415,12 @@ local function castAbility(pl, pi, spell, targetRef)
 	return true
 end
 
--- caster of a queued spell: the 0-based party slot (tested: field 0 -> first member)
+-- caster of a queued spell: the field holds the caster's Party.PlayersArray index (tested:
+-- first member 0, second member 36), i.e. Party.PlayersIndexes[slot]
 local function casterOf(v, spell)
-	if v < Party.count then return Party[v] end
+	for s = 0, Party.count - 1 do
+		if Party.PlayersIndexes[s] == v then return Party[s] end
+	end
 end
 
 -- cast queue processing (the slot being processed: 0x51D820 + [ebp-0C8h] x 14h)
