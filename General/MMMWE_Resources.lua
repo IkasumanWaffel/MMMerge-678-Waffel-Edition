@@ -415,17 +415,9 @@ local function castAbility(pl, pi, spell, targetRef)
 	return true
 end
 
--- caster of a queued spell. aim_spell (0x425B67) queues the party slot it gets; whether it is
--- 1-based (like current_player), 0-based or +35 (as SpellsExtra.lua reads it) is checked
--- in that order, taking the first party member who has the ability (debug shows the field)
+-- caster of a queued spell: the 0-based party slot (tested: field 0 -> first member)
 local function casterOf(v, spell)
-	local cands = {}
-	if v >= 35 and v - 35 < Party.count then cands[#cands + 1] = Party[v - 35] end
-	if v >= 1 and v <= Party.count then cands[#cands + 1] = Party[v - 1] end
-	if v < Party.count then cands[#cands + 1] = Party[v] end
-	for _, pl in ipairs(cands) do
-		if abilityOf(pl, spell) then return pl end
-	end
+	if v < Party.count then return Party[v] end
 end
 
 -- cast queue processing (the slot being processed: 0x51D820 + [ebp-0C8h] x 14h)
@@ -518,9 +510,17 @@ function events.Tick()
 			if fx and fx.TrollsBlood then
 				local tb = fx.TrollsBlood
 				if now < tb.Until and dt > 0 then
-					pl.HP = math.min(pl:GetFullHP(), pl.HP + tb.PerTick * dt)
+					local before = pl.HP
+					tb.Acc = (tb.Acc or 0) + tb.PerTick * dt
+					local whole = math.floor(tb.Acc)
+					if whole > 0 then
+						tb.Acc = tb.Acc - whole
+						pl.HP = math.min(pl:GetFullHP(), pl.HP + whole)
+						tb.Healed = (tb.Healed or 0) + (pl.HP - before)
+					end
 				elseif now >= tb.Until then
 					fx.TrollsBlood = nil
+					if DEBUG then debugMsg("%s: Troll's Blood healed %d HP", pl.Name, tb.Healed or 0) end
 				end
 			end
 		end
