@@ -324,6 +324,12 @@ end
 -- ([ebp-54h]) and the page widget loads them by name. Right after the names are written
 -- (0x4CB463) an ability's spot gets its own pictures (MM7 sb?c = normal, sb?s = selected).
 -- The spell number is in [ebp-1Ch], the player in [ebp-10h].
+local function bitmapPtr(name)
+	local ok, idx = pcall(function() return Game.IconsLod:LoadBitmap(name) end)
+	if not ok or not idx or idx < 0 then return end
+	return Game.IconsLod.Bitmaps[idx]["?ptr"]
+end
+
 local function writeName(addr, name)
 	mem.copy(addr, name, #name)
 	u1[addr + #name] = 0
