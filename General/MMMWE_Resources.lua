@@ -93,6 +93,11 @@ local TROLL_RACES = {[15] = true, [16] = true, [17] = true, [18] = true}
 
 MF.ResourceSettings = {Rage = RAGE, Abilities = ABILITIES, Durations = DUR, Families = FAMILIES}
 
+-- colours of the resource numbers over the portraits (MMMWE_HPSPDisplay.lua, Windows BGR)
+MF.ResourceColors = {Rage = 0x3050FF}
+-- the Stats screen's "Spell Points" line (GlobalTxt 212) shows the resource name
+local SP_LABEL_TXT = 212
+
 ---------------------------------------------------------------------------
 
 if not ENABLED then return end
@@ -452,6 +457,21 @@ end)
 -- tick: resource sync, drain, effects, pending abilities
 ---------------------------------------------------------------------------
 
+-- Stats screen label: the resource name while a character with a resource is shown
+local spLabelSaved, spLabelNow
+local function updateStatsLabel()
+	local want
+	if Game.CurrentScreen == const.Screens.Inventory and Game.CurrentPlayer >= 0 and Game.CurrentPlayer < Party.count then
+		local fam = familyOf(Party[Game.CurrentPlayer])
+		want = fam and fam.Resource
+	end
+	if want == spLabelNow then return end
+	local addr = Game.GlobalTxt["?ptr"] + SP_LABEL_TXT * 4
+	if not spLabelSaved then spLabelSaved = u4[addr] end
+	u4[addr] = want and cstr(want) or spLabelSaved
+	spLabelNow = want
+end
+
 local RiposteVec = mem.StaticAlloc(12)
 local nextSpellsUpdate = 0
 
@@ -534,6 +554,7 @@ function events.Tick()
 		nextSpellsUpdate = now + const.Minute
 		for slot = 0, Party.count - 1 do updateSpells(Party[slot]) end
 	end
+	updateStatsLabel()
 	if Game.CurrentScreen == const.Screens.SpellBook and Game.CurrentPlayer >= 0 and Game.CurrentPlayer < Party.count then
 		local pl = Party[Game.CurrentPlayer]
 		if pageOf(pl) then swapTexts(pl) else restoreTexts() end

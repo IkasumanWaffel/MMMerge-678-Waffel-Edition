@@ -687,7 +687,12 @@ local function getValues(nPlayers)
             local maxHP, maxSP = 0, 0
             pcall(function() maxHP = p:GetFullHP() end)
             pcall(function() maxSP = p:GetFullSP() end)
+            local resource
+            if Merge.Functions.GetResource then
+                pcall(function() resource = select(3, Merge.Functions.GetResource(p)) end)
+            end
             v[i] = {
+                resource = resource,
                 hp = p.HP or 0,
                 sp = p.SP or 0,
                 maxHP = maxHP,
@@ -1066,7 +1071,11 @@ local function drawOverlay()
 
             if d and d.exists then
                 drawText(hdc, string.format("%d/%d", d.hp, d.maxHP), hpx, hpy, cw, ch, hpColor(d.hp, d.maxHP))
-                drawText(hdc, string.format("%d/%d", d.sp, d.maxSP), spx, spy, cw, ch, 0xFFCCAA)
+                -- class resources (MMMWE_Resources.lua): their own colour instead of the SP blue
+                local spColor = 0xFFCCAA
+                local res = d.resource and Merge.Functions.ResourceColors and Merge.Functions.ResourceColors[d.resource]
+                if res then spColor = res end
+                drawText(hdc, string.format("%d/%d", d.sp, d.maxSP), spx, spy, cw, ch, spColor)
             end
         end
 
