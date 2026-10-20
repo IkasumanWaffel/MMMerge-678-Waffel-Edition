@@ -348,6 +348,7 @@ local function swapIcons(pl)
 			for k, base in ipairs{ICON_A, ICON_B} do
 				local ptr = bitmapPtr(a.Icon[k])
 				local addr = base + spot * 4
+				log("icon %s for spot %d: %s, table entry %X", a.Icon[k], spot, tostring(ptr), u4[addr])
 				if ptr and u4[addr] ~= 0 then
 					iconSaved[addr] = {orig = u4[addr], ours = ptr}
 					u4[addr] = ptr
@@ -364,7 +365,13 @@ mem.autohook(0x412414, function(d)
 		if not ok then log("icons: %s", tostring(err)) end
 	end
 end)
-mem.autohook(0x412209, function(d) restoreIcons() end)
+-- The originals go back before the game unloads the page pictures. 0x412209 can't be
+-- hooked itself (its loop jumps back to 0x41220C, inside the first 5 bytes), so its call
+-- in the dialog removal (0x41B990, call 0x412209) is replaced.
+mem.hookcall(0x41B990, 0, 0, function(d, def)
+	restoreIcons()
+	def()
+end)
 
 -- right-click description of a spell in the book: the ability texts (also kept by the tick)
 mem.autohook(0x411F3A, function(d)
