@@ -241,9 +241,15 @@ end
 -- spellbook: tab, texts, cost line
 ---------------------------------------------------------------------------
 
+local swapIcons   -- defined below (icons)
+
 -- Fire tab (cmp [edi+390h], bx / jz at 0x4124EA; tab button at 0x4124F8, next tab 0x412516)
 mem.autohook(0x4124EA, function(d)
 	local pl = playerFromPtr(d.edi)
+	if pl then
+		local ok, err = pcall(swapIcons, pl)
+		if not ok then log("icons: %s", tostring(err)) end
+	end
 	if pl and pl.Skills[const.Skills.Fire] == 0 and pageOf(pl) == 0 then
 		d:push(0x4124F8)
 		return true
@@ -338,7 +344,7 @@ local function restoreIcons()
 	iconSaved = {}
 end
 
-local function swapIcons(pl)
+function swapIcons(pl)
 	restoreIcons()
 	local page = pageOf(pl)
 	debugMsg("icons: %s, ability page %s, book page %d", pl.Name, tostring(page), pl.SpellBookPage)
@@ -359,15 +365,8 @@ local function swapIcons(pl)
 	end
 end
 
-mem.autohook(0x412414, function(d)
-	-- the game's current_player (0x519350, 1-based), as init_spellbook_dialog uses it
-	local i = u4[0x519350] - 1
-	debugMsg("spellbook init for slot %d", i)
-	if i >= 0 and i < Party.count then
-		local ok, err = pcall(swapIcons, Party[i])
-		if not ok then log("icons: %s", tostring(err)) end
-	end
-end)
+-- (the swap runs from the Fire tab check at 0x4124EA: the start of init_spellbook_dialog
+-- isn't reached here, the game patch seems to replace the spell buttons part)
 -- The originals go back before the game unloads the page pictures. 0x412209 can't be
 -- hooked itself (its loop jumps back to 0x41220C, inside the first 5 bytes), so its call
 -- in the dialog removal (0x41B990, call 0x412209) is replaced.
