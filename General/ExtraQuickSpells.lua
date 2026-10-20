@@ -63,6 +63,15 @@ local function CastSlotSpell(SlotNumber)
 	local SpellId = SpellSlots[SlotNumber] or 0
 	
 	if vars.ManaCost == nil then vars.ManaCost = 0 end
+	-- class abilities (MMMWE_Resources.lua) check and spend their own resource
+	if SpellId ~= 0 and MF.IsClassAbility and MF.IsClassAbility(Player, SpellId) then
+		if Player.RecoveryDelay > 0 then
+			Game.CurrentPlayer = Game.CurrentPlayer >= Party.count - 1 and 0 or Game.CurrentPlayer + 1
+		else
+			CastQuickSpell(Game.CurrentPlayer, SpellId)
+		end
+		return
+	end
 	-- check for basic spell cost, despite player's mastery, because only spell with different cost by mastery is wizard eye, rest have same.
 	if SpellId == 0 or Player.SP < vars.ManaCost --ManaCost
 			or mem.call(MO.CanPlayerCastSpell, 2, Player["?ptr"], SpellId, 3) == 0 then
@@ -128,7 +137,7 @@ function ShowSlotSpellName(SlotNumber)
 	if SpellId == 0 then
 		Game.ShowStatusText(Game.GlobalTxt[72])
 	else
-		Game.ShowStatusText(Game.SpellsTxt[SpellId].Name)
+		Game.ShowStatusText(MF.SpellDisplayName and MF.SpellDisplayName(Party[CurPl], SpellId) or Game.SpellsTxt[SpellId].Name)
 	end
 end
 
