@@ -243,15 +243,9 @@ end
 -- spellbook: tab, texts, cost line
 ---------------------------------------------------------------------------
 
-local swapIcons   -- defined below (icons)
-
 -- Fire tab (cmp [edi+390h], bx / jz at 0x4124EA; tab button at 0x4124F8, next tab 0x412516)
 mem.autohook(0x4124EA, function(d)
 	local pl = playerFromPtr(d.edi)
-	if pl then
-		local ok, err = pcall(swapIcons, pl)
-		if not ok then log("icons: %s", tostring(err)) end
-	end
 	if pl and pl.Skills[const.Skills.Fire] == 0 and pageOf(pl) == 0 then
 		d:push(0x4124F8)
 		return true
@@ -325,56 +319,23 @@ function MF.SpellDisplayName(pl, spell)
 	return a and a.Name or Game.SpellsTxt[spell].Name
 end
 
--- Ability icons. The page's pictures are in two tables of 12 (index 1..11 = the spots):
--- 0x5179D8 the normal picture (SB..a), 0x5179A8 the selected one (SB..b); both are read by
--- init_spellbook_dialog (0x412414) and the page drawing, and unloaded at 0x412209 when the
--- book closes. Our pictures (MM7 sb?c / sb?s) are loaded and put in when the book is set up,
--- and the originals are put back before the game unloads them.
-local ICON_A, ICON_B = 0x5179D8, 0x5179A8
-local iconSaved = {}   -- [address] = {orig = original pointer, ours = our pointer}
-
-local function bitmapPtr(name)
-	local ok, idx = pcall(function() return Game.IconsLod:LoadBitmap(name) end)
-	if not ok or not idx or idx < 0 then return end
-	return Game.IconsLod.Bitmaps[idx]["?ptr"]
+-- Ability icons. MM8 builds a spellbook page in 0x4CB328 (page in [ebp+8]): for every known
+-- spell it writes the picture names "SB<school><nn>b" ([ebp-74h]) and "SB<school><nn>a"
+-- ([ebp-54h]) and the page widget loads them by name. Right after the names are written
+-- (0x4CB463) an ability's spot gets its own pictures (MM7 sb?c = normal, sb?s = selected).
+-- The spell number is in [ebp-1Ch], the player in [ebp-10h].
+local function writeName(addr, name)
+	mem.copy(addr, name, #name)
+	u1[addr + #name] = 0
 end
-
-local function restoreIcons()
-	for addr, e in pairs(iconSaved) do
-		if u4[addr] == e.ours then u4[addr] = e.orig end
+mem.autohook(0x4CB463, function(d)
+	local pl = playerFromPtr(u4[d.ebp - 0x10])
+	if not pl then return end
+	local _, a = abilityOf(pl, u4[d.ebp - 0x1C])
+	if a and a.Icon then
+		writeName(d.ebp - 0x54, a.Icon[1])
+		writeName(d.ebp - 0x74, a.Icon[2])
 	end
-	iconSaved = {}
-end
-
-function swapIcons(pl)
-	restoreIcons()
-	local page = pageOf(pl)
-	debugMsg("icons: %s, ability page %s, book page %d", pl.Name, tostring(page), pl.SpellBookPage)
-	if not page or pl.SpellBookPage ~= page then return end
-	for spot = 1, 11 do
-		local _, a = abilityOf(pl, page * 11 + spot)
-		if a and a.Icon then
-			for k, base in ipairs{ICON_A, ICON_B} do
-				local ptr = bitmapPtr(a.Icon[k])
-				local addr = base + spot * 4
-				debugMsg("icon %s for spot %d: %s, table entry %X", a.Icon[k], spot, tostring(ptr), u4[addr])
-				if ptr and u4[addr] ~= 0 then
-					iconSaved[addr] = {orig = u4[addr], ours = ptr}
-					u4[addr] = ptr
-				end
-			end
-		end
-	end
-end
-
--- (the swap runs from the Fire tab check at 0x4124EA: the start of init_spellbook_dialog
--- isn't reached here, the game patch seems to replace the spell buttons part)
--- The originals go back before the game unloads the page pictures. 0x412209 can't be
--- hooked itself (its loop jumps back to 0x41220C, inside the first 5 bytes), so its call
--- in the dialog removal (0x41B990, call 0x412209) is replaced.
-mem.hookcall(0x41B990, 0, 0, function(d, def)
-	restoreIcons()
-	def()
 end)
 
 -- right-click description of a spell in the book: the ability texts (also kept by the tick)
