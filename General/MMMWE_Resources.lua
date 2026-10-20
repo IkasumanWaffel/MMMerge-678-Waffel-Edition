@@ -415,18 +415,17 @@ local function castAbility(pl, pi, spell, targetRef)
 	return true
 end
 
--- caster of a queued spell: the field holds a party slot (SpellsExtra.lua reads it as
--- slot + 35) or a Party.PlayersArray index; take the party member it points to
-local function casterOf(v)
-	local function inParty(pl)
-		if not pl then return false end
-		for s = 0, Party.count - 1 do if Party[s]["?ptr"] == pl["?ptr"] then return true end end
-		return false
+-- caster of a queued spell. aim_spell (0x425B67) queues the party slot it gets; whether it is
+-- 1-based (like current_player), 0-based or +35 (as SpellsExtra.lua reads it) is checked
+-- in that order, taking the first party member who has the ability (debug shows the field)
+local function casterOf(v, spell)
+	local cands = {}
+	if v >= 35 and v - 35 < Party.count then cands[#cands + 1] = Party[v - 35] end
+	if v >= 1 and v <= Party.count then cands[#cands + 1] = Party[v - 1] end
+	if v < Party.count then cands[#cands + 1] = Party[v] end
+	for _, pl in ipairs(cands) do
+		if abilityOf(pl, spell) then return pl end
 	end
-	if v >= 35 and v - 35 < Party.count then return Party[v - 35] end
-	if v < Party.count then return Party[v] end
-	local pl = Party.PlayersArray[v]
-	if inParty(pl) then return pl end
 end
 
 -- cast queue processing (the slot being processed: 0x51D820 + [ebp-0C8h] x 14h)
@@ -436,7 +435,7 @@ mem.autohook(0x42609E, function(d)
 	if spell <= 0 or spell > 132 then return end
 	if bit.band(u1[slot + 8], 1) == 1 then return end          -- spell scroll
 	if u2[slot + 10] > 0 then return end                         -- skill set: wand, item, NPC
-	local pl = casterOf(u2[slot + 2])
+	local pl = casterOf(u2[slot + 2], spell)
 	if DEBUG then
 		debugMsg("cast queue: spell %d, caster field %d -> %s", spell, u2[slot + 2], pl and pl.Name or "?")
 	end
