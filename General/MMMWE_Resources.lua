@@ -359,7 +359,9 @@ local function swapIcons(pl)
 end
 
 mem.autohook(0x412414, function(d)
-	local i = Game.CurrentPlayer
+	-- the game's current_player (0x519350, 1-based), as init_spellbook_dialog uses it
+	local i = u4[0x519350] - 1
+	log("spellbook init for slot %d", i)
 	if i >= 0 and i < Party.count then
 		local ok, err = pcall(swapIcons, Party[i])
 		if not ok then log("icons: %s", tostring(err)) end
