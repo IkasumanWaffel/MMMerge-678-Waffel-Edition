@@ -521,7 +521,18 @@ local function SetSpellsExtraHooks()
 		end
 
 		local Pl = Party:GetCurrentPlayer()
+		-- class abilities (MMMWE_Resources.lua): their own cost, in the class resource
+		if MF.ClassAbilityOf then
+			local key, ab = MF.ClassAbilityOf(Pl, SpellNum)
+			if ab then
+				local _, _, resName = MF.GetResource(Pl)
+				mem.asmpatch(0x412180, "push " .. MF.cstring(string.format(
+					'%s Cost: %d', resName or "SP", ab.Cost)))
+				return
+			end
+		end
 		local MS, MM = SplitSkill(Pl:GetSkill(math.floor(SpellNum / 11 - 1 / 11) + 12))
+		MM = math.max(MM, 1)
 
 		-- Spell mastery (1-4) by spell index in magic school
 		local idx = (SpellNum - 1) % 11
