@@ -110,6 +110,8 @@ local function log(fmt, ...) if MF.LogInfo then MF.LogInfo("[Resources] " .. fmt
 local function debugMsg(fmt, ...)
 	local text = string.format(fmt, ...)
 	log("%s", text)
+	local f = io.open("MMMWE_Resources_debug.txt", "a")   -- in the game folder, flushed at once
+	if f then f:write(os.date("%H:%M:%S "), text, "\n") f:close() end
 	print("[Resources] " .. text)
 	Game.ShowStatusText(text, 4)
 end
