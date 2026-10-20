@@ -3487,8 +3487,8 @@
 		local resName = MF.GetResource and select(3, MF.GetResource(Pl))
 		if resName then
 			-- class resource (MMMWE_Resources.lua): no regeneration, it drains when idle
-			MV.SPR = cachedCstring(string.format('%s\t30 (%s)', resName,
-				MF.ResourceRegenText and MF.ResourceRegenText(resName) or 'no regen'))
+			-- the resource name only (it doesn't regenerate; a longer text runs into the value)
+			MV.SPR = cachedCstring(resName)
 		else
 			MV.SPR = cachedCstring(string.format('SP\t30 (%s%d/RTick)',
 				totalSPR >= 1 and '+' or '', totalSPR))

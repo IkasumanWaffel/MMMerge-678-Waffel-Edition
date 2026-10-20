@@ -107,7 +107,7 @@ local RESOURCE_DESC = {
 	Rage = "Rage fills when the barbarian takes hits (the heavier the blow, the more) and a little with every melee hit landed. After a while without being hit it slowly drains away, so resting empties it; potions and Meditation don't restore it. Every 5 Rage adds 1% melee damage. At 50 Rage and more the barbarian fights recklessly: -10% of the items' Armor Class (Trolls instead take 5% less physical damage). Rage pays for the barbarian's abilities on the Fire page of the spellbook.",
 }
 function MF.ResourceRegenText(res)
-	if res == "Rage" then return "drains when idle" end
+	if res == "Rage" then return "" end
 	return "no regen"
 end
 
@@ -531,18 +531,9 @@ local function updateStatsLabel()
 	local addr = Game.GlobalTxt["?ptr"] + SP_LABEL_TXT * 4
 	if not spLabelSaved then spLabelSaved = u4[addr] end
 	u4[addr] = want and cstr(want) or spLabelSaved
-	-- description: the Stats.txt entry that starts with "Spell Points"
-	if not spDescAddr then
-		local base = Game.StatsDescriptions["?ptr"]
-		for i = 0, 30 do
-			local p = u4[base + i * 4]
-			local ok, s = false, nil
-			if p > 0x10000 then ok, s = pcall(mem.string, p, 14) end
-			local at = ok and s and s:find("Spell Points", 1, true)
-			if at and at <= 2 then spDescAddr = base + i * 4 break end
-		end
-		spDescAddr = spDescAddr or false
-	end
+	-- description: the Spell Points entry of Stats.txt, kept by the game at 0x5E4D54
+	-- (the Spell Points tooltip at 0x4177C9 reads GlobalTxt 212 and this pointer)
+	spDescAddr = 0x5E4D54
 	if spDescAddr then
 		if not spDescSaved then spDescSaved = u4[spDescAddr] end
 		local desc = want and RESOURCE_DESC[want]
