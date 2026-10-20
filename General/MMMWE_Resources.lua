@@ -36,6 +36,7 @@ local u1, u2, u4, i4 = mem.u1, mem.u2, mem.u4, mem.i4
 ---------------------------------------------------------------------------
 
 local ENABLED = true
+local DEBUG   = true    -- status line / log messages about ability casts (testing)
 
 local RAGE = {
 	Max             = 100,
@@ -97,6 +98,12 @@ MF.ResourceSettings = {Rage = RAGE, Abilities = ABILITIES, Durations = DUR, Fami
 if not ENABLED then return end
 
 local function log(fmt, ...) if MF.LogInfo then MF.LogInfo("[Resources] " .. fmt, ...) end end
+local function debugMsg(fmt, ...)
+	local text = string.format(fmt, ...)
+	log("%s", text)
+	print("[Resources] " .. text)
+	Game.ShowStatusText(text, 4)
+end
 
 -- family kind and promotion stage (0..3) of a class, light / dark / third-stage variants
 -- included (they have Kind 0 in Class Extra.txt and are found through Promotions.txt)
@@ -372,6 +379,7 @@ local function castAbility(pl, pi, spell, targetRef)
 	local key, a = abilityOf(pl, spell)
 	if not a then return false end
 	local e = state(pi)
+	if DEBUG then debugMsg("%s uses %s (Rage %d, cost %d)", pl.Name, a.Name, e.R, a.Cost) end
 	if e.R < a.Cost then
 		if key == "RageStrike" then
 			DoGameAction(23, 0, 0)        -- a normal attack, as with spell points
@@ -407,6 +415,20 @@ local function castAbility(pl, pi, spell, targetRef)
 	return true
 end
 
+-- caster of a queued spell: the field holds a party slot (SpellsExtra.lua reads it as
+-- slot + 35) or a Party.PlayersArray index; take the party member it points to
+local function casterOf(v)
+	local function inParty(pl)
+		if not pl then return false end
+		for s = 0, Party.count - 1 do if Party[s]["?ptr"] == pl["?ptr"] then return true end end
+		return false
+	end
+	if v >= 35 and v - 35 < Party.count then return Party[v - 35] end
+	if v < Party.count then return Party[v] end
+	local pl = Party.PlayersArray[v]
+	if inParty(pl) then return pl end
+end
+
 -- cast queue processing (the slot being processed: 0x51D820 + [ebp-0C8h] x 14h)
 mem.autohook(0x42609E, function(d)
 	local slot = 0x51D820 + u4[d.ebp - 0xC8] * 0x14
@@ -414,9 +436,12 @@ mem.autohook(0x42609E, function(d)
 	if spell <= 0 or spell > 132 then return end
 	if bit.band(u1[slot + 8], 1) == 1 then return end          -- spell scroll
 	if u2[slot + 10] > 0 then return end                         -- skill set: wand, item, NPC
-	local pi = u2[slot + 2]
-	local pl = Party.PlayersArray[pi]
+	local pl = casterOf(u2[slot + 2])
+	if DEBUG then
+		debugMsg("cast queue: spell %d, caster field %d -> %s", spell, u2[slot + 2], pl and pl.Name or "?")
+	end
 	if not pl or not abilityOf(pl, spell) then return end
+	local pi = playerIndex(pl)
 	local ok, res = pcall(castAbility, pl, pi, spell, u2[slot + 0xC])
 	if not ok then
 		log("ability error: %s", tostring(res))
