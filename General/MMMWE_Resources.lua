@@ -56,19 +56,23 @@ local ABILITIES = {
 	RageStrike = {Spell = 2, Stage = 0, Cost = 15, NotTroll = false,
 		Name = "Rage Strike",
 		Desc = "A furious blow at the target in melee reach: +50% damage, and 10% more often a critical blow. Use it as the attack spell to strike with it whenever there is enough Rage; without enough Rage it is a normal attack.",
-		Lines = {"15 Rage", "", "", ""}},
+		Lines = {"15 Rage", "", "", ""},
+		Icon = {"sbmc04", "sbms04"},},
 	WarCry = {Spell = 5, Stage = 1, Cost = 40, NotTroll = true,
 		Name = "War Cry",
 		Desc = "A terrifying roar. Monsters around may flee in fear (resisted by Mind resistance), and the party deals +10% melee damage for a while.",
-		Lines = {"40 Rage (Berserker)", "", "", ""}},
+		Lines = {"40 Rage (Berserker)", "", "", ""},
+		Icon = {"sbmc08", "sbms08"},},
 	TrollsBlood = {Spell = 3, Stage = 1, Cost = 40, TrollOnly = true,
 		Name = "Troll's Blood",
 		Desc = "The troll's blood boils and mends the wounds: heals 20% of maximum Hit Points over a short time.",
-		Lines = {"40 Rage (Troll, Berserker)", "", "", ""}},
+		Lines = {"40 Rage (Troll, Berserker)", "", "", ""},
+		Icon = {"sbbc05", "sbbs05"},},
 	Berserk = {Spell = 8, Stage = 2, Cost = 70,
 		Name = "Berserk",
 		Desc = "A frenzy: 20% faster attacks and immunity to fear, sleep and paralysis for a while, but 15% more damage taken.",
-		Lines = {"70 Rage (Warmonger)", "", "", ""}},
+		Lines = {"70 Rage (Warmonger)", "", "", ""},
+		Icon = {"sbmc07", "sbms07"},},
 }
 
 local DUR = {
@@ -313,6 +317,55 @@ function MF.SpellDisplayName(pl, spell)
 	return a and a.Name or Game.SpellsTxt[spell].Name
 end
 
+-- Ability icons. The page's pictures are in two tables of 12 (index 1..11 = the spots):
+-- 0x5179D8 the normal picture (SB..a), 0x5179A8 the selected one (SB..b); both are read by
+-- init_spellbook_dialog (0x412414) and the page drawing, and unloaded at 0x412209 when the
+-- book closes. Our pictures (MM7 sb?c / sb?s) are loaded and put in when the book is set up,
+-- and the originals are put back before the game unloads them.
+local ICON_A, ICON_B = 0x5179D8, 0x5179A8
+local iconSaved = {}   -- [address] = {orig = original pointer, ours = our pointer}
+
+local function bitmapPtr(name)
+	local ok, idx = pcall(function() return Game.IconsLod:LoadBitmap(name) end)
+	if not ok or not idx or idx < 0 then return end
+	return Game.IconsLod.Bitmaps[idx]["?ptr"]
+end
+
+local function restoreIcons()
+	for addr, e in pairs(iconSaved) do
+		if u4[addr] == e.ours then u4[addr] = e.orig end
+	end
+	iconSaved = {}
+end
+
+local function swapIcons(pl)
+	restoreIcons()
+	local page = pageOf(pl)
+	if not page or pl.SpellBookPage ~= page then return end
+	for spot = 1, 11 do
+		local _, a = abilityOf(pl, page * 11 + spot)
+		if a and a.Icon then
+			for k, base in ipairs{ICON_A, ICON_B} do
+				local ptr = bitmapPtr(a.Icon[k])
+				local addr = base + spot * 4
+				if ptr and u4[addr] ~= 0 then
+					iconSaved[addr] = {orig = u4[addr], ours = ptr}
+					u4[addr] = ptr
+				end
+			end
+		end
+	end
+end
+
+mem.autohook(0x412414, function(d)
+	local i = Game.CurrentPlayer
+	if i >= 0 and i < Party.count then
+		local ok, err = pcall(swapIcons, Party[i])
+		if not ok then log("icons: %s", tostring(err)) end
+	end
+end)
+mem.autohook(0x412209, function(d) restoreIcons() end)
+
 -- right-click description of a spell in the book: the ability texts (also kept by the tick)
 mem.autohook(0x411F3A, function(d)
 	local i = Game.CurrentPlayer
@@ -456,6 +509,28 @@ end)
 ---------------------------------------------------------------------------
 -- tick: resource sync, drain, effects, pending abilities
 ---------------------------------------------------------------------------
+
+-- Portrait bar: the spell point bar (texture in [ebp-18h] of the bars routine, 0x41B165 is
+-- the start of each character's SP bar) is drawn with RESOURCE_BAR[resource] instead
+local RESOURCE_BAR = {Rage = "manar"}
+local barOrig, barOurs = nil, {}
+mem.autohook(0x41B165, function(d)
+	local cur = u4[d.ebp - 0x18]
+	local isOurs = false
+	for _, p in pairs(barOurs) do if p == cur then isOurs = true end end
+	if not isOurs then barOrig = cur end
+	local slot = u4[d.ebp - 4]
+	local want = barOrig
+	if slot < Party.count then
+		local fam = familyOf(Party[slot])
+		local name = fam and RESOURCE_BAR[fam.Resource]
+		if name then
+			barOurs[name] = barOurs[name] or bitmapPtr(name)
+			want = barOurs[name] or barOrig
+		end
+	end
+	if want and want ~= cur then u4[d.ebp - 0x18] = want end
+end)
 
 -- Stats screen label: the resource name while a character with a resource is shown
 local spLabelSaved, spLabelNow
