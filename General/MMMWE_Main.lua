@@ -3484,8 +3484,15 @@
 
 		MV.HPR = cachedCstring(string.format('HP\t30 (%s%d/RTick)',
 			totalHPR >= 1 and '+' or '', totalHPR))
-		MV.SPR = cachedCstring(string.format('SP\t30 (%s%d/RTick)',
-			totalSPR >= 1 and '+' or '', totalSPR))
+		local resName = MF.GetResource and select(3, MF.GetResource(Pl))
+		if resName then
+			-- class resource (MMMWE_Resources.lua): no regeneration, it drains when idle
+			MV.SPR = cachedCstring(string.format('%s\t30 (%s)', resName,
+				MF.ResourceRegenText and MF.ResourceRegenText(resName) or 'no regen'))
+		else
+			MV.SPR = cachedCstring(string.format('SP\t30 (%s%d/RTick)',
+				totalSPR >= 1 and '+' or '', totalSPR))
+		end
 
 		-- Armor Class and Physical Resistance
 		MV.ADur = cachedCstring(string.format('HR Class\t65 %3.0f\t100',
