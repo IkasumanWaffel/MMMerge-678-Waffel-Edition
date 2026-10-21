@@ -668,11 +668,6 @@ end)
 -- casting
 ---------------------------------------------------------------------------
 
--- the game lets a character without the school's skill pick the ability
-function events.CanPlayerCastSpell(t)
-	local pl = playerFromPtr(t.PlayerPtr)
-	if pl and abilityOf(pl, t.Spell) and t.Source ~= 4 then t.Result = true end
-end
 
 local Pending = {}     -- abilities carried out on the next tick
 local Effects = {}     -- [pi] = {Berserk = time, TrollsBlood = {Until, PerMinute}}
@@ -737,6 +732,33 @@ local function meleeTarget(targetRef, range)
 		end
 	end
 	return best
+end
+
+-- abilities that strike a monster in melee reach, and their reach
+local MELEE_ABILITIES = {RageStrike = true, StunningPalm = true, Flurry = true, Finisher = true}
+
+-- can the ability be used right now: enough resource, and a monster in reach for the
+-- melee ones (Challenge: in its range)
+function MF.ClassAbilityUsable(pl, spell)
+	local key, a = abilityOf(pl, spell)
+	if not a then return false end
+	if a.Cost > 0 and state(playerIndex(pl)).R < a.Cost then return false end
+	if MELEE_ABILITIES[key] then return meleeTarget(nil) ~= nil end
+	if key == "Challenge" then return meleeTarget(nil, CHALLENGE_RANGE) ~= nil end
+	return true
+end
+
+-- the game lets a character without the school's skill pick the ability. The quick spell
+-- key (Source 2, the attack spell) only casts an ability that can be used now; otherwise
+-- the game makes its normal attack (a bow shot at a far target) and the turn goes on.
+function events.CanPlayerCastSpell(t)
+	local pl = playerFromPtr(t.PlayerPtr)
+	if not pl or not abilityOf(pl, t.Spell) or t.Source == 4 then return end
+	if t.Source == 2 then
+		t.Result = MF.ClassAbilityUsable(pl, t.Spell)
+	else
+		t.Result = true
+	end
 end
 
 local function failCast(pl, text)

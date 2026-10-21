@@ -67,6 +67,9 @@ local function CastSlotSpell(SlotNumber)
 	if SpellId ~= 0 and MF.IsClassAbility and MF.IsClassAbility(Player, SpellId) then
 		if Player.RecoveryDelay > 0 then
 			Game.CurrentPlayer = Game.CurrentPlayer >= Party.count - 1 and 0 or Game.CurrentPlayer + 1
+		elseif MF.ClassAbilityUsable and not MF.ClassAbilityUsable(Player, SpellId) then
+			-- no resource or no monster in reach: the standard attack, as for a spell
+			DoGameAction(23, 0, 0)
 		else
 			CastQuickSpell(Game.CurrentPlayer, SpellId)
 		end
