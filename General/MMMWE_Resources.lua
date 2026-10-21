@@ -36,8 +36,8 @@
 
 	Monk family (Monk, Initiate Monk, Master Monk, Ninja, variants) — Ki:
 	  charges, 5 + 2 per promotion stage + 1 per 2 points of Meditation (at most 15);
-	  refill 1 / 2 / 3 per interval by stage, interval 2 game minutes, -2% per point of
-	  Meditation. Their spells cost spell points / 5 in Ki (at least 1).
+	  refill 1 charge every 5 game minutes, -2% per point of Meditation (at most -50%);
+	  Meditation from the first promotion (Class Skills.txt). Their spells cost spell points / 5 in Ki (at least 1).
 	  Water page: Stunning Palm, Inner Peace, Flurry (Initiate+), Iron Body (Master Monk),
 	  Vanish (Ninja).
 
@@ -87,9 +87,9 @@ local KI = {
 	PerStage      = 2,             -- per promotion stage
 	PerMeditation = 0.5,           -- per point of Meditation skill
 	Cap           = 15,
-	Interval      = 2 * const.Minute,
+	Interval      = 5 * const.Minute,  -- one charge per interval
 	IntervalPerMed = 0.02,         -- interval -2% per point of Meditation (at most -50%)
-	Refill        = {[0] = 1, 2, 3, 3},   -- charges per interval by promotion stage
+	Refill        = {[0] = 1, 1, 1, 1},   -- charges per interval by promotion stage
 }
 
 local RAGE = {
@@ -272,7 +272,7 @@ local SP_LABEL_TXT = 212
 local RESOURCE_DESC = {
 	Rage = "Rage fills when the barbarian takes hits (the heavier the blow, the more) and a little with every melee hit landed. After a while without being hit it slowly drains away, so resting empties it; potions and Meditation don't restore it. Every 5 Rage adds 1% melee damage. At 50 Rage and more the barbarian fights recklessly: -10% of the items' Armor Class (Trolls instead take 5% less physical damage). Rage pays for the barbarian's abilities on the Fire page of the spellbook.",
 	Resolve = "Resolve grows as the knight holds the line: +5 for every block or parry and +2 for every hit taken, twice as much in the Defensive stance. After a while without being hit it slowly fades, so resting empties it; potions and temples don't restore it. Resolve pays for Challenge and Rally (Air page of the spellbook); the stances there are free.",
-	Ki = "Ki is the monk's inner strength, counted in charges: 5, +2 for every promotion and +1 for every 2 points of Meditation (at most 15). It refills on its own, 1 charge every 2 minutes (2 after the first promotion, 3 after the second), sooner with Meditation. Ki pays for the monk's abilities on the Water page of the spellbook, and for his spells: a fifth of their spell point cost.",
+	Ki = "Ki is the monk's inner strength, counted in charges: 5, +2 for every promotion and +1 for every 2 points of Meditation (at most 15). It refills on its own, 1 charge every 5 minutes, sooner with Meditation (down to half the time). Ki pays for the monk's abilities on the Water page of the spellbook, and for his spells: a fifth of their spell point cost.",
 	Energy = "Energy is the thief's quickness. It refills fast, 10 every game minute, and pays for the thief's tricks on the Mind page of the spellbook and for his spells (5 Energy per spell point). Melee hits on the same target build combo points (up to 5, shown in the status line); the Finisher spends them all.",
 }
 function MF.ResourceRegenText(res)
