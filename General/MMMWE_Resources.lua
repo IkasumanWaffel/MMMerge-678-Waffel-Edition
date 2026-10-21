@@ -362,6 +362,25 @@ mem.autohook(0x4124EA, function(d)
 	end
 end)
 
+-- MM8 spellbook tabs (init_spellbook_dialog): a page's tab is made only if the player has
+-- the school's skill ("cmp word [eax+390h+page*2], bx / je skip", eax = player). For the
+-- family's ability page the check is skipped. The page shown is read later in the same
+-- routine (0x4CAA13), so a book that would open on a page without the skill opens on the
+-- ability page.
+local TAB_CHECKS = {[1] = {0x4CA3E8, 0x4CA3F1}, [2] = {0x4CA463, 0x4CA46C}}
+for page, adr in pairs(TAB_CHECKS) do
+	mem.autohook(adr[1], function(d)
+		local pl = playerFromPtr(d.eax)
+		if not pl or pageOf(pl) ~= page then return end
+		local cur = pl.SpellBookPage
+		if cur ~= page and pl.Skills[const.Skills.Fire + cur] == 0 then pl.SpellBookPage = page end
+		if pl.Skills[const.Skills.Fire + page] == 0 then
+			d:push(adr[2])
+			return true
+		end
+	end)
+end
+
 local cstrCache = {}
 local function cstr(s)
 	local p = cstrCache[s]
