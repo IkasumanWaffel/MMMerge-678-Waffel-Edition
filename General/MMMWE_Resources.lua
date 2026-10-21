@@ -56,23 +56,23 @@ local ABILITIES = {
 	RageStrike = {Spell = 2, Stage = 0, Cost = 15, NotTroll = false,
 		Name = "Rage Strike",
 		Desc = "A furious blow at the target in melee reach: +50% damage, and 10% more often a critical blow. Use it as the attack spell to strike with it whenever there is enough Rage; without enough Rage it is a normal attack.",
-		Lines = {"15 Rage", "", "", ""},
-		Icon = {"sbmc04", "sbms04"},},
+		Lines = {"15 Rage", "+50% damage, 10% more often a critical blow", "Barbarian", "Without enough Rage: a normal attack"},
+		Icon = {"sbrg01a", "sbrg01b"},},
 	WarCry = {Spell = 5, Stage = 1, Cost = 40, NotTroll = true,
 		Name = "War Cry",
 		Desc = "A terrifying roar. Monsters around may flee in fear (resisted by Mind resistance), and the party deals +10% melee damage for a while.",
-		Lines = {"40 Rage (Berserker)", "", "", ""},
-		Icon = {"sbmc08", "sbms08"},},
+		Lines = {"40 Rage", "Monsters around may flee (Mind resistance); party +10% melee damage", "Berserker (not Trolls)", "Fear lasts 2 minutes, the party bonus 5 minutes"},
+		Icon = {"sbrg02a", "sbrg02b"},},
 	TrollsBlood = {Spell = 3, Stage = 1, Cost = 40, TrollOnly = true,
 		Name = "Troll's Blood",
 		Desc = "The troll's blood boils and mends the wounds: heals 20% of maximum Hit Points over a short time.",
-		Lines = {"40 Rage (Troll, Berserker)", "", "", ""},
-		Icon = {"sbbc05", "sbbs05"},},
+		Lines = {"40 Rage", "Heals 20% of maximum Hit Points over 2 minutes", "Troll Berserker", "Trolls have it instead of War Cry"},
+		Icon = {"sbrg03a", "sbrg03b"},},
 	Berserk = {Spell = 8, Stage = 2, Cost = 70,
 		Name = "Berserk",
 		Desc = "A frenzy: 20% faster attacks and immunity to fear, sleep and paralysis for a while, but 15% more damage taken.",
-		Lines = {"70 Rage (Warmonger)", "", "", ""},
-		Icon = {"sbmc07", "sbms07"},},
+		Lines = {"70 Rage", "-20% attack recovery; immune to fear, sleep and paralysis", "Warmonger", "Takes 15% more damage; lasts 5 minutes"},
+		Icon = {"sbrg04a", "sbrg04b"},},
 }
 
 local DUR = {
@@ -368,10 +368,36 @@ mem.autohook(0x4CB463, function(d)
 end)
 
 -- right-click description of a spell in the book: the ability texts (also kept by the tick)
+-- the four line labels of the description (Normal / Expert / Master / Grand: GlobalTxt 431,
+-- 433, 432, 96) read Cost / Effect / Rank / Note for an ability, and are put back after it
+local LINE_LABELS = {{431, "Cost"}, {433, "Effect"}, {432, "Rank"}, {96, "Note"}}
+local labelsSaved
+local function setLineLabels(on)
+	local base = Game.GlobalTxt["?ptr"]
+	if on and not labelsSaved then
+		labelsSaved = {}
+		for _, l in ipairs(LINE_LABELS) do
+			labelsSaved[l[1]] = u4[base + l[1] * 4]
+			u4[base + l[1] * 4] = cstr(l[2])
+		end
+	elseif not on and labelsSaved then
+		for id, p in pairs(labelsSaved) do u4[base + id * 4] = p end
+		labelsSaved = nil
+	end
+end
+
 mem.autohook(0x411F3A, function(d)
 	local i = u4[0x519350] - 1
-	if i >= 0 and i < Party.count and pageOf(Party[i]) then swapTexts(Party[i]) end
+	local isAbility = false
+	if i >= 0 and i < Party.count and pageOf(Party[i]) then
+		local pl = Party[i]
+		swapTexts(pl)
+		isAbility = abilityOf(pl, pl.SpellBookPage * 11 + u4[d.esp + 4] + 1) ~= nil
+	end
+	setLineLabels(isAbility)
 end)
+-- labels back as soon as the description is drawn (0x4121AF: end of rmb_spellbook_spell)
+mem.autohook(0x4121AF, function(d) setLineLabels(false) end)
 
 -- cost line of the right-click description (word_4F4884 read with the page skill's mastery)
 mem.autohook2(0x41216C, function(d)
