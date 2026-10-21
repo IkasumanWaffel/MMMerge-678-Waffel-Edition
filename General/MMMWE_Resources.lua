@@ -108,7 +108,7 @@ local ABILITIES = {
 	Challenge = {Spell = 18, Stage = 1, Cost = 30,
 		Name = "Challenge",
 		Desc = "The knight calls out a foe (the one under the cursor or the nearest), and it attacks no one else for a while.",
-		Lines = {"30 Resolve", "The target attacks only this knight", "Cavalier", "Lasts 2 minutes, or until the knight falls"},
+		Lines = {"30 Resolve", "The target attacks only this knight", "Cavalier", "4 minutes, +5% per Personality bonus point; ends if the knight falls"},
 		Icon = {"sbkn04a", "sbkn04b"},},
 	Rally = {Spell = 19, Stage = 2, Cost = 50,
 		Name = "Rally",
@@ -137,7 +137,8 @@ local STANCES = {
 local CHAMPION_POWER  = 0.10      -- Champion: Power stance damage on top
 local STANCE_RECOVERY = 100       -- recovery after a stance switch
 
-local CHALLENGE_TIME  = 2 * const.Minute
+local CHALLENGE_TIME  = 4 * const.Minute   -- base duration (about 4-5 monster attacks)
+local CHALLENGE_PERS  = 0.05      -- +5% duration per point of the Personality bonus (never shorter)
 local CHALLENGE_RANGE = 3000
 local RALLY_HEAL      = 0.05      -- share of each member's maximum Hit Points
 
@@ -603,7 +604,8 @@ local function castAbility(pl, pi, spell, targetRef)
 			failCast(pl, "No enemy to challenge")
 			return true
 		end
-		Challenged[mi] = {pi = pi, Until = Game.Time + CHALLENGE_TIME}
+		local persBonus = math.max(0, Game.GetStatisticEffect(pl:GetPersonality()))
+		Challenged[mi] = {pi = pi, Until = Game.Time + math.floor(CHALLENGE_TIME * (1 + CHALLENGE_PERS * persBonus))}
 		local mon = Map.Monsters[mi]
 		Game.ShowStatusText(string.format("%s challenges %s!", pl.Name, Game.MonstersTxt[mon.Id].Name))
 		pl:SetRecoveryDelay(100)
