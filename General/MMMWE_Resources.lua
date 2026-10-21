@@ -41,6 +41,12 @@
 	  Water page: Stunning Palm, Inner Peace, Flurry (Initiate+), Iron Body (Master Monk),
 	  Vanish (Ninja).
 
+	Thief family (Thief, Rogue, Robber, Spy, Assassin, variants) — Energy and combo points:
+	  Energy 0..100, +ENERGY.PerMinute per game minute; their (Novice) spells cost spell
+	  points x 5 in Energy. Combo points 0..5: +1 per melee hit on the same target, lost when
+	  switching targets or after ENERGY.ComboTime without a hit.
+	  Mind page: Finisher, Poisoned Blade (Assassin), Shadow Veil (Spy).
+
 	Console: Merge.Functions.ResourceInfo(player)
 --]]
 
@@ -60,6 +66,20 @@ local RESOURCES = {
 	Resolve = {Max = 100, IdleTime = 10 * const.Minute, DrainPerMinute = 1, Bar = "manaY", Color = 0x40D0FF},
 	-- Ki: the maximum and the refill are the Monk's own (KI below); spells cost SP / SpellCostDiv
 	Ki      = {Max = 15, Bar = "ManaG", Color = 0xE0E040, SpellCostDiv = 5},
+	-- Energy: spells cost spell points x SpellCostMul
+	Energy  = {Max = 100, Bar = "manaY", Color = 0x30B0FF, SpellCostMul = 5},
+}
+
+local ENERGY = {
+	PerMinute     = 10,            -- refill per game minute
+	ComboMax      = 5,
+	ComboTime     = 5 * const.Minute,  -- combo points are lost after this without a hit
+	FinisherDamage = 0.20,         -- per combo point
+	FinisherCrit  = 0.10,          -- crit chance per combo point
+	AssassinCritDamage = 0.10,     -- Assassin: crit damage per combo point
+	PoisonHits    = 5,             -- Poisoned Blade: hits
+	PoisonDamage  = 0.25,          -- extra damage of a poisoned hit (not vs Body immune)
+	VeilTime      = 10 * const.Minute,  -- Shadow Veil: invisibility and Wizard Eye
 }
 
 local KI = {
@@ -161,6 +181,23 @@ local ABILITIES = {
 		Desc = "The ninja slips out of sight: monsters lose track of him and attack the others, until he strikes again.",
 		Lines = {"3 Ki", "Monsters don't pick the ninja as their target", "Ninja", "Lasts 2 minutes; ends when the ninja strikes"},
 		Icon = {"sbmk05a", "sbmk05b"},},
+
+	-- Thieves (Mind page)
+	Finisher = {Spell = 59, Stage = 0, Cost = 25, Attack = true,
+		Name = "Finisher",
+		Desc = "A blow that spends all combo points (gained by melee hits on the same target): +20% damage and +10% critical chance per point. With 5 points the thief also tries to steal from the target. Use it as the attack spell; without enough Energy it is a normal attack.",
+		Lines = {"25 Energy", "+20% damage, +10% critical chance per combo point", "Thief", "5 points: a steal attempt (Stealing skill)"},
+		Icon = {"sbth01a", "sbth01b"},},
+	PoisonedBlade = {Spell = 58, Stage = 2, Cost = 30, Branch = "Assassin",
+		Name = "Poisoned Blade",
+		Desc = "The assassin coats the blade with poison: the next 5 melee hits deal extra damage, unless the target is immune to Body. The assassin's finishers also crit harder.",
+		Lines = {"30 Energy", "Next 5 melee hits: +25% damage (poison)", "Assassin", "Finishers: +10% critical damage per combo point"},
+		Icon = {"sbth02a", "sbth02b"},},
+	ShadowVeil = {Spell = 63, Stage = 2, Cost = 40, Branch = "Spy",
+		Name = "Shadow Veil",
+		Desc = "The spy hides the party in shadows and scouts ahead: Invisibility and Wizard Eye for the party.",
+		Lines = {"40 Energy", "Party Invisibility and Wizard Eye", "Spy", "Lasts 10 minutes; power by the Stealing skill"},
+		Icon = {"sbth03a", "sbth03b"},},
 }
 
 local RESOLVE = {
@@ -216,11 +253,13 @@ local FAMILIES = {
 	[9]  = {Name = "Paladin", Page = 1, Abilities = {"DefensiveStance"}},   -- spell points
 	[8]  = {Name = "Monk", Resource = "Ki", Page = 2,
 		Abilities = {"StunningPalm", "InnerPeace", "Flurry", "IronBody", "Vanish"}},
+	[11] = {Name = "Thief", Resource = "Energy", Page = 5,
+		Abilities = {"Finisher", "PoisonedBlade", "ShadowVeil"}},
 }
 
 local TROLL_RACES = {[15] = true, [16] = true, [17] = true, [18] = true}
 
-MF.ResourceSettings = {Resources = RESOURCES, Rage = RAGE, Resolve = RESOLVE, Ki = KI, Stances = STANCES,
+MF.ResourceSettings = {Resources = RESOURCES, Rage = RAGE, Resolve = RESOLVE, Ki = KI, Energy = ENERGY, Stances = STANCES,
 	Abilities = ABILITIES, Durations = DUR, Families = FAMILIES}
 
 -- colours of the resource numbers over the portraits (MMMWE_HPSPDisplay.lua, Windows BGR)
@@ -234,6 +273,7 @@ local RESOURCE_DESC = {
 	Rage = "Rage fills when the barbarian takes hits (the heavier the blow, the more) and a little with every melee hit landed. After a while without being hit it slowly drains away, so resting empties it; potions and Meditation don't restore it. Every 5 Rage adds 1% melee damage. At 50 Rage and more the barbarian fights recklessly: -10% of the items' Armor Class (Trolls instead take 5% less physical damage). Rage pays for the barbarian's abilities on the Fire page of the spellbook.",
 	Resolve = "Resolve grows as the knight holds the line: +5 for every block or parry and +2 for every hit taken, twice as much in the Defensive stance. After a while without being hit it slowly fades, so resting empties it; potions and temples don't restore it. Resolve pays for Challenge and Rally (Air page of the spellbook); the stances there are free.",
 	Ki = "Ki is the monk's inner strength, counted in charges: 5, +2 for every promotion and +1 for every 2 points of Meditation (at most 15). It refills on its own, 1 charge every 2 minutes (2 after the first promotion, 3 after the second), sooner with Meditation. Ki pays for the monk's abilities on the Water page of the spellbook, and for his spells: a fifth of their spell point cost.",
+	Energy = "Energy is the thief's quickness. It refills fast, 10 every game minute, and pays for the thief's tricks on the Mind page of the spellbook and for his spells (5 Energy per spell point). Melee hits on the same target build combo points (up to 5, shown in the status line); the Finisher spends them all.",
 }
 function MF.ResourceRegenText(res)
 	if RESOURCES[res] then return "" end
@@ -288,7 +328,7 @@ end
 -- Knight promotion branch (the class or the one it was promoted from): Champion, Templar,
 -- BlackKnight, or nil (Class Extra.txt numbers)
 local KNIGHT_BRANCH = {[46] = "Champion", [48] = "Templar", [50] = "BlackKnight",
-	[64] = "MasterMonk", [66] = "Ninja"}
+	[64] = "MasterMonk", [66] = "Ninja", [88] = "Spy", [90] = "Assassin"}
 local function knightBranch(pl)
 	local cur = pl.Class
 	for _ = 1, 8 do
@@ -438,7 +478,11 @@ end)
 -- family's ability page the check is skipped. The page shown is read later in the same
 -- routine (0x4CAA13), so a book that would open on a page without the skill opens on the
 -- ability page.
-local TAB_CHECKS = {[1] = {0x4CA3E8, 0x4CA3F1}, [2] = {0x4CA463, 0x4CA46C}}
+local TAB_CHECKS = {}
+for page = 1, 11 do   -- the checks are 7Bh apart; the tab is made right after the je
+	local cmp = 0x4CA3E8 + (page - 1) * 0x7B
+	TAB_CHECKS[page] = {cmp, cmp + 9}
+end
 for page, adr in pairs(TAB_CHECKS) do
 	mem.autohook(adr[1], function(d)
 		local pl = playerFromPtr(d.eax)
@@ -535,6 +579,7 @@ function MF.ResourceSpellCost(pl, sp)
 	local name, r = resourceOf(pl)
 	if not name then return end
 	local div = r.SpellCostDiv or 1
+	if r.SpellCostMul then return name, sp * r.SpellCostMul end
 	return name, div > 1 and math.max(1, math.ceil(sp / div)) or sp
 end
 
@@ -634,6 +679,34 @@ local Effects = {}     -- [pi] = {Berserk = time, TrollsBlood = {Until, PerMinut
 local PartyEffects = {WarCry = 0}
 local RageStrikeActive = false
 local FlurryActive = false
+local FinisherPoints              -- combo points of the Finisher being struck
+
+-- Finisher with 5 combo points: a quick steal attempt (as Stealing.lua's, without the
+-- risk of being caught: the blow covers it)
+local function stealFrom(pl, mon)
+	local total = GetStealingTotalSkill and GetStealingTotalSkill(pl) or SplitSkill(pl:GetSkill(const.Skills.Stealing))
+	if total <= 0 or total < mon.Level then return end
+	if not mon.TreasureGenerated then mem.call(0x408E89, 1, mon["?ptr"]) end
+	if math.random(100) > total - mon.Level then return end
+	if mon.Items[3].Bonus2 > 0 then
+		Party.AddGold(mon.Items[3].Bonus2, 0)
+		Game.ShowStatusText(string.format(Game.GlobalTxt[302], pl.Name, mon.Items[3].Bonus2))
+		mon.Items[3].Bonus2 = 0
+		mon.Items[3].Number = 0
+		return
+	end
+	if Mouse.Item.Number ~= 0 then return end
+	for i = 0, 2 do
+		local it = mon.Items[i]
+		if it.Number > 0 then
+			mem.call(0x491A27, 1, 0xB20E90, it["?ptr"])
+			mem.call(0x403135, 1, it["?ptr"])
+			Mouse.Item.Stolen = 1
+			Game.ShowStatusText(string.format("%s lifts something from the foe!", pl.Name))
+			return
+		end
+	end
+end
 local Challenged = {}  -- [monster index] = {pi = challenger, Until = time}
 
 local function monsterDistance(mon)
@@ -733,6 +806,31 @@ local function castAbility(pl, pi, spell, targetRef)
 		end
 		Pending[#Pending + 1] = {Kind = key, pi = pi, mi = mi}
 		pl:SetRecoveryDelay(pl:GetAttackDelay(false))
+	elseif key == "Finisher" then
+		local mi = (e.ComboMon and meleeTarget(e.ComboMon * 8 + 3)) or meleeTarget(targetRef)
+		if not mi then
+			failCast(pl, "No enemy in reach")
+			return true
+		end
+		local pts = (e.ComboMon == mi and e.Combo) or 0
+		e.Combo, e.ComboMon = nil, nil
+		Pending[#Pending + 1] = {Kind = key, pi = pi, mi = mi, Points = pts}
+		pl:SetRecoveryDelay(pl:GetAttackDelay(false))
+	elseif key == "PoisonedBlade" then
+		Effects[pi] = Effects[pi] or {}
+		Effects[pi].Poison = ENERGY.PoisonHits
+		Game.ShowStatusText(string.format("%s coats the blade with poison", pl.Name))
+		pl:SetRecoveryDelay(100)
+	elseif key == "ShadowVeil" then
+		local S, M = SplitSkill(pl:GetSkill(const.Skills.Stealing))
+		for _, id in ipairs({const.PartyBuff.Invisibility, const.PartyBuff.WizardEye}) do
+			local b = Party.SpellBuffs[id]
+			b.ExpireTime = Game.Time + ENERGY.VeilTime
+			b.Power = math.max(S, 1)
+			b.Skill = math.max(M, 1)
+		end
+		Game.ShowStatusText(string.format("%s veils the party in shadows", pl.Name))
+		pl:SetRecoveryDelay(100)
 	elseif key == "InnerPeace" then
 		local C = const.Condition
 		for _, c in ipairs({C.Poison1, C.Poison2, C.Poison3, C.Disease1, C.Disease2, C.Disease3, C.Afraid, C.Weak}) do
@@ -802,9 +900,13 @@ mem.autohook(0x42609E, function(d)
 		-- (Ki: 1/5): the game sees the resource x SpellCostDiv as spell points for this cast,
 		-- and the tick converts what it spent back
 		local name, r = resourceOf(pl)
-		if r and (r.SpellCostDiv or 1) > 1 then
+		if r and ((r.SpellCostDiv or 1) > 1 or r.SpellCostMul) then
 			local e = state(playerIndex(pl))
-			e.CastSP = math.floor(e.R) * r.SpellCostDiv
+			if r.SpellCostMul then
+				e.CastSP = math.floor(e.R / r.SpellCostMul)
+			else
+				e.CastSP = math.floor(e.R) * r.SpellCostDiv
+			end
 			pl.SP = e.CastSP
 		end
 		return
@@ -916,6 +1018,16 @@ function events.Tick()
 						Game.ShowStatusText(string.format("%s: Flurry!", pl.Name), 2)
 					end
 				end
+			elseif r.Kind == "Finisher" and pl then
+				local mon = Map.Monsters[r.mi]
+				if mon and mon.HP > 0 then
+					Game.ShowStatusText(string.format("%s: Finisher (%d)!", pl.Name, r.Points), 2)
+					FinisherPoints = r.Points
+					local ok, err = pcall(mem.call, 0x436E26, 2, r.pi * 8 + 4, r.mi, RiposteVec)
+					FinisherPoints = nil
+					if not ok then log("Finisher failed: %s", tostring(err)) end
+					if r.Points >= ENERGY.ComboMax then stealFrom(pl, mon) end
+				end
 			elseif r.Kind == "WarCry" and pl then
 				local feared = 0
 				local power = (pl.LevelBase or 1) / 2
@@ -967,11 +1079,18 @@ function events.Tick()
 			-- a real spell cast with the resource x SpellCostDiv as spell points
 			if e.CastSP then
 				local spent = e.CastSP - pl.SP
-				if spent > 0 then e.R = math.max(0, e.R - math.ceil(spent / res.SpellCostDiv)) end
+				if spent > 0 then
+					local cost = res.SpellCostMul and spent * res.SpellCostMul or math.ceil(spent / res.SpellCostDiv)
+					e.R = math.max(0, e.R - cost)
+				end
 				e.CastSP = nil
 			elseif e.SPw and pl.SP < e.SPw then
 				-- spent by the game since the last tick (spell point cost): follow
 				e.R = math.max(0, e.R - (e.SPw - pl.SP))
+			end
+			if dt > 0 and resName == "Energy" then
+				e.R = math.min(RESOURCES.Energy.Max, e.R + ENERGY.PerMinute * dt / const.Minute)
+				if e.Combo and now - (e.ComboTime or 0) > ENERGY.ComboTime then e.Combo, e.ComboMon = nil, nil end
 			end
 			if dt > 0 and resName == "Ki" then
 				local _, stage = classFamily(pl.Class)
@@ -1151,6 +1270,43 @@ function events.LoadMap()
 		end
 		if t.DamageKind ~= const.Damage.Phys then return end
 		if FlurryActive then t.Result = math.floor(t.Result * FLURRY_DAMAGE + 0.5) end
+		if resourceOf(pl) == "Energy" and not t.IsSecondary then
+			local isMelee = t.Melee
+			if isMelee == nil then
+				local who = WhoHitMonster and WhoHitMonster()
+				isMelee = type(who) == "table" and not who.Object
+			end
+			if isMelee then
+				local e = state(playerIndex(pl))
+				if FinisherPoints then
+					local pts = FinisherPoints
+					local m = 1 + ENERGY.FinisherDamage * pts
+					if pts > 0 and math.random() < ENERGY.FinisherCrit * pts then
+						local _, d = MF.GetCritStats(pl, true)
+						d = d or 1.5
+						if knightBranch(pl) == "Assassin" then d = d + ENERGY.AssassinCritDamage * pts end
+						m = m * math.max(1, d)
+					end
+					t.Result = math.floor(t.Result * m + 0.5)
+				elseif t.MonsterIndex then
+					if e.ComboMon == t.MonsterIndex then
+						e.Combo = math.min(ENERGY.ComboMax, (e.Combo or 0) + 1)
+					else
+						e.Combo, e.ComboMon = 1, t.MonsterIndex
+					end
+					e.ComboTime = Game.Time
+					Game.ShowStatusText(string.format("%s: combo %d", pl.Name, e.Combo), 1)
+				end
+				local fxp = Effects[playerIndex(pl)]
+				if fxp and fxp.Poison and fxp.Poison > 0 and t.Monster then
+					fxp.Poison = fxp.Poison - 1
+					if t.Monster.Resistances[const.Damage.Body] ~= const.MonsterImmune then
+						t.Result = math.floor(t.Result * (1 + ENERGY.PoisonDamage) + 0.5)
+					end
+					if fxp.Poison <= 0 then fxp.Poison = nil end
+				end
+			end
+		end
 		local melee = t.Melee
 		if melee == nil then
 			local who = WhoHitMonster and WhoHitMonster()
