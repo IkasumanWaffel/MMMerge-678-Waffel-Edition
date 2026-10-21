@@ -562,8 +562,14 @@ local function SetSpellsExtraHooks()
 		local BaseDelay = Game.Spells[SpellNum].Delay[MM]
 		local SpellRecovery = math.max(30, BaseDelay - BaseDelay*0.01*MS + BaseDelay*0.01*CalcSpellDelay(Pl, SpellNum))
 
+		-- class resources (MMMWE_Resources.lua): the cost in the resource (Ki: a fifth)
+		local costName, cost = "SP", ManaCost
+		if MF.ResourceSpellCost then
+			local n, c = MF.ResourceSpellCost(Pl, ManaCost)
+			if n then costName, cost = n, c end
+		end
 		mem.asmpatch(0x412180, "push " .. MF.cstring(string.format(
-			'SP Cost: %d \nDelay: %d \nSuccess: %d%%', ManaCost, SpellRecovery, castCh)))
+			'%s Cost: %d \nDelay: %d \nSuccess: %d%%', costName, cost, SpellRecovery, castCh)))
 	end)
 
 	-- Add buffs2 with spells
