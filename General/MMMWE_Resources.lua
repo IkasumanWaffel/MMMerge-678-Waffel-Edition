@@ -284,6 +284,10 @@ local swapped = {}      -- [spell] = {name, short, desc, n, e, m, g} original po
 local swappedFor        -- player the texts are swapped for
 local costTxtSaved
 
+-- skill names as the spellbook description shows them ("Fire Magic"): 0xBB3090 + page x 4
+local SKILL_NAMES = 0xBB3090
+local skillNameSaved
+
 local function restoreTexts()
 	for spell, o in pairs(swapped) do
 		local p = spellsTxtPtr(spell)
@@ -295,10 +299,14 @@ local function restoreTexts()
 		u4[Game.GlobalTxt["?ptr"] + 522 * 4] = costTxtSaved
 		costTxtSaved = nil
 	end
+	if skillNameSaved then
+		u4[skillNameSaved[1]] = skillNameSaved[2]
+		skillNameSaved = nil
+	end
 end
 
 local function swapTexts(pl)
-	if swappedFor == pl then return end
+	if swappedFor == pl["?ptr"] then return end
 	restoreTexts()
 	local page = pageOf(pl)
 	if not page then return end
@@ -319,7 +327,11 @@ local function swapTexts(pl)
 	local fam = familyOf(pl)
 	costTxtSaved = u4[Game.GlobalTxt["?ptr"] + 522 * 4]
 	u4[Game.GlobalTxt["?ptr"] + 522 * 4] = cstr(fam.Resource .. " cost")
-	swappedFor = pl
+	-- the school name in the description: the family's abilities
+	local addr = SKILL_NAMES + page * 4
+	skillNameSaved = {addr, u4[addr]}
+	u4[addr] = cstr(fam.Name .. " Ability")
+	swappedFor = pl["?ptr"]
 end
 
 -- name of a spell as the player sees it (quick slot names)
@@ -346,6 +358,8 @@ end
 mem.autohook(0x4CB463, function(d)
 	local pl = playerFromPtr(u4[d.ebp - 0x10])
 	if not pl then return end
+	-- the page widget copies the spell names now (hover text), so the texts must be swapped
+	if pageOf(pl) == u4[d.ebp + 8] then swapTexts(pl) end
 	local _, a = abilityOf(pl, u4[d.ebp - 0x1C])
 	if a and a.Icon then
 		writeName(d.ebp - 0x54, a.Icon[1])
