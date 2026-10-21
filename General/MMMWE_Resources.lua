@@ -398,6 +398,11 @@ mem.autohook(0x411F3A, function(d)
 end)
 -- labels back as soon as the description is drawn (0x4121AF: end of rmb_spellbook_spell)
 mem.autohook(0x4121AF, function(d) setLineLabels(false) end)
+-- an ability's description is short, and the two-line "Barbarian Ability" in the left column
+-- would run into the cost line drawn from the bottom of the box: make the box tall enough
+mem.autohook(0x41209C, function(d)
+	if labelsSaved and i4[d.ebp - 0x58] < 0xC0 then i4[d.ebp - 0x58] = 0xC0 end
+end)
 
 -- cost line of the right-click description (word_4F4884 read with the page skill's mastery)
 mem.autohook2(0x41216C, function(d)
