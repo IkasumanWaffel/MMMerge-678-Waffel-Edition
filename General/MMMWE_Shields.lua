@@ -205,7 +205,9 @@ function MF.ShieldBlock(pl, t, curseMult)
 		share = S.AreaShare
 	end
 
-	local chance = MF.ShieldBlockChance(num, shS, shM, shape == "missile") * (curseMult or 1)
+	local chance = MF.ShieldBlockChance(num, shS, shM, shape == "missile")
+	if MF.StanceDefendBonus then chance = chance + MF.StanceDefendBonus(pl) end   -- MMMWE_Resources.lua
+	chance = chance * (curseMult or 1)
 	if math.random() * 100 >= chance then return 1, 1, 1 end
 
 	local power = MF.ShieldBlockPower(num, item, shS, shM) * share

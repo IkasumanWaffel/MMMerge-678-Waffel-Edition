@@ -1917,6 +1917,7 @@
 		local haste = Party.SpellBuffs[const.PartyBuff.Haste]
 		if haste and haste.ExpireTime > Game.Time then m = m + DODGE.HasteBonus end
 		if MF.ArmorDodgeMod then m = m + MF.ArmorDodgeMod(pl) end   -- MMMWE_ArmorEffects.lua
+		if MF.StanceDodgeMod then m = m + MF.StanceDodgeMod(pl) end -- MMMWE_Resources.lua
 		return m
 	end
 
@@ -2084,6 +2085,7 @@
 		end
 		p.Magic = p.Phys * (2 / 3)
 		p.Energy = p.Phys / 3
+		if MF.StanceDefendBonus then p.Chance = p.Chance + MF.StanceDefendBonus(pl) end   -- MMMWE_Resources.lua
 		return p
 	end
 
@@ -2198,6 +2200,10 @@
 		-- --- Weapon Parry & Shield Block ---
 		local weaponPhysDR, weaponMagicDR, weaponEnergyDR, parrySkill = CalcWeaponParry(pl, curseMult)
 		local shieldPhysDR, shieldMagicDR, shieldEnergyDR = MF.ShieldBlock(pl, t, curseMult)   -- MMMWE_Shields.lua
+		if MF.OnDefended then   -- Knights' Resolve (MMMWE_Resources.lua)
+			if parrySkill then MF.OnDefended(pl, "parry") end
+			if shieldPhysDR < 1 or shieldMagicDR < 1 or shieldEnergyDR < 1 then MF.OnDefended(pl, "block") end
+		end
 
 		-- --- Energy Shield ---
 		local _, medM = SplitSkill(pl:GetSkill(const.Skills.Meditation))

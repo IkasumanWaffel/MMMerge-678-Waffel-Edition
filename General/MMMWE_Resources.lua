@@ -25,6 +25,15 @@
 	  Berserk (Immolation spot, Warmonger+), Troll's Blood (Fire Resistance spot, Trolls,
 	  instead of War Cry).
 
+	Knight family (Knight, Cavalier, Champion, Templar, Black Knight, variants) — Resolve:
+	  0..100, +5 per block or parry, +2 per hit taken (doubled in the Defensive stance);
+	  after RESOLVE.IdleTime without being hit it drains RESOLVE.DrainPerMinute per game minute.
+	  Air page: Power / Agile / Defensive stance (free toggles, one at a time), Challenge
+	  (Cavalier+), Rally (Champion / Templar / Black Knight).
+	  Champion: Power stance +10% damage; Templar: +1 Resolve per game minute in combat;
+	  Black Knight: +15 Resolve per kill.
+	Paladin family: spell points as before, and the Defensive stance on the Air page.
+
 	Console: Merge.Functions.ResourceInfo(player)
 --]]
 
@@ -37,6 +46,12 @@ local u1, u2, u4, i4 = mem.u1, mem.u2, mem.u4, mem.i4
 
 local ENABLED = true
 local DEBUG   = false   -- status line / log messages about ability casts (testing)
+
+-- resources: maximum, drain when idle, portrait bar bitmap, number colour (Windows BGR)
+local RESOURCES = {
+	Rage    = {Max = 100, IdleTime = 10 * const.Minute, DrainPerMinute = 2, Bar = "manar", Color = 0x3050FF},
+	Resolve = {Max = 100, IdleTime = 10 * const.Minute, DrainPerMinute = 1, Bar = "manaY", Color = 0x40D0FF},
+}
 
 local RAGE = {
 	Max             = 100,
@@ -73,7 +88,58 @@ local ABILITIES = {
 		Desc = "A frenzy: 20% faster attacks and immunity to fear, sleep and paralysis for a while, but 15% more damage taken.",
 		Lines = {"70 Rage", "-20% attack recovery; immune to fear, sleep and paralysis", "Warmonger", "Takes 15% more damage; lasts 5 minutes"},
 		Icon = {"sbrg04a", "sbrg04b"},},
+
+	-- Knights (Air page); the Defensive stance also for Paladins
+	PowerStance = {Spell = 12, Stage = 0, Cost = 0, Stance = "Power",
+		Name = "Power Stance",
+		Desc = "A stance for crushing blows: more melee damage and harder critical hits, at the price of slower attacks. Use it again to leave the stance; only one stance is active at a time.",
+		Lines = {"Free (a stance)", "+30% melee damage, +20% critical damage", "Knight", "+20% attack recovery; Champion: +10% more damage"},
+		Icon = {"sbkn01a", "sbkn01b"},},
+	AgileStance = {Spell = 13, Stage = 0, Cost = 0, Stance = "Agile",
+		Name = "Agile Stance",
+		Desc = "A light-footed stance: quicker attacks and better dodging, but weaker blows. Use it again to leave the stance; only one stance is active at a time.",
+		Lines = {"Free (a stance)", "-20% attack recovery, +5% dodge chance (with Dodging)", "Knight", "-15% melee damage"},
+		Icon = {"sbkn02a", "sbkn02b"},},
+	DefensiveStance = {Spell = 14, Stage = 0, Cost = 0, Stance = "Defensive",
+		Name = "Defensive Stance",
+		Desc = "A guarded stance: better blocks and parries, more Armor Class, and monsters turn on the defender more often, but blows are weaker. Use it again to leave the stance; only one stance is active at a time.",
+		Lines = {"Free (a stance)", "+15% block and parry chance, +20% item Armor Class", "Knight, Paladin", "Draws 50% more attacks; -25% melee damage"},
+		Icon = {"sbkn03a", "sbkn03b"},},
+	Challenge = {Spell = 18, Stage = 1, Cost = 30,
+		Name = "Challenge",
+		Desc = "The knight calls out a foe (the one under the cursor or the nearest), and it attacks no one else for a while.",
+		Lines = {"30 Resolve", "The target attacks only this knight", "Cavalier", "Lasts 2 minutes, or until the knight falls"},
+		Icon = {"sbkn04a", "sbkn04b"},},
+	Rally = {Spell = 19, Stage = 2, Cost = 50,
+		Name = "Rally",
+		Desc = "A rallying shout that steadies the party: fear is gone and every member's wounds close a little.",
+		Lines = {"50 Resolve", "Removes fear from the party, heals 5% of maximum Hit Points", "Champion, Templar, Black Knight", "Unconscious members are healed too"},
+		Icon = {"sbkn05a", "sbkn05b"},},
 }
+
+local RESOLVE = {
+	PerDefend       = 5,           -- per block or parry
+	PerHitTaken     = 2,
+	DefensiveMult   = 2,           -- gains in the Defensive stance
+	TemplarPerMinute = 1,          -- Templar: refill per game minute while enemies are near
+	BlackKnightKill = 15,          -- Black Knight: per kill
+	CombatRadius    = 2000,        -- "in combat": a hostile monster this close
+}
+
+-- stances: melee damage, crit damage (added to the multiplier), attack recovery multiplier,
+-- dodge chance (%), block and parry chance (%), share of the items' Armor Class added,
+-- threat (attacks drawn) multiplier
+local STANCES = {
+	Power     = {Damage =  0.30, CritDamage = 0.20, Recovery = 1.20},
+	Agile     = {Damage = -0.15, Recovery = 0.80, Dodge = 5},
+	Defensive = {Damage = -0.25, Defend = 15, AC = 0.20, Threat = 1.5},
+}
+local CHAMPION_POWER  = 0.10      -- Champion: Power stance damage on top
+local STANCE_RECOVERY = 100       -- recovery after a stance switch
+
+local CHALLENGE_TIME  = 2 * const.Minute
+local CHALLENGE_RANGE = 3000
+local RALLY_HEAL      = 0.05      -- share of each member's maximum Hit Points
 
 local DUR = {
 	WarCryFear  = 2 * const.Minute,
@@ -91,23 +157,29 @@ local TROLLS_BLOOD   = 0.20
 local FAMILIES = {
 	[12] = {Name = "Barbarian", Resource = "Rage", Page = 0,
 		Abilities = {"RageStrike", "WarCry", "TrollsBlood", "Berserk"}},
+	[6]  = {Name = "Knight", Resource = "Resolve", Page = 1,
+		Abilities = {"PowerStance", "AgileStance", "DefensiveStance", "Challenge", "Rally"}},
+	[9]  = {Name = "Paladin", Page = 1, Abilities = {"DefensiveStance"}},   -- spell points
 }
 
 local TROLL_RACES = {[15] = true, [16] = true, [17] = true, [18] = true}
 
-MF.ResourceSettings = {Rage = RAGE, Abilities = ABILITIES, Durations = DUR, Families = FAMILIES}
+MF.ResourceSettings = {Resources = RESOURCES, Rage = RAGE, Resolve = RESOLVE, Stances = STANCES,
+	Abilities = ABILITIES, Durations = DUR, Families = FAMILIES}
 
 -- colours of the resource numbers over the portraits (MMMWE_HPSPDisplay.lua, Windows BGR)
-MF.ResourceColors = {Rage = 0x3050FF}
+MF.ResourceColors = {}
+for name, r in pairs(RESOURCES) do MF.ResourceColors[name] = r.Color end
 -- the Stats screen's "Spell Points" line (GlobalTxt 212) shows the resource name, its
 -- right-click description (the "Spell Points" entry of Stats.txt) the resource's own text,
 -- and the regeneration line (MMMWE_Main.lua) MF.ResourceRegenText
 local SP_LABEL_TXT = 212
 local RESOURCE_DESC = {
 	Rage = "Rage fills when the barbarian takes hits (the heavier the blow, the more) and a little with every melee hit landed. After a while without being hit it slowly drains away, so resting empties it; potions and Meditation don't restore it. Every 5 Rage adds 1% melee damage. At 50 Rage and more the barbarian fights recklessly: -10% of the items' Armor Class (Trolls instead take 5% less physical damage). Rage pays for the barbarian's abilities on the Fire page of the spellbook.",
+	Resolve = "Resolve grows as the knight holds the line: +5 for every block or parry and +2 for every hit taken, twice as much in the Defensive stance. After a while without being hit it slowly fades, so resting empties it; potions and temples don't restore it. Resolve pays for Challenge and Rally (Air page of the spellbook); the stances there are free.",
 }
 function MF.ResourceRegenText(res)
-	if res == "Rage" then return "" end
+	if RESOURCES[res] then return "" end
 	return "no regen"
 end
 
@@ -156,6 +228,19 @@ local function familyOf(pl)
 	return FAMILIES[kind], stage, kind
 end
 
+-- Knight promotion branch (the class or the one it was promoted from): Champion, Templar,
+-- BlackKnight, or nil (Class Extra.txt numbers)
+local KNIGHT_BRANCH = {[46] = "Champion", [48] = "Templar", [50] = "BlackKnight"}
+local function knightBranch(pl)
+	local cur = pl.Class
+	for _ = 1, 8 do
+		if KNIGHT_BRANCH[cur] then return KNIGHT_BRANCH[cur] end
+		local inv = MT.ClassPromotionsInv and MT.ClassPromotionsInv[cur]
+		if not inv or not inv[1] then return end
+		cur = inv[1]
+	end
+end
+
 local function isTroll(pl)
 	local r = GetCharRace and GetCharRace(pl)
 	return r and TROLL_RACES[r] or false
@@ -190,26 +275,41 @@ local function state(pi)
 	return e
 end
 
-local function usesRage(pl)
+-- name and settings of the player's resource, or nil (spell points)
+local function resourceOf(pl)
 	local fam = familyOf(pl)
-	return fam and fam.Resource == "Rage"
+	local name = fam and fam.Resource
+	if name then return name, RESOURCES[name] end
+end
+
+local function usesRage(pl)
+	return resourceOf(pl) == "Rage"
+end
+
+local function usesResolve(pl)
+	return resourceOf(pl) == "Resolve"
 end
 
 function MF.GetResource(pl)
-	if not usesRage(pl) then return nil end
-	return state(playerIndex(pl)).R, RAGE.Max, "Rage"
+	local name, r = resourceOf(pl)
+	if not name then return nil end
+	return state(playerIndex(pl)).R, r.Max, name
 end
 
-local function addRage(pl, v)
+local function addResource(pl, v)
+	local name, r = resourceOf(pl)
+	if not name then return end
 	local e = state(playerIndex(pl))
-	e.R = math.max(0, math.min(RAGE.Max, e.R + v))
+	e.R = math.max(0, math.min(r.Max, e.R + v))
 	pl.SP = math.floor(e.R)
 end
+local addRage = addResource
 
 -- the resource maximum instead of the spell points
 mem.hookfunction(0x48DA18, 1, 0, function(d, def, this)
 	local pl = playerFromPtr(this)
-	if pl and usesRage(pl) then return RAGE.Max end
+	local _, r = pl and resourceOf(pl)
+	if r then return r.Max end
 	return def(this)
 end)
 
@@ -318,15 +418,19 @@ local function swapTexts(pl)
 			local o = {}
 			for i = 0, 6 do o[i + 1] = u4[p + i * 4] end
 			swapped[id] = o
-			u4[p] = cstr(a.Name)
-			u4[p + 4] = cstr(a.Name)
+			local name = a.Name
+			if a.Stance and state(playerIndex(pl)).Stance == a.Stance then name = name .. " (on)" end
+			u4[p] = cstr(name)
+			u4[p + 4] = cstr(name)
 			u4[p + 8] = cstr(a.Desc)
 			for i = 1, 4 do u4[p + 8 + i * 4] = cstr(a.Lines[i] ~= "" and a.Lines[i] or " ") end
 		end
 	end
 	local fam = familyOf(pl)
-	costTxtSaved = u4[Game.GlobalTxt["?ptr"] + 522 * 4]
-	u4[Game.GlobalTxt["?ptr"] + 522 * 4] = cstr(fam.Resource .. " cost")
+	if fam.Resource then
+		costTxtSaved = u4[Game.GlobalTxt["?ptr"] + 522 * 4]
+		u4[Game.GlobalTxt["?ptr"] + 522 * 4] = cstr(fam.Resource .. " cost")
+	end
 	-- the school name in the description: the family's abilities
 	local addr = SKILL_NAMES + page * 4
 	skillNameSaved = {addr, u4[addr]}
@@ -429,13 +533,15 @@ local Pending = {}     -- abilities carried out on the next tick
 local Effects = {}     -- [pi] = {Berserk = time, TrollsBlood = {Until, PerMinute}}
 local PartyEffects = {WarCry = 0}
 local RageStrikeActive = false
+local Challenged = {}  -- [monster index] = {pi = challenger, Until = time}
 
 local function monsterDistance(mon)
 	local dx, dy, dz = mon.X - Party.X, mon.Y - Party.Y, mon.Z - Party.Z
 	return math.sqrt(dx * dx + dy * dy + dz * dz)
 end
 
-local function meleeTarget(targetRef)
+local function meleeTarget(targetRef, range)
+	range = range or RAGE.MeleeRange
 	local mi
 	if targetRef and targetRef % 8 == 3 then mi = math.floor(targetRef / 8) end
 	if not mi then
@@ -445,7 +551,7 @@ local function meleeTarget(targetRef)
 	local function valid(i)
 		local m = i and Map.Monsters[i]
 		return m and m.HP > 0 and m.AIState ~= const.AIState.Removed
-			and monsterDistance(m) <= RAGE.MeleeRange + (m.BodyRadius or 0)
+			and monsterDistance(m) <= range + (m.BodyRadius or 0)
 	end
 	if valid(mi) then return mi end
 	local best, bd
@@ -453,7 +559,7 @@ local function meleeTarget(targetRef)
 		local m = Map.Monsters[i]
 		if m.HP > 0 and m.Hostile then
 			local dist = monsterDistance(m)
-			if dist <= RAGE.MeleeRange + (m.BodyRadius or 0) and (not bd or dist < bd) then best, bd = i, dist end
+			if dist <= range + (m.BodyRadius or 0) and (not bd or dist < bd) then best, bd = i, dist end
 		end
 	end
 	return best
@@ -469,16 +575,55 @@ local function castAbility(pl, pi, spell, targetRef)
 	local key, a = abilityOf(pl, spell)
 	if not a then return false end
 	local e = state(pi)
-	if DEBUG then debugMsg("%s uses %s (Rage %d, cost %d)", pl.Name, a.Name, e.R, a.Cost) end
-	if e.R < a.Cost then
+	local resName = resourceOf(pl)
+	if DEBUG then debugMsg("%s uses %s (%s %d, cost %d)", pl.Name, a.Name, resName or "SP", e.R, a.Cost) end
+	if a.Cost > 0 and e.R < a.Cost then
 		if key == "RageStrike" then
 			DoGameAction(23, 0, 0)        -- a normal attack, as with spell points
 		else
-			failCast(pl, string.format("Not enough Rage (%d needed)", a.Cost))
+			failCast(pl, string.format("Not enough %s (%d needed)", resName or "spell points", a.Cost))
 		end
 		return true
 	end
-	if key == "RageStrike" then
+	if a.Stance then
+		if e.Stance == a.Stance then
+			e.Stance = nil
+			Game.ShowStatusText(string.format("%s leaves the %s stance", pl.Name, a.Stance))
+		else
+			e.Stance = a.Stance
+			Game.ShowStatusText(string.format("%s takes the %s stance", pl.Name, a.Stance))
+		end
+		Game.PlaySound(44587)
+		swappedFor = nil          -- the "(on)" mark in the book
+		pl:SetRecoveryDelay(STANCE_RECOVERY)
+		return true
+	elseif key == "Challenge" then
+		local mi = meleeTarget(targetRef, CHALLENGE_RANGE)
+		if not mi then
+			failCast(pl, "No enemy to challenge")
+			return true
+		end
+		Challenged[mi] = {pi = pi, Until = Game.Time + CHALLENGE_TIME}
+		local mon = Map.Monsters[mi]
+		Game.ShowStatusText(string.format("%s challenges %s!", pl.Name, Game.MonstersTxt[mon.Id].Name))
+		pl:SetRecoveryDelay(100)
+	elseif key == "Rally" then
+		local healed = 0
+		for s = 0, Party.count - 1 do
+			local m = Party[s]
+			m.Conditions[const.Condition.Afraid] = 0
+			if m.Conditions[const.Condition.Dead] == 0 and m.Conditions[const.Condition.Stoned] == 0
+					and m.Conditions[const.Condition.Eradicated] == 0 then
+				local full = m:GetFullHP()
+				if m.HP < full then
+					m.HP = math.min(full, m.HP + math.max(1, math.floor(RALLY_HEAL * full + 0.5)))
+					healed = healed + 1
+				end
+			end
+		end
+		Game.ShowStatusText(string.format("%s rallies the party!", pl.Name))
+		pl:SetRecoveryDelay(100)
+	elseif key == "RageStrike" then
 		local mi = meleeTarget(targetRef)
 		if not mi then
 			failCast(pl, "No enemy in reach")
@@ -501,7 +646,7 @@ local function castAbility(pl, pi, spell, targetRef)
 		Game.ShowStatusText(string.format("%s's troll blood boils", pl.Name))
 		pl:SetRecoveryDelay(60)
 	end
-	addRage(pl, -a.Cost)
+	if a.Cost > 0 then addResource(pl, -a.Cost) end
 	return true
 end
 
@@ -544,7 +689,8 @@ end)
 
 -- Portrait bar: the spell point bar (texture in [ebp-18h] of the bars routine, 0x41B165 is
 -- the start of each character's SP bar) is drawn with RESOURCE_BAR[resource] instead
-local RESOURCE_BAR = {Rage = "manar"}
+local RESOURCE_BAR = {}
+for name, r in pairs(RESOURCES) do RESOURCE_BAR[name] = r.Bar end
 local barOrig, barOurs = nil, {}
 mem.autohook(0x41B165, function(d)
 	local cur = u4[d.ebp - 0x18]
@@ -555,7 +701,7 @@ mem.autohook(0x41B165, function(d)
 	local want = barOrig
 	if slot < Party.count then
 		local fam = familyOf(Party[slot])
-		local name = fam and RESOURCE_BAR[fam.Resource]
+		local name = fam and fam.Resource and RESOURCE_BAR[fam.Resource]
 		if name then
 			barOurs[name] = barOurs[name] or bitmapPtr(name)
 			want = barOurs[name] or barOrig
@@ -589,6 +735,7 @@ end
 
 local RiposteVec = mem.StaticAlloc(12)
 local nextSpellsUpdate = 0
+local nextCombatCheck, inCombat = 0, false
 
 function events.Tick()
 	local now = Game.Time
@@ -628,15 +775,39 @@ function events.Tick()
 		end
 	end
 
+	-- in combat: a hostile monster near (checked twice a game minute)
+	if now >= nextCombatCheck then
+		nextCombatCheck = now + const.Minute / 2
+		inCombat = false
+		for i = 0, Map.Monsters.count - 1 do
+			local m = Map.Monsters[i]
+			if m.HP > 0 and m.Hostile and m.AIState ~= const.AIState.Removed
+					and monsterDistance(m) <= RESOLVE.CombatRadius then
+				inCombat = true
+				break
+			end
+		end
+		-- challenges that ran out, or whose monster or knight is gone
+		for mi, c in pairs(Challenged) do
+			local m = Map.Monsters[mi]
+			local k = Party.PlayersArray[c.pi]
+			if now >= c.Until or not m or m.HP <= 0 or not k or not k:IsConscious() then Challenged[mi] = nil end
+		end
+	end
+
 	-- resource: drain and sync into the spell points
 	for slot = 0, Party.count - 1 do
 		local pl = Party[slot]
-		if usesRage(pl) then
+		local resName, res = resourceOf(pl)
+		if resName then
 			local pi = playerIndex(pl)
 			local e = state(pi)
 			local dt = now - (e.Last or now)
-			if dt > 0 and now - (e.LastHit or 0) > RAGE.IdleTime then
-				e.R = math.max(0, e.R - RAGE.DrainPerMinute * dt / const.Minute)
+			if dt > 0 and now - (e.LastHit or 0) > res.IdleTime then
+				e.R = math.max(0, e.R - res.DrainPerMinute * dt / const.Minute)
+			end
+			if dt > 0 and inCombat and resName == "Resolve" and knightBranch(pl) == "Templar" then
+				e.R = math.min(res.Max, e.R + RESOLVE.TemplarPerMinute * dt / const.Minute)
 			end
 			e.Last = now
 			-- spent by the game (spell point cost): follow; anything that adds is undone
@@ -681,16 +852,53 @@ function events.Tick()
 end
 
 function events.AfterLoadMap()
+	Challenged = {}
 	for slot = 0, Party.count - 1 do
 		local pl = Party[slot]
 		updateSpells(pl)
-		if usesRage(pl) then state(playerIndex(pl)).Last = Game.Time end
+		if resourceOf(pl) then state(playerIndex(pl)).Last = Game.Time end
 	end
 end
 
 ---------------------------------------------------------------------------
 -- combat: gains, passives, effects
 ---------------------------------------------------------------------------
+
+-- active stance settings of a player (Knights, Paladins), or nil
+local function stanceOf(pl)
+	local fam = familyOf(pl)
+	if not fam then return end
+	local e = store()[playerIndex(pl)]
+	local st = e and e.Stance
+	if not st then return end
+	-- a stance the character can't use (class change, Paladin with a Knight stance)
+	for _, key in ipairs(fam.Abilities) do
+		local a = ABILITIES[key]
+		if a.Stance == st and abilityOf(pl, a.Spell) then return STANCES[st], st end
+	end
+end
+MF.StanceOf = function(pl) return select(2, stanceOf(pl)) end
+
+-- MMMWE_Main.lua: dodge chance (%), block and parry chance (%)
+function MF.StanceDodgeMod(pl)
+	local st = stanceOf(pl)
+	return st and st.Dodge or 0
+end
+function MF.StanceDefendBonus(pl)
+	local st = stanceOf(pl)
+	return st and st.Defend or 0
+end
+-- MMMWE_Threat.lua: attacks drawn
+function MF.StanceThreatMult(pl)
+	local st = stanceOf(pl)
+	return st and st.Threat or 1
+end
+-- MMMWE_Main.lua / MMMWE_Shields.lua: a block or parry happened ("block" / "parry")
+function MF.OnDefended(pl, kind)
+	if not usesResolve(pl) then return end
+	local _, name = stanceOf(pl)
+	addResource(pl, RESOLVE.PerDefend * (name == "Defensive" and RESOLVE.DefensiveMult or 1))
+end
 
 local function berserk(pi)
 	local fx = Effects[pi]
@@ -706,10 +914,14 @@ function events.DoBadThingToPlayer(t)
 	end
 end
 
--- AC penalty of a reckless barbarian (not Trolls)
+-- AC penalty of a reckless barbarian (not Trolls); Defensive stance AC
 function events.CalcStatBonusBySkills(t)
 	if t.Stat ~= const.Stats.ArmorClass then return end
 	local pl = t.Player
+	local st = stanceOf(pl)
+	if st and st.AC then
+		t.Result = t.Result + math.floor(st.AC * pl:CalcStatBonusByItems(const.Stats.ArmorClass))
+	end
 	if not usesRage(pl) or isTroll(pl) then return end
 	if state(playerIndex(pl)).R >= RAGE.RecklessAt then
 		t.Result = t.Result - math.floor(RAGE.RecklessAC * pl:CalcStatBonusByItems(const.Stats.ArmorClass))
@@ -738,6 +950,13 @@ function events.LoadMap()
 				addRage(pl, math.min(RAGE.PerHitTakenMax, 100 * t.Result / full))
 				state(pi).LastHit = Game.Time
 			end
+		elseif usesResolve(pl) then
+			local who = WhoHitPlayer and WhoHitPlayer()
+			if type(who) == "table" and (who.Monster or who.Object) then
+				local _, name = stanceOf(pl)
+				addResource(pl, RESOLVE.PerHitTaken * (name == "Defensive" and RESOLVE.DefensiveMult or 1))
+				state(pi).LastHit = Game.Time
+			end
 		end
 	end
 
@@ -761,13 +980,54 @@ function events.LoadMap()
 			end
 			addRage(pl, RAGE.PerHitLanded)
 		end
-		if mult ~= 1 then t.Result = math.floor(t.Result * mult + 0.5) end
+		local st, stName = stanceOf(pl)
+		if st and st.Damage then
+			local dmg = st.Damage
+			if stName == "Power" and knightBranch(pl) == "Champion" then dmg = dmg + CHAMPION_POWER end
+			mult = mult * (1 + dmg)
+		end
+		if mult ~= 1 then t.Result = math.max(0, math.floor(t.Result * mult + 0.5)) end
+		-- Black Knight: Resolve for a kill
+		if t.Monster and t.Result >= t.Monster.HP and t.Monster.HP > 0 and usesResolve(pl)
+				and knightBranch(pl) == "BlackKnight" then
+			addResource(pl, RESOLVE.BlackKnightKill)
+		end
 	end
 
 	-- Berserk: faster attacks (after MMMWE_Main.lua's recovery handler)
 	function events.GetAttackDelay(t)
 		local pl = t.Player
-		if pl and berserk(playerIndex(pl)) then t.Result = t.Result * BERSERK_SPEED end
+		if not pl then return end
+		if berserk(playerIndex(pl)) then t.Result = t.Result * BERSERK_SPEED end
+		local st = stanceOf(pl)
+		if st and st.Recovery then t.Result = t.Result * st.Recovery end
+	end
+
+	-- Power stance: harder melee crits (MMMWE_Main.lua reads MF.GetCritStats at every roll)
+	local getCrit = MF.GetCritStats
+	if getCrit then
+		MF.GetCritStats = function(pl, melee, ...)
+			local c, d, sk = getCrit(pl, melee, ...)
+			if melee and c and c > 0 then
+				local st = stanceOf(pl)
+				if st and st.CritDamage then d = d + st.CritDamage end
+			end
+			return c, d, sk
+		end
+	end
+
+	-- Challenge: the challenged monster picks its challenger (after MMMWE_Threat.lua)
+	function events.MonsterChooseTargetPlayer(t)
+		if not next(Challenged) or not t.MonsterPtr then return end
+		local mi = (t.MonsterPtr - Map.Monsters[0]["?ptr"]) / Map.Monsters[0]["?size"]
+		local c = Challenged[mi]
+		if not c or Game.Time >= c.Until then return end
+		for s = 0, Party.count - 1 do
+			if Party.PlayersIndexes[s] == c.pi then
+				if Party[s]:IsConscious() then t.Slot = s end
+				return
+			end
+		end
 	end
 end
 
@@ -777,6 +1037,9 @@ function MF.ResourceInfo(pl)
 	local fam = FAMILIES[kind]
 	if not fam then return string.format("class %d: family kind %d, stage %d, spell points", pl.Class, kind, stage) end
 	local e = state(playerIndex(pl))
-	return string.format("%s family, stage %d%s: %s %.1f / %d", fam.Name, stage, isTroll(pl) and " (Troll)" or "",
-		fam.Resource, e.R, RAGE.Max)
+	local _, stance = stanceOf(pl)
+	local res = fam.Resource and string.format("%s %.1f / %d", fam.Resource, e.R, RESOURCES[fam.Resource].Max) or "spell points"
+	return string.format("%s family, stage %d%s%s: %s%s", fam.Name, stage, isTroll(pl) and " (Troll)" or "",
+		knightBranch(pl) and (" (" .. knightBranch(pl) .. ")") or "", res,
+		stance and (", " .. stance .. " stance") or "")
 end

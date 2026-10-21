@@ -84,6 +84,7 @@ local function playerThreat(pl)
 	if wornSkill(pl, pl.ItemExtraHand) == SK.Shield then
 		threat = threat + SHIELD_BONUS * masteryMul(pl, SK.Shield)
 	end
+	if MF.StanceThreatMult then threat = threat * MF.StanceThreatMult(pl) end   -- MMMWE_Resources.lua
 	return threat
 end
 MF.PlayerThreat = playerThreat

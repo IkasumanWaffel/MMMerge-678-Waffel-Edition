@@ -526,7 +526,7 @@ local function SetSpellsExtraHooks()
 			local key, ab = MF.ClassAbilityOf(Pl, SpellNum)
 			if ab then
 				local _, _, resName = MF.GetResource(Pl)
-				mem.asmpatch(0x412180, "push " .. MF.cstring(string.format(
+				mem.asmpatch(0x412180, "push " .. MF.cstring(ab.Cost == 0 and "Free" or string.format(
 					'%s Cost: %d', resName or "SP", ab.Cost)))
 				return
 			end
