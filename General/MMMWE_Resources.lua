@@ -313,7 +313,7 @@ local DROID = {
 	HP          = 40, HPPerLevel = 12,
 	AC          = 10, ACPerLevel = 1,
 	DiceSides   = 8,                    -- damage: (1 + level/8)d8 + level/3, physical, melee
-	ShotChance  = 30,                   -- % for the energy shot (1 + level/12)d8 + level/4 as Attack2
+	ShotChance  = 50,                   -- % for the energy shot (1 + level/12)d8 + level/4 as Attack2
 	FollowDist  = 2500,                 -- farther than this from the party: brought back
 	SpawnDist   = 250,
 }
