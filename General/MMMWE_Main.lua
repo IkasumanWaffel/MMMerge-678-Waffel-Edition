@@ -2491,11 +2491,48 @@
 		return Game.Time < Buff.ExpireTime and Buff.Power or 0
 	end
 
+	-- Technicians (Class Extra.txt kind 15): their spell points feed the energy shield, so
+	-- their Meditation refill comes every game minute instead of every regen tick
+	local TECH_KIND = 15
+	local function isTechnician(Player)
+		local kind = MF.ClassFamily and MF.ClassFamily(Player.Class)
+		if kind == nil then
+			local e = Game.ClassesExtra[Player.Class]
+			kind = e and e.Kind
+		end
+		return kind == TECH_KIND
+	end
+	MF.IsTechnician = isTechnician
+
 	-- Add a bit of sp regeneration by meditation skill
 	function events.RegenTick(Player)
+		if isTechnician(Player) then return end   -- per game minute, below
 		local Add = CalcMeditationSPRegen(Player)
 		if Add > 0 then
 			Player.SP = math.min(Player:GetFullSP(), Player.SP + Add)
+		end
+	end
+
+	local TechRegenLast = {}
+	function events.Tick()
+		local now = Game.Time
+		for slot = 0, Party.count - 1 do
+			local Player = Party[slot]
+			if isTechnician(Player) then
+				local pi = Party.PlayersIndexes[slot]
+				local last = TechRegenLast[pi]
+				if not last or last > now then
+					TechRegenLast[pi] = now
+				elseif now - last >= const.Minute then
+					local n = math.floor((now - last) / const.Minute)
+					TechRegenLast[pi] = last + n * const.Minute
+					local Add = CalcMeditationSPRegen(Player) * math.min(n, 24 * 60)
+					local full = Player:GetFullSP()
+					if Add > 0 and Player.SP < full then
+						Player.SP = math.min(full, Player.SP + Add)
+					end
+				end
+			end
 		end
 	end
 	
@@ -3539,6 +3576,10 @@
 			-- class resource (MMMWE_Resources.lua): no regeneration, it drains when idle
 			-- the resource name only (it doesn't regenerate; a longer text runs into the value)
 			MV.SPR = cachedCstring(resName)
+		elseif isTechnician(Pl) then
+			-- Meditation every game minute (items and potions on the regen tick as usual)
+			local med = CalcMeditationSPRegen(Pl)
+			MV.SPR = cachedCstring(string.format('SP\t30 (+%d/min)', med))
 		else
 			MV.SPR = cachedCstring(string.format('SP\t30 (%s%d/RTick)',
 				totalSPR >= 1 and '+' or '', totalSPR))
