@@ -1963,24 +1963,22 @@
 	function MF.QueueCounterAttack(pi, mi, msg)
 		RiposteQueue[#RiposteQueue + 1] = {pi = pi, mi = mi, msg = msg}
 	end
-	-- base weapon damage of a melee hit (average dice + the weapon's own bonus, both hands;
-	-- bare hands: 2 + the Unarmed skill bonus) for Heroism
+	-- base damage of a melee hit for Heroism: the average of the game's melee damage range
+	-- (weapon dice and bonus of both hands, Might, the weapon skill and Armsmaster bonuses;
+	-- Heroism itself is taken out in CalcStatBonusByMagic) times the weapon skill damage
+	-- multiplier; bare hands: 2 + the Unarmed skill bonus + Might
 	local function baseMeleeDamage(pl)
-		local sum = 0
-		local function weapon(slot)
-			if slot == 0 or pl.Items[slot].Broken then return false end
-			local txt = Game.ItemsTxt[pl.Items[slot].Number]
-			if not txt or txt.Skill == const.Skills.Shield or txt.Skill == const.Skills.Blaster then return false end
-			sum = sum + txt.Mod1DiceCount * (txt.Mod1DiceSides + 1) / 2 + txt.Mod2
-			return true
+		local might = Game.GetStatisticEffect(pl:GetMight())
+		if pl.ItemMainHand == 0 then
+			local hasWeapon = pl.ItemExtraHand ~= 0 and not pl.Items[pl.ItemExtraHand].Broken
+				and Game.ItemsTxt[pl.Items[pl.ItemExtraHand].Number].Skill ~= const.Skills.Shield
+			if not hasWeapon then
+				local us, um = SplitSkill(pl:GetSkill(const.Skills.Unarmed))
+				return math.max(0, 2 + (um >= 3 and us * 2 or um == 2 and us or 0) + might)
+			end
 		end
-		local armed = weapon(pl.ItemMainHand)
-		armed = weapon(pl.ItemExtraHand) or armed
-		if not armed and pl.ItemMainHand == 0 then
-			local us, um = SplitSkill(pl:GetSkill(const.Skills.Unarmed))
-			sum = 2 + (um >= 3 and us * 2 or um == 2 and us or 0)
-		end
-		return sum
+		local avg = (pl:GetMeleeDamageMin() + pl:GetMeleeDamageMax()) / 2
+		return math.max(0, avg * (MF.WeaponSkillDamageMult and MF.WeaponSkillDamageMult(pl, true) or 1))
 	end
 	MF.BaseMeleeDamage = baseMeleeDamage
 
@@ -2828,10 +2826,10 @@
 			local unarmedBonus = calcUnarmedBonus(pl)
 			local heroism = 1 + calcHeroismPct(pl)
 
-			-- Heroism: a share of the base (bare hands + Unarmed skill); Hammerhands adds its
+			-- Heroism: a share of the base (bare hands + Unarmed skill + Might); Hammerhands adds its
 			-- Body damage separately and is not part of this range
-			local minDamage = round((1 + unarmedBonus) * heroism) + mightBonus
-			local maxDamage = round((3 + unarmedBonus) * heroism) + mightBonus
+			local minDamage = round((1 + unarmedBonus + mightBonus) * heroism)
+			local maxDamage = round((3 + unarmedBonus + mightBonus) * heroism)
 
 			d.edi = minDamage
 			d.eax = maxDamage
