@@ -307,7 +307,13 @@ local HERD_PHYS      = 0.10                  -- physical damage taken -10%
 
 -- Technicians: Deploy Droid
 local DROID = {
-	Models      = {[1] = 388, [2] = 389, [3] = 390},  -- Seeker / Sentinel / Assassin Droid by stage
+	-- Engineer: Seeker Droid; Ancient Researcher: Sentinel Droid; Scientist: Assassin Droid
+	-- (the "3" class entries are table placeholders, never reached)
+	Models      = {[1] = 388, [2] = 389, Scientist = 390},
+	-- resistances (set after the summon): machines are immune to Mind, Spirit and Body;
+	-- elements, Light and Dark 20 + 2 per point of Repair; Physical 10 + 5 per Repair mastery
+	ResBase     = 20, ResPerRepair = 2, ResMax = 150,
+	PhysBase    = 10, PhysPerMastery = 5,
 	BaseTime    = 20 * const.Minute,
 	PerLevel    = 2 * const.Minute,     -- duration per level of the technician
 	-- the droid grows with the technician's level and Repair skill (Scientists: Repair or
@@ -1015,7 +1021,8 @@ local function deployDroid(pl, pi)
 		Game.ShowStatusText(string.format("%s repairs the droid", pl.Name))
 		return true
 	end
-	local id = DROID.Models[math.min(math.max(stage, 1), 3)]
+	local id = DROID.Models[math.min(math.max(stage, 1), 2)]
+	if stage >= 2 and (pl.Class == 126 or pl.Class == 127) then id = DROID.Models.Scientist end
 	local x, y, z = partyPoint(DROID.SpawnDist)
 	local ok, m, mi = pcall(SummonMonster, id, x, y, z, true)
 	if not ok or not m then
@@ -1048,6 +1055,13 @@ local function deployDroid(pl, pi)
 	m.Attack1.DamageAdd = math.min(math.floor(L / 4 + RSM / 8), 255)
 	m.Attack1.Missile = 0                  -- melee first: it closes in instead of keeping distance
 	m.Fly = 0
+	pcall(function()
+		local res = math.min(DROID.ResMax, DROID.ResBase + DROID.ResPerRepair * RS)
+		m.FireResistance, m.AirResistance, m.WaterResistance, m.EarthResistance = res, res, res, res
+		m.LightResistance, m.DarkResistance = res, res
+		m.MindResistance, m.SpiritResistance, m.BodyResistance = const.MonsterImmune, const.MonsterImmune, const.MonsterImmune
+		m.PhysResistance = DROID.PhysBase + DROID.PhysPerMastery * RM
+	end)
 	m.Ally = 9999                           -- the party's side, as summoned elementals
 	m.Group = 0
 	m.Summoner = pi * 8 + 4
