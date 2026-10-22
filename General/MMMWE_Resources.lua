@@ -47,6 +47,11 @@
 	  switching targets or after ENERGY.ComboTime without a hit.
 	  Mind page: Finisher, Poisoned Blade (Assassin), Shadow Veil (Spy).
 
+	Dragon family (Dragon, Flight Leader, Great Wyrm, variants) — Breath:
+	  0..100, +BREATH.PerMinute per game minute; each breath attack (the dragon's ranged
+	  attack, spell 137) costs BREATH.AttackCost, without enough Breath the dragon can't
+	  breathe (its turn passes); Dragon school spells cost spell points x 2 in Breath.
+
 	Hybrids on spell points (Archer, Ranger, Dark Elf, Minotaur; Paladin for the refill):
 	  +1% of maximum spell points per game minute while hostile monsters are near.
 	  Archer (Body page): Aimed Shot, Volley (Master Archer, Sniper). Dark Elf (Body page):
@@ -74,6 +79,14 @@ local RESOURCES = {
 	Ki      = {Max = 15, Bar = "ManaG", Color = 0xE0E040, SpellCostDiv = 5},
 	-- Energy: spells cost spell points x SpellCostMul
 	Energy  = {Max = 100, Bar = "manaY", Color = 0x30B0FF, SpellCostMul = 5},
+	Breath  = {Max = 100, Bar = "manar", Color = 0x2080FF, SpellCostMul = 2},
+}
+
+local BREATH = {
+	PerMinute    = 10,             -- refill per game minute
+	AttackCost   = 25,             -- one breath attack
+	OutRecovery  = 50,             -- recovery when out of breath (the turn passes)
+	AttackSpell  = 137,            -- the dragon's breath attack in the cast queue
 }
 
 local ENERGY = {
@@ -313,6 +326,7 @@ local FAMILIES = {
 	[9]  = {Name = "Paladin", Page = 1, Hybrid = true, Abilities = {"DefensiveStance"}},   -- spell points
 	[8]  = {Name = "Monk", Resource = "Ki", Page = 2,
 		Abilities = {"StunningPalm", "InnerPeace", "Flurry", "IronBody", "Vanish"}},
+	[4]  = {Name = "Dragon", Resource = "Breath", Abilities = {}},   -- no ability page
 	[11] = {Name = "Thief", Resource = "Energy", Page = 5,
 		Abilities = {"Finisher", "PoisonedBlade", "ShadowVeil"}},
 	-- hybrids on spell points (Hybrid = combat refill)
@@ -326,7 +340,7 @@ local FAMILIES = {
 
 local TROLL_RACES = {[15] = true, [16] = true, [17] = true, [18] = true}
 
-MF.ResourceSettings = {Resources = RESOURCES, Rage = RAGE, Resolve = RESOLVE, Ki = KI, Energy = ENERGY, Stances = STANCES,
+MF.ResourceSettings = {Resources = RESOURCES, Rage = RAGE, Resolve = RESOLVE, Ki = KI, Energy = ENERGY, Breath = BREATH, Stances = STANCES,
 	Abilities = ABILITIES, Durations = DUR, Families = FAMILIES}
 
 -- colours of the resource numbers over the portraits (MMMWE_HPSPDisplay.lua, Windows BGR)
@@ -340,6 +354,7 @@ local RESOURCE_DESC = {
 	Rage = "Rage fills when the barbarian takes hits (the heavier the blow, the more) and a little with every melee hit landed. After a while without being hit it slowly drains away, so resting empties it; potions and Meditation don't restore it. Every 5 Rage adds 1% melee damage. At 50 Rage and more the barbarian fights recklessly: -10% of the items' Armor Class (Trolls instead take 5% less physical damage). Rage pays for the barbarian's abilities on the Fire page of the spellbook.",
 	Resolve = "Resolve grows as the knight holds the line: +5 for every block or parry and +2 for every hit taken, twice as much in the Defensive stance. After a while without being hit it slowly fades, so resting empties it; potions and temples don't restore it. Resolve pays for Challenge and Rally (Air page of the spellbook); the stances there are free.",
 	Ki = "Ki is the monk's inner strength, counted in charges: 5, +2 for every promotion and +1 for every 2 points of Meditation (at most 15). It refills on its own, 1 charge every 5 minutes, sooner with Meditation (down to half the time). Ki pays for the monk's abilities on the Water page of the spellbook, and for his spells: a fifth of their spell point cost.",
+	Breath = "Breath is the fire in the dragon's chest. It refills on its own, 10 every game minute. Every breath attack costs 25, so a dragon breathes every few attacks and fights with claws and teeth in between; without enough Breath it can't breathe at a far target. The Dragon abilities (Fear, Flame Blast, Flight, Wing Buffet) cost 2 Breath per spell point.",
 	Energy = "Energy is the thief's quickness. It refills fast, 10 every game minute, and pays for the thief's tricks on the Mind page of the spellbook and for his spells (5 Energy per spell point). Melee hits on the same target build combo points (up to 5, shown in the status line); the Finisher spends them all.",
 }
 function MF.ResourceRegenText(res)
@@ -1118,6 +1133,23 @@ end
 mem.autohook(0x42609E, function(d)
 	local slot = 0x51D820 + u4[d.ebp - 0xC8] * 0x14
 	local spell = u2[slot]
+	-- the dragon's breath attack: paid with Breath; out of breath, the turn passes
+	if spell == BREATH.AttackSpell then
+		local pl = casterOf(u2[slot + 2], spell)
+		if pl and resourceOf(pl) == "Breath" then
+			local e = state(playerIndex(pl))
+			if e.R >= BREATH.AttackCost then
+				addResource(pl, -BREATH.AttackCost)
+				return
+			end
+			Game.ShowStatusText(string.format("%s is out of breath", pl.Name), 2)
+			pl:SetRecoveryDelay(BREATH.OutRecovery)
+			u2[slot] = 0
+			d:push(0x42D45D)
+			return true
+		end
+		return
+	end
 	if spell <= 0 or spell > 132 then return end
 	if bit.band(u1[slot + 8], 1) == 1 then return end          -- spell scroll
 	if u2[slot + 10] > 0 then return end                         -- skill set: wand, item, NPC
@@ -1362,6 +1394,9 @@ function events.Tick()
 				refill = 0
 			elseif C.Zombie and pl.Conditions[C.Zombie] ~= 0 then
 				refill = ZOMBIE_REFILL
+			end
+			if dt > 0 and resName == "Breath" then
+				e.R = math.min(RESOURCES.Breath.Max, e.R + refill * BREATH.PerMinute * dt / const.Minute)
 			end
 			if dt > 0 and resName == "Energy" then
 				e.R = math.min(RESOURCES.Energy.Max, e.R + refill * ENERGY.PerMinute * dt / const.Minute)
