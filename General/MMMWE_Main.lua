@@ -140,10 +140,17 @@
 		end
 	end
 	
-	-- Hammerhands fix
-	local HHSM = {[1] = 0, [2] = 0}
-	mem.autohook(0x42B17F, function(d)
-		HHSM[1], HHSM[2] = d.edi, mem.u4[d.ebp - 0xC]
+	-- Hammerhands (22.10.26), as its description says: an unarmed melee hit also deals Body
+	-- damage equal to the physical damage of the hit (bare hands, Might, Unarmed skill).
+	-- The game deals the extra Body damage at 0x437301 with the buff's power as the amount
+	-- (push eax after movzx eax, [player+1A9Ch] at 0x4372FA); the amount becomes the hit's
+	-- physical damage before resistances ([ebp-10h], the value just pushed for the physical
+	-- part). MF.HammerhandsHit marks that Body call, so the melee bonuses below (crits,
+	-- Might, Heroism, durability) are not applied to it again.
+	-- (the flag is checked together with the Body damage kind and cleared by the last handler)
+	mem.autohook2(0x4372FA, function(d)
+		d.eax = math.max(0, mem.i4[d.ebp - 0x10])
+		MF.HammerhandsHit = true
 	end)
 	
 	-- Dodging gives no Armor Class: it works through the dodge (mitigation) chance only.
@@ -1276,6 +1283,15 @@
 			end
 		end
 	end
+	-- Heroism: the game adds the buffs' power to the melee damage (get_magic_bonus,
+	-- MeleeDamageBase); it is taken out here and given as a share of the weapon damage in
+	-- the damage handler (registered in GameInitialized2, after the others)
+	function events.CalcStatBonusByMagic(t)
+		if t.Stat == const.Stats.MeleeDamageBase and MF.HeroismPower then
+			t.Result = t.Result - MF.HeroismPower(t.Player)
+		end
+	end
+
 	function events.CalcStatBonusByMagic(t)
 		local Pl = t.Player
 		local Cond = Pl:GetMainCondition()
@@ -1663,6 +1679,11 @@
 		local Pl = t.Player
 		local Melee = t.Melee
 
+		-- the Body damage of Hammerhands: already the hit's full physical damage
+		if MF.HammerhandsHit and t.DamageKind == const.Damage.Body then
+			return
+		end
+
 		-- Skip secondary calls (from ItemAdditionalDamage enchantment processing)
 		-- These are enchantment damage calls where the engine already applied
 		-- the correct damage kind via the ItemAdditionalDamage hook.
@@ -1670,20 +1691,6 @@
 		-- (marked by MMMWE_ConcurrentEnchantments.lua, Part 3b)
 		if t.IsSecondary then
 			return
-		end
-
-		-- Hammerhands fix (merged from the overwritten first handler)
-		if Pl then
-			local Weapon = Pl.ItemMainHand
-			local Buff = Pl.SpellBuffs[const.PlayerBuff.Hammerhands]
-			if Buff.ExpireTime > Game.Time then
-				if t.DamageKind == const.Damage.Phys and Weapon == 0 then
-					local HHPower = HHSM[1]
-					local BuffMas = HHSM[2]
-					local HHBonus = 0.2 + 0.01*BuffMas*HHPower + 0.01*HHPower
-					t.Result = round(t.Result + t.Result*HHBonus - HHPower)
-				end
-			end
 		end
 
 		if t.DamageKind == const.Damage.Phys or Melee then
@@ -1956,8 +1963,52 @@
 	function MF.QueueCounterAttack(pi, mi, msg)
 		RiposteQueue[#RiposteQueue + 1] = {pi = pi, mi = mi, msg = msg}
 	end
+	-- base weapon damage of a melee hit (average dice + the weapon's own bonus, both hands;
+	-- bare hands: 2 + the Unarmed skill bonus) for Heroism
+	local function baseMeleeDamage(pl)
+		local sum = 0
+		local function weapon(slot)
+			if slot == 0 or pl.Items[slot].Broken then return false end
+			local txt = Game.ItemsTxt[pl.Items[slot].Number]
+			if not txt or txt.Skill == const.Skills.Shield or txt.Skill == const.Skills.Blaster then return false end
+			sum = sum + txt.Mod1DiceCount * (txt.Mod1DiceSides + 1) / 2 + txt.Mod2
+			return true
+		end
+		local armed = weapon(pl.ItemMainHand)
+		armed = weapon(pl.ItemExtraHand) or armed
+		if not armed and pl.ItemMainHand == 0 then
+			local us, um = SplitSkill(pl:GetSkill(const.Skills.Unarmed))
+			sum = 2 + (um >= 3 and us * 2 or um == 2 and us or 0)
+		end
+		return sum
+	end
+	MF.BaseMeleeDamage = baseMeleeDamage
+
 	-- the counterattack deals only a share of its damage; registered late so it scales the final value
 	function events.GameInitialized2()
+		-- Heroism: + a share of the base weapon damage, through the monster's resistance
+		-- (the share of this hit's damage that got through)
+		function events.CalcDamageToMonster(t)
+			if MF.HammerhandsHit and t.DamageKind == const.Damage.Body then
+				MF.HammerhandsHit = false
+				return
+			end
+			if not t.ByPlayer or t.IsSecondary then return end
+			if t.DamageKind ~= const.Damage.Phys or (t.Result or 0) <= 0 then return end
+			local pl = t.Player
+			if not pl then return end
+			local melee = t.Melee
+			if melee == nil then
+				local who = WhoHitMonster and WhoHitMonster()
+				melee = type(who) == "table" and not who.Object
+			end
+			if not melee then return end
+			local pct = MF.HeroismPerPower() * MF.HeroismPower(pl)
+			if pct <= 0 then return end
+			local through = (t.Damage and t.Damage > 0) and math.min(1, t.Result / t.Damage) or 1
+			t.Result = t.Result + round(pct * baseMeleeDamage(pl) * through)
+		end
+
 		function events.CalcDamageToMonster(t)
 			if RiposteActive and t.ByPlayer then
 				t.Result = round(t.Result * DODGE.RiposteDamage)
@@ -2708,22 +2759,21 @@
 		return nil
 	end
 
-	local function calcHammerhandsBonus(pl)
-		local buff = pl.SpellBuffs[const.PlayerBuff.Hammerhands]
-		if not buff or buff.ExpireTime <= Game.Time then
-			return 0
-		end
-		local power, skill = buff.Power, buff.Skill
-		
-		return 0.2 + 0.01 * skill * power + 0.01 * power
+	-- Heroism (22.10.26): +HEROISM_PER_POWER of the base weapon damage per point of the
+	-- buff's power (the character's Heroism and the party's), instead of the flat power
+	local HEROISM_PER_POWER = 0.01
+	MF.HeroismPerPower = function() return HEROISM_PER_POWER end
+	local function heroismPower(pl)
+		local power = 0
+		local b = pl.SpellBuffs[const.PlayerBuff.Heroism]
+		if b and b.ExpireTime > Game.Time then power = power + b.Power end
+		local pb = Party.SpellBuffs[const.PartyBuff.Heroism]
+		if pb and pb.ExpireTime > Game.Time then power = power + pb.Power end
+		return power
 	end
-
-	local function calcHeroismBonus(pl)
-		local buff = pl.SpellBuffs[const.PlayerBuff.Heroism]
-		if buff and buff.ExpireTime > Game.Time then
-			return buff.Power
-		end
-		return 0
+	MF.HeroismPower = heroismPower
+	local function calcHeroismPct(pl)
+		return HEROISM_PER_POWER * heroismPower(pl)
 	end
 
 	local function calcUnarmedBonus(pl)
@@ -2776,16 +2826,12 @@
 
 			local mightBonus = Game.GetStatisticEffect(pl:GetMight())
 			local unarmedBonus = calcUnarmedBonus(pl)
-			local heroismBonus = calcHeroismBonus(pl)
+			local heroism = 1 + calcHeroismPct(pl)
 
-			local minDamage = 1 + mightBonus + unarmedBonus + heroismBonus
-			local maxDamage = 3 + mightBonus + unarmedBonus + heroismBonus
-
-			local hhBonus = calcHammerhandsBonus(pl)
-			if hhBonus > 0 then
-				minDamage = round(minDamage + minDamage * hhBonus)
-				maxDamage = round(maxDamage + maxDamage * hhBonus)
-			end
+			-- Heroism: a share of the base (bare hands + Unarmed skill); Hammerhands adds its
+			-- Body damage separately and is not part of this range
+			local minDamage = round((1 + unarmedBonus) * heroism) + mightBonus
+			local maxDamage = round((3 + unarmedBonus) * heroism) + mightBonus
 
 			d.edi = minDamage
 			d.eax = maxDamage

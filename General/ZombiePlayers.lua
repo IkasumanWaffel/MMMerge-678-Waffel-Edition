@@ -481,9 +481,14 @@ end
 		if Player.Conditions[const.Condition.Zombie] > 0 then
 			local FHP, FSP = Player:GetFullHP(), Player:GetFullSP()
 			MV.ZombieHPDegen[Player.Name] = (Player.HP > math.ceil(FHP/2)) and math.max(1, math.floor(FHP*0.02)) or 0
-			MV.ZombieSPDegen[Player.Name] = math.max(1, math.floor(FSP*0.02))
+			-- class resources (MMMWE_Resources.lua) don't rot: Rage and Resolve are left alone,
+			-- Ki and Energy refill at half speed there
+			local hasResource = Merge.Functions.GetResource and Merge.Functions.GetResource(Player)
+			MV.ZombieSPDegen[Player.Name] = hasResource and 0 or math.max(1, math.floor(FSP*0.02))
 			Player.HP = (Player.HP > math.ceil(FHP/2)) and Player.HP - MV.ZombieHPDegen[Player.Name] or Player.HP
-			Player.SP = math.max(0, Player.SP - MV.ZombieSPDegen[Player.Name])
+			if not hasResource then
+				Player.SP = math.max(0, Player.SP - MV.ZombieSPDegen[Player.Name])
+			end
 		else
 			MV.ZombieHPDegen[Player.Name] = 0
 			MV.ZombieSPDegen[Player.Name] = 0

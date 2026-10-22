@@ -82,6 +82,9 @@ local ENERGY = {
 	VeilTime      = 10 * const.Minute,  -- Shadow Veil: invisibility and Wizard Eye
 }
 
+local ZOMBIE_REFILL = 0.5     -- Ki and Energy refill speed of a zombie (ZombiePlayers.lua
+                               -- doesn't drain class resources)
+
 local KI = {
 	Base          = 5,
 	PerStage      = 2,             -- per promotion stage
@@ -1165,15 +1168,23 @@ function events.Tick()
 				-- spent by the game since the last tick (spell point cost): follow
 				e.R = math.max(0, e.R - (e.SPw - pl.SP))
 			end
+			-- refill: none for the dead, stoned and eradicated; half speed for zombies
+			local C = const.Condition
+			local refill = 1
+			if pl.Conditions[C.Dead] ~= 0 or pl.Conditions[C.Stoned] ~= 0 or pl.Conditions[C.Eradicated] ~= 0 then
+				refill = 0
+			elseif C.Zombie and pl.Conditions[C.Zombie] ~= 0 then
+				refill = ZOMBIE_REFILL
+			end
 			if dt > 0 and resName == "Energy" then
-				e.R = math.min(RESOURCES.Energy.Max, e.R + ENERGY.PerMinute * dt / const.Minute)
+				e.R = math.min(RESOURCES.Energy.Max, e.R + refill * ENERGY.PerMinute * dt / const.Minute)
 				if e.Combo and now - (e.ComboTime or 0) > ENERGY.ComboTime then e.Combo, e.ComboMon = nil, nil end
 			end
 			if dt > 0 and resName == "Ki" then
 				local _, stage = classFamily(pl.Class)
 				local med = SplitSkill(pl:GetSkill(const.Skills.Meditation))
 				local interval = KI.Interval * math.max(0.5, 1 - KI.IntervalPerMed * med)
-				e.R = math.min(kiMax(pl), e.R + (KI.Refill[math.min(stage, 3)] or 1) * dt / interval)
+				e.R = math.min(kiMax(pl), e.R + refill * (KI.Refill[math.min(stage, 3)] or 1) * dt / interval)
 			end
 			if dt > 0 and res.IdleTime and now - (e.LastHit or 0) > res.IdleTime then
 				e.R = math.max(0, e.R - res.DrainPerMinute * dt / const.Minute)
