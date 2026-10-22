@@ -50,7 +50,7 @@
 	Hybrids on spell points (Archer, Ranger, Dark Elf, Minotaur; Paladin for the refill):
 	  +1% of maximum spell points per game minute while hostile monsters are near.
 	  Archer (Body page): Aimed Shot, Volley (Master Archer, Sniper). Dark Elf (Body page):
-	  Aimed Shot. Ranger (Light page): Aimed Shot, Mark Prey (Hunter+). Minotaur (Fire page):
+	  Aimed Shot, Darkfire Arrows (Pioneer+). Ranger (Light page): Aimed Shot, Mark Prey (Hunter+). Minotaur (Fire page):
 	  Gore, Herd Fury (Headsman+), Mark Prey (third stage).
 
 	Console: Merge.Functions.ResourceInfo(player)
@@ -219,6 +219,11 @@ local ABILITIES = {
 		Desc = "A quick series of shots: the next 3 bow attacks recover much faster.",
 		Lines = {"10 SP", "Next 3 bow attacks: -66% recovery", "Master Archer, Sniper", "Needs a bow"},
 		Icon = {"sbhy02a", "sbhy02b"},},
+	DarkfireArrows = {Spell = 69, Stage = 1, Cost = 12, Imbue = true,
+		Name = "Darkfire Arrows",
+		Desc = "The dark elf imbues the arrows with Darkfire, the blend of Fire and Dark of the Darkfire Bolt: the next 5 arrows deal extra damage that the target resists with its Fire or Dark resistance, whichever is lower.",
+		Lines = {"12 SP", "Next 5 arrows: +30% of the arrow's damage +2 per Dark Elf skill point", "Pioneer", "Fire or Dark resistance, the lower one"},
+		Icon = {"sbde04a", "sbde04b"},},
 	MarkPrey = {Spell = 81, Stage = 1, Cost = 8,
 		Name = "Mark Prey",
 		Desc = "The hunter marks a foe (the one under the cursor or the nearest), and the whole party hits it harder for a while.",
@@ -265,6 +270,9 @@ local VOLLEY_RECOVERY = 0.34                 -- their recovery multiplier
 local MARK_TIME      = 3 * const.Minute
 local MARK_DAMAGE    = 0.15                  -- damage the marked monster takes from the party
 local MARK_RANGE     = 5000
+local DARKFIRE_ARROWS = 5                    -- Darkfire Arrows: arrows imbued
+local DARKFIRE_SHARE  = 0.30                 -- extra damage: share of the arrow's damage
+local DARKFIRE_PER_SKILL = 2                 -- + per point of the Dark Elf racial skill
 local GORE_DAMAGE    = 0.40
 local GORE_STAGGER   = 25                    -- % chance; paralysis for GORE_STAGGER_TIME
 local GORE_STAGGER_TIME = const.Minute / 2
@@ -309,7 +317,7 @@ local FAMILIES = {
 		Abilities = {"Finisher", "PoisonedBlade", "ShadowVeil"}},
 	-- hybrids on spell points (Hybrid = combat refill)
 	[1]  = {Name = "Archer", Page = 6, Hybrid = true, Abilities = {"AimedShot", "Volley"}},
-	[3]  = {Name = "Dark Elf", Page = 6, Hybrid = true, Abilities = {"AimedShot"}},
+	[3]  = {Name = "Dark Elf", Page = 6, Hybrid = true, Abilities = {"AimedShot", "DarkfireArrows"}},
 	[10] = {Name = "Ranger", Page = 7, Hybrid = true, Abilities = {"AimedShot", "MarkPrey"},
 		Spots = {AimedShot = 78, MarkPrey = 81}},
 	[7]  = {Name = "Minotaur", Page = 0, Hybrid = true, Abilities = {"Gore", "HerdFury", "MarkPrey"},
@@ -860,6 +868,7 @@ function MF.ClassAbilityUsable(pl, spell)
 		return meleeTarget(nil) == nil
 	end
 	if key == "MarkPrey" then return meleeTarget(nil, MARK_RANGE) ~= nil end
+	if a.Imbue then return hasBow(pl) and (e.Darkfire or 0) <= 0 end
 	if key == "Finisher" then
 		e.FinisherAt = e.FinisherAt or math.random(1, FINISHER_AUTO_MAX)
 		return comboInReach(e) >= e.FinisherAt
@@ -993,6 +1002,14 @@ local function castAbility(pl, pi, spell, targetRef)
 		end
 		armShot(pl, key, a)
 		return true
+	elseif a.Imbue then
+		if not hasBow(pl) then
+			failCast(pl, string.format("%s needs a bow", a.Name))
+			return true
+		end
+		e.Darkfire = DARKFIRE_ARROWS
+		Game.ShowStatusText(string.format("%s's arrows smoulder with Darkfire", pl.Name))
+		pl:SetRecoveryDelay(60)
 	elseif key == "MarkPrey" then
 		local mi = meleeTarget(targetRef, MARK_RANGE)
 		if not mi then
@@ -1549,6 +1566,16 @@ function events.LoadMap()
 					Game.ShowStatusText(string.format("%s: Aimed Shot!", pl.Name), 1)
 				end
 				if (e.Volley or 0) > 0 then e.Volley = e.Volley - 1 end
+				-- Darkfire Arrows: extra damage through the lower of Fire and Dark resistance
+				if (e.Darkfire or 0) > 0 and t.Monster then
+					e.Darkfire = e.Darkfire - 1
+					local res = math.min(t.Monster.Resistances[const.Damage.Fire], t.Monster.Resistances[const.Damage.Dark])
+					if res ~= const.MonsterImmune then
+						local S = SplitSkill(pl:GetSkill(const.Skills.DarkElfAbility))
+						local extra = DARKFIRE_SHARE * (t.Damage or t.Result) + DARKFIRE_PER_SKILL * S
+						t.Result = t.Result + math.floor(extra * 30 / (30 + math.max(0, res)) + 0.5)
+					end
+				end
 			else
 				local fxh = Effects[playerIndex(pl)]
 				if fxh and fxh.HerdFury and fxh.HerdFury > Game.Time then
