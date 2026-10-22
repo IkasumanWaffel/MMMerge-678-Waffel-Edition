@@ -47,6 +47,12 @@
 	  switching targets or after ENERGY.ComboTime without a hit.
 	  Mind page: Finisher, Poisoned Blade (Assassin), Shadow Veil (Spy).
 
+	Hybrids on spell points (Archer, Ranger, Dark Elf, Minotaur; Paladin for the refill):
+	  +1% of maximum spell points per game minute while hostile monsters are near.
+	  Archer (Body page): Aimed Shot, Volley (Master Archer, Sniper). Dark Elf (Body page):
+	  Aimed Shot. Ranger (Light page): Aimed Shot, Mark Prey (Hunter+). Minotaur (Fire page):
+	  Gore, Herd Fury (Headsman+), Mark Prey (third stage).
+
 	Console: Merge.Functions.ResourceInfo(player)
 --]]
 
@@ -201,6 +207,33 @@ local ABILITIES = {
 		Desc = "The spy hides the party in shadows and scouts ahead: Invisibility and Wizard Eye for the party.",
 		Lines = {"40 Energy", "Party Invisibility and Wizard Eye", "Spy", "Lasts 10 minutes; power by the Stealing skill"},
 		Icon = {"sbth03a", "sbth03b"},},
+
+	-- Hybrids (spell points). The spot is the family's (FAMILIES[].Spots) when it differs.
+	AimedShot = {Spell = 70, Stage = 0, Cost = 3, Shot = true,
+		Name = "Aimed Shot",
+		Desc = "The next bow shot is carefully aimed: more damage and a better chance of a critical hit. As the attack spell it is used when the target is out of melee reach.",
+		Lines = {"3 SP", "Next arrow: +25% damage, +15% critical chance", "Archer, Ranger, Deerslayer", "Needs a bow; stays ready until the next shot"},
+		Icon = {"sbhy01a", "sbhy01b"},},
+	Volley = {Spell = 69, Stage = 2, Cost = 10, Shot = true, Branches = {MasterArcher = true, Sniper = true},
+		Name = "Volley",
+		Desc = "A quick series of shots: the next 3 bow attacks recover much faster.",
+		Lines = {"10 SP", "Next 3 bow attacks: -66% recovery", "Master Archer, Sniper", "Needs a bow"},
+		Icon = {"sbhy02a", "sbhy02b"},},
+	MarkPrey = {Spell = 81, Stage = 1, Cost = 8,
+		Name = "Mark Prey",
+		Desc = "The hunter marks a foe (the one under the cursor or the nearest), and the whole party hits it harder for a while.",
+		Lines = {"8 SP", "The target takes +15% damage from the party", "Hunter, Minotaur Lord", "Lasts 3 minutes"},
+		Icon = {"sbhy03a", "sbhy03b"},},
+	Gore = {Spell = 2, Stage = 0, Cost = 4, Attack = true,
+		Name = "Gore",
+		Desc = "A charge with the horns at the target in melee reach: +40% damage and a chance to stagger it. Use it as the attack spell; without enough spell points it is a normal attack.",
+		Lines = {"4 SP", "+40% damage, 25% chance to stagger (30 seconds)", "Minotaur", "Melee reach"},
+		Icon = {"sbhy04a", "sbhy04b"},},
+	HerdFury = {Spell = 5, Stage = 1, Cost = 15,
+		Name = "Herd Fury",
+		Desc = "The minotaur's battle fury: more melee damage and a tougher hide for a while.",
+		Lines = {"15 SP", "+15% melee damage, -10% physical damage taken", "Minotaur Headsman", "Lasts 5 minutes"},
+		Icon = {"sbhy05a", "sbhy05b"},},
 }
 
 local RESOLVE = {
@@ -222,6 +255,22 @@ local STANCES = {
 }
 local CHAMPION_POWER  = 0.10      -- Champion: Power stance damage on top
 local STANCE_RECOVERY = 100       -- recovery after a stance switch
+
+-- Hybrids (spell points)
+local HYBRID_REFILL  = 0.01                  -- share of max SP per game minute in combat
+local AIMED_DAMAGE   = 0.25                  -- Aimed Shot: damage of the arrow
+local AIMED_CRIT     = 0.15                  -- Aimed Shot: extra crit chance
+local VOLLEY_SHOTS   = 3                     -- Volley: shots with quick recovery
+local VOLLEY_RECOVERY = 0.34                 -- their recovery multiplier
+local MARK_TIME      = 3 * const.Minute
+local MARK_DAMAGE    = 0.15                  -- damage the marked monster takes from the party
+local MARK_RANGE     = 5000
+local GORE_DAMAGE    = 0.40
+local GORE_STAGGER   = 25                    -- % chance; paralysis for GORE_STAGGER_TIME
+local GORE_STAGGER_TIME = const.Minute / 2
+local HERD_TIME      = 5 * const.Minute
+local HERD_DAMAGE    = 0.15                  -- melee damage
+local HERD_PHYS      = 0.10                  -- physical damage taken -10%
 
 -- Monks
 local STUN_TIME      = const.Minute          -- Stunning Palm: paralysis of a stunned monster
@@ -253,11 +302,18 @@ local FAMILIES = {
 		Abilities = {"RageStrike", "WarCry", "TrollsBlood", "Berserk"}},
 	[6]  = {Name = "Knight", Resource = "Resolve", Page = 1,
 		Abilities = {"PowerStance", "AgileStance", "DefensiveStance", "Challenge", "Rally"}},
-	[9]  = {Name = "Paladin", Page = 1, Abilities = {"DefensiveStance"}},   -- spell points
+	[9]  = {Name = "Paladin", Page = 1, Hybrid = true, Abilities = {"DefensiveStance"}},   -- spell points
 	[8]  = {Name = "Monk", Resource = "Ki", Page = 2,
 		Abilities = {"StunningPalm", "InnerPeace", "Flurry", "IronBody", "Vanish"}},
 	[11] = {Name = "Thief", Resource = "Energy", Page = 5,
 		Abilities = {"Finisher", "PoisonedBlade", "ShadowVeil"}},
+	-- hybrids on spell points (Hybrid = combat refill)
+	[1]  = {Name = "Archer", Page = 6, Hybrid = true, Abilities = {"AimedShot", "Volley"}},
+	[3]  = {Name = "Dark Elf", Page = 6, Hybrid = true, Abilities = {"AimedShot"}},
+	[10] = {Name = "Ranger", Page = 7, Hybrid = true, Abilities = {"AimedShot", "MarkPrey"},
+		Spots = {AimedShot = 78, MarkPrey = 81}},
+	[7]  = {Name = "Minotaur", Page = 0, Hybrid = true, Abilities = {"Gore", "HerdFury", "MarkPrey"},
+		Spots = {MarkPrey = 6}, Stages = {MarkPrey = 2}},
 }
 
 local TROLL_RACES = {[15] = true, [16] = true, [17] = true, [18] = true}
@@ -331,7 +387,8 @@ end
 -- Knight promotion branch (the class or the one it was promoted from): Champion, Templar,
 -- BlackKnight, or nil (Class Extra.txt numbers)
 local KNIGHT_BRANCH = {[46] = "Champion", [48] = "Templar", [50] = "BlackKnight",
-	[64] = "MasterMonk", [66] = "Ninja", [88] = "Spy", [90] = "Assassin"}
+	[64] = "MasterMonk", [66] = "Ninja", [88] = "Spy", [90] = "Assassin",
+	[4] = "MasterArcher", [6] = "Sniper"}
 local function knightBranch(pl)
 	local cur = pl.Class
 	for _ = 1, 8 do
@@ -418,6 +475,16 @@ local function addResource(pl, v)
 end
 local addRage = addResource
 
+-- what pays for an ability: the class resource, or the spell points of a hybrid
+local function abilityPool(pl)
+	if resourceOf(pl) then return state(playerIndex(pl)).R end
+	return pl.SP
+end
+local function spendAbility(pl, cost)
+	if cost <= 0 then return end
+	if resourceOf(pl) then addResource(pl, -cost) else pl.SP = math.max(0, pl.SP - cost) end
+end
+
 -- the resource maximum instead of the spell points
 mem.hookfunction(0x48DA18, 1, 0, function(d, def, this)
 	local pl = playerFromPtr(this)
@@ -438,9 +505,12 @@ local function abilityOf(pl, spell)
 	local troll = isTroll(pl)
 	for _, key in ipairs(fam.Abilities) do
 		local a = ABILITIES[key]
-		if a.Spell == spell and stage >= a.Stage
+		local spot = fam.Spots and fam.Spots[key] or a.Spell
+		local needStage = fam.Stages and fam.Stages[key] or a.Stage
+		if spot == spell and stage >= needStage
 				and not (a.TrollOnly and not troll) and not (a.NotTroll and troll)
-				and not (a.Branch and knightBranch(pl) ~= a.Branch) then
+				and not (a.Branch and knightBranch(pl) ~= a.Branch)
+				and not (a.Branches and not a.Branches[knightBranch(pl) or ""]) then
 			return key, a
 		end
 	end
@@ -706,6 +776,8 @@ local function stealFrom(pl, mon)
 	end
 end
 local Challenged = {}  -- [monster index] = {pi = challenger, Until = time}
+local Marked = {}      -- [monster index] = until (Mark Prey)
+local GoreActive = false
 
 local function monsterDistance(mon)
 	local dx, dy, dz = mon.X - Party.X, mon.Y - Party.Y, mon.Z - Party.Z
@@ -738,7 +810,7 @@ local function meleeTarget(targetRef, range)
 end
 
 -- abilities that strike a monster in melee reach, and their reach
-local MELEE_ABILITIES = {RageStrike = true, StunningPalm = true, Flurry = true, Finisher = true}
+local MELEE_ABILITIES = {RageStrike = true, StunningPalm = true, Flurry = true, Finisher = true, Gore = true}
 
 -- can the ability be used right now: enough resource, and a monster in reach for the
 -- melee ones (Challenge: in its range)
@@ -756,6 +828,11 @@ local function bareHanded(pl)
 end
 local UNARMED_ABILITIES = {StunningPalm = true, Flurry = true}
 
+local function hasBow(pl)
+	local s = pl.ItemBow
+	return s ~= 0 and not pl.Items[s].Broken
+end
+
 -- combo points the thief has on a monster in reach now (0 if none)
 local function comboInReach(e)
 	if not e.Combo or not e.ComboMon then return 0 end
@@ -772,8 +849,17 @@ function MF.ClassAbilityUsable(pl, spell)
 	local key, a = abilityOf(pl, spell)
 	if not a then return false end
 	local e = state(playerIndex(pl))
-	if a.Cost > 0 and e.R < a.Cost then return false end
+	if a.Cost > 0 and abilityPool(pl) < a.Cost then return false end
 	if UNARMED_ABILITIES[key] and not bareHanded(pl) then return false end
+	if a.Shot then
+		-- armed for the next shot; from a slot only when the game will shoot (no monster in
+		-- melee reach) and not already armed
+		if not hasBow(pl) then return false end
+		if key == "AimedShot" and e.Aimed then return false end
+		if key == "Volley" and (e.Volley or 0) > 0 then return false end
+		return meleeTarget(nil) == nil
+	end
+	if key == "MarkPrey" then return meleeTarget(nil, MARK_RANGE) ~= nil end
 	if key == "Finisher" then
 		e.FinisherAt = e.FinisherAt or math.random(1, FINISHER_AUTO_MAX)
 		return comboInReach(e) >= e.FinisherAt
@@ -796,6 +882,19 @@ function events.CanPlayerCastSpell(t)
 	end
 end
 
+-- Aimed Shot / Volley: pay and arm the next shot(s)
+local function armShot(pl, key, a)
+	local e = state(playerIndex(pl))
+	spendAbility(pl, a.Cost)
+	if key == "AimedShot" then
+		e.Aimed = true
+		Game.ShowStatusText(string.format("%s takes aim", pl.Name), 2)
+	else
+		e.Volley = VOLLEY_SHOTS
+		Game.ShowStatusText(string.format("%s readies a volley", pl.Name), 2)
+	end
+end
+
 -- The attack spell (MM8patch: the Attack key with an attack spell set, player byte 1C8Eh)
 -- and the quick spell key both reach 0x42E84C with the spell in bl and the player in edi;
 -- the game then compares the spell's SP cost with the spell points and either queues the
@@ -806,7 +905,13 @@ mem.autohook(0x42E84C, function(d)
 	local pl = playerFromPtr(d.edi)
 	local spell = d.ebx % 256
 	if not pl or spell == 0 or not abilityOf(pl, spell) then return end
-	d:push(MF.ClassAbilityUsable(pl, spell) and 0x42E8AF or 0x42E923)
+	local key, a = abilityOf(pl, spell)
+	local usable = MF.ClassAbilityUsable(pl, spell)
+	if usable and a.Shot then
+		armShot(pl, key, a)        -- Aimed Shot / Volley: armed, then the game's bow shot
+		usable = false
+	end
+	d:push(usable and 0x42E8AF or 0x42E923)
 	return true
 end)
 
@@ -822,7 +927,7 @@ local function castAbility(pl, pi, spell, targetRef)
 	local e = state(pi)
 	local resName = resourceOf(pl)
 	if DEBUG then debugMsg("%s uses %s (%s %d, cost %d)", pl.Name, a.Name, resName or "SP", e.R, a.Cost) end
-	if a.Cost > 0 and e.R < a.Cost then
+	if a.Cost > 0 and abilityPool(pl) < a.Cost then
 		if key == "RageStrike" or a.Attack then
 			DoGameAction(23, 0, 0)        -- a normal attack, as with spell points
 		else
@@ -881,6 +986,35 @@ local function castAbility(pl, pi, spell, targetRef)
 		end
 		Pending[#Pending + 1] = {Kind = key, pi = pi, mi = mi}
 		pl:SetRecoveryDelay(pl:GetAttackDelay(false))
+	elseif a.Shot then
+		if not hasBow(pl) then
+			failCast(pl, string.format("%s needs a bow", a.Name))
+			return true
+		end
+		armShot(pl, key, a)
+		return true
+	elseif key == "MarkPrey" then
+		local mi = meleeTarget(targetRef, MARK_RANGE)
+		if not mi then
+			failCast(pl, "No prey in sight")
+			return true
+		end
+		Marked[mi] = Game.Time + MARK_TIME
+		Game.ShowStatusText(string.format("%s marks %s", pl.Name, Game.MonstersTxt[Map.Monsters[mi].Id].Name))
+		pl:SetRecoveryDelay(100)
+	elseif key == "Gore" then
+		local mi = meleeTarget(targetRef)
+		if not mi then
+			failCast(pl, "No enemy in reach")
+			return true
+		end
+		Pending[#Pending + 1] = {Kind = key, pi = pi, mi = mi}
+		pl:SetRecoveryDelay(pl:GetAttackDelay(false))
+	elseif key == "HerdFury" then
+		Effects[pi] = Effects[pi] or {}
+		Effects[pi].HerdFury = Game.Time + HERD_TIME
+		Game.ShowStatusText(string.format("%s is seized by the herd's fury", pl.Name))
+		pl:SetRecoveryDelay(60)
 	elseif key == "Finisher" then
 		local mi = (e.ComboMon and meleeTarget(e.ComboMon * 8 + 3)) or meleeTarget(targetRef)
 		if not mi then
@@ -951,7 +1085,7 @@ local function castAbility(pl, pi, spell, targetRef)
 		Game.ShowStatusText(string.format("%s's troll blood boils", pl.Name))
 		pl:SetRecoveryDelay(60)
 	end
-	if a.Cost > 0 then addResource(pl, -a.Cost) end
+	spendAbility(pl, a.Cost)
 	return true
 end
 
@@ -1098,6 +1232,20 @@ function events.Tick()
 						Game.ShowStatusText(string.format("%s: Flurry!", pl.Name), 2)
 					end
 				end
+			elseif r.Kind == "Gore" and pl then
+				local mon = Map.Monsters[r.mi]
+				if mon and mon.HP > 0 then
+					Game.ShowStatusText(string.format("%s: Gore!", pl.Name), 2)
+					GoreActive = true
+					local ok, err = pcall(mem.call, 0x436E26, 2, r.pi * 8 + 4, r.mi, RiposteVec)
+					GoreActive = false
+					if not ok then log("Gore failed: %s", tostring(err)) end
+					if mon.HP > 0 and math.random(100) <= GORE_STAGGER then
+						local b = mon.SpellBuffs[const.MonsterBuff.Paralyze]
+						b.ExpireTime = math.max(now + GORE_STAGGER_TIME, b.ExpireTime)
+						Game.ShowStatusText(string.format("%s staggers!", Game.MonstersTxt[mon.Id].Name), 2)
+					end
+				end
 			elseif r.Kind == "Finisher" and pl then
 				local mon = Map.Monsters[r.mi]
 				if mon and mon.HP > 0 then
@@ -1145,6 +1293,28 @@ function events.Tick()
 			local m = Map.Monsters[mi]
 			local k = Party.PlayersArray[c.pi]
 			if now >= c.Until or not m or m.HP <= 0 or not k or not k:IsConscious() then Challenged[mi] = nil end
+		end
+	end
+
+	-- hybrids: spell point refill in combat
+	for slot = 0, Party.count - 1 do
+		local pl = Party[slot]
+		local fam = familyOf(pl)
+		if fam and fam.Hybrid and not fam.Resource then
+			local e = state(playerIndex(pl))
+			local dt = now - (e.HLast or now)
+			e.HLast = now
+			local C = const.Condition
+			if dt > 0 and inCombat and pl.Conditions[C.Dead] == 0 and pl.Conditions[C.Stoned] == 0
+					and pl.Conditions[C.Eradicated] == 0 then
+				local full = pl:GetFullSP()
+				e.HAcc = (e.HAcc or 0) + HYBRID_REFILL * full * dt / const.Minute
+				local whole = math.floor(e.HAcc)
+				if whole > 0 then
+					e.HAcc = e.HAcc - whole
+					if pl.SP < full then pl.SP = math.min(full, pl.SP + whole) end
+				end
+			end
 		end
 	end
 
@@ -1236,6 +1406,7 @@ end
 
 function events.AfterLoadMap()
 	Challenged = {}
+	Marked = {}
 	for slot = 0, Party.count - 1 do
 		local pl = Party[slot]
 		updateSpells(pl)
@@ -1326,6 +1497,9 @@ function events.LoadMap()
 		if fx and fx.IronBody and fx.IronBody > Game.Time and t.DamageKind == const.Damage.Phys then
 			t.Result = math.max(1, math.floor(t.Result * (1 - IRON_BODY) + 0.5))
 		end
+		if fx and fx.HerdFury and fx.HerdFury > Game.Time and t.DamageKind == const.Damage.Phys then
+			t.Result = math.max(1, math.floor(t.Result * (1 - HERD_PHYS) + 0.5))
+		end
 		if usesRage(pl) then
 			if t.DamageKind == const.Damage.Phys and isTroll(pl) and state(pi).R >= RAGE.RecklessAt then
 				t.Result = math.max(1, math.floor(t.Result * (1 - RAGE.TrollHide) + 0.5))
@@ -1350,6 +1524,39 @@ function events.LoadMap()
 	function events.CalcDamageToMonster(t)
 		local pl = t.Player
 		if not pl then return end
+		-- Mark Prey: the party hits the marked monster harder
+		local mk = t.MonsterIndex and Marked[t.MonsterIndex]
+		if mk then
+			if mk > Game.Time then
+				t.Result = math.floor(t.Result * (1 + MARK_DAMAGE) + 0.5)
+			else
+				Marked[t.MonsterIndex] = nil
+			end
+		end
+		if t.DamageKind == const.Damage.Phys and not t.IsSecondary then
+			local who = WhoHitMonster and WhoHitMonster()
+			local arrow = type(who) == "table" and who.Object and (who.Spell or 0) == 0 and t.Melee ~= true
+			local e = state(playerIndex(pl))
+			if arrow then
+				if e.Aimed then
+					e.Aimed = nil
+					local m = 1 + AIMED_DAMAGE
+					if math.random() < AIMED_CRIT then
+						local _, d = MF.GetCritStats(pl, false)
+						m = m * math.max(1, d or 1.5)
+					end
+					t.Result = math.floor(t.Result * m + 0.5)
+					Game.ShowStatusText(string.format("%s: Aimed Shot!", pl.Name), 1)
+				end
+				if (e.Volley or 0) > 0 then e.Volley = e.Volley - 1 end
+			else
+				local fxh = Effects[playerIndex(pl)]
+				if fxh and fxh.HerdFury and fxh.HerdFury > Game.Time then
+					t.Result = math.floor(t.Result * (1 + HERD_DAMAGE) + 0.5)
+				end
+				if GoreActive then t.Result = math.floor(t.Result * (1 + GORE_DAMAGE) + 0.5) end
+			end
+		end
 		-- Vanish ends with the ninja's first blow
 		local fx = Effects[playerIndex(pl)]
 		if fx and fx.Vanish then
@@ -1433,6 +1640,9 @@ function events.LoadMap()
 		if berserk(playerIndex(pl)) then t.Result = t.Result * BERSERK_SPEED end
 		local st = stanceOf(pl)
 		if st and st.Recovery then t.Result = t.Result * st.Recovery end
+		-- Volley: quick recovery of the armed bow shots
+		local ev = store()[playerIndex(pl)]
+		if ev and (ev.Volley or 0) > 0 and t.Ranged then t.Result = t.Result * VOLLEY_RECOVERY end
 	end
 
 	-- Power stance: harder melee crits (MMMWE_Main.lua reads MF.GetCritStats at every roll)
