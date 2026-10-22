@@ -52,6 +52,11 @@
 	  attack, spell 137) costs BREATH.AttackCost, without enough Breath the dragon can't
 	  breathe (its turn passes); Dragon school spells cost spell points x 2 in Breath.
 
+	Technician family (Technician, Engineer, Ancient Researcher, Scientist, variants):
+	  spell points as before; Earth page: Deploy Droid (Engineer+) - a temporary allied melee
+	  robot that draws attacks and helps on single targets; one at a time, it keeps up with
+	  the party on the map (teleported when it falls far behind) and is removed on leaving.
+
 	Hybrids on spell points (Archer, Ranger, Dark Elf, Minotaur; Paladin for the refill):
 	  +1% of maximum spell points per game minute while hostile monsters are near.
 	  Archer (Body page): Aimed Shot, Volley (Master Archer, Sniper). Dark Elf (Body page):
@@ -221,6 +226,13 @@ local ABILITIES = {
 		Lines = {"40 Energy", "Party Invisibility and Wizard Eye", "Spy", "Lasts 10 minutes; power by the Stealing skill"},
 		Icon = {"sbth03a", "sbth03b"},},
 
+	-- Technicians (Earth page)
+	DeployDroid = {Spell = 36, Stage = 1, Cost = 25,
+		Name = "Deploy Droid",
+		Desc = "The technician assembles a combat droid that fights at the party's side in melee, drawing the attackers' attention and helping to bring single foes down. One droid at a time: casting again repairs it and resets its time. It keeps up with the party on the map, and shuts down when its time runs out or the party leaves the map.",
+		Lines = {"25 SP", "An allied melee droid; HP and damage grow with the technician's level", "Engineer", "Lasts 20 minutes + 2 per level"},
+		Icon = {"sbtc01a", "sbtc01b"},},
+
 	-- Hybrids (spell points). The spot is the family's (FAMILIES[].Spots) when it differs.
 	AimedShot = {Spell = 70, Stage = 0, Cost = 3, Shot = true,
 		Name = "Aimed Shot",
@@ -293,6 +305,18 @@ local HERD_TIME      = 5 * const.Minute
 local HERD_DAMAGE    = 0.15                  -- melee damage
 local HERD_PHYS      = 0.10                  -- physical damage taken -10%
 
+-- Technicians: Deploy Droid
+local DROID = {
+	Models      = {[1] = 388, [2] = 389, [3] = 390},  -- Seeker / Sentinel / Assassin Droid by stage
+	BaseTime    = 20 * const.Minute,
+	PerLevel    = 2 * const.Minute,     -- duration per level of the technician
+	HP          = 40, HPPerLevel = 12,
+	AC          = 10, ACPerLevel = 1,
+	DiceSides   = 8,                    -- damage: (1 + level/8)d8 + level/3, physical, melee
+	FollowDist  = 2500,                 -- farther than this from the party: brought back
+	SpawnDist   = 250,
+}
+
 -- Monks
 local STUN_TIME      = const.Minute          -- Stunning Palm: paralysis of a stunned monster
 local FLURRY_DAMAGE  = 0.60                  -- each of the two extra strikes
@@ -327,6 +351,7 @@ local FAMILIES = {
 	[8]  = {Name = "Monk", Resource = "Ki", Page = 2,
 		Abilities = {"StunningPalm", "InnerPeace", "Flurry", "IronBody", "Vanish"}},
 	[4]  = {Name = "Dragon", Resource = "Breath", Abilities = {}},   -- no ability page
+	[15] = {Name = "Technician", Page = 3, Abilities = {"DeployDroid"}},   -- spell points
 	[11] = {Name = "Thief", Resource = "Energy", Page = 5,
 		Abilities = {"Finisher", "PoisonedBlade", "ShadowVeil"}},
 	-- hybrids on spell points (Hybrid = combat refill)
@@ -944,6 +969,84 @@ local function failCast(pl, text)
 	Game.PlaySound(142)
 end
 
+-- droids: vars.MMMWE_Resources.Droids[pi] = {Map = map name, Index = monster index, Until = time}
+local function droids()
+	local st = store()
+	st.Droids = st.Droids or {}
+	return st.Droids
+end
+local function isDroidModel(id)
+	for _, m in pairs(DROID.Models) do if m == id then return true end end
+end
+local function monIndex(mon)
+	return (mon["?ptr"] - Map.Monsters[0]["?ptr"]) / Map.Monsters[0]["?size"]
+end
+-- the player's droid on this map, alive, or nil
+local function liveDroid(pi)
+	local d = droids()[pi]
+	if not d or d.Map ~= Map.Name then return end
+	local mon = d.Index < Map.Monsters.count and Map.Monsters[d.Index]
+	if mon and isDroidModel(mon.Id) and mon.HP > 0 and mon.AIState ~= const.AIState.Removed
+			and mon.Ally == 9999 then
+		return mon, d
+	end
+end
+local function removeMonster(mon)
+	mon.HP = 0
+	mon.AIState = const.AIState.Removed
+end
+local function partyPoint(dist)
+	local ang = (Party.Direction or 0) * math.pi / 1024
+	return math.floor(Party.X + dist * math.cos(ang)), math.floor(Party.Y + dist * math.sin(ang)), Party.Z
+end
+
+local function deployDroid(pl, pi)
+	local L = math.max(1, pl.LevelBase or 1)
+	local _, stage = classFamily(pl.Class)
+	local untilT = Game.Time + DROID.BaseTime + DROID.PerLevel * L
+	local mon, d = liveDroid(pi)
+	if mon then
+		mon.HP = mon.FullHP
+		d.Until = untilT
+		mon.SpellBuffs[const.MonsterBuff.Summoned or 2].ExpireTime = untilT
+		Game.ShowStatusText(string.format("%s repairs the droid", pl.Name))
+		return true
+	end
+	local id = DROID.Models[math.min(math.max(stage, 1), 3)]
+	local x, y, z = partyPoint(DROID.SpawnDist)
+	local ok, m, mi = pcall(SummonMonster, id, x, y, z, true)
+	if not ok or not m then
+		log("Deploy Droid failed: %s", tostring(m))
+		return false
+	end
+	local hp = DROID.HP + DROID.HPPerLevel * L
+	m.Level = math.min(L, 255)
+	m.FullHP = hp
+	m.HP = hp
+	m.ArmorClass = DROID.AC + DROID.ACPerLevel * L
+	m.Exp = 0
+	m.Bonus, m.BonusMul = 0, 0
+	m.Attack2Chance, m.SpellChance, m.Spell2Chance = 0, 0, 0
+	m.Special = 0
+	m.Attack1.Type = const.Damage.Phys
+	m.Attack1.DamageDiceCount = math.min(1 + math.floor(L / 8), 255)
+	m.Attack1.DamageDiceSides = DROID.DiceSides
+	m.Attack1.DamageAdd = math.min(math.floor(L / 3), 255)
+	m.Attack1.Missile = 0                  -- melee: it closes in instead of keeping distance
+	m.Fly = 0
+	m.Ally = 9999                           -- the party's side, as summoned elementals
+	m.Group = 0
+	m.Summoner = pi * 8 + 4
+	pcall(function() m.Hostile = false; m.ShowAsHostile = false end)
+	m.GuardX, m.GuardY, m.GuardZ = Party.X, Party.Y, Party.Z
+	local b = m.SpellBuffs[const.MonsterBuff.Summoned or 2]
+	b.ExpireTime = untilT
+	b.Power, b.Skill = 1, 1
+	droids()[pi] = {Map = Map.Name, Index = mi or monIndex(m), Until = untilT}
+	Game.ShowStatusText(string.format("%s deploys a droid", pl.Name))
+	return true
+end
+
 -- returns true if the cast was taken over
 local function castAbility(pl, pi, spell, targetRef)
 	local key, a = abilityOf(pl, spell)
@@ -1042,6 +1145,12 @@ local function castAbility(pl, pi, spell, targetRef)
 		end
 		Pending[#Pending + 1] = {Kind = key, pi = pi, mi = mi}
 		pl:SetRecoveryDelay(pl:GetAttackDelay(false))
+	elseif key == "DeployDroid" then
+		if not deployDroid(pl, pi) then
+			failCast(pl, "The droid can't be deployed here")
+			return true
+		end
+		pl:SetRecoveryDelay(150)
 	elseif key == "HerdFury" then
 		Effects[pi] = Effects[pi] or {}
 		Effects[pi].HerdFury = Game.Time + HERD_TIME
@@ -1337,6 +1446,24 @@ function events.Tick()
 				break
 			end
 		end
+		-- droids: shut down when their time is up, brought back when far behind the party
+		for pi, d in pairs(droids()) do
+			local mon = liveDroid(pi)
+			if not mon then
+				if d.Map == Map.Name then droids()[pi] = nil end
+			elseif now >= d.Until then
+				removeMonster(mon)
+				droids()[pi] = nil
+			else
+				mon.GuardX, mon.GuardY, mon.GuardZ = Party.X, Party.Y, Party.Z
+				local dx, dy = mon.X - Party.X, mon.Y - Party.Y
+				if dx * dx + dy * dy > DROID.FollowDist * DROID.FollowDist then
+					local x, y, z = partyPoint(-DROID.SpawnDist)
+					mon.X, mon.Y, mon.Z = x, y, z
+					mon.AIState = const.AIState.Active
+				end
+			end
+		end
 		-- challenges that ran out, or whose monster or knight is gone
 		for mi, c in pairs(Challenged) do
 			local m = Map.Monsters[mi]
@@ -1457,6 +1584,14 @@ function events.Tick()
 end
 
 function events.AfterLoadMap()
+	-- droids don't travel between maps: any of the party's droids found here is a leftover
+	for i = 0, Map.Monsters.count - 1 do
+		local mon = Map.Monsters[i]
+		if isDroidModel(mon.Id) and mon.Ally == 9999 and mon.Summoner % 8 == 4 and mon.HP > 0 then
+			removeMonster(mon)
+		end
+	end
+	store().Droids = {}
 	Challenged = {}
 	Marked = {}
 	for slot = 0, Party.count - 1 do
