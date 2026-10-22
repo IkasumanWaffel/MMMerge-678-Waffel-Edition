@@ -739,10 +739,42 @@ local MELEE_ABILITIES = {RageStrike = true, StunningPalm = true, Flurry = true, 
 
 -- can the ability be used right now: enough resource, and a monster in reach for the
 -- melee ones (Challenge: in its range)
+-- bare hands: no weapon in the main hand (a broken one doesn't count), none in the
+-- extra hand (a shield is fine) - Stunning Palm and Flurry are unarmed blows
+local function bareHanded(pl)
+	local main = pl.ItemMainHand
+	if main ~= 0 and not pl.Items[main].Broken then return false end
+	local extra = pl.ItemExtraHand
+	if extra ~= 0 and not pl.Items[extra].Broken then
+		local txt = Game.ItemsTxt[pl.Items[extra].Number]
+		if txt and txt.Skill ~= const.Skills.Shield then return false end
+	end
+	return true
+end
+local UNARMED_ABILITIES = {StunningPalm = true, Flurry = true}
+
+-- combo points the thief has on a monster in reach now (0 if none)
+local function comboInReach(e)
+	if not e.Combo or not e.ComboMon then return 0 end
+	if meleeTarget(e.ComboMon * 8 + 3) ~= e.ComboMon then return 0 end
+	return e.Combo
+end
+
+-- Finisher from the attack spell or a quick spell slot: struck when the combo reaches a
+-- number rolled from 1 to FINISHER_AUTO_MAX after each finisher (so the thief builds up
+-- combos of different length)
+local FINISHER_AUTO_MAX = 5
+
 function MF.ClassAbilityUsable(pl, spell)
 	local key, a = abilityOf(pl, spell)
 	if not a then return false end
-	if a.Cost > 0 and state(playerIndex(pl)).R < a.Cost then return false end
+	local e = state(playerIndex(pl))
+	if a.Cost > 0 and e.R < a.Cost then return false end
+	if UNARMED_ABILITIES[key] and not bareHanded(pl) then return false end
+	if key == "Finisher" then
+		e.FinisherAt = e.FinisherAt or math.random(1, FINISHER_AUTO_MAX)
+		return comboInReach(e) >= e.FinisherAt
+	end
 	if MELEE_ABILITIES[key] then return meleeTarget(nil) ~= nil end
 	if key == "Challenge" then return meleeTarget(nil, CHALLENGE_RANGE) ~= nil end
 	return true
@@ -760,6 +792,20 @@ function events.CanPlayerCastSpell(t)
 		t.Result = true
 	end
 end
+
+-- The attack spell (MM8patch: the Attack key with an attack spell set, player byte 1C8Eh)
+-- and the quick spell key both reach 0x42E84C with the spell in bl and the player in edi;
+-- the game then compares the spell's SP cost with the spell points and either queues the
+-- cast (0x42E8AF) or makes the normal attack (0x42E923). For an ability the choice is made
+-- here: cast it if it can be used now (resource, target in reach, combo), otherwise the
+-- normal attack, so a bow shot goes off at a far target and the turn goes on.
+mem.autohook(0x42E84C, function(d)
+	local pl = playerFromPtr(d.edi)
+	local spell = d.ebx % 256
+	if not pl or spell == 0 or not abilityOf(pl, spell) then return end
+	d:push(MF.ClassAbilityUsable(pl, spell) and 0x42E8AF or 0x42E923)
+	return true
+end)
 
 local function failCast(pl, text)
 	Game.ShowStatusText(text)
@@ -821,6 +867,10 @@ local function castAbility(pl, pi, spell, targetRef)
 		Game.ShowStatusText(string.format("%s rallies the party!", pl.Name))
 		pl:SetRecoveryDelay(100)
 	elseif key == "StunningPalm" or key == "Flurry" then
+		if not bareHanded(pl) then
+			failCast(pl, string.format("%s needs bare hands", a.Name))
+			return true
+		end
 		local mi = meleeTarget(targetRef)
 		if not mi then
 			failCast(pl, "No enemy in reach")
@@ -835,7 +885,12 @@ local function castAbility(pl, pi, spell, targetRef)
 			return true
 		end
 		local pts = (e.ComboMon == mi and e.Combo) or 0
+		if pts <= 0 then
+			failCast(pl, "No combo points on this target")
+			return true
+		end
 		e.Combo, e.ComboMon = nil, nil
+		e.FinisherAt = math.random(1, FINISHER_AUTO_MAX)
 		Pending[#Pending + 1] = {Kind = key, pi = pi, mi = mi, Points = pts}
 		pl:SetRecoveryDelay(pl:GetAttackDelay(false))
 	elseif key == "PoisonedBlade" then
