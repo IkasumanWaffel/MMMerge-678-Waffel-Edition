@@ -41,7 +41,12 @@ local CLASSES = {
 	small  = {Name = "Small",  Base = 15, PerSM = 0.5,  Cap = 55, MissileBonus = 10, Penalty = {0, 0, 0, 0}},
 	medium = {Name = "Medium", Base = 20, PerSM = 0.55, Cap = 62, MissileBonus = 10, Penalty = {8, 8, 5, 0}},
 	large  = {Name = "Large",  Base = 25, PerSM = 0.6,  Cap = 70, MissileBonus = 20, Penalty = {15, 15, 10, 0}},
+	-- the Reflector Shield folds like an umbrella: a large shield's cover (area spells and
+	-- breath too) without its weight (no extra penalty) and without a bash
+	reflector = {Name = "Reflector", Base = 25, PerSM = 0.6, Cap = 70, MissileBonus = 20, Penalty = {0, 0, 0, 0},
+		Area = true, NoBash = true},
 }
+CLASSES.large.Area = true
 
 local S = {
 	PowerBase        = 30,
@@ -71,7 +76,7 @@ local CLASS_OVERRIDES = {
 	[1321] = "medium",  -- Glory Shield (base armor 6)
 	[1460] = "medium",  -- Contestant's Shield (base armor 6)
 	[1474] = "large",   -- Lord Kilburn's Shield ("Signed Large Shield")
-	[967]  = "large",   -- Reflector Shield ("Ancient Energy Shield", base armor 8)
+	[967]  = "reflector",   -- Reflector Shield ("Ancient Energy Shield", base armor 8)
 }
 
 ---------------------------------------------------------------------------
@@ -198,7 +203,7 @@ function MF.ShieldBlock(pl, t, curseMult)
 
 	local shape, who = MF.IncomingHitShape(t)
 	if not shape then return 1, 1, 1 end
-	local large = info == CLASSES.large
+	local large = info.Area
 	local share = 1
 	if shape == "area" or shape == "breath" then
 		if not large then return 1, 1, 1 end
@@ -230,7 +235,7 @@ function MF.ShieldBlock(pl, t, curseMult)
 	if shape == "melee" and who and who.MonsterIndex and t.PlayerIndex then
 		if info == CLASSES.small and shM >= 3 and math.random() * 100 < S.CounterChance then
 			Pending[#Pending + 1] = {Kind = "counter", pi = t.PlayerIndex, mi = who.MonsterIndex}
-		elseif large and shM >= 4 and math.random() * 100 < S.BashChance then
+		elseif large and not info.NoBash and shM >= 4 and math.random() * 100 < S.BashChance then
 			Pending[#Pending + 1] = {Kind = "bash", pi = t.PlayerIndex, mi = who.MonsterIndex, S = shS, M = shM}
 		end
 	end

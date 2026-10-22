@@ -230,7 +230,7 @@ local ABILITIES = {
 	DeployDroid = {Spell = 36, Stage = 1, Cost = 25,
 		Name = "Deploy Droid",
 		Desc = "The technician assembles a combat droid that fights at the party's side in melee, drawing the attackers' attention and helping to bring single foes down. One droid at a time: casting again repairs it and resets its time. It keeps up with the party on the map, and shuts down when its time runs out or the party leaves the map.",
-		Lines = {"25 SP", "An allied droid: melee first, an energy shot now and then; grows with the technician's level", "Engineer", "Lasts 20 minutes + 2 per level"},
+		Lines = {"25 SP", "An allied droid: melee first, an energy shot now and then; grows with level and Repair", "Engineer", "Lasts 20 minutes + 2 per level"},
 		Icon = {"sbtc01a", "sbtc01b"},},
 
 	-- Hybrids (spell points). The spot is the family's (FAMILIES[].Spots) when it differs.
@@ -310,9 +310,11 @@ local DROID = {
 	Models      = {[1] = 388, [2] = 389, [3] = 390},  -- Seeker / Sentinel / Assassin Droid by stage
 	BaseTime    = 20 * const.Minute,
 	PerLevel    = 2 * const.Minute,     -- duration per level of the technician
-	HP          = 40, HPPerLevel = 12,
-	AC          = 10, ACPerLevel = 1,
-	DiceSides   = 8,                    -- damage: (1 + level/8)d8 + level/3, physical, melee
+	-- the droid grows with the technician's level and Repair skill (Scientists: Repair or
+	-- Alchemy, whichever is better - MF.TechRepairSkill); RSM = Repair skill x mastery
+	HP          = 40, HPPerLevel = 8, HPPerRSM = 2,
+	AC          = 10, ACPerLevel = 1, ACPerRepair = 1,
+	DiceSides   = 8,                    -- damage: (1 + level/8)d8 + level/4 + RSM/8, physical, melee
 	ShotChance  = 50,                   -- % for the energy shot (1 + level/12)d8 + level/4 as Attack2
 	FollowDist  = 2500,                 -- farther than this from the party: brought back
 	SpawnDist   = 250,
@@ -1020,11 +1022,13 @@ local function deployDroid(pl, pi)
 		log("Deploy Droid failed: %s", tostring(m))
 		return false
 	end
-	local hp = DROID.HP + DROID.HPPerLevel * L
+	local RS, RM = SplitSkill(MF.TechRepairSkill and MF.TechRepairSkill(pl) or pl:GetSkill(const.Skills.Repair))
+	local RSM = RS * RM
+	local hp = DROID.HP + DROID.HPPerLevel * L + DROID.HPPerRSM * RSM
 	m.Level = math.min(L, 255)
 	m.FullHP = hp
 	m.HP = hp
-	m.ArmorClass = DROID.AC + DROID.ACPerLevel * L
+	m.ArmorClass = DROID.AC + DROID.ACPerLevel * L + DROID.ACPerRepair * RS
 	m.Exp = 0
 	m.Bonus, m.BonusMul = 0, 0
 	m.SpellChance, m.Spell2Chance = 0, 0
@@ -1041,7 +1045,7 @@ local function deployDroid(pl, pi)
 	m.Attack1.Type = const.Damage.Phys
 	m.Attack1.DamageDiceCount = math.min(1 + math.floor(L / 8), 255)
 	m.Attack1.DamageDiceSides = DROID.DiceSides
-	m.Attack1.DamageAdd = math.min(math.floor(L / 3), 255)
+	m.Attack1.DamageAdd = math.min(math.floor(L / 4 + RSM / 8), 255)
 	m.Attack1.Missile = 0                  -- melee first: it closes in instead of keeping distance
 	m.Fly = 0
 	m.Ally = 9999                           -- the party's side, as summoned elementals

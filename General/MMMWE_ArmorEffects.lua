@@ -57,7 +57,8 @@ local function share(pl, skill)
 		local slot = pl[sw[1]]
 		if slot and slot > 0 then
 			local it = pl.Items[slot]
-			if it.Number > 0 and not it.Broken and Game.ItemsTxt[it.Number].Skill == skill then
+			local sk = MF.ArmorPieceSkill and MF.ArmorPieceSkill(pl, it.Number) or Game.ItemsTxt[it.Number].Skill
+			if it.Number > 0 and not it.Broken and sk == skill then
 				w, n = w + sw[2], n + 1
 			end
 		end
@@ -68,7 +69,8 @@ end
 local function bodySkill(pl)
 	local slot = pl.ItemArmor
 	if slot <= 0 or pl.Items[slot].Broken then return nil end
-	return Game.ItemsTxt[pl.Items[slot].Number].Skill
+	local num = pl.Items[slot].Number
+	return MF.ArmorPieceSkill and MF.ArmorPieceSkill(pl, num) or Game.ItemsTxt[num].Skill
 end
 
 -- dodge chance change from armor (% points)

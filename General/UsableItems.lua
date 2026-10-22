@@ -86,7 +86,9 @@ local function Ore(Target, Item)
   local slot, tier, level = getBlaster(Target)
   if not slot then return fail("Wrong target for modification.") end
 
-  local RS, RM = SplitSkill(Target:GetSkill(const.Skills.Repair))
+  -- Scientists may use Alchemy instead of Repair (MMMWE_Main.lua, MF.TechRepairSkill)
+  local RS, RM = SplitSkill(Merge.Functions.TechRepairSkill and Merge.Functions.TechRepairSkill(Target)
+    or Target:GetSkill(const.Skills.Repair))
   local _,  BM = SplitSkill(Target:GetSkill(const.Skills.Blaster))
 
   if tier == 4 then
@@ -117,7 +119,8 @@ local function Gemz(Target, Item)
   local slot, tier, level = getBlaster(Target)
   if not slot then return fail("Wrong target for modification.") end
 
-  local _, RM = SplitSkill(Target:GetSkill(const.Skills.Repair))
+  local _, RM = SplitSkill(Merge.Functions.TechRepairSkill and Merge.Functions.TechRepairSkill(Target)
+    or Target:GetSkill(const.Skills.Repair))
 
   if RM < GemRMreq[ind] then
     return fail(string.format(

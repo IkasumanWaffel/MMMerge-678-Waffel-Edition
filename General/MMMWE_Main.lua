@@ -438,6 +438,55 @@
 		[11] = {30, 15, 15, 0},  -- Plate
 	}
 
+	-- Technicians' workarounds (22.10.26):
+	--  - the Heavenly Forge chain suits (lore: lighter and more supple than any chain, worn by
+	--    Padish's officers before the Silence) count as leather for a Technician: no chain
+	--    penalties, leather effects, and the Chain skill is at least the Leather skill;
+	--  - the Reflector Shield (967): a Technician's Shield skill is at least the Repair skill;
+	--  - Scientists use the better of Repair and Alchemy where Repair is asked (blaster upgrades,
+	--    Deploy Droid)
+	local HEAVENLY_SUITS = {[877] = true, [1677] = true, [1306] = true}
+	local REFLECTOR = 967
+	local SCIENTIST = {[126] = true, [127] = true}
+	MF.HeavenlySuits = HEAVENLY_SUITS
+	local function techn(pl) return MF.IsTechnician and MF.IsTechnician(pl) end
+	function MF.LightSuit(pl, num)
+		if not num then
+			local s = pl.ItemArmor
+			if s <= 0 or pl.Items[s].Broken then return false end
+			num = pl.Items[s].Number
+		end
+		return HEAVENLY_SUITS[num] and techn(pl) or false
+	end
+	-- skill of a piece of armor for its penalties and effects
+	function MF.ArmorPieceSkill(pl, num)
+		if HEAVENLY_SUITS[num] and techn(pl) then return const.Skills.Leather end
+		return Game.ItemsTxt[num].Skill
+	end
+	local function betterSkill(a, b)
+		local sa, ma = SplitSkill(a)
+		local sb, mb = SplitSkill(b)
+		if mb > ma or (mb == ma and sb > sa) then return b end
+		return a
+	end
+	function MF.TechRepairSkill(pl)
+		local r = pl:GetSkill(const.Skills.Repair)
+		if SCIENTIST[pl.Class] then r = betterSkill(r, pl:GetSkill(const.Skills.Alchemy)) end
+		return r
+	end
+	function events.GetSkill(t)
+		local pl = t.Player
+		if not pl then return end
+		if t.Skill == const.Skills.Chain then
+			if MF.LightSuit(pl) then t.Result = betterSkill(t.Result, pl:GetSkill(const.Skills.Leather)) end
+		elseif t.Skill == const.Skills.Shield then
+			local sh = pl.ItemExtraHand
+			if sh > 0 and pl.Items[sh].Number == REFLECTOR and techn(pl) then
+				t.Result = betterSkill(t.Result, MF.TechRepairSkill(pl))
+			end
+		end
+	end
+
 	-- Total % added to (or, if negative, taken from) the attack delay of non-blaster attacks
 	-- by armor, shield and armor type effects (MMMWE_ArmorEffects.lua)
 	local function ArmorRecoveryPct(Pl)
@@ -448,7 +497,7 @@
 		end
 		local body = Pl.ItemArmor
 		if body > 0 and not Pl.Items[body].Broken then
-			local skill = Game.ItemsTxt[Pl.Items[body].Number].Skill
+			local skill = MF.ArmorPieceSkill(Pl, Pl.Items[body].Number)
 			local pen = BodyArmorPenalties[skill]
 			if pen and skill ~= 8 then pct = pct + pen[mastery(skill)] end
 		end
@@ -2041,7 +2090,7 @@
 
 		-- Armor penalty
 		if armorChest > 0 and not pl.Items[armorChest].Broken then
-			local armSkill = Game.ItemsTxt[pl.Items[armorChest].Number].Skill
+			local armSkill = MF.ArmorPieceSkill(pl, pl.Items[armorChest].Number)
 			for i = 1, 3 do
 				if armSkill == protSkills[i + 1] then
 					local _, armM = SplitSkill(pl:GetSkill(armSkill))
