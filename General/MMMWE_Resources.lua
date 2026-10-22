@@ -230,7 +230,7 @@ local ABILITIES = {
 	DeployDroid = {Spell = 36, Stage = 1, Cost = 25,
 		Name = "Deploy Droid",
 		Desc = "The technician assembles a combat droid that fights at the party's side in melee, drawing the attackers' attention and helping to bring single foes down. One droid at a time: casting again repairs it and resets its time. It keeps up with the party on the map, and shuts down when its time runs out or the party leaves the map.",
-		Lines = {"25 SP", "An allied melee droid; HP and damage grow with the technician's level", "Engineer", "Lasts 20 minutes + 2 per level"},
+		Lines = {"25 SP", "An allied droid: melee first, an energy shot now and then; grows with the technician's level", "Engineer", "Lasts 20 minutes + 2 per level"},
 		Icon = {"sbtc01a", "sbtc01b"},},
 
 	-- Hybrids (spell points). The spot is the family's (FAMILIES[].Spots) when it differs.
@@ -313,6 +313,7 @@ local DROID = {
 	HP          = 40, HPPerLevel = 12,
 	AC          = 10, ACPerLevel = 1,
 	DiceSides   = 8,                    -- damage: (1 + level/8)d8 + level/3, physical, melee
+	ShotChance  = 30,                   -- % for the energy shot (1 + level/12)d8 + level/4 as Attack2
 	FollowDist  = 2500,                 -- farther than this from the party: brought back
 	SpawnDist   = 250,
 }
@@ -1026,13 +1027,22 @@ local function deployDroid(pl, pi)
 	m.ArmorClass = DROID.AC + DROID.ACPerLevel * L
 	m.Exp = 0
 	m.Bonus, m.BonusMul = 0, 0
-	m.Attack2Chance, m.SpellChance, m.Spell2Chance = 0, 0, 0
+	m.SpellChance, m.Spell2Chance = 0, 0
 	m.Special = 0
+	-- the robot's own energy shot becomes its second attack, used now and then at range
+	-- (a melee-first monster with a ranged Attack2 shoots while it can't reach its target)
+	local shotType, shotMissile = m.Attack1.Type, m.Attack1.Missile
+	m.Attack2Chance = DROID.ShotChance
+	m.Attack2.Type = shotType
+	m.Attack2.Missile = shotMissile
+	m.Attack2.DamageDiceCount = math.min(1 + math.floor(L / 12), 255)
+	m.Attack2.DamageDiceSides = DROID.DiceSides
+	m.Attack2.DamageAdd = math.min(math.floor(L / 4), 255)
 	m.Attack1.Type = const.Damage.Phys
 	m.Attack1.DamageDiceCount = math.min(1 + math.floor(L / 8), 255)
 	m.Attack1.DamageDiceSides = DROID.DiceSides
 	m.Attack1.DamageAdd = math.min(math.floor(L / 3), 255)
-	m.Attack1.Missile = 0                  -- melee: it closes in instead of keeping distance
+	m.Attack1.Missile = 0                  -- melee first: it closes in instead of keeping distance
 	m.Fly = 0
 	m.Ally = 9999                           -- the party's side, as summoned elementals
 	m.Group = 0
