@@ -2515,47 +2515,63 @@
 		return Cond >= const.Condition.Zombie or Cond < const.Condition.Dead
 	end
 
-	-- SP per regen tick from Meditation (0 if none). Used by the tick and the character screen.
+	-- SP per regen tick from Meditation (0 if none), exact (fractions are kept by the
+	-- per-minute payout below). Used by the tick and the character screen.
 	local function CalcMeditationSPRegen(Player)
 		if not CanRegen(Player) then return 0 end
 		local RegS, RegM = SplitSkill(Player:GetSkill(const.Skills.Meditation))
 		if RegM <= 0 then return 0 end
 		RegS = RegS + Player:CalcStatBonusByItems(const.Stats.Meditation)
 		local Add = RegM + RegS/10
-		return round(Add + Add*Game.GetStatisticEffect(Player:GetIntellect())/10 + Add*Game.GetStatisticEffect(Player:GetPersonality())/20)
+		return Add + Add*Game.GetStatisticEffect(Player:GetIntellect())/10 + Add*Game.GetStatisticEffect(Player:GetPersonality())/20
 	end
 
-	-- HP per regen tick from the Regeneration skill (0 if none)
+	-- HP per regen tick from the Regeneration skill (0 if none), exact
 	local function CalcSkillHPRegen(Player)
 		if not CanRegen(Player) then return 0 end
 		local RegS, RegM = SplitSkill(Player:GetSkill(const.Skills.Regeneration))
 		local RegP = (RegS > 0 and 0.5 or 0) + RegS/10*RegM
-		return RegP > 0 and math.ceil(Player:GetFullHP()*RegP/100) or 0
+		return RegP > 0 and Player:GetFullHP()*RegP/100 or 0
 	end
 
-	-- HP per regen tick from an active Regeneration spell (healed by the game itself)
+	-- Regeneration spell: the buff's power is a whole number (the game heals it every tick);
+	-- the fraction of the exact amount is kept here and added on each tick
+	local RegenSpellFrac = {}            -- [PlayersArray index] = fraction
+	-- HP per regen tick from an active Regeneration spell, exact
 	local function CalcSpellHPRegen(Player)
 		if not CanRegen(Player) then return 0 end
 		local Buff = Player.SpellBuffs[const.PlayerBuff.Regeneration]
-		return Game.Time < Buff.ExpireTime and Buff.Power or 0
+		if Game.Time >= Buff.ExpireTime then return 0 end
+		return Buff.Power + (RegenSpellFrac[Player:GetIndex()] or 0)
 	end
 
 	-- Regeneration every game minute (23.10.26). The game's regeneration tick (0x491CCE)
-	-- runs every 5 game minutes and gives HP and SP at once: items, the Regeneration spell and
-	-- skill, Meditation, potions, artifacts (the RegenTick handlers run inside it). The HP and
-	-- SP it gives are taken back and paid out over the next 5 game minutes instead, a fifth
-	-- per minute, with fractions adding up. Losses (zombies, Fly and other drains) stay as
+	-- runs every 5 game minutes and gives HP and SP at once: items, the Regeneration spell,
+	-- artifacts (the RegenTick handlers run inside it). What it gives is taken back and paid
+	-- out over the next 5 game minutes instead, a fifth per minute, with fractions adding up.
+	-- Exact amounts (Meditation, the Regeneration skill and spell, potions) are handed in with
+	-- MF.RegenGive and paid out the same way. Losses (zombies, Fly and other drains) stay as
 	-- they are. The tick itself (and everything counted in ticks) is unchanged.
-	local REGEN_SPREAD = 5               -- game minutes a tick's gain is spread over
-	local RegenDrip = {}                 -- [PlayersArray index] = {HP, SP, HPRate, SPRate, HPAcc, SPAcc, Last}
+	local REGEN_SPREAD = 5               -- game minutes a gain is spread over
+	local RegenDrip = {}                 -- [PlayersArray index] = {HP = streams, SP = streams, HPAcc, SPAcc, Last}
 	local function dripOf(pi)
 		local d = RegenDrip[pi]
 		if not d then
-			d = {HP = 0, SP = 0, HPRate = 0, SPRate = 0, HPAcc = 0, SPAcc = 0, Last = Game.Time}
+			d = {HP = {}, SP = {}, HPAcc = 0, SPAcc = 0, Last = Game.Time}
 			RegenDrip[pi] = d
 		end
 		return d
 	end
+	-- a gain of `amount` (fractions welcome) paid out over REGEN_SPREAD game minutes
+	local function addStream(streams, amount)
+		if amount > 0 then streams[#streams + 1] = {amount, amount / REGEN_SPREAD} end
+	end
+	function MF.RegenGive(Player, hp, sp)
+		local dr = dripOf(Player:GetIndex())
+		addStream(dr.HP, hp or 0)
+		if not (MF.GetResource and MF.GetResource(Player)) then addStream(dr.SP, sp or 0) end
+	end
+
 	mem.hookfunction(0x491CCE, 0, 0, function(d, def)
 		if not vars then return def() end      -- a game being loaded: the tick as it is
 		local before = {}
@@ -2571,19 +2587,30 @@
 			-- waking up (HP from 0 or less to above 0) is left to the tick
 			if dh > 0 and b[1] > 0 then
 				p.HP = b[1]
-				dr.HP = dr.HP + dh
-				dr.HPRate = math.max(dr.HPRate, dh / REGEN_SPREAD)
+				addStream(dr.HP, dh)
 			end
 			-- class resources (MMMWE_Resources.lua) keep their own rules
 			local res = MF.GetResource and MF.GetResource(p)
 			if ds > 0 and not res then
 				p.SP = b[2]
-				dr.SP = dr.SP + ds
-				dr.SPRate = math.max(dr.SPRate, ds / REGEN_SPREAD)
+				addStream(dr.SP, ds)
 			end
 		end
 		return r
 	end)
+
+	-- pays out the streams for `mins` game minutes, returns the amount
+	local function payStreams(streams, mins)
+		local total, i = 0, 1
+		while i <= #streams do
+			local st = streams[i]
+			local give = math.min(st[1], st[2] * mins)
+			st[1] = st[1] - give
+			total = total + give
+			if st[1] <= 1e-9 then table.remove(streams, i) else i = i + 1 end
+		end
+		return total
+	end
 	function events.Tick()
 		local now = Game.Time
 		for slot = 0, Party.count - 1 do
@@ -2592,28 +2619,23 @@
 			if dr then
 				local mins = (now - dr.Last) / const.Minute
 				dr.Last = now
-				if mins > 0 and (dr.HP > 0 or dr.SP > 0) and CanRegen(p) then
-					if dr.HP > 0 then
-						local give = math.min(dr.HP, dr.HPRate * mins)
-						dr.HP, dr.HPAcc = dr.HP - give, dr.HPAcc + give
+				if mins > 0 and (#dr.HP > 0 or #dr.SP > 0) then
+					if CanRegen(p) then
+						dr.HPAcc = dr.HPAcc + payStreams(dr.HP, mins)
 						local whole = math.floor(dr.HPAcc)
 						if whole > 0 then
 							dr.HPAcc = dr.HPAcc - whole
 							p.HP = math.min(p:GetFullHP(), p.HP + whole)
+							if p.HP > 0 and p.Conditions[13] ~= 0 then p.Conditions[13] = 0 end
 						end
-					else
-						dr.HPRate = 0
-					end
-					if dr.SP > 0 then
-						local give = math.min(dr.SP, dr.SPRate * mins)
-						dr.SP, dr.SPAcc = dr.SP - give, dr.SPAcc + give
-						local whole = math.floor(dr.SPAcc)
+						dr.SPAcc = dr.SPAcc + payStreams(dr.SP, mins)
+						whole = math.floor(dr.SPAcc)
 						if whole > 0 then
 							dr.SPAcc = dr.SPAcc - whole
 							p.SP = math.min(p:GetFullSP(), p.SP + whole)
 						end
 					else
-						dr.SPRate = 0
+						dr.HP, dr.SP = {}, {}     -- the dead don't regenerate
 					end
 				end
 			end
@@ -2636,16 +2658,19 @@
 	end
 	MF.IsTechnician = isTechnician
 
-	-- Add a bit of sp regeneration by meditation skill
+	-- Meditation SP, the Regeneration skill HP and the fraction of the Regeneration spell, exact
 	function events.RegenTick(Player)
-		if isTechnician(Player) then return end   -- per game minute, below
-		local Add = CalcMeditationSPRegen(Player)
-		if Add > 0 then
-			Player.SP = math.min(Player:GetFullSP(), Player.SP + Add)
-		end
+		if not CanRegen(Player) then return end
+		local sp = isTechnician(Player) and 0 or CalcMeditationSPRegen(Player)   -- Technicians: per minute
+		local hp = CalcSkillHPRegen(Player)
+		local Buff = Player.SpellBuffs[const.PlayerBuff.Regeneration]
+		if Game.Time < Buff.ExpireTime then hp = hp + (RegenSpellFrac[Player:GetIndex()] or 0) end
+		if hp > 0 or sp > 0 then MF.RegenGive(Player, hp, sp) end
+		if Player.HP > 0 then Player.Conditions[13] = 0 end
 	end
 
-	local TechRegenLast = {}
+	-- Technicians: the full Meditation amount every game minute (fractions add up)
+	local TechRegenLast, TechRegenAcc = {}, {}
 	function events.Tick()
 		local now = Game.Time
 		for slot = 0, Party.count - 1 do
@@ -2658,38 +2683,30 @@
 				elseif now - last >= const.Minute then
 					local n = math.floor((now - last) / const.Minute)
 					TechRegenLast[pi] = last + n * const.Minute
-					local Add = CalcMeditationSPRegen(Player) * math.min(n, 24 * 60)
+					local acc = (TechRegenAcc[pi] or 0) + CalcMeditationSPRegen(Player) * math.min(n, 24 * 60)
+					local whole = math.floor(acc)
+					TechRegenAcc[pi] = acc - whole
 					local full = Player:GetFullSP()
-					if Add > 0 and Player.SP < full then
-						Player.SP = math.min(full, Player.SP + Add)
+					if whole > 0 and Player.SP < full then
+						Player.SP = math.min(full, Player.SP + whole)
 					end
 				end
 			end
 		end
 	end
-	
-	-- Make regeneration skill and spell mm7-alike
-	-- TODO: move everything into regeneration part of mm8 proc?
-	function events.RegenTick(Player)
-		if CanRegen(Player) then
-			local Add = CalcSkillHPRegen(Player)
-			if Add > 0 then
-				Player.HP = math.min(Player.HP + Add, Player:GetFullHP())
-			end
-			if Player.HP > 0 then
-				Player.Conditions[13] = 0
-			end
-		end
-	end
 
-	mem.autohook(0x4273fc, function(d)			-- Regeneration spell MM7-alike effect
+	-- Regeneration spell MM7-alike effect: 0.5% of full HP + 0.1% per skill x mastery each
+	-- tick; the buff gets the whole part, the fraction is added by the RegenTick above
+	mem.autohook(0x4273fc, function(d)
 		local Target = Party[mem.u4[d.ebx+4]]
 		local Cond = Target:GetMainCondition()
 		if Cond >= 17 or Cond < 14 then
 			local RegS = mem.i4[d.ebp-0x14]/3600
 			local RegM = mem.i4[d.ebp-0xC]
 			local FHP = Target:GetFullHP()
-			mem.i4[d.ebp-4] = math.ceil(0.005*FHP+0.001*RegM*RegS*FHP)
+			local exact = 0.005*FHP+0.001*RegM*RegS*FHP
+			mem.i4[d.ebp-4] = math.floor(exact)
+			RegenSpellFrac[Target:GetIndex()] = exact - math.floor(exact)
 		end
 	end)
 		

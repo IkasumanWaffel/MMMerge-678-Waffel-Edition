@@ -3,6 +3,17 @@ vars.PotionBuffs = vars.PotionBuffs or {}
 local PSet	= vars.PotionBuffs
 PSet.UsedPotions = PSet.UsedPotions or {}
 
+-- regeneration potions: the amount of each 5-minute step is paid out a fifth per game
+-- minute with fractions (MMMWE_Main.lua, MF.RegenGive); without it, at once as before
+local function potionGive(pl, hp, sp)
+	if MF.RegenGive then
+		MF.RegenGive(pl, hp, sp)
+	else
+		if hp and hp > 0 then pl.HP = math.min(pl:GetFullHP(), pl.HP + math.floor(hp)) end
+		if sp and sp > 0 then pl.SP = math.min(pl:GetFullSP(), pl.SP + math.floor(sp)) end
+	end
+end
+
 local HPPotionTimers = {}
 local SPPotionTimers = {}
 local DCPotionTimers = {}
@@ -292,7 +303,7 @@ function events.AfterLoadMap()
 				elseif Cond >= 17 or Cond < 14 then
 					MV.PotionHPReg[slot] = Power
 					local FHP = pl:GetFullHP()
-					pl.HP = math.min(FHP, pl.HP + Power)
+					potionGive(pl, Power, 0)
 					if pl.HP > 0 and pl.Conditions[13] > 0 then pl.Conditions[13] = 0 end
 				else
 					MV.PotionHPReg[slot] = 0
@@ -321,7 +332,7 @@ function events.AfterLoadMap()
 				elseif Cond >= 17 or Cond < 14 then
 					MV.PotionSPReg[slot] = Power
 					local FSP = pl:GetFullSP()
-					pl.SP = math.min(FSP, pl.SP + Power)
+					potionGive(pl, 0, Power)
 				else
 					MV.PotionSPReg[slot] = 0
 				end
@@ -359,11 +370,11 @@ evt.PotionEffects[2] = function(IsDrunk, Target, Power)
 		elseif Cond >= 17 or Cond < 14 then
 			MV.PotionHPReg[slot] = math.min(RegenHP, RegenCap)
 			local FHP = Pl:GetFullHP()
-			Pl.HP = math.min(FHP, Pl.HP + math.min(RegenHP, RegenCap))
+			potionGive(Pl, math.min(RegenHP, RegenCap), 0)
 			if Pl.HP > 0 and Pl.Conditions[13] > 0 then Pl.Conditions[13] = 0 end
 			local Buff = Game.PlayersExtra[Target:GetIndex()].SpellBuffs2[31]
 			Buff.ExpireTime = Time
-			Buff.Power = MV.PotionHPReg[slot]
+			Buff.Power = math.floor(MV.PotionHPReg[slot])
 		else
 			MV.PotionHPReg[slot] = 0
 		end
@@ -384,7 +395,7 @@ evt.PotionEffects[3] = function(IsDrunk, Target, Power)
 	if existingBuff and existingBuff.ExpireTime > Time then return end
 
 	local RegenSP = Power
-	local RegenCap = math.ceil(Target.LevelBase / 4 + 1)
+	local RegenCap = Target.LevelBase / 4 + 1
 
 	if SPPotionTimers[key] then
 		RemoveTimer(SPPotionTimers[key])
@@ -400,10 +411,10 @@ evt.PotionEffects[3] = function(IsDrunk, Target, Power)
 		elseif Cond >= 17 or Cond < 14 then
 			MV.PotionSPReg[slot] = math.min(RegenSP, RegenCap)
 			local FSP = Pl:GetFullSP()
-			Pl.SP = math.min(FSP, Pl.SP + math.min(RegenSP, RegenCap))
+			potionGive(Pl, 0, math.min(RegenSP, RegenCap))
 			local Buff = Game.PlayersExtra[Target:GetIndex()].SpellBuffs2[32]
 			Buff.ExpireTime = Time
-			Buff.Power = MV.PotionSPReg[slot]
+			Buff.Power = math.floor(MV.PotionSPReg[slot])
 		else
 			MV.PotionSPReg[slot] = 0
 		end
@@ -488,13 +499,13 @@ evt.PotionEffects[33] = function(IsDrunk, Target, Power)
 			HPPotionTimers[key] = nil
 			MV.PotionHPReg[slot] = 0
 		elseif Cond >= 17 or Cond < 14 then
-			MV.PotionHPReg[slot] = math.min(math.floor(RegenHP), math.floor(RegenCap * 1.5))
+			MV.PotionHPReg[slot] = math.min(RegenHP, RegenCap * 1.5)
 			local FHP = Pl:GetFullHP()
-			Pl.HP = math.min(FHP, Pl.HP + math.min(math.floor(RegenHP), math.floor(RegenCap * 1.5)))
+			potionGive(Pl, MV.PotionHPReg[slot], 0)
 			if Pl.HP > 0 and Pl.Conditions[13] > 0 then Pl.Conditions[13] = 0 end
 			local Buff = Game.PlayersExtra[Target:GetIndex()].SpellBuffs2[31]
 			Buff.ExpireTime = Time
-			Buff.Power = MV.PotionHPReg[slot]
+			Buff.Power = math.floor(MV.PotionHPReg[slot])
 		else
 			MV.PotionHPReg[slot] = 0
 		end
@@ -516,7 +527,7 @@ evt.PotionEffects[34] = function(IsDrunk, Target, Power)
 	if existingBuff and existingBuff.ExpireTime > Time then return end
 
 	local RegenSP = Power
-	local RegenCap = math.ceil(Target.LevelBase / 2 + 4)
+	local RegenCap = Target.LevelBase / 2 + 4
 
 	if SPPotionTimers[key] then
 		RemoveTimer(SPPotionTimers[key])
@@ -532,10 +543,10 @@ evt.PotionEffects[34] = function(IsDrunk, Target, Power)
 		elseif Cond >= 17 or Cond < 14 then
 			MV.PotionSPReg[slot] = math.min(RegenSP, RegenCap)
 			local FSP = Pl:GetFullSP()
-			Pl.SP = math.min(FSP, Pl.SP + math.min(RegenSP, RegenCap))
+			potionGive(Pl, 0, math.min(RegenSP, RegenCap))
 			local Buff = Game.PlayersExtra[Target:GetIndex()].SpellBuffs2[32]
 			Buff.ExpireTime = Time
-			Buff.Power = MV.PotionSPReg[slot]
+			Buff.Power = math.floor(MV.PotionSPReg[slot])
 		else
 			MV.PotionSPReg[slot] = 0
 		end
