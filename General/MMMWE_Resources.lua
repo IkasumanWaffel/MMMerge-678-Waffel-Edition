@@ -81,9 +81,9 @@ local RESOURCES = {
 	Rage    = {Max = 100, IdleTime = 10 * const.Minute, DrainPerMinute = 2, Bar = "manar", Color = 0x3050FF},
 	Resolve = {Max = 100, IdleTime = 10 * const.Minute, DrainPerMinute = 1, Bar = "manaY", Color = 0x40D0FF},
 	-- Ki: the maximum and the refill are the Monk's own (KI below); spells cost SP / SpellCostDiv
-	Ki      = {Max = 15, Bar = "ManaG", Color = 0xE0E040, SpellCostDiv = 5},
+	Ki      = {Max = 15, Bar = "manaT", Color = 0xE0E040, SpellCostDiv = 5},
 	-- Energy: spells cost spell points x SpellCostMul
-	Energy  = {Max = 100, Bar = "manaY", Color = 0x30B0FF, SpellCostMul = 5},
+	Energy  = {Max = 100, Bar = "manaO", Color = 0x30B0FF, SpellCostMul = 5},
 	Breath  = {Max = 100, Bar = "manar", Color = 0x2080FF, SpellCostMul = 2},
 }
 
@@ -1339,23 +1339,45 @@ end)
 
 -- Portrait bar: the spell point bar (texture in [ebp-18h] of the bars routine, 0x41B165 is
 -- the start of each character's SP bar) is drawn with RESOURCE_BAR[resource] instead
+-- Bitmaps the game itself doesn't load at start (manaO, manaT) are freed by the game when
+-- a map is loaded, so a kept pointer goes stale: the bitmap is looked up again whenever the
+-- entry at the kept index no longer carries its name (25.10.26).
 local RESOURCE_BAR = {}
 for name, r in pairs(RESOURCES) do RESOURCE_BAR[name] = r.Bar end
-local barOrig, barOurs = nil, {}
+local barOrig, barIdx = nil, {}
+local function barPtr(name)
+	local lod = Game.IconsLod
+	local idx = barIdx[name]
+	if idx then
+		local ok, same = pcall(function()
+			return idx < lod.Bitmaps.count and lod.Bitmaps[idx].Name:lower() == name:lower()
+		end)
+		if not (ok and same) then idx = nil end
+	end
+	if not idx then
+		local ok, i = pcall(function() return lod:LoadBitmap(name) end)
+		if not ok or not i or i < 0 then return end
+		idx = i
+		barIdx[name] = idx
+	end
+	return lod.Bitmaps[idx]["?ptr"]
+end
+local function isOurBar(ptr)
+	for name, idx in pairs(barIdx) do
+		local ok, p = pcall(function() return Game.IconsLod.Bitmaps[idx]["?ptr"] end)
+		if ok and p == ptr then return true end
+	end
+	return false
+end
 mem.autohook(0x41B165, function(d)
 	local cur = u4[d.ebp - 0x18]
-	local isOurs = false
-	for _, p in pairs(barOurs) do if p == cur then isOurs = true end end
-	if not isOurs then barOrig = cur end
+	if not isOurBar(cur) then barOrig = cur end
 	local slot = u4[d.ebp - 4]
 	local want = barOrig
 	if slot < Party.count then
 		local fam = familyOf(Party[slot])
 		local name = fam and fam.Resource and RESOURCE_BAR[fam.Resource]
-		if name then
-			barOurs[name] = barOurs[name] or bitmapPtr(name)
-			want = barOurs[name] or barOrig
-		end
+		if name then want = barPtr(name) or barOrig end
 	end
 	if want and want ~= cur then u4[d.ebp - 0x18] = want end
 end)
