@@ -835,6 +835,12 @@ end
 local Challenged = {}  -- [monster index] = {pi = challenger, Until = time}
 local Marked = {}      -- [monster index] = until (Mark Prey)
 local GoreActive = false
+-- an ability's melee blow (Rage Strike, Stunning Palm, Flurry, Gore, Finisher) is struck with
+-- the game's melee hit routine (0x436E26) from the tick; the damage handlers can't tell it
+-- apart from other hits by WhoHitMonster then, so AbilityStrike marks it as melee, and
+-- AbilityHit tells whether it landed (the routine rolls the hit itself)
+local AbilityStrike, AbilityHit = false, false
+local RiposteVec
 
 local function monsterDistance(mon)
 	local dx, dy, dz = mon.X - Party.X, mon.Y - Party.Y, mon.Z - Party.Z
@@ -1374,7 +1380,15 @@ local function updateStatsLabel()
 	spLabelNow = want
 end
 
-local RiposteVec = mem.StaticAlloc(12)
+RiposteVec = mem.StaticAlloc(12)
+local function abilityBlow(pl, pi, mi, what)
+	AbilityStrike, AbilityHit = true, false
+	local ok, err = pcall(mem.call, 0x436E26, 2, pi * 8 + 4, mi, RiposteVec)
+	AbilityStrike = false
+	if not ok then log("%s failed: %s", what, tostring(err)) end
+	if not AbilityHit then Game.ShowStatusText(string.format("%s's %s misses", pl.Name, what), 2) end
+	return AbilityHit
+end
 local nextSpellsUpdate = 0
 local nextCombatCheck, inCombat = 0, false
 
@@ -1392,16 +1406,14 @@ function events.Tick()
 				if pl and mon and mon.HP > 0 then
 					Game.ShowStatusText(string.format("%s: Rage Strike!", pl.Name), 2)
 					RageStrikeActive = true
-					local ok, err = pcall(mem.call, 0x436E26, 2, r.pi * 8 + 4, r.mi, RiposteVec)
+					abilityBlow(pl, r.pi, r.mi, "Rage Strike")
 					RageStrikeActive = false
-					if not ok then log("Rage Strike failed: %s", tostring(err)) end
 				end
 			elseif (r.Kind == "StunningPalm" or r.Kind == "Flurry") and pl then
 				local mon = Map.Monsters[r.mi]
 				if mon and mon.HP > 0 then
-					local ok, err = pcall(mem.call, 0x436E26, 2, r.pi * 8 + 4, r.mi, RiposteVec)
-					if not ok then log("%s failed: %s", r.Kind, tostring(err)) end
-					if r.Kind == "StunningPalm" and mon.HP > 0 then
+					local hit = abilityBlow(pl, r.pi, r.mi, r.Kind == "Flurry" and "Flurry" or "Stunning Palm")
+					if r.Kind == "StunningPalm" and hit and mon.HP > 0 then
 						local S, M = SplitSkill(pl:GetSkill(const.Skills.Unarmed))
 						local res = mon.Resistances[const.Damage.Phys]
 						if res ~= const.MonsterImmune and math.random(5, 100) + S + M * 2.5 > res then
@@ -1412,7 +1424,7 @@ function events.Tick()
 					elseif r.Kind == "Flurry" then
 						FlurryActive = true
 						for _ = 1, 2 do
-							if mon.HP > 0 then pcall(mem.call, 0x436E26, 2, r.pi * 8 + 4, r.mi, RiposteVec) end
+							if mon.HP > 0 then abilityBlow(pl, r.pi, r.mi, "Flurry") end
 						end
 						FlurryActive = false
 						Game.ShowStatusText(string.format("%s: Flurry!", pl.Name), 2)
@@ -1423,10 +1435,9 @@ function events.Tick()
 				if mon and mon.HP > 0 then
 					Game.ShowStatusText(string.format("%s: Gore!", pl.Name), 2)
 					GoreActive = true
-					local ok, err = pcall(mem.call, 0x436E26, 2, r.pi * 8 + 4, r.mi, RiposteVec)
+					local hit = abilityBlow(pl, r.pi, r.mi, "Gore")
 					GoreActive = false
-					if not ok then log("Gore failed: %s", tostring(err)) end
-					if mon.HP > 0 and math.random(100) <= GORE_STAGGER then
+					if hit and mon.HP > 0 and math.random(100) <= GORE_STAGGER then
 						local b = mon.SpellBuffs[const.MonsterBuff.Paralyze]
 						b.ExpireTime = math.max(now + GORE_STAGGER_TIME, b.ExpireTime)
 						Game.ShowStatusText(string.format("%s staggers!", Game.MonstersTxt[mon.Id].Name), 2)
@@ -1437,10 +1448,9 @@ function events.Tick()
 				if mon and mon.HP > 0 then
 					Game.ShowStatusText(string.format("%s: Finisher (%d)!", pl.Name, r.Points), 2)
 					FinisherPoints = r.Points
-					local ok, err = pcall(mem.call, 0x436E26, 2, r.pi * 8 + 4, r.mi, RiposteVec)
+					local hit = abilityBlow(pl, r.pi, r.mi, "Finisher")
 					FinisherPoints = nil
-					if not ok then log("Finisher failed: %s", tostring(err)) end
-					if r.Points >= ENERGY.ComboMax then stealFrom(pl, mon) end
+					if hit and r.Points >= ENERGY.ComboMax then stealFrom(pl, mon) end
 				end
 			elseif r.Kind == "WarCry" and pl then
 				local feared = 0
@@ -1750,7 +1760,8 @@ function events.LoadMap()
 		end
 		if t.DamageKind == const.Damage.Phys and not t.IsSecondary then
 			local who = WhoHitMonster and WhoHitMonster()
-			local arrow = type(who) == "table" and who.Object and (who.Spell or 0) == 0 and t.Melee ~= true
+			local arrow = not AbilityStrike and type(who) == "table" and who.Object and (who.Spell or 0) == 0 and t.Melee ~= true
+			if AbilityStrike then AbilityHit = true end
 			local e = state(playerIndex(pl))
 			if arrow then
 				if e.Aimed then
@@ -1791,8 +1802,8 @@ function events.LoadMap()
 		if t.DamageKind ~= const.Damage.Phys then return end
 		if FlurryActive then t.Result = math.floor(t.Result * FLURRY_DAMAGE + 0.5) end
 		if resourceOf(pl) == "Energy" and not t.IsSecondary then
-			local isMelee = t.Melee
-			if isMelee == nil then
+			local isMelee = t.Melee or AbilityStrike
+			if not isMelee and t.Melee == nil then
 				local who = WhoHitMonster and WhoHitMonster()
 				isMelee = type(who) == "table" and not who.Object
 			end
@@ -1827,8 +1838,8 @@ function events.LoadMap()
 				end
 			end
 		end
-		local melee = t.Melee
-		if melee == nil then
+		local melee = t.Melee or AbilityStrike
+		if not melee and t.Melee == nil then
 			local who = WhoHitMonster and WhoHitMonster()
 			melee = type(who) == "table" and not who.Object
 		end

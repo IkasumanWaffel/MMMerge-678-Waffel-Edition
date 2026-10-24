@@ -2540,6 +2540,88 @@
 		return Game.Time < Buff.ExpireTime and Buff.Power or 0
 	end
 
+	-- Regeneration every game minute (23.10.26). The game's regeneration tick (0x491CCE)
+	-- runs every 5 game minutes and gives HP and SP at once: items, the Regeneration spell and
+	-- skill, Meditation, potions, artifacts (the RegenTick handlers run inside it). The HP and
+	-- SP it gives are taken back and paid out over the next 5 game minutes instead, a fifth
+	-- per minute, with fractions adding up. Losses (zombies, Fly and other drains) stay as
+	-- they are. The tick itself (and everything counted in ticks) is unchanged.
+	local REGEN_SPREAD = 5               -- game minutes a tick's gain is spread over
+	local RegenDrip = {}                 -- [PlayersArray index] = {HP, SP, HPRate, SPRate, HPAcc, SPAcc, Last}
+	local function dripOf(pi)
+		local d = RegenDrip[pi]
+		if not d then
+			d = {HP = 0, SP = 0, HPRate = 0, SPRate = 0, HPAcc = 0, SPAcc = 0, Last = Game.Time}
+			RegenDrip[pi] = d
+		end
+		return d
+	end
+	mem.hookfunction(0x491CCE, 0, 0, function(d, def)
+		local before = {}
+		for slot = 0, Party.count - 1 do
+			local p = Party[slot]
+			before[slot] = {p.HP, p.SP}
+		end
+		local r = def()
+		for slot = 0, Party.count - 1 do
+			local p, b = Party[slot], before[slot]
+			local dr = dripOf(Party.PlayersIndexes[slot])
+			local dh, ds = p.HP - b[1], p.SP - b[2]
+			-- waking up (HP from 0 or less to above 0) is left to the tick
+			if dh > 0 and b[1] > 0 then
+				p.HP = b[1]
+				dr.HP = dr.HP + dh
+				dr.HPRate = math.max(dr.HPRate, dh / REGEN_SPREAD)
+			end
+			-- class resources (MMMWE_Resources.lua) keep their own rules
+			local res = MF.GetResource and MF.GetResource(p)
+			if ds > 0 and not res then
+				p.SP = b[2]
+				dr.SP = dr.SP + ds
+				dr.SPRate = math.max(dr.SPRate, ds / REGEN_SPREAD)
+			end
+		end
+		return r
+	end)
+	function events.Tick()
+		local now = Game.Time
+		for slot = 0, Party.count - 1 do
+			local p = Party[slot]
+			local dr = RegenDrip[Party.PlayersIndexes[slot]]
+			if dr then
+				local mins = (now - dr.Last) / const.Minute
+				dr.Last = now
+				if mins > 0 and (dr.HP > 0 or dr.SP > 0) and CanRegen(p) then
+					if dr.HP > 0 then
+						local give = math.min(dr.HP, dr.HPRate * mins)
+						dr.HP, dr.HPAcc = dr.HP - give, dr.HPAcc + give
+						local whole = math.floor(dr.HPAcc)
+						if whole > 0 then
+							dr.HPAcc = dr.HPAcc - whole
+							p.HP = math.min(p:GetFullHP(), p.HP + whole)
+						end
+					else
+						dr.HPRate = 0
+					end
+					if dr.SP > 0 then
+						local give = math.min(dr.SP, dr.SPRate * mins)
+						dr.SP, dr.SPAcc = dr.SP - give, dr.SPAcc + give
+						local whole = math.floor(dr.SPAcc)
+						if whole > 0 then
+							dr.SPAcc = dr.SPAcc - whole
+							p.SP = math.min(p:GetFullSP(), p.SP + whole)
+						end
+					else
+						dr.SPRate = 0
+					end
+				end
+			end
+		end
+	end
+	function events.AfterLoadMap()
+		for _, dr in pairs(RegenDrip) do dr.Last = Game.Time end
+	end
+
 	-- Technicians (Class Extra.txt kind 15): their spell points feed the energy shield, so
 	-- their Meditation refill comes every game minute instead of every regen tick
 	local TECH_KIND = 15
@@ -3618,8 +3700,13 @@
 		local totalSPR = CalcMeditationSPRegen(Pl) + SPRegFromItems
 			+ (MV.PotionSPReg[PlIndex + 1] or 0) - math.floor(MV.ZombieSPDegen[Pl.Name] or 0)
 
-		MV.HPR = cachedCstring(string.format('HP\t30 (%s%d/RTick)',
-			totalHPR >= 1 and '+' or '', totalHPR))
+		-- per game minute (the regeneration is paid out a fifth per minute)
+		local function perMin(v)
+			local m = v / REGEN_SPREAD
+			if m == math.floor(m) then return string.format('%s%d', m >= 0 and '+' or '', m) end
+			return string.format('%s%.1f', m >= 0 and '+' or '', m)
+		end
+		MV.HPR = cachedCstring(string.format('HP\t30 (%s/min)', perMin(totalHPR)))
 		local resName = MF.GetResource and select(3, MF.GetResource(Pl))
 		if resName then
 			-- class resource (MMMWE_Resources.lua): no regeneration, it drains when idle
@@ -3628,10 +3715,12 @@
 		elseif isTechnician(Pl) then
 			-- Meditation every game minute (items and potions on the regen tick as usual)
 			local med = CalcMeditationSPRegen(Pl)
-			MV.SPR = cachedCstring(string.format('SP\t30 (+%d/min)', med))
+			local other = totalSPR - med
+			local m = med + other / REGEN_SPREAD
+			MV.SPR = cachedCstring(string.format('SP\t30 (%s%s/min)', m >= 0 and '+' or '',
+				m == math.floor(m) and string.format('%d', m) or string.format('%.1f', m)))
 		else
-			MV.SPR = cachedCstring(string.format('SP\t30 (%s%d/RTick)',
-				totalSPR >= 1 and '+' or '', totalSPR))
+			MV.SPR = cachedCstring(string.format('SP\t30 (%s/min)', perMin(totalSPR)))
 		end
 
 		-- Armor Class and Physical Resistance
