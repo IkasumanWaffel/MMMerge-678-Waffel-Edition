@@ -43,6 +43,9 @@ local CONFIG = {
         [3] = {anchor = "portrait", dx = 0, dy = -80},
         [4] = {anchor = "portrait", dx = 0, dy = -80},
     },
+    -- power cell of a blaster in the main hand (MMMWE_Blasters.lua), small font, above HP
+    cell = {anchor = "portrait", dx = 0, dy = -104},
+    cellH = 18,
     sp = {
         [0] = {anchor = "portrait", dx = 0, dy = -54},
         [1] = {anchor = "portrait", dx = 0, dy = -54},
@@ -691,7 +694,16 @@ local function getValues(nPlayers)
             if Merge.Functions.GetResource then
                 pcall(function() resource = select(3, Merge.Functions.GetResource(p)) end)
             end
+            -- power cell (%) of a blaster in the main hand
+            local cell
+            if Merge.Functions.BlasterOf and Merge.Functions.BlasterState then
+                pcall(function()
+                    local gun = Merge.Functions.BlasterOf(p)
+                    if gun then cell = math.floor(Merge.Functions.BlasterState(gun).Cell / 2) end
+                end)
+            end
             v[i] = {
+                cell = cell,
                 resource = resource,
                 hp = p.HP or 0,
                 sp = p.SP or 0,
@@ -763,7 +775,7 @@ local function valuesChanged(v, nPlayers)
     for i = 0, nPlayers - 1 do
         local a, b = v[i], lastValues[i]
         if not b then return true end
-        if a.hp ~= b.hp or a.sp ~= b.sp or a.maxHP ~= b.maxHP or a.maxSP ~= b.maxSP then
+        if a.hp ~= b.hp or a.sp ~= b.sp or a.maxHP ~= b.maxHP or a.maxSP ~= b.maxSP or a.cell ~= b.cell then
             return true
         end
         -- Debuffs
@@ -1081,6 +1093,20 @@ local function drawOverlay()
 
         -- Switch to small font size for the rest of widgets
         gdi32.SelectObject(hdc, hFontSmall)
+
+        --=== BLASTER POWER CELL ===
+        local cellH = math.max(1, math.floor(CONFIG.cellH * baseScaleY))
+        for i = 0, nPlayers - 1 do
+            local d = lastValues[i]
+            local cx, cy = labelScreenXY(CONFIG.cell, portraitX[i], hpBarX[i], spBarX[i], portraitY, barY)
+            fillRect(hdc, cx, cy, cw, cellH, COLOR_KEY)
+            if d and d.exists and d.cell then
+                -- colours are BGR: green, yellow below 50%, red below 10%
+                local c = 0x88FF88
+                if d.cell < 10 then c = 0x4444FF elseif d.cell < 50 then c = 0x00FFFF end
+                drawText(hdc, string.format("Cell %d%%", d.cell), cx, cy, cw, cellH, c)
+            end
+        end
 
         --=== DEBUFFS (Game.PlayersExtra[i].Debuffs[]) ===
         for i = 0, nPlayers - 1 do
