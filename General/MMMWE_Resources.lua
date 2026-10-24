@@ -475,7 +475,10 @@ end
 -- resource state (saved)
 ---------------------------------------------------------------------------
 
+local TempStore = {}
 local function store()
+	-- vars doesn't exist yet while a game is being loaded (the regeneration tick can run then)
+	if not vars then return TempStore end
 	vars.MMMWE_Resources = vars.MMMWE_Resources or {}
 	return vars.MMMWE_Resources
 end

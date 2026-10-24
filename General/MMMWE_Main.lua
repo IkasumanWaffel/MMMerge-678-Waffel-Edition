@@ -2557,6 +2557,7 @@
 		return d
 	end
 	mem.hookfunction(0x491CCE, 0, 0, function(d, def)
+		if not vars then return def() end      -- a game being loaded: the tick as it is
 		local before = {}
 		for slot = 0, Party.count - 1 do
 			local p = Party[slot]
