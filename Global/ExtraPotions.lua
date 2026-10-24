@@ -566,6 +566,9 @@ evt.PotionEffects[13] = function(IsDrunk, Target, Power)
 			Target.Charges = math.min(Target.Charges + Power, 50 + 25*RM + RS)
 		elseif Itnum == 966 then
 			Target.Charges = math.min(Target.Charges + Power*2, 250*RM)
+		elseif Merge.Functions.BlasterRecharge and Merge.Functions.BlasterRecharge(Target, Power) then
+			-- a blaster's power cell: Power % (MMMWE_Blasters.lua), no loss of capacity
+			Game.ShowStatusText(string.format("Power cell: %d%%", math.floor(Target.MaxCharges / 2)))
 		end
 		return 3
 	end

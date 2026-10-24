@@ -596,10 +596,8 @@
 
 		-- Blaster: fixed recovery
 		if main and not main.Broken and Game.ItemsTxt[main.Number].Skill == const.Skills.Blaster then
-			local base = select(math.floor(main.Number / 800), 865, 1665)
-			local idx = main.Number - base
-			local chargeMod = math.floor(main.Charges / 1000) * 5
-			t.Result = select(idx, 50 - chargeMod, 35 - chargeMod)
+			-- the Capacitor spec sets it (MMMWE_Blasters.lua)
+			t.Result = MF.BlasterRecovery(main)
 			return
 		end
 		-- wands keep the game's recovery (their spell's)
@@ -1368,20 +1366,19 @@
 	-- (it used to be skill x tier, which left T1-T2 weak and made T4 explode); crit chance
 	-- and crit damage grow with skill; eradication depends on the share of the target's HP
 	-- each hit takes, so long fights (bosses) are not eradicated more often than short ones.
+	-- 25.10.26: damage, fire rate, eradication and the power cell come from the gun's specs
+	-- (MMMWE_Blasters.lua); the Blaster skill gives the attack bonus and critical hits.
 	local BLASTER = {
-		DmgPerTier       = 0.25,   -- x base damage per upgrade tier
-		DmgPerSkill      = 0.11,   -- x base damage per point of Blaster skill
-		CritChancePerSkill = 0.6,  -- % crit chance per point of skill
-		CritDamagePerSkill = 3,    -- % crit damage per point of skill
-		EradPerTier      = 0.12,   -- eradication strength per tier (about 1 - exp(-0.12 x tier) of kills with no Body resistance)
+		CritChancePerSkill = 1,    -- % crit chance per point of skill
+		CritDamagePerSkill = 4,    -- % crit damage per point of skill
 		EradCritMul      = 1.5,    -- a critical hit's eradication chance multiplier
 		EradMaxPerHit    = 0.5,    -- cap per hit
 	}
 	MF.BlasterBalance = BLASTER
 
-	-- damage multiplier of a blaster with upgrade tier T at Blaster skill BS
-	local function blasterScale(T, BS)
-		return 1 + BLASTER.DmgPerTier * T + BLASTER.DmgPerSkill * BS
+	-- damage multiplier of a blaster item: the Emitter spec (MMMWE_Blasters.lua)
+	local function blasterScale(item)
+		return (MF.BlasterDamageMult(item))
 	end
 	MF.BlasterScale = blasterScale
 
@@ -1392,9 +1389,8 @@
 		if slot <= 0 then return end
 		local it = Player.Items[slot]
 		if Game.ItemsTxt[it.Number].Skill ~= 7 then return end
-		local BS = SplitSkill(Player:GetSkill(const.Skills.Blaster))
 		local blasterType = it.Number - select(math.floor(it.Number / 800), 865, 1665)
-		local scale = blasterScale(math.floor(it.Charges / 1000), BS)
+		local scale = blasterScale(it)
 		return round(select(blasterType, 10, 15) * scale), round(select(blasterType, 20, 30) * scale)
 	end
 	MF.BlasterDamageRange = blasterRange
@@ -1420,8 +1416,6 @@
 		local CDBase  = 50
 		local CCBase  = 10
 
-		local modTier = math.floor(Player.Items[item].Charges / 1000)
-
 		-- Item crit bonus (Bonus2 == 145)
 		local specCritC, specCritD = 0, 0
 		for eqItem, slot in Player:EnumActiveItems() do
@@ -1434,8 +1428,8 @@
 		-- Curse mult
 		local curseMult = Player.Conditions[0] > 0 and 0.5 or 1
 
-		-- Damage scaling by skill and upgrade tier
-		local scale = blasterScale(modTier, BS)
+		-- Damage from the Emitter spec only (the skill adds crits)
+		local scale = blasterScale(Player.Items[item])
 		DMin = round(DMin * scale)
 		DMax = round(DMax * scale)
 
@@ -1725,6 +1719,12 @@
 			return
 		end
 
+		-- an empty blaster's bash or a Chain disruption hit (MMMWE_Blasters.lua)
+		if MF.BlasterSpecs and MF.BlasterSpecs.Forced then
+			t.Result = MF.BlasterSpecs.Forced
+			return
+		end
+
 		local Pl = t.Player
 		local Melee = t.Melee
 
@@ -1773,17 +1773,21 @@
 				local CritProc = 0
 				t.Result, CritProc = CalcBlasterDamage(Pl)
 
-				local modTier = math.floor(Pl.Items[mainHand].Charges / 1000)
+				-- Disruptor spec (Emitter 4: crits count half the Body resistance and
+				-- eradicate at tier 1 strength without a Disruptor), MMMWE_Blasters.lua
+				local eradStrength, bodyMul = MF.BlasterEradication(Pl.Items[mainHand], CritProc == 1)
 				local Mon = t.Monster
 				-- Eradication: tier x Body resistance factor x (share of the full HP this hit
 				-- takes) x (share of HP already lost) x 2. Over a whole fight the shares add up
 				-- to about 1, so the chance per kill does not depend on how many hits it takes.
 				local eradicationChance = 0
-				if modTier > 0 and Mon.FullHP > 0 and Mon.HP > 0 then
+				if eradStrength > 0 and Mon.FullHP > 0 and Mon.HP > 0 then
 					local lost = math.max(0, 1 - Mon.HP / Mon.FullHP)
 					local share = math.min(t.Result, Mon.HP) / Mon.FullHP
-					eradicationChance = BLASTER.EradPerTier * modTier
-						* CalcMonResPercent(Mon.BodyResistance) * share * lost * 2
+					local body = Mon.BodyResistance
+					if body < 65000 then body = math.floor(body * bodyMul) end
+					eradicationChance = eradStrength
+						* CalcMonResPercent(body) * share * lost * 2
 					if CritProc == 1 then
 						eradicationChance = eradicationChance * BLASTER.EradCritMul
 					end
@@ -1791,7 +1795,9 @@
 				end
 
 				if eradicationChance > 0 and math.random() < eradicationChance then
+					local hit = t.Result
 					t.Result = Mon.HP
+					if MF.BlasterChain then MF.BlasterChain(Pl, Mon, hit) end
 					Game.PlaySound(math.random(44671,44673), MonSoundRef(Mon))
 					Mon:ChangeLook(241)
 					Mon:SetCustomFrames(nil, nil, nil, nil, nil, nil, 'm203x', 'm207d', nil)
@@ -2735,15 +2741,17 @@
 	-- Special items
 	local SpecialItemGroups = {
 		[191] = 1, [192] = 2, [193] = 3,
-		[866] = 4, [867] = 4, [1666] = 4, [1667] = 4,  
+		[866] = 4, [867] = 4, [1666] = 4, [1667] = 4, [962] = 7,
 		[970] = 5, [971] = 5, [972] = 5, [973] = 5, [975] = 5, [976] = 5,
 		[977] = 5, [978] = 5, [980] = 5, [981] = 5, [982] = 5, [983] = 5,
 		[984] = 5, [985] = 5, [986] = 5, [987] = 5,
 		[969] = 6, [974] = 6, [979] = 6,
 	}
 
+	local DICell = 0
 	mem.autohook(0x41d3b3, function(d)
 		DICharge = mem.i4[d.ecx + 0x10]
+		DICell = mem.u1[d.ecx + 0x19]
 	end)
 
 	mem.autohook(0x41d217, function(d)
@@ -2870,8 +2878,9 @@
 		elseif group == 3 then
 			return cachedCstring(string.format("Bottles: %d", ch))
 		elseif group == 4 then
-			return cachedCstring(string.format("Upgrade: T%d    Mod Progress: %d%s",
-				math.floor(ch / 1000), math.fmod(ch, 1000),"%%"))
+			return cachedCstring(MF.BlasterCardText(ch, DICell))
+		elseif group == 7 then
+			return cachedCstring(MF.ToolkitCardText(ch))
 		elseif group == 5 then
 			return cachedCstring(string.format("Ant: %d Jad: %d",
 				math.fmod(math.modf(ch / 100), 100), math.fmod(ch, 100)))
@@ -2885,12 +2894,12 @@
 	function DefineBlasterModString(ItNumber, BS)
 		local base = math.floor(ItNumber / 800) == 1 and 865 or 1665
 		local bt = ItNumber - base
-		local modTier = math.floor(DICharge / 1000)
 		local dMin = bt == 1 and 10 or 15
 		local dMax = bt == 1 and 20 or 30
 		local cBase = bt == 1 and 8 or 12
 
-		local scale = blasterScale(modTier, BS)
+		-- the Emitter spec of the item shown (read from its raw Charges)
+		local scale = MF.BlasterCardDamageMult and MF.BlasterCardDamageMult(DICharge) or 1
 		dMin = round(dMin * scale)
 		dMax = round(dMax * scale)
 
@@ -2902,6 +2911,9 @@
 
 	mem.autohook(0x41ced5, function(d)
 		local IN = d.eax
+		-- ecx = the item shown: its Charges and power cell for the blaster lines
+		DICharge = mem.i4[d.ecx + 0x10]
+		DICell = mem.u1[d.ecx + 0x19]
 		local pl = Party:GetCurrentPlayer()
 		local BS, BM = SplitSkill(pl:GetSkill(7))
 
@@ -3073,7 +3085,8 @@
 	
 	mem.autohook(0x48CCAA, RangedDamageHook(0x48CCCF))
 
-	-- Widget V-offset patches
+	-- Widget V-offset patches
+
 	-- The edited fr_stats backgrounds (Data/Icons) have the HP box and the box below it
 	-- 8 px higher; everything from the HP line down follows. 0 = original backgrounds.
 	local STATS_BOX_SHIFT = 8
