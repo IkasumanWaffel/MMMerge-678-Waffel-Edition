@@ -3704,7 +3704,6 @@
 		-- per game minute (the regeneration is paid out a fifth per minute)
 		local function perMin(v)
 			local m = v / REGEN_SPREAD
-			if m == math.floor(m) then return string.format('%s%d', m >= 0 and '+' or '', m) end
 			return string.format('%s%.1f', m >= 0 and '+' or '', m)
 		end
 		MV.HPR = cachedCstring(string.format('HP\t30 (%s/min)', perMin(totalHPR)))
@@ -3718,8 +3717,7 @@
 			local med = CalcMeditationSPRegen(Pl)
 			local other = totalSPR - med
 			local m = med + other / REGEN_SPREAD
-			MV.SPR = cachedCstring(string.format('SP\t30 (%s%s/min)', m >= 0 and '+' or '',
-				m == math.floor(m) and string.format('%d', m) or string.format('%.1f', m)))
+			MV.SPR = cachedCstring(string.format('SP\t30 (%s%.1f/min)', m >= 0 and '+' or '', m))
 		else
 			MV.SPR = cachedCstring(string.format('SP\t30 (%s/min)', perMin(totalSPR)))
 		end
