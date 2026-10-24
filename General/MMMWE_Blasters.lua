@@ -523,6 +523,7 @@ end
 ---------------------------------------------------------------------------
 
 local Pending = {}
+local CellFrac = {}   -- while no game is loaded
 B.Forced = nil       -- damage forced on the next hit (bash, chain); read by MMMWE_Main.lua
 
 local function monsterDistance(m, x, y, z)
@@ -575,9 +576,16 @@ mem.autohook(0x42609E, function(d)
 		d:push(0x42D45D)
 		return true
 	end
-	-- one shot's share of the cell, in 0.5% steps with random rounding
+	-- one shot's share of the cell, in 0.5% steps; the fraction is kept per gun (by the
+	-- character and the item slot) and adds up, so every shot drains exactly its share
 	local use = B.CellFull / capacity(gun, st)
-	local steps = floor(use + random())
+	local key = pl:GetIndex() * 1000 + pl.ItemMainHand
+	local fracs = vars and vars.BlasterCellFrac
+	if vars and not fracs then fracs = {} vars.BlasterCellFrac = fracs end
+	fracs = fracs or CellFrac
+	local acc = (fracs[key] or 0) + use
+	local steps = floor(acc)
+	fracs[key] = acc - steps
 	local before = st.Cell
 	st.Cell = max(0, st.Cell - steps)
 	gun.MaxCharges = st.Cell
