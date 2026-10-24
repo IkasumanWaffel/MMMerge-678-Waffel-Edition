@@ -270,7 +270,7 @@ function MF.BlasterCardText(ch, cell)
 		local _, BM = SplitSkill(pl:GetSkill(const.Skills.Blaster))
 		lim = BM > 0 and B.Limit[min(4, BM)] or 0
 	end
-	return string.format("%s %s  %s %s\n%s %s  %s %s\nUpgrades: %d/%d   Work: %d%%%%   Cell: %d%%%%",
+	return string.format("%s %s  %s %s\n%s %s  %s %s\nUpgrades: %d/%d   Work: %d%%%%\nCharge: %d%%%%",
 		SPEC_SHORT[1], pips(st, 1), SPEC_SHORT[2], pips(st, 2),
 		SPEC_SHORT[3], pips(st, 3), SPEC_SHORT[4], pips(st, 4),
 		st.Count, lim, st.Work, floor(st.Cell / 2))
