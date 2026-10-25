@@ -19,7 +19,8 @@
 
 	Chance per damaging hit:
 	  BASE_CHANCE x (monster level + 30) / (monster level + 30 + save)
-	  save = the drained stat, the base resistance, or the Armor Class (without corrosion)
+	  save = the drained stat, the base resistance, or half the Armor Class (without
+         corrosion; AC_SAVE)
 	The monster level raises the chance as for the game's own conditions; a higher stat /
 	resistance / AC resists better.
 
@@ -41,6 +42,7 @@ local BASE_CHANCE   = 25      -- % per damaging hit before the save
 local STAT_STEP     = 1       -- stat bonus points per drain
 local RES_STEP      = 0.03    -- damage reduction per resistance drain
 local AC_STEP       = 0.05    -- share of the uncorroded physical resistance per corrosion
+local AC_SAVE       = 0.5     -- share of the Armor Class that counts as the save against corrosion
 local DURATION      = 7 * const.Day   -- "until rest": long, renewed with every drain
 
 local STATS = {"Might", "Intellect", "Personality", "Endurance", "Accuracy", "Speed", "Luck"}
@@ -137,7 +139,7 @@ end
 local function saveValue(pl, what, b)
 	if RES_STAT[what] then return math.max(pl:GetBaseResistance(RES_STAT[what]), 0) end
 	if what == "ArmorClass" then
-		return pl:GetArmorClass() + (active(b) and b.Power or 0)
+		return (pl:GetArmorClass() + (active(b) and b.Power or 0)) * AC_SAVE
 	end
 	return math.max(statValue(pl, what), 0)
 end
