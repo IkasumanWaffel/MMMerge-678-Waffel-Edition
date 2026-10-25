@@ -735,11 +735,10 @@ local function shopOreGrade(best)
 	return random(5, 6)
 end
 
-function events.ShopRefilled(items)
-	if B.ShopDebug then Game.ShowStatusText("Shop refilled") end
-	if random() >= B.ShopOreChance then return end
+local function looksLikeBlacksmith(items)
 	local weapons, total, best, empty = 0, 0, 0, {}
-	for i, it in items do
+	for i = 0, 11 do
+		local it = items[i]
 		if it.Number > 0 then
 			total = total + 1
 			local txt = Game.ItemsTxt[it.Number]
@@ -749,16 +748,13 @@ function events.ShopRefilled(items)
 			empty[#empty + 1] = i
 		end
 	end
-	if total == 0 or weapons * 2 < total then return end   -- blacksmiths only
+	return total > 0 and weapons * 2 >= total, best, empty, total, weapons
+end
+
+local function stockOre(items, best, empty)
 	local base = (Merge.Vars and Merge.Vars.Continent == 2) and 1488 or 686
 	for n = 1, random(1, B.ShopOreMax) do
-		local slot = table.remove(empty, random(1, max(1, #empty)))
-		if not slot then
-			-- no free place: replace a random item
-			local all = {}
-			for i, it in items do all[#all + 1] = i end
-			slot = all[random(1, #all)]
-		end
+		local slot = #empty > 0 and table.remove(empty, random(1, #empty)) or random(0, 11)
 		local it = items[slot]
 		it.Number = base + shopOreGrade(best) - 1
 		it.Bonus, it.Bonus2, it.BonusStrength, it.Charges, it.MaxCharges = 0, 0, 0, 0, 0
@@ -769,6 +765,52 @@ function events.ShopRefilled(items)
 		end
 	end
 end
+
+-- A shop's refill: 0x4BAFFB and 0x4BB000 call the routines that fill the standard and the
+-- special items. The item numbers of all assortments are noted before, and the assortment
+-- that changed is this shop's. Only weapon shops (house type 1, the dialog's house at
+-- [[0x519328]+1Ch]) get ore.
+local ShopSnapshot
+mem.autohook(0x4BAFFB, function(d)
+	ShopSnapshot = {}
+	pcall(function()
+		for i, items in Game.ShopItems do
+			local t = {}
+			for k = 0, 11 do t[k] = items[k].Number end
+			ShopSnapshot[i] = t
+		end
+	end)
+end)
+
+mem.autohook(0x4BB005, function(d)
+	local snap = ShopSnapshot
+	ShopSnapshot = nil
+	local ok, house = pcall(function() return u4[u4[0x519328] + 0x1C] end)
+	local htype = ok and Game.Houses[house] and Game.Houses[house].Type
+	if htype ~= 1 or not snap then
+		if B.ShopDebug then Game.ShowStatusText(string.format("Shop refilled: house %s, type %s", tostring(house), tostring(htype))) end
+		return
+	end
+	local found, changed = nil, 0
+	pcall(function()
+		for i, items in Game.ShopItems do
+			local t = snap[i]
+			if t then
+				for k = 0, 11 do
+					if items[k].Number ~= t[k] then found = found or i; changed = changed + 1 break end
+				end
+			end
+		end
+	end)
+	if B.ShopDebug then
+		Game.ShowStatusText(string.format("Weapon shop refilled: house %d, stock %s (%d changed)", house, tostring(found), changed))
+	end
+	if not found or changed ~= 1 then return end
+	if random() >= B.ShopOreChance then return end
+	local items = Game.ShopItems[found]
+	local smith, best, empty = looksLikeBlacksmith(items)
+	if smith then stockOre(items, best, empty) end
+end)
 
 -- console test: Merge.Functions.TestShopOre() - every shop refills on its next visit,
 -- every blacksmith refill gets ore, and the status line tells what happened.
