@@ -1,0 +1,767 @@
+{
+ "MissileDirection": {
+  "file": "Structs/01 common structs.lua",
+  "rows": [
+   [
+    "DirectionVector",
+    "array(3).i4"
+   ],
+   [
+    "DirectionX",
+    "i4"
+   ],
+   [
+    "DirectionY",
+    "i4"
+   ],
+   [
+    "DirectionZ",
+    "i4"
+   ],
+   [
+    "Distance",
+    "i4"
+   ],
+   [
+    "DistanceXY",
+    "i4"
+   ],
+   [
+    "Direction",
+    "i4"
+   ],
+   [
+    "LookAngle",
+    "i4"
+   ]
+  ]
+ },
+ "SpcAttack": {
+  "file": "Structs/30_MergeStructs.lua",
+  "rows": [
+   [
+    "Spell",
+    "u2"
+   ],
+   [
+    "Skill",
+    "u1"
+   ],
+   [
+    "DamageType",
+    "u1"
+   ],
+   [
+    "SpellPoints",
+    "u2"
+   ],
+   [
+    "Recovery",
+    "u2"
+   ],
+   [
+    "NextTime",
+    "i8"
+   ],
+   [
+    "IgnoreByDefault",
+    "bit 0x1"
+   ],
+   [
+    "OverwriteMeleeBlaster",
+    "bit 0x2"
+   ],
+   [
+    "OverwriteMissileBlaster",
+    "bit 0x4"
+   ],
+   [
+    "PreferWand",
+    "bit 0x8"
+   ],
+   [
+    "CooldownReducedBySpeed",
+    "bit 0x10"
+   ],
+   [
+    "RecoveryReducedBySpeed",
+    "bit 0x20"
+   ],
+   [
+    "CooldownReducedBySkill",
+    "bit 0x40"
+   ],
+   [
+    "RecoveryReducedBySkill",
+    "bit 0x80"
+   ],
+   [
+    "CooldownReducedByHaste",
+    "bit 0x100"
+   ],
+   [
+    "RecoveryReducedByHaste",
+    "bit 0x200"
+   ],
+   [
+    "CooldownOther",
+    "bit 0x400"
+   ],
+   [
+    "UseOtherCooldown",
+    "bit 0x800"
+   ],
+   [
+    "Bits",
+    "u4"
+   ],
+   [
+    "Cooldown",
+    "u4"
+   ],
+   [
+    "Projectile",
+    "i4"
+   ],
+   [
+    "Sound",
+    "i4"
+   ]
+  ]
+ },
+ "PlayerExtra": {
+  "file": "Structs/30_MergeStructs.lua",
+  "rows": [
+   [
+    "SpcAttack",
+    "array(2).struct(structs.SpcAttack)"
+   ],
+   [
+    "SpcAttackMelee",
+    "struct(structs.SpcAttack)"
+   ],
+   [
+    "SpcAttackRanged",
+    "struct(structs.SpcAttack)"
+   ],
+   [
+    "SpellBuffs2",
+    "array(27, 27 + MC.PlayerBuffs2Count - 1).struct(structs.SpellBuff)"
+   ],
+   [
+    "Debuffs",
+    "array(MC.PlayerDebuffsCount).struct(structs.SpellBuff)"
+   ]
+  ]
+ },
+ "CharacterVoices": {
+  "file": "Structs/CharacterOutfits.lua",
+  "rows": [
+   [
+    "Sounds",
+    "array(0).array(100).u2"
+   ],
+   [
+    "Avail",
+    "array(0).array(VoiceTypes).u1"
+   ]
+  ]
+ },
+ "CharacterPortrait": {
+  "file": "Structs/CharacterOutfits.lua",
+  "rows": [
+   [
+    "DollType",
+    "u1"
+   ],
+   [
+    "DefClass",
+    "u1"
+   ],
+   [
+    "DefVoice",
+    "u1"
+   ],
+   [
+    "DefSex",
+    "u1"
+   ],
+   [
+    "AvailableAtStart",
+    "u1"
+   ],
+   [
+    "BodyX",
+    "i2"
+   ],
+   [
+    "BodyY",
+    "i2"
+   ],
+   [
+    "Background",
+    "EditPChar"
+   ],
+   [
+    "Body",
+    "EditPChar"
+   ],
+   [
+    "Head",
+    "EditPChar"
+   ],
+   [
+    "LHd",
+    "EditPChar"
+   ],
+   [
+    "LHu",
+    "EditPChar"
+   ],
+   [
+    "LHo",
+    "EditPChar"
+   ],
+   [
+    "RHb",
+    "EditPChar"
+   ],
+   [
+    "unk1",
+    "EditPChar"
+   ],
+   [
+    "unk2",
+    "EditPChar"
+   ],
+   [
+    "RHd",
+    "EditPChar"
+   ],
+   [
+    "RHu",
+    "EditPChar"
+   ],
+   [
+    "FacePrefix",
+    "EditPChar"
+   ],
+   [
+    "DefAttackM",
+    "u2"
+   ],
+   [
+    "DefAttackR",
+    "u2"
+   ],
+   [
+    "NPCPic",
+    "u2"
+   ],
+   [
+    "Race",
+    "u1"
+   ],
+   [
+    "HelmX",
+    "i2"
+   ],
+   [
+    "HelmY",
+    "i2"
+   ]
+  ]
+ },
+ "CharacterDollType": {
+  "file": "Structs/CharacterOutfits.lua",
+  "rows": [
+   [
+    "Bow",
+    "b1"
+   ],
+   [
+    "Armor",
+    "b1"
+   ],
+   [
+    "Helm",
+    "b1"
+   ],
+   [
+    "Belt",
+    "b1"
+   ],
+   [
+    "Boots",
+    "b1"
+   ],
+   [
+    "Cloak",
+    "b1"
+   ],
+   [
+    "Weapon",
+    "b1"
+   ],
+   [
+    "RHoX",
+    "i2"
+   ],
+   [
+    "RHoY",
+    "i2"
+   ],
+   [
+    "RHcX",
+    "i2"
+   ],
+   [
+    "RHcY",
+    "i2"
+   ],
+   [
+    "RHfX",
+    "i2"
+   ],
+   [
+    "RHfY",
+    "i2"
+   ],
+   [
+    "LHoX",
+    "i2"
+   ],
+   [
+    "LHoY",
+    "i2"
+   ],
+   [
+    "LHcX",
+    "i2"
+   ],
+   [
+    "LHcY",
+    "i2"
+   ],
+   [
+    "LHfX",
+    "i2"
+   ],
+   [
+    "LHfY",
+    "i2"
+   ],
+   [
+    "OHOffsetX",
+    "i2"
+   ],
+   [
+    "OHOffsetY",
+    "i2"
+   ],
+   [
+    "MHOffsetX",
+    "i2"
+   ],
+   [
+    "MHOffsetY",
+    "i2"
+   ],
+   [
+    "BowX",
+    "i2"
+   ],
+   [
+    "BowY",
+    "i2"
+   ],
+   [
+    "ShieldX",
+    "i2"
+   ],
+   [
+    "ShieldY",
+    "i2"
+   ]
+  ]
+ },
+ "PartyLight": {
+  "file": "Structs/GlobalTxt.lua",
+  "rows": [
+   [
+    "Radius",
+    "custom"
+   ],
+   [
+    "Falloff",
+    "custom"
+   ]
+  ]
+ },
+ "BloodSplat": {
+  "file": "Structs/GlobalTxt.lua",
+  "rows": [
+   [
+    "X",
+    "r4"
+   ],
+   [
+    "Y",
+    "r4"
+   ],
+   [
+    "Z",
+    "r4"
+   ],
+   [
+    "Radius",
+    "r4"
+   ],
+   [
+    "unk5",
+    "r4"
+   ],
+   [
+    "R",
+    "u1"
+   ],
+   [
+    "G",
+    "u1"
+   ],
+   [
+    "B",
+    "u1"
+   ],
+   [
+    "unk6",
+    "u1"
+   ],
+   [
+    "unk7",
+    "u4"
+   ],
+   [
+    "unk8",
+    "u4"
+   ],
+   [
+    "unk9",
+    "u4"
+   ],
+   [
+    "unk10",
+    "u4"
+   ]
+  ]
+ },
+ "TurnBasedState": {
+  "file": "Structs/GlobalTxt.lua",
+  "rows": [
+   [
+    "RoundNumber",
+    "u4"
+   ],
+   [
+    "Phase",
+    "u4"
+   ],
+   [
+    "RoundLength",
+    "u4"
+   ],
+   [
+    "ParticipantsCount",
+    "u4"
+   ],
+   [
+    "CombatTimeLeft",
+    "u4"
+   ],
+   [
+    "PartyMoveTimeLeft",
+    "u4"
+   ],
+   [
+    "unk5",
+    "u4"
+   ],
+   [
+    "unk6",
+    "u4"
+   ]
+  ]
+ },
+ "TurnBasedQueueItem": {
+  "file": "Structs/GlobalTxt.lua",
+  "rows": [
+   [
+    "EntityRef",
+    "u4"
+   ],
+   [
+    "RecoveryDelay",
+    "u4"
+   ],
+   [
+    "unk2",
+    "u4"
+   ],
+   [
+    "NextQueueItemId",
+    "u4"
+   ],
+   [
+    "Kind",
+    "custom"
+   ],
+   [
+    "Index",
+    "custom"
+   ]
+  ]
+ },
+ "HouseRules": {
+  "file": "Structs/RemoveHouseRulesLimits.lua",
+  "rows": [
+   [
+    "WeaponShopsStandart",
+    "array(1, OldWepCount).struct(structs.WeaponShopRule)"
+   ],
+   [
+    "WeaponShopsSpecial",
+    "array(1, OldWepCount).struct(structs.WeaponShopRule)"
+   ],
+   [
+    "ArmorShopsStandart",
+    "array(1, OldArmCount).struct(structs.ArmorShopRule)"
+   ],
+   [
+    "ArmorShopsSpecial",
+    "array(1, OldArmCount).struct(structs.ArmorShopRule)"
+   ],
+   [
+    "MagicShopsStandart",
+    "array(1, OldMagCount).struct(structs.ShopRule)"
+   ],
+   [
+    "MagicShopsSpecial",
+    "array(1, OldMagCount).struct(structs.ShopRule)"
+   ],
+   [
+    "AlchemistsStandart",
+    "array(1, OldAlcCount).struct(structs.ShopRule)"
+   ],
+   [
+    "AlchemistsSpecial",
+    "array(1, OldAlcCount).struct(structs.ShopRule)"
+   ],
+   [
+    "SpellbookShops",
+    "array(1, OldSpBCount).struct(structs.ShopRule)"
+   ],
+   [
+    "Training",
+    "array(1, OldTrHCount).struct(structs.ShopRule)"
+   ],
+   [
+    "Arcomage",
+    "array(1, OldTavCount).struct(structs.ArcomageRule)"
+   ],
+   [
+    "ArcomageTexts",
+    "array(0).i2"
+   ]
+  ]
+ },
+ "ShopRep": {
+  "file": "Structs/RemoveHouseRulesLimits.lua",
+  "rows": [
+   [
+    "unk1",
+    "i4"
+   ],
+   [
+    "unk2",
+    "i4"
+   ]
+  ]
+ },
+ "WeaponShopRule": {
+  "file": "Structs/RemoveHouseRulesLimits.lua",
+  "rows": [
+   [
+    "Quality",
+    "i2"
+   ],
+   [
+    "ItemTypes",
+    "array(1, 4).i2"
+   ]
+  ]
+ },
+ "ArmorShopRule": {
+  "file": "Structs/RemoveHouseRulesLimits.lua",
+  "rows": [
+   [
+    "QualityShelf",
+    "i2"
+   ],
+   [
+    "ItemTypesShelf",
+    "array(1, 4).i2"
+   ],
+   [
+    "QualityCase",
+    "i2"
+   ],
+   [
+    "ItemTypesCase",
+    "array(1, 4).i2"
+   ]
+  ]
+ },
+ "ShopRule": {
+  "file": "Structs/RemoveHouseRulesLimits.lua",
+  "rows": [
+   [
+    "Quality",
+    "i2"
+   ]
+  ]
+ },
+ "ArcomageRule": {
+  "file": "Structs/RemoveHouseRulesLimits.lua",
+  "rows": [
+   [
+    "TowerToWin",
+    "i2"
+   ],
+   [
+    "ResToWin",
+    "i2"
+   ],
+   [
+    "TowerAtStart",
+    "i2"
+   ],
+   [
+    "WallAtStart",
+    "i2"
+   ],
+   [
+    "Quarry",
+    "i2"
+   ],
+   [
+    "Magic",
+    "i2"
+   ],
+   [
+    "Dungeon",
+    "i2"
+   ],
+   [
+    "Bricks",
+    "i2"
+   ],
+   [
+    "Gems",
+    "i2"
+   ],
+   [
+    "Recruits",
+    "i2"
+   ],
+   [
+    "Ai",
+    "i4"
+   ]
+  ]
+ },
+ "HousesExtra": {
+  "file": "Structs/RemoveHouseRulesLimits.lua",
+  "rows": [
+   [
+    "IndexByType",
+    "i2"
+   ],
+   [
+    "Map",
+    "i2"
+   ]
+  ]
+ },
+ "ArmorPicsCoords": {
+  "file": "Structs/RemoveItemsLimits.lua",
+  "rows": [
+   [
+    "Armors",
+    "array(1, 1).array(4).struct(structs.EquipCoordinates)"
+   ],
+   [
+    "Helms",
+    "array(1, 1).array(4).struct(structs.EquipCoordinates)"
+   ],
+   [
+    "Belts",
+    "array(1, 1).array(4).struct(structs.EquipCoordinates)"
+   ],
+   [
+    "Boots",
+    "array(1, 1).array(4).struct(structs.EquipCoordinates)"
+   ],
+   [
+    "Cloaks",
+    "array(1, 1).array(4).struct(structs.EquipCoordsCloak)"
+   ]
+  ]
+ },
+ "EquipCoordinates": {
+  "file": "Structs/RemoveItemsLimits.lua",
+  "rows": [
+   [
+    "X",
+    "i2"
+   ],
+   [
+    "Y",
+    "i2"
+   ]
+  ]
+ },
+ "EquipCoordsCloak": {
+  "file": "Structs/RemoveItemsLimits.lua",
+  "rows": [
+   [
+    "X",
+    "i2"
+   ],
+   [
+    "Y",
+    "i2"
+   ],
+   [
+    "ColX",
+    "i2"
+   ],
+   [
+    "ColY",
+    "i2"
+   ]
+  ]
+ },
+ "ReagentSettings": {
+  "file": "Structs/RemoveItemsLimits.lua",
+  "rows": [
+   [
+    "Item",
+    "u2"
+   ],
+   [
+    "Result",
+    "u2"
+   ]
+  ]
+ }
+}

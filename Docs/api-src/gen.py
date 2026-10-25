@@ -32,6 +32,8 @@ def link(target, text=None):
 def left(kind, it):
     if kind == 'events':
         anchor, tag, title = 'events.' + it['name'], 'h4', it['name']
+    elif kind == 'functions' and it.get('global'):
+        anchor, tag, title = it['name'], 'h5', it['name']
     elif kind == 'functions':
         anchor, tag, title = 'Merge.Functions.' + it['name'], 'h5', 'Merge.Functions.' + it['name']
     elif kind == 'structs':
