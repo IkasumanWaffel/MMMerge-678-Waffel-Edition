@@ -736,6 +736,7 @@ local function shopOreGrade(best)
 end
 
 function events.ShopRefilled(items)
+	if B.ShopDebug then Game.ShowStatusText("Shop refilled") end
 	if random() >= B.ShopOreChance then return end
 	local weapons, total, best, empty = 0, 0, 0, {}
 	for i, it in items do
@@ -763,7 +764,24 @@ function events.ShopRefilled(items)
 		it.Bonus, it.Bonus2, it.BonusStrength, it.Charges, it.MaxCharges = 0, 0, 0, 0, 0
 		it.Identified = true
 		it.Broken = false
+		if B.ShopDebug then
+			Game.ShowStatusText(string.format("%s put in stock", Game.ItemsTxt[it.Number].Name))
+		end
 	end
+end
+
+-- console test: Merge.Functions.TestShopOre() - every shop refills on its next visit,
+-- every blacksmith refill gets ore, and the status line tells what happened.
+-- Merge.Functions.TestShopOre(false) goes back to normal.
+function MF.TestShopOre(on)
+	if on == false then
+		B.ShopOreChance, B.ShopDebug = B.ShopOreChanceNormal or B.ShopOreChance, false
+		return "shop ore test off"
+	end
+	B.ShopOreChanceNormal = B.ShopOreChanceNormal or B.ShopOreChance
+	B.ShopOreChance, B.ShopDebug = 1, true
+	for i in Game.ShopNextRefill do Game.ShopNextRefill[i] = 0 end
+	return "shop ore test on: enter a blacksmith"
 end
 
 -- console: Merge.Functions.BlasterInfo()
