@@ -813,6 +813,14 @@ mem.autohook(0x4BB005, function(d)
 	if smith then stockOre(items, best, used) end
 end)
 
+-- Buying ore at a blacksmith: the merchant text (0x49000D: item, shop kind, house, ...)
+-- answers "n/a" for anything that isn't a weapon; for ore it is asked as a magic shop (3),
+-- which prices it. The price paid was right already.
+mem.autohook(0x4B8041, function(d)
+	local ok, num = pcall(function() return i4[u4[d.esp]] end)
+	if ok and ORE[num] and u4[d.esp + 4] == 1 then u4[d.esp + 4] = 3 end
+end)
+
 -- console test: Merge.Functions.TestShopOre() - every shop refills on its next visit,
 -- every blacksmith refill gets ore, and the status line tells what happened.
 -- Merge.Functions.TestShopOre(false) goes back to normal.
