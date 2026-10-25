@@ -736,32 +736,33 @@ local function shopOreGrade(best)
 end
 
 local function looksLikeBlacksmith(items)
-	local weapons, total, best, empty = 0, 0, 0, {}
+	local weapons, total, best, used = 0, 0, 0, {}
 	for i = 0, 11 do
 		local it = items[i]
 		if it.Number > 0 then
 			total = total + 1
+			used[#used + 1] = i
 			local txt = Game.ItemsTxt[it.Number]
 			if txt.EquipStat <= 2 and txt.Skill ~= const.Skills.Blaster then weapons = weapons + 1 end
 			best = max(best, txt.Value)
-		else
-			empty[#empty + 1] = i
 		end
 	end
-	return total > 0 and weapons * 2 >= total, best, empty, total, weapons
+	return total > 0 and weapons * 2 >= total, best, used, total, weapons
 end
 
-local function stockOre(items, best, empty)
+-- the ore takes the place of items in stock: the empty places of the table are beyond the
+-- ones the shop shows
+local function stockOre(items, best, used)
 	local base = (Merge.Vars and Merge.Vars.Continent == 2) and 1488 or 686
-	for n = 1, random(1, B.ShopOreMax) do
-		local slot = #empty > 0 and table.remove(empty, random(1, #empty)) or random(0, 11)
+	for n = 1, min(random(1, B.ShopOreMax), #used - 1) do
+		local slot = table.remove(used, random(1, #used))
 		local it = items[slot]
 		it.Number = base + shopOreGrade(best) - 1
 		it.Bonus, it.Bonus2, it.BonusStrength, it.Charges, it.MaxCharges = 0, 0, 0, 0, 0
 		it.Identified = true
 		it.Broken = false
 		if B.ShopDebug then
-			Game.ShowStatusText(string.format("%s put in stock", Game.ItemsTxt[it.Number].Name))
+			Game.ShowStatusText(string.format("%s put in stock (place %d of %d)", Game.ItemsTxt[it.Number].Name, slot, #used + n))
 		end
 	end
 end
@@ -808,8 +809,8 @@ mem.autohook(0x4BB005, function(d)
 	if not found or changed ~= 1 then return end
 	if random() >= B.ShopOreChance then return end
 	local items = Game.ShopItems[found]
-	local smith, best, empty = looksLikeBlacksmith(items)
-	if smith then stockOre(items, best, empty) end
+	local smith, best, used = looksLikeBlacksmith(items)
+	if smith then stockOre(items, best, used) end
 end)
 
 -- console test: Merge.Functions.TestShopOre() - every shop refills on its next visit,
