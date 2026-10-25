@@ -216,7 +216,7 @@ function events.InternalBeforeLoadMap(WasInGame)
 		for j = 20, 20 + MC.PartyBuffs2Count - 1 do
 			set_spell_buff(Party.SpellBuffs2[j], t and t[j])
 		end
-		t = vars.PartyStats and vars.PartyStats.SpellDebuffs
+		t = vars.PartyStats and vars.PartyStats.Debuffs
 		for j = 0, MC.PartyDebuffsCount - 1 do
 			set_spell_buff(Party.Debuffs[j], t and t[j])
 		end

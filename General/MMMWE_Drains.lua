@@ -179,30 +179,83 @@ local function attackingMonster()
 	end
 end
 
+-- DrainTest(true) from the console reports every roll of a draining monster,
+-- DrainTest("always") also makes every roll succeed, DrainTest(false) ends it
+local TEST = false
+function DrainTest(mode)
+	TEST = mode or false
+	Message(TEST and ("Drain test on" .. (TEST == "always" and ": every damaging hit drains" or ""))
+		or "Drain test off")
+end
+
+local function report(fmt, ...)
+	local s = string.format(fmt, ...)
+	MF.LogInfo("[Drain] %s", s)
+	if TEST then Game.ShowStatusText(s) end
+end
+
 local function onHit(t)
-	if not ENABLED or not t.Player or (t.Result or 0) <= 0 then return end
+	if not ENABLED or not t.Player then return end
 	local mon = attackingMonster()
 	local list = mon and DRAINERS[mon.Id]
 	if not list then return end
 	local pl = t.Player
+	if (t.Result or 0) <= 0 then
+		if TEST then report("%s: no damage taken, no drain roll", pl.Name) end
+		return
+	end
 	local what = list[math.random(#list)]
 	local b = debuffs(pl)[SLOT[what]]
 	local level = math.max(mon.Level or 1, 1)
 	local save = saveValue(pl, what, b)
 	local chance = BASE_CHANCE * (level + 30) / (level + 30 + save)
-	if math.random() * 100 >= chance then return end
-	if MF.ChainShrugsOff and MF.ChainShrugsOff(pl) then return end   -- MMMWE_ArmorEffects.lua
+	local roll = math.random() * 100
+	if TEST == "always" then roll = 0 end
+	if roll >= chance then
+		if TEST then report("%s: %s roll failed (%.1f%% chance, monster %d level %d, save %d)", pl.Name, what, chance, mon.Id, level, save) end
+		return
+	end
+	if MF.ChainShrugsOff and MF.ChainShrugsOff(pl) then   -- MMMWE_ArmorEffects.lua
+		if TEST then MF.LogInfo("[Drain] %s: %s shrugged off by chain mail", pl.Name, what) end
+		return
+	end
 	local ok, amount = applyDrain(pl, what)
 	if ok then
 		Game.ShowStatusText(string.format("%s's %s!", pl.Name,
 			LABEL[what] or (what .. " is drained")))
 		MF.LogInfo("[Drain] %s: %s -%d (monster %d, chance %.1f%%)", pl.Name, what, amount, mon.Id, chance)
+	elseif TEST then
+		report("%s: %s roll succeeded but the drain amount is 0", pl.Name, what)
 	end
 end
 
--- registered after every other handler, so t.Result is the damage actually taken
-function events.GameInitialized2()
+-- Registered once, after the first map has loaded: MMMWE_Main.lua (GameInitialized2),
+-- MMMWE_ArmorEffects.lua and MMMWE_Resources.lua (first LoadMap) register their damage
+-- handlers before that, so t.Result is the damage actually taken and dodged, blocked or
+-- parried hits don't drain.
+local hooked = false
+function events.AfterLoadMap()
+	if hooked then return end
+	hooked = true
 	events.CalcDamageToPlayer = onHit
+end
+
+-- DrainInfo() from the console: the active drains of the party
+function DrainInfo()
+	local out = {}
+	for i = 0, Party.count - 1 do
+		local pl = Party[i]
+		local d, parts = debuffs(pl), {}
+		for what, slot in pairs(SLOT) do
+			local b = d[slot]
+			if active(b) then parts[#parts + 1] = string.format("%s -%d (x%d)", what, b.Power, b.Skill) end
+		end
+		table.sort(parts)
+		out[#out + 1] = pl.Name .. ": " .. (#parts > 0 and table.concat(parts, ", ") or "none")
+	end
+	local s = table.concat(out, "\n")
+	print(s)
+	return s
 end
 
 ---------------------------------------------------------------------------
