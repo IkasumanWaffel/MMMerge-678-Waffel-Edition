@@ -773,12 +773,14 @@ local function can_player_learn_spell(t)
 end
 MF.CanPlayerLearnSpell = can_player_learn_spell
 
+-- Waffel Edition: the highest skill level of each mastery (Expert needs level 5, Master 10,
+-- Grand Master 15, as in Teacher topics.txt); Grand Master has no limit
 local mastery_rank = {
 	--[0] = 0,
-	[1] = 1,
-	[2] = 4,
-	[3] = 7,
-	[4] = 10
+	[1] = 5,
+	[2] = 10,
+	[3] = 15,
+	[4] = 1000
 }
 
 local function convert_character(t)
@@ -815,7 +817,7 @@ local function convert_character(t)
 				t.Player.SkillPoints = t.Player.SkillPoints + skillpoints1
 			elseif new_mastery < mastery then
 				local skillpoints1 = get_skill_level_skillpoints(rank)
-				local new_rank = mastery_rank[new_mastery]
+				local new_rank = math.min(rank, mastery_rank[new_mastery])
 				local skillpoints2 = get_skill_level_skillpoints(new_rank)
 				t.Player.Skills[skill] = JoinSkill(new_rank, new_mastery)
 				t.Player.SkillPoints = t.Player.SkillPoints + skillpoints1
