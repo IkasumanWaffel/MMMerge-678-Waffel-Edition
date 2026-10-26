@@ -709,6 +709,25 @@ function CustomClass.Give(player, f, step)
 		refund > 0 and string.format(" (%d skill points refunded)", refund) or "")
 end
 
+-- promotes a party member of a custom class to 'step' of the same family (stage 3, ruler NPCs).
+-- Returns the refunded skill points, or nil and the reason.
+local function promote(pl, step)
+	local f = familyOf(pl.Class)
+	if not f then return nil, "not a custom class" end
+	local fam = builds()[f]
+	if not fam or not fam.Steps[step] then return nil, "the class has no build" end
+	local bad = problems(fam, step)
+	if #bad > 0 then return nil, table.concat(bad, "; ") end
+	applyAll()
+	local id = classId(f, step)
+	local before = pl.SkillPoints
+	if MF.ConvertCharacter and pl.Attrs then
+		MF.ConvertCharacter({Player = pl, ToClass = id})
+	end
+	pl.Class = id
+	return pl.SkillPoints - before
+end
+
 -- for the creation screen (MMMWE_CustomClassEditor.lua)
 MF.CustomClassCost = function(spec) return cost(spec) end
 MF.CustomClasses = {
@@ -721,6 +740,7 @@ MF.CustomClasses = {
 	Cost = cost,
 	Problems = problems,
 	Apply = applyAll,
+	Promote = promote,
 	ClassId = classId,
 	FamilyOf = familyOf,
 	SetTier = famSetTier,
