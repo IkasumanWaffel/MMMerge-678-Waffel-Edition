@@ -32,8 +32,10 @@ local MF = Merge.Functions
 
 local ENABLED       = true
 local BACKGROUND    = "ExSetScr2"        -- 640x480 panel (mmmerge.icons.lod)
-local PX, PY        = 78, 154            -- top left of the panel's content
-local ENTRY_X, ENTRY_Y, ENTRY_W = 300, 443, 120   -- "Custom class..." on the creation screen
+local PX, PY        = 76, 154            -- top left of the panel's content
+local ENTRY_X, ENTRY_Y, ENTRY_W = 140, 449, 200   -- "Custom class..." on the creation screen
+-- (between the party buttons and Clear)
+local EXTRA_SKILLS  = 2                  -- skills the creation screen asks to pick on top
 local START_SKILLS  = 2
 local CREATION_SCREEN = 21
 local MSG_TIME      = 4                  -- seconds a message stays in the bottom line
@@ -182,6 +184,11 @@ local function validate()
 	if #(f.StartSkills or {}) < need then
 		E.Step = 1
 		return nil, string.format("Choose %d starting skills (Shift+click)", need)
+	end
+	-- the creation screen asks for two more skills from the class's other skills
+	if E.Mode == "creation" and purchasable(f.Steps[1]) < START_SKILLS + EXTRA_SKILLS then
+		E.Step = 1
+		return nil, string.format("The base class needs at least %d skills", START_SKILLS + EXTRA_SKILLS)
 	end
 	return true
 end
@@ -440,14 +447,14 @@ local function build()
 	for id = 0, 38 do
 		if CC.SkillNames[id] then SKILL_ORDER[#SKILL_ORDER + 1] = id end
 	end
-	local SHORT = {[0] = "-", "Novice", "Expert", "Master", "GM"}
-	local NICE = {IdentifyItem = "Identify Item", DisarmTraps = "Disarm Traps", IdentifyMonster = "Identify Monster",
+	local SHORT = {[0] = "-", "Nov", "Exp", "Mas", "GM"}
+	local NICE = {IdentifyItem = "Ident. Item", DisarmTraps = "Disarm Traps", IdentifyMonster = "Ident. Monster",
 		Bodybuilding = "Bodybuilding", Repair = "Repair Item"}
 	for i, id in ipairs(SKILL_ORDER) do
 		local col, row = math.floor((i - 1) / 12), (i - 1) % 12
 		local name = CC.SkillNames[id]
 		name = NICE[name] or name
-		text{Font = Small, X = PX + col * 165, Y = PY + 94 + row * 14, W = 160, H = 14,
+		text{Font = Small, X = PX + col * 168, Y = PY + 94 + row * 14, W = 166, H = 14,
 			Get = function()
 				local f, s = fam(), spec()
 				local cap = s.Skills[id] or 0
@@ -460,24 +467,24 @@ local function build()
 	end
 
 	-- bottom line
-	text{Font = Small, X = 74, Y = 425, W = 370, H = 14,
+	text{Font = Small, X = 74, Y = 425, W = 360, H = 14,
 		Get = function()
 			if E.Msg and os.clock() - E.MsgTime < MSG_TIME then return E.Msg, RED end
 			if E.Typing then return "Type the name; Enter to keep it, Esc to drop it" end
 			local bad = CC.Problems(fam(), E.Step)
 			if #bad > 0 then return bad[1], RED end
-			return "Click: raise  Ctrl+click: lower  Shift+click: starting skill (" ..
-				#(fam().StartSkills or {}) .. "/" .. START_SKILLS .. ")"
+			return "Click +  Ctrl+click -  Shift+click: start skill " ..
+				#(fam().StartSkills or {}) .. "/" .. START_SKILLS
 		end}
-	text{Font = Big, X = 455, Y = 423, W = 50, H = 16,
+	text{Font = Big, X = 440, Y = 423, W = 66, H = 16,
 		Get = function() return "Cancel" end, Click = function() close() end}
-	text{Font = Big, X = 515, Y = 423, W = 50, H = 16,
+	text{Font = Big, X = 510, Y = 423, W = 58, H = 16,
 		Get = function() return "Done", GOLD end, Click = function() done() end}
 
 	-- entry on the creation screen
 	local entry = CustomUI.CreateText{
 		Text = "Custom class...", Font = Big, X = ENTRY_X, Y = ENTRY_Y, Width = ENTRY_W, Height = 16,
-		Layer = 0, Screen = CREATION_SCREEN, ColorStd = GOLD, ColorMouseOver = HOVER,
+		Layer = 0, Screen = CREATION_SCREEN, ColorStd = GOLD, ColorMouseOver = HOVER, AlignLeft = true,
 		Condition = function() return not E.Open end,
 		Action = function() open("creation", Party[0]) end}
 	Mine[entry] = true

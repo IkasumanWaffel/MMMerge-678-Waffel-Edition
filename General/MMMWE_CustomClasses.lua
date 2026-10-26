@@ -413,6 +413,22 @@ local function applyClass(id, fam, f, step)
 	end
 end
 
+-- the game's creation screen: the class kind (class / 2) of the base class gives the
+-- default skills (2, shown at the top: the two starting skills of the build) and the
+-- skills to pick two more from (1: the other skills the base class can learn)
+local function applyStartingSkills(f, fam)
+	local ss = Game.ClassKinds and Game.ClassKinds.StartingSkills
+	local kind = math.floor(classId(f, 1) / 2)
+	if not ss or kind >= ss.count then return end
+	local row = ss[kind]
+	local base = fam and fam.Steps[1]
+	local start = {}
+	for _, sk in ipairs(fam and fam.StartSkills or {}) do start[sk] = true end
+	for sk = 0, row.count - 1 do
+		row[sk] = not base and 0 or start[sk] and 2 or ((base.Skills[sk] or 0) > 0 and 1 or 0)
+	end
+end
+
 local function applyAll()
 	if not (Game.Classes and Game.Classes.Skills.count > LAST_ID and Game.ClassNames.count > LAST_ID) then
 		MF.LogError("CustomClasses: the class tables have no room for the custom classes (%d / %d)",
@@ -433,6 +449,7 @@ local function applyAll()
 				setPromotion(classId(f, 2), {classId(f, 3), classId(f, 4), classId(f, 5)})
 			end
 		end
+		applyStartingSkills(f, fam)
 	end
 	return true
 end
