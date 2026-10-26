@@ -25,7 +25,10 @@
 	  CustomClass.SP(f, step, tier, stats)      stats "I", "P" or "IP"
 	  CustomClass.Skill(f, step, skill, cap)    cap 0..4 or "-", "N"/"B", "E", "M", "G"
 	  CustomClass.Show(f), CustomClass.List()
-	  CustomClass.Give(player, f, step)         player: party slot 0..4 (default: selected)
+	  CustomClass.Give(player, f, step)         player: party slot 0..4 (default: selected);
+	                                            skills the class can't learn are removed and
+	                                            skills above its caps lowered, with the skill
+	                                            points spent on them refunded (MF.ConvertCharacter)
 	  CustomClass.Delete(f)
 	A change on a step is passed on to the later steps that had the same value (and raises
 	the ones that had less), so promotions never lose anything.
@@ -594,8 +597,20 @@ function CustomClass.Give(player, f, step)
 	local pl = playerOf(player)
 	if not pl then error("no such party member", 2) end
 	applyAll()
-	pl.Class = classId(f, step)
-	return string.format("%s is now a %s", pl.Name, fam.Steps[step].Name)
+	local id = classId(f, step)
+	if pl.Class == id then
+		return string.format("%s already is a %s", pl.Name, fam.Steps[step].Name)
+	end
+	-- the Merge's class conversion: skills the new class can't learn are removed and
+	-- skills above its caps are lowered; the skill points spent raising them come back
+	local before = pl.SkillPoints
+	if MF.ConvertCharacter and pl.Attrs then
+		MF.ConvertCharacter({Player = pl, ToClass = id})
+	end
+	pl.Class = id
+	local refund = pl.SkillPoints - before
+	return string.format("%s is now a %s%s", pl.Name, fam.Steps[step].Name,
+		refund > 0 and string.format(" (%d skill points refunded)", refund) or "")
 end
 
 -- for the creation screen (stage 2)
