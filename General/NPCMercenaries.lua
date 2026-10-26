@@ -221,9 +221,10 @@ function GenerateMercenary(t) --RosterId, Class, Level, Skills, Items, Face, Joi
 	if Class == nil then
 		local allowed_classes = {}
 		for k, _ in pairs(table.filter(Game.ClassesExtra, 1, "Kind", ">", 0)) do
-			--if k ~= const.Class.Peasant then
+			-- never a custom class (MMMWE_CustomClasses.lua)
+			if not (MF.IsCustomClass and MF.IsCustomClass(k)) then
 				table.insert(allowed_classes, k)
-			--end
+			end
 		end
 		Class = allowed_classes[math.random(1, #allowed_classes)]
 		MF.LogInfo("GenerateMercenary: Class is nil, set to %d", Class)

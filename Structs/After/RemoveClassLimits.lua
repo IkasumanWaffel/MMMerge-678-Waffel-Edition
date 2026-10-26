@@ -166,6 +166,11 @@ end
 -- Remove Class.txt limits form EnglishT.lod
 mem.autohook2(0x4558cf, function(d)
 
+	-- room for the custom classes (General/MMMWE_CustomClasses.lua)
+	if MF.ExtendClassTxt then
+		d.eax = MF.ExtendClassTxt(d.eax)
+	end
+
 	local ClassCount = DataTables.ComputeRowCountInPChar(d.eax, 2) - 1
 
 	local ClassDescTablePtr = mem.StaticAlloc(ClassCount*4*2+4)
