@@ -277,6 +277,12 @@ function events.GameInitialized2()
 
 	end
 
+	-- redraws the class and skills of the character being made (MMMWE_CustomClassEditor.lua)
+	MF.CreationRefresh = function()
+		mem.u4[0x51e330] = 1
+		OverAction = 462
+	end
+
 	function events.CharacterChosen()
 		MV.PlayersAttrs[0].Race = Game.CharacterPortraits[Party[0].Face].Race
 		SwitchClass(0)
@@ -337,7 +343,7 @@ function events.GameInitialized2()
 			LogId, RosterId, PartyId)
 		local ItemTypesBySkills	= {	[0]	= 30, 23, 24, 25, 26, 27, 28, nil, 5, 31, 32, 33}
 		local ItemsBySkills		= {	[7] = 866, [12] = 401, [13] = 412, [14] = 423, [15] = 434, [16] = 445, [17] = 456, [18] = 467, [19] = 478, [20] = 489}
-		local ItemsByClass 		= {	[120] = 968}
+		local ItemsByClass 		= {	[120] = {968,962}}
 		
 		local Char = Party.PlayersArray[RosterId]
 		Char.Experience = 0
@@ -392,7 +398,8 @@ function events.GameInitialized2()
 		end
 		
 		if ItemsByClass[Char.Class] then
-			evt.GiveItem{1,0,ItemsByClass[Char.Class]}
+			evt.GiveItem{1,0,ItemsByClass[Char.Class][1]}
+			evt.GiveItem{1,0,ItemsByClass[Char.Class][2]}
 			Mouse.Item.Bonus = 0
 			Mouse.Item.BonusStrength = 0
 		end

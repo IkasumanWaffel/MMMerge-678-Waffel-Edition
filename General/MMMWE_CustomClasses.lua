@@ -256,13 +256,20 @@ end
 local STATS_CODE = {I = 1, P = 2, IP = 3, PI = 3}
 local STATS_NAME = {[1] = "Intellect", [2] = "Personality", [3] = "Intellect and Personality"}
 
-local function store()
+-- the builds in use: the save's, or the ones made on the party creation screen (Pending,
+-- moved into the new game's vars when it starts)
+local Pending, Creating, NewGameStarted = {}, false, false
+
+local function builds()
+	if Creating then return Pending end
+	if not vars then return {} end
 	vars.CustomClasses = vars.CustomClasses or {}
 	return vars.CustomClasses
 end
+local store = builds
 
 local function family(f)
-	local fam = vars and vars.CustomClasses and vars.CustomClasses[f]
+	local fam = builds()[f]
 	if not fam then error(string.format("no custom class %s", tostring(f)), 3) end
 	return fam
 end
@@ -412,7 +419,7 @@ local function applyAll()
 			Game.Classes.Skills.count, Game.ClassNames.count)
 		return false
 	end
-	local all = vars and vars.CustomClasses or {}
+	local all = builds()
 	for f = 1, FAMILIES do
 		local fam = all[f]
 		for step = 1, STEPS do
@@ -431,7 +438,25 @@ local function applyAll()
 end
 MF.ApplyCustomClasses = applyAll
 
+function events.NewGameMap()
+	NewGameStarted = true
+end
+
 function events.BeforeLoadMap()
+	if Creating then
+		Creating = false
+		if NewGameStarted then
+			-- the classes made on the creation screen that party members took
+			local keep = {}
+			for i = 0, Party.PlayersArray.count - 1 do
+				local f = familyOf(Party.PlayersArray[i].Class)
+				if f and Pending[f] then keep[f] = Pending[f] end
+			end
+			vars.CustomClasses = keep
+		end
+		Pending = {}
+	end
+	NewGameStarted = false
 	applyAll()
 end
 
@@ -457,14 +482,14 @@ local function changed()
 	applyAll()
 end
 
-function CustomClass.New(name)
+local function newFamily(name)
 	local all = store()
 	local f
 	for i = 1, FAMILIES do
 		if not all[i] then f = i break end
 	end
-	if not f then error("all " .. FAMILIES .. " custom classes are in use", 2) end
-	name = name or ("Custom class " .. f)
+	if not f then return nil, "all " .. FAMILIES .. " custom classes are in use" end
+	name = name or ("Custom Class " .. f)
 	local base = {Name = name, HP = 0, SP = 0, Stats = 1, Skills = {}}
 	local fam = {Steps = {base}}
 	local names = {name, name .. " Adept", name .. " Master", "Light " .. name, "Dark " .. name}
@@ -472,9 +497,26 @@ function CustomClass.New(name)
 		fam.Steps[step] = copySpec(base)
 		fam.Steps[step].Name = names[step]
 	end
+	fam.StartSkills = {}
 	all[f] = fam
 	changed()
 	return f
+end
+
+function CustomClass.New(name)
+	local f, err = newFamily(name)
+	if not f then error(err, 2) end
+	return f
+end
+
+-- roster characters (Party.PlayersArray) with a class of family f
+local function members(f)
+	local t = {}
+	for i = 0, Party.PlayersArray.count - 1 do
+		local pl = Party.PlayersArray[i]
+		if familyOf(pl.Class) == f then t[#t + 1] = pl end
+	end
+	return t
 end
 
 function CustomClass.Delete(f)
@@ -486,7 +528,7 @@ function CustomClass.Delete(f)
 			error(string.format("%s has this class", pl.Name), 2)
 		end
 	end
-	vars.CustomClasses[f] = nil
+	builds()[f] = nil
 	changed()
 end
 
@@ -496,12 +538,17 @@ function CustomClass.Name(f, step, name)
 	changed()
 end
 
-local function setTier(f, step, field, tier)
-	local fam = family(f)
-	step = checkStep(step)
+-- changes of one step of a build; a change is passed on to the later steps that had the
+-- same value (and raises the ones that had less). A promotion step can't go below its
+-- previous step. Return nil and the reason when refused.
+local function famSetTier(fam, step, field, tier)
 	tier = math.floor(tonumber(tier) or -1)
 	if tier < 0 or tier > MAX_TIER[step] then
-		error(string.format("tier must be 0..%d for the %s", MAX_TIER[step], STEP_NAMES[step]), 3)
+		return nil, string.format("%s tier must be 0..%d for the %s", field, MAX_TIER[step], STEP_NAMES[step])
+	end
+	local p = PARENT[step] and fam.Steps[PARENT[step]]
+	if p and tier < p[field] then
+		return nil, string.format("%s tier can't be lower than the previous step's (%d)", field, p[field])
 	end
 	local old = fam.Steps[step][field]
 	fam.Steps[step][field] = tier
@@ -509,24 +556,61 @@ local function setTier(f, step, field, tier)
 		local v = fam.Steps[c][field]
 		if v < tier or v == old then fam.Steps[c][field] = tier end
 	end
+	return true
+end
+
+local function famSetStats(fam, step, code)
+	local p = PARENT[step] and fam.Steps[PARENT[step]]
+	if p and p.Stats == 3 and code ~= 3 then
+		return nil, "the previous step already uses both stats"
+	end
+	local old = fam.Steps[step].Stats
+	fam.Steps[step].Stats = code
+	for _, c in ipairs(children(step)) do
+		if code == 3 or fam.Steps[c].Stats == old then fam.Steps[c].Stats = code end
+	end
+	return true
+end
+
+local function famSetSkill(fam, step, id, m)
+	if not SKILL_IDS[id] then return nil, "this skill can't be bought" end
+	m = math.max(0, math.min(4, m))
+	local p = PARENT[step] and fam.Steps[PARENT[step]]
+	if p and m < (p.Skills[id] or 0) then
+		return nil, string.format("%s can't be lower than the previous step's %s", SKILL_IDS[id], CAP_NAMES[p.Skills[id]])
+	end
+	local old = fam.Steps[step].Skills[id] or 0
+	fam.Steps[step].Skills[id] = m > 0 and m or nil
+	for _, c in ipairs(children(step)) do
+		local v = fam.Steps[c].Skills[id] or 0
+		if v < m or v == old then fam.Steps[c].Skills[id] = m > 0 and m or nil end
+	end
+	-- a starting skill must stay learnable
+	if step == 1 and m == 0 and fam.StartSkills then
+		for i = #fam.StartSkills, 1, -1 do
+			if fam.StartSkills[i] == id then table.remove(fam.StartSkills, i) end
+		end
+	end
+	return true
+end
+
+local function try(ok, err)
+	if not ok then error(err, 3) end
 end
 
 function CustomClass.HP(f, step, tier)
-	setTier(f, step, "HP", tier)
+	try(famSetTier(family(f), checkStep(step), "HP", tier))
 	changed()
 end
 
 function CustomClass.SP(f, step, tier, stats)
-	setTier(f, step, "SP", tier)
+	local fam = family(f)
+	step = checkStep(step)
+	try(famSetTier(fam, step, "SP", tier))
 	if stats then
 		local code = STATS_CODE[tostring(stats):upper()]
 		if not code then error('stats must be "I", "P" or "IP"', 2) end
-		local fam = family(f)
-		local old = fam.Steps[step].Stats
-		fam.Steps[step].Stats = code
-		for _, c in ipairs(children(step)) do
-			if code == 3 or fam.Steps[c].Stats == old then fam.Steps[c].Stats = code end
-		end
+		try(famSetStats(fam, step, code))
 	end
 	changed()
 end
@@ -538,12 +622,7 @@ function CustomClass.Skill(f, step, skill, cap)
 	if not id then error("unknown or unavailable skill: " .. tostring(skill), 2) end
 	local m = capValue(cap)
 	if not m then error('cap must be 0..4 or "-", "N", "E", "M", "G"', 2) end
-	local old = fam.Steps[step].Skills[id] or 0
-	fam.Steps[step].Skills[id] = m > 0 and m or nil
-	for _, c in ipairs(children(step)) do
-		local v = fam.Steps[c].Skills[id] or 0
-		if v < m or v == old then fam.Steps[c].Skills[id] = m > 0 and m or nil end
-	end
+	try(famSetSkill(fam, step, id, m))
 	changed()
 end
 
@@ -565,7 +644,7 @@ end
 
 function CustomClass.List()
 	local out = {}
-	local all = vars and vars.CustomClasses or {}
+	local all = builds()
 	for f = 1, FAMILIES do
 		local fam = all[f]
 		if fam then
@@ -613,8 +692,34 @@ function CustomClass.Give(player, f, step)
 		refund > 0 and string.format(" (%d skill points refunded)", refund) or "")
 end
 
--- for the creation screen (stage 2)
+-- for the creation screen (MMMWE_CustomClassEditor.lua)
 MF.CustomClassCost = function(spec) return cost(spec) end
+MF.CustomClasses = {
+	Builds = builds,
+	BeginCreation = function() Creating, Pending, NewGameStarted = true, {}, false; applyAll() end,
+	IsCreating = function() return Creating end,
+	NewFamily = newFamily,
+	RemoveFamily = function(f) builds()[f] = nil; applyAll() end,
+	Members = members,
+	Cost = cost,
+	Problems = problems,
+	Apply = applyAll,
+	ClassId = classId,
+	FamilyOf = familyOf,
+	SetTier = famSetTier,
+	SetStats = famSetStats,
+	SetSkill = famSetSkill,
+	SkillNames = SKILL_IDS,
+	CapNames = CAP_NAMES,
+	StatsName = STATS_NAME,
+	StepNames = STEP_NAMES,
+	Budget = BUDGET,
+	MaxTier = MAX_TIER,
+	HPTiers = HP_TIERS,
+	SPTiers = SP_TIERS,
+	Families = FAMILIES,
+	Steps = STEPS,
+}
 MF.CustomClassSettings = {FirstId = FIRST_ID, Families = FAMILIES, Steps = STEPS, FirstKind = FIRST_KIND,
 	Budget = BUDGET, MaxTier = MAX_TIER, HPTiers = HP_TIERS, SPTiers = SP_TIERS, CapCost = CAP_COST,
 	SkillMul = SKILL_MUL, Groups = GROUPS, GroupRest = GROUP_REST}
