@@ -6,7 +6,7 @@
 
 	The editor is drawn over the current screen (CustomUI, layer 0) and blocks it while
 	open:
-	  party creation    "Custom class..." on the creation screen builds a class for the
+	  party creation    "Custom..." on the creation screen builds a class for the
 	                    character being made; the character takes it with Done
 	  training halls    a Peasant (the selected character) gets "Become a custom class"
 	                    in the hall's main menu; Done converts him (skills the class can't
@@ -33,8 +33,8 @@ local MF = Merge.Functions
 local ENABLED       = true
 local BACKGROUND    = "ExSetScr2"        -- 640x480 panel (mmmerge.icons.lod)
 local PX, PY        = 76, 154            -- top left of the panel's content
-local ENTRY_X, ENTRY_Y, ENTRY_W = 140, 449, 200   -- "Custom class..." on the creation screen
--- (between the party buttons and Clear)
+local ENTRY_X, ENTRY_Y, ENTRY_W = 108, 101, 86   -- "Custom..." on the creation screen
+-- (right of the name arrows, above the Class box)
 local EXTRA_SKILLS  = 2                  -- skills the creation screen asks to pick on top
 local START_SKILLS  = 2
 local CREATION_SCREEN = 21
@@ -483,7 +483,7 @@ local function build()
 
 	-- entry on the creation screen
 	local entry = CustomUI.CreateText{
-		Text = "Custom class...", Font = Big, X = ENTRY_X, Y = ENTRY_Y, Width = ENTRY_W, Height = 16,
+		Text = "Custom...", Font = Big, X = ENTRY_X, Y = ENTRY_Y, Width = ENTRY_W, Height = 16,
 		Layer = 0, Screen = CREATION_SCREEN, ColorStd = GOLD, ColorMouseOver = HOVER, AlignLeft = true,
 		Condition = function() return not E.Open end,
 		Action = function() open("creation", Party[0]) end}
