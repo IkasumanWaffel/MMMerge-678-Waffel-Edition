@@ -33,8 +33,9 @@ local MF = Merge.Functions
 local ENABLED       = true
 local BACKGROUND    = "ExSetScr2"        -- 640x480 panel (mmmerge.icons.lod)
 local PX, PY        = 76, 154            -- top left of the panel's content
-local ENTRY_X, ENTRY_Y, ENTRY_W = 108, 101, 86   -- "Custom..." on the creation screen
--- (right of the name arrows, above the Class box)
+local ENTRY_X, ENTRY_Y = 287, 440                -- "Custom" button (83x30) on the creation screen:
+-- the bottom row, left of the game's Clear (373), Cancel (459) and OK (546) buttons
+local ENTRY_ICONS = {"c_custom_up", "c_custom_DN", "c_custom_ht"}   -- up, down, hover (mmmerge.icons.lod)
 local EXTRA_SKILLS  = 2                  -- skills the creation screen asks to pick on top
 local START_SKILLS  = 2
 local CREATION_SCREEN = 21
@@ -482,9 +483,9 @@ local function build()
 		Get = function() return "Done", GOLD end, Click = function() done() end}
 
 	-- entry on the creation screen
-	local entry = CustomUI.CreateText{
-		Text = "Custom...", Font = Big, X = ENTRY_X, Y = ENTRY_Y, Width = ENTRY_W, Height = 16,
-		Layer = 0, Screen = CREATION_SCREEN, ColorStd = GOLD, ColorMouseOver = HOVER, AlignLeft = true,
+	local entry = CustomUI.CreateButton{
+		IconUp = ENTRY_ICONS[1], IconDown = ENTRY_ICONS[2], IconMouseOver = ENTRY_ICONS[3],
+		X = ENTRY_X, Y = ENTRY_Y, Layer = 0, Screen = CREATION_SCREEN, BlockBG = true,
 		Condition = function() return not E.Open end,
 		Action = function() open("creation", Party[0]) end}
 	Mine[entry] = true
