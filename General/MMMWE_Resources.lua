@@ -657,6 +657,7 @@ end
 local PAGE_ART = {
 	Barbarian = {Page = "SBR000", Tab = "STRG"},
 	Knight    = {Page = "SBKN000", Tab = "STKN"},
+	Paladin   = {Page = "SBKN000", Tab = "STKN"},   -- the Defensive stance comes from the knights
 	Monk      = {Page = "SBMK000", Tab = "STMK"},
 	Thief     = {Page = "SBTH000"},
 	Archer    = {Page = "SBHY000"},
