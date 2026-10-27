@@ -166,6 +166,8 @@ function GenerateMercenary(t) --RosterId, Class, Level, Skills, Items, Face, Joi
 			RosterId, Class and tostring(Class) or "nil", Level and tostring(Level) or "nil")
 
 	local function CountExp(Level)
+		-- MMMWE: the experience curve of the Hardcore mode page (MMMWE_HardcoreSettings.lua)
+		if MF.ExpForLevel then return MF.ExpForLevel(Level) end
 		return Level * (Level - 1) * 500
 	end
 

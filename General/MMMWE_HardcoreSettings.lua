@@ -11,13 +11,24 @@
 	  * The limit can only be changed while Hardcore mode is off, so it can't be raised
 	    in the middle of a hardcore run. Turning Hardcore mode on resets the death counter.
 
-	Saved with the game: vars.HardCoreMode, vars.HCMDeathLimit, vars.HCMDeaths.
+	  * Experience curve: how steeply the experience needed per level grows. Going from level
+	    L to L + 1 takes 1000 x L^curve experience; 1.00 is the game's own table (level 50
+	    needs 1,225,000 in all). Above 1 the high levels take longer, below 1 they come
+	    sooner. Like the death limit it can only be changed while Hardcore mode is off.
+	    The game's function for the experience of a level (0x4B30EF, used by training, the
+	    character screen and the level-up popup) reads a table built from the curve.
+
+	Saved with the game: vars.HardCoreMode, vars.HCMDeathLimit, vars.HCMDeaths, vars.ExpCurve.
 	The death handling itself is in Global/MMMWE_HardcoreMode.lua.
 --]]
 
 local MV = Merge.Vars
 
 local MAX_DEATHS = 10
+
+-- experience curve: the exponent of the experience needed per level
+local EXP_CURVE_MIN, EXP_CURVE_MAX, EXP_CURVE_STEP = 0.80, 1.50, 0.05
+local EXP_TABLE_LEVELS = 5000   -- levels in the table; above it the game's own formula
 
 local DialogShown = false
 
@@ -72,6 +83,70 @@ local function EnforceLock()
 end
 Merge.Functions.HCMIsLocked = IsLocked
 
+---- Experience curve
+local function Curve()
+	local c = tonumber(V().ExpCurve) or 1
+	return math.max(EXP_CURVE_MIN, math.min(EXP_CURVE_MAX, c))
+end
+
+-- experience needed to go from level 1 to level `level` with curve `c`
+local function ExpForLevel(level, c)
+	c = c or Curve()
+	local total = 0
+	for l = 1, level - 1 do
+		total = total + math.floor(1000 * l ^ c + 0.5)
+	end
+	return total
+end
+Merge.Functions.ExpForLevel = function(level) return ExpForLevel(level) end
+
+-- table of 64-bit values: [L] = experience to reach level L + 1 (the game's function gets
+-- the current level in ecx and returns edx:eax)
+local ExpTable = mem.StaticAlloc(EXP_TABLE_LEVELS * 8)
+local TableCurve
+local function BuildExpTable(c)
+	c = c or Curve()
+	if c == TableCurve then return end
+	local total = 0
+	mem.u4[ExpTable], mem.u4[ExpTable + 4] = 0, 0
+	for l = 1, EXP_TABLE_LEVELS - 1 do
+		total = total + math.floor(1000 * l ^ c + 0.5)
+		local hi = math.floor(total / 4294967296)
+		mem.u4[ExpTable + l * 8] = total - hi * 4294967296
+		mem.u4[ExpTable + l * 8 + 4] = hi
+	end
+	TableCurve = c
+end
+BuildExpTable()
+
+mem.asmpatch(0x4B30EF, ([[
+	cmp ecx, %d
+	jae @calc
+	mov eax, [ecx * 8 + %d]
+	mov edx, [ecx * 8 + %d]
+	ret
+@calc:
+	xor eax, eax
+	xor edx, edx
+	test ecx, ecx
+	jle @done
+@loop:
+	lea eax, [eax + edx + 1]
+	inc edx
+	cmp edx, ecx
+	jl @loop
+@done:
+	jmp absolute 0x4B3100]]):format(EXP_TABLE_LEVELS, ExpTable, ExpTable + 4), 0x4B3100 - 0x4B30EF)
+
+function events.LoadMap()
+	BuildExpTable()
+end
+
+function events.LeaveGame()
+	-- back to the game's own table at the main menu
+	BuildExpTable(1)
+end
+
 local function Yellow(text)
 	return StrColor(255, 255, 150) .. text .. StrColor(255, 255, 255)
 end
@@ -115,6 +190,11 @@ function events.GameInitialized2()
 		local strip = Limit() > 1
 		UI.ItemsNote1.Text = strip and "Each party death before the last removes all items" or " "
 		UI.ItemsNote2.Text = strip and "except special items, artifacts, relics and ancient items." or " "
+		local c = Curve()
+		local function M(v) return v >= 1e6 and string.format("%.1fM", v / 1e6) or string.format("%dk", math.floor(v / 1000 + 0.5)) end
+		UI.CurveValue.Text = string.format("%.2f", c) .. (math.abs(c - 1) < 1e-9 and " (game)" or "")
+		UI.CurveNote.Text = string.format("Level 50: %s exp, level 100: %s (game: %s, %s)",
+			M(ExpForLevel(50, c)), M(ExpForLevel(100, c)), M(ExpForLevel(50, 1)), M(ExpForLevel(100, 1)))
 		Game.NeedRedraw = true
 	end
 
@@ -176,6 +256,31 @@ function events.GameInitialized2()
 	UI.ItemsNote1 = Text{Text = " ", X = COL_LABEL, Y = 310, Condition = Hide,
 		Width = NOTE_W, Height = LINE_H}
 	UI.ItemsNote2 = Text{Text = " ", X = COL_LABEL, Y = 330, Condition = Hide,
+		Width = NOTE_W, Height = LINE_H}
+
+	---- Experience curve
+	Text{Text = Yellow("Experience curve"), X = COL_LABEL, Y = 360, Condition = Hide}
+
+	local function ChangeCurve(side)
+		if IsOn() or not HasGame() then
+			Game.PlaySound(27)   -- locked
+			return
+		end
+		Game.PlaySound(side < 0 and 24 or 23)
+		local c = Curve() + side * EXP_CURVE_STEP
+		c = math.floor(c / EXP_CURVE_STEP + 0.5) * EXP_CURVE_STEP
+		vars.ExpCurve = math.max(EXP_CURVE_MIN, math.min(EXP_CURVE_MAX, c))
+		BuildExpTable()
+		Refresh()
+	end
+
+	Text{Text = "<", X = COL_LEFT, Y = 360, ColorMouseOver = 0xe664, Condition = Hide,
+		Action = function() ChangeCurve(-1) end}
+	UI.CurveValue = Text{Text = " ", X = COL_VALUE, Y = 360, Condition = Hide,
+		Width = VALUE_W, Height = LINE_H}
+	Text{Text = ">", X = COL_RIGHT, Y = 360, ColorMouseOver = 0xe664, Condition = Hide,
+		Action = function() ChangeCurve(1) end}
+	UI.CurveNote = Text{Text = " ", X = COL_LABEL, Y = 380, Condition = Hide,
 		Width = NOTE_W, Height = LINE_H}
 
 	---- Confirmation dialog
