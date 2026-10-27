@@ -35,7 +35,7 @@ local MF = Merge.Functions
 
 local ENABLED       = true
 local BACKGROUND    = "CCEditor"         -- 640x480 screen with the boxes (waffel.icons.lod)
--- step tabs and Spells: buttons c_<name>_up / _ht / _dn / _problem (waffel.D.lod), 90 px apart
+-- step tabs and Spells: buttons c_<name>_up / _ht / _dn / _pro (waffel.D.lod), 90 px apart
 local TAB_ICONS     = {"c_baseclass", "c_firstpromo", "c_neutral", "c_light", "c_dark"}
 local SPELLS_ICONS  = "c_spells"
 local TAB_X, TAB_STEP = 54, 90
@@ -512,7 +512,7 @@ local function build()
 
 	-- step tabs and Spells: the one shown glows, one with problems flashes red
 	-- the game keeps 15 characters of a bitmap's name, and CustomUI reloads a button's picture
-	-- whenever the kept name differs from IUpSrc: "c_baseclass_problem" would be loaded anew
+	-- whenever the kept name differs from IUpSrc: a longer name would be loaded anew
 	-- every frame until the bitmap list is full. So the pictures are loaded once and the
 	-- button gets the pointer and the name as kept.
 	local pics = {}
@@ -527,7 +527,7 @@ local function build()
 	end
 	local function flash(self, icons, selected, bad)
 		local s = icons .. (selected and "_ht" or "_up")
-		if bad and math.floor(os.clock() / FLASH_TIME) % 2 == 0 then s = icons .. "_problem" end
+		if bad and math.floor(os.clock() / FLASH_TIME) % 2 == 0 then s = icons .. "_pro" end
 		local p = pic(s)
 		if p then
 			self.IUpPtr = p
