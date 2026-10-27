@@ -19,7 +19,10 @@
 	  HP / SP tiers     - and + ; "SP from" cycles Intellect, Personality, both
 	  skills            click raises the cap, Ctrl+click lowers it, Shift+click (base tab)
 	                    marks one of the two free starting skills (*)
-	  Done / Cancel     Esc also cancels
+	  OK / Cancel       Enter is OK, Esc cancels
+	The screen is CCEditor (waffel.icons.lod, made from the stats screen fr_stats); the
+	tabs are the c_baseclass ... c_dark buttons (waffel.D.lod), Cancel and OK the game's
+	c_cncl / c_ok buttons; skills in Create.fnt.
 	A class already taken by a character in the game is read-only in the training hall
 	(it can still be taken as it is).
 --]]
@@ -31,8 +34,10 @@ local MF = Merge.Functions
 ---------------------------------------------------------------------------
 
 local ENABLED       = true
-local BACKGROUND    = "ExSetScr2"        -- 640x480 panel (mmmerge.icons.lod)
-local PX, PY        = 76, 154            -- top left of the panel's content
+local BACKGROUND    = "CCEditor"         -- 640x480 screen with the boxes (waffel.icons.lod)
+-- step tabs: buttons c_<name>_up / _ht / _dn (waffel.D.lod), 90 px apart from x 10
+local TAB_ICONS     = {"c_baseclass", "c_firstpromo", "c_neutral", "c_light", "c_dark"}
+local TAB_X, TAB_STEP = 10, 90
 local ENTRY_X, ENTRY_Y = 286, 440                -- "Custom" button (83x30) on the creation screen:
 -- the bottom row, between the party slot 5 button (ends at 282, MenuChooseCharacter.lua)
 -- and the game's Clear (373), Cancel (459) and OK (546) buttons
@@ -404,16 +409,37 @@ end
 local SKILL_ORDER
 
 local function build()
-	local Big, Small = Game.Arrus_fnt, Game.Lucida_fnt
+	local Big, Small, Skill = Game.Arrus_fnt, Game.Lucida_fnt, Game.Create_fnt
 	SCREENS = {CREATION_SCREEN, const.Screens.House}
 
+	-- the background (CCEditor, waffel.icons.lod) has recessed boxes for the parts below:
+	-- title 8..632 x 8..34, info 8..454 x 78..150, kit / SP 462..632 x 42..150,
+	-- skills 8..632 x 158..424, hint 8..450 x 432..472; tabs at y 42, Cancel / OK at y 440
 	local bg = CustomUI.CreateIcon{
 		Icon = BACKGROUND, X = 0, Y = 0, Layer = 0, Screen = SCREENS, BlockBG = true,
 		Condition = function() return shown() end}
 	Mine[bg] = true
 
+	local function button(t)
+		local el = CustomUI.CreateButton{
+			IconUp = t.Up, IconDown = t.Down, IconMouseOver = t.Over,
+			X = t.X, Y = t.Y, Layer = 0, Screen = SCREENS, DynLoad = true,
+			Condition = function(self)
+				if not shown() then return false end
+				if t.Update then t.Update(self) end
+				return true
+			end,
+			Action = function()
+				if not shown() then return end
+				if E.Typing then endTyping(true) end
+				t.Click()
+			end}
+		Mine[el] = true
+		return el
+	end
+
 	-- class choice and points
-	text{Font = Big, X = PX, Y = PY, W = 290, H = 16,
+	text{Font = Big, X = 16, Y = 11, W = 440, H = 19,
 		Get = function()
 			local list, idx = familyList(), 1
 			for i, f in ipairs(list) do if f == E.F then idx = i end end
@@ -430,26 +456,28 @@ local function build()
 			E.Step = 1
 			refreshLock()
 		end}
-	text{Font = Big, X = PX + 300, Y = PY, W = 190, H = 16,
+	text{Font = Big, X = 470, Y = 11, W = 156, H = 19,
 		Get = function()
 			local total = CC.Cost(spec(), fam().Kit)
 			local budget = CC.Budget[E.Step]
 			return string.format("Points: %g / %d", total, budget), total > budget and RED or GREEN
 		end}
 
-	-- step tabs
-	local TABS = {"Base", "Promotion", "Neutral", "Light", "Dark"}
+	-- step tabs: the step shown glows; "!" after a step with problems
 	for step = 1, 5 do
-		text{Font = Big, X = PX + (step - 1) * 98, Y = PY + 18, W = 94, H = 16,
+		local icons = TAB_ICONS[step]
+		local x = TAB_X + (step - 1) * TAB_STEP
+		button{Up = icons .. "_up", Down = icons .. "_dn", Over = icons .. "_ht", X = x, Y = 42,
+			Update = function(self) self.IUpSrc = icons .. (step == E.Step and "_ht" or "_up") end,
+			Click = function() Game.PlaySound(23) E.Step = step end}
+		text{Font = Small, X = x + 85, Y = 44, W = 6, H = 17,
 			Get = function()
-				local bad = #CC.Problems(fam(), step) > 0
-				return TABS[step] .. (bad and "!" or ""), step == E.Step and GOLD or (bad and RED or GREY)
-			end,
-			Click = function() E.Step = step end}
+				if #CC.Problems(fam(), step) > 0 then return "!", RED end
+			end}
 	end
 
-	-- name and SP stats
-	text{Font = Big, X = PX, Y = PY + 36, W = 290, H = 16, KeepTyping = true,
+	-- name and tiers
+	text{Font = Big, X = 16, Y = 84, W = 430, H = 19, KeepTyping = true,
 		Get = function()
 			if E.Typing then return "Name: " .. E.TypeBuf .. "_", GOLD end
 			return "Name: " .. spec().Name
@@ -458,44 +486,44 @@ local function build()
 			if locked() then message("This class is taken by a character in the game") return end
 			if not E.Typing then E.Typing, E.TypeBuf = true, "" end
 		end}
-	text{Font = Big, X = PX + 300, Y = PY + 36, W = 190, H = 16,
-		Get = function()
-			local s = spec()
-			return "SP from: " .. (({"Intellect", "Personality", "both"})[s.Stats] or "?"),
-				s.SP == 0 and GREY or WHITE
-		end,
-		Click = cycleStats}
-
-	-- tiers
 	local function tierRow(y, field, label, tiers)
-		text{Font = Big, X = PX, Y = y, W = 330, H = 16,
+		text{Font = Big, X = 16, Y = y, W = 370, H = 19,
 			Get = function()
 				local s = spec()
 				local v = tiers[s[field]]
 				return string.format("%s: tier %d  (%d + %d per level)", label, s[field], v[1], v[2])
 			end}
-		text{Font = Big, X = PX + 340, Y = y, W = 24, H = 16,
+		text{Font = Big, X = 390, Y = y, W = 26, H = 19,
 			Get = function() return "[-]" end, Click = function() changeTier(field, -1) end}
-		text{Font = Big, X = PX + 370, Y = y, W = 24, H = 16,
+		text{Font = Big, X = 420, Y = y, W = 26, H = 19,
 			Get = function() return "[+]" end, Click = function() changeTier(field, 1) end}
 	end
-	tierRow(PY + 54, "HP", "Hit points", CC.HPTiers)
-	tierRow(PY + 72, "SP", "Spell points", CC.SPTiers)
+	tierRow(106, "HP", "Hit points", CC.HPTiers)
+	tierRow(126, "SP", "Spell points", CC.SPTiers)
 
-	-- resource kit (chosen on the base tab, kept by the promotions)
-	text{Font = Small, X = PX + 404, Y = PY + 56, W = 100, H = 14,
+	-- resource kit (chosen on the base tab, kept by the promotions) and the SP stats
+	text{Font = Big, X = 470, Y = 48, W = 156, H = 19,
 		Get = function()
 			local k = fam().Kit and CC.KitByKey[fam().Kit]
 			return "Kit: " .. (k and k.Name or "none"), k and GOLD or (E.Step == 1 and WHITE or GREY)
 		end,
 		Click = cycleKit}
-	text{Font = Small, X = PX + 404, Y = PY + 74, W = 100, H = 14,
+	text{Font = Small, X = 470, Y = 68, W = 156, H = 17,
 		Get = function()
 			local k = fam().Kit and CC.KitByKey[fam().Kit]
 			if not k then return E.Step == 1 and "click to buy one" or " ", GREY end
-			return string.format("%s, %d pts", k.Resource or "SP", k.Price), GREY
+			return string.format("%s, %d pts", k.Resource or "Spell points", k.Price), GREY
 		end,
 		Click = cycleKit}
+	text{Font = Big, X = 470, Y = 100, W = 156, H = 19,
+		Get = function() return "SP from:", spec().SP == 0 and GREY or WHITE end,
+		Click = cycleStats}
+	text{Font = Big, X = 470, Y = 120, W = 156, H = 19,
+		Get = function()
+			local s = spec()
+			return ({"Intellect", "Personality", "Int. and Pers."})[s.Stats] or "?", s.SP == 0 and GREY or WHITE
+		end,
+		Click = cycleStats}
 
 	-- skills: three columns of twelve
 	SKILL_ORDER = {}
@@ -509,7 +537,7 @@ local function build()
 		local col, row = math.floor((i - 1) / 12), (i - 1) % 12
 		local name = CC.SkillNames[id]
 		name = NICE[name] or name
-		text{Font = Small, X = PX + col * 168, Y = PY + 94 + row * 14, W = 166, H = 14,
+		text{Font = Skill, X = 18 + col * 206, Y = 163 + row * 21, W = 196, H = 18,
 			Get = function()
 				local f, s = fam(), spec()
 				local cap = s.Skills[id] or 0
@@ -521,20 +549,23 @@ local function build()
 			Click = function() clickSkill(id) end}
 	end
 
-	-- bottom line
-	text{Font = Small, X = 74, Y = 425, W = 360, H = 14,
+	-- hint box: messages, problems or how to use the screen; the keys
+	text{Font = Small, X = 14, Y = 435, W = 432, H = 17,
 		Get = function()
 			if E.Msg and os.clock() - E.MsgTime < MSG_TIME then return E.Msg, E.MsgOk and GREEN or RED end
-			if E.Typing then return "Type the name; Enter to keep it, Esc to drop it" end
+			if E.Typing then return "Type the name; Enter keeps it, Esc drops it" end
 			local bad = CC.Problems(fam(), E.Step)
 			if #bad > 0 then return bad[1], RED end
-			return "Click +, Ctrl -, Shift: start skill " ..
-				#(fam().StartSkills or {}) .. "/" .. START_SKILLS .. ".  Ctrl+S/L: save/load"
+			return "Click +, Ctrl+click -, Shift+click: start skill " ..
+				#(fam().StartSkills or {}) .. "/" .. START_SKILLS
 		end}
-	text{Font = Big, X = 440, Y = 423, W = 66, H = 16,
-		Get = function() return "Cancel" end, Click = function() close() end}
-	text{Font = Big, X = 510, Y = 423, W = 58, H = 16,
-		Get = function() return "Done", GOLD end, Click = function() done() end}
+	text{Font = Small, X = 14, Y = 453, W = 432, H = 17,
+		Get = function() return "Ctrl+S: save the build, Ctrl+L: load one", GREY end}
+
+	button{Up = "c_cncl_up", Down = "c_cncl_dn", Over = "c_cncl_ht", X = 459, Y = 440,
+		Click = function() Game.PlaySound(24) close() end}
+	button{Up = "c_ok_up", Down = "c_ok_dn", Over = "c_ok_ht", X = 546, Y = 440,
+		Click = function() done() end}
 
 	-- entry on the creation screen
 	local entry = CustomUI.CreateButton{
