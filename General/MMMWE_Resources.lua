@@ -649,6 +649,52 @@ for page, adr in pairs(TAB_CHECKS) do
 	end)
 end
 
+-- the family's own page picture and tab for its ability page: the spellbook dialog
+-- (init_spellbook_dialog) makes the tabs from the names "stXu"/"stXd" and each page loads
+-- its background "SBX000" (language LOD) by name, all from fixed 8-byte strings in .data.
+-- Before the tabs are made the strings of the family's page are set to its own pictures
+-- (waffel.icons.lod / waffel.D.lod), and put back for everyone else.
+local PAGE_ART = {
+	Barbarian = {Page = "SBR000", Tab = "STRG"},
+	Knight    = {Page = "SBKN000", Tab = "STKN"},
+	Monk      = {Page = "SBMK000", Tab = "STMK"},
+	Thief     = {Page = "SBTH000"},
+	Archer    = {Page = "SBHY000"},
+	["Dark Elf"] = {Page = "SBHY000"},
+	Ranger    = {Page = "SBHY000"},
+}
+local ART_STR = {   -- page: background, tab up, tab down
+	[0] = {0x502054, 0x50204C, 0x502044}, {0x50205C, 0x50203C, 0x502034}, {0x502064, 0x50202C, 0x502024},
+	{0x50206C, 0x50201C, 0x502014}, {0x502074, 0x50200C, 0x502004}, {0x50207C, 0x501FFC, 0x501FF4},
+	{0x502084, 0x501FEC, 0x501FE4}, {0x50208C, 0x501FDC, 0x501FD4}, {0x5020C4, 0x501FCC, 0x501FC4},
+}
+local ART_ORIG = {}
+for page, t in pairs(ART_STR) do
+	ART_ORIG[page] = {mem.string(t[1]), mem.string(t[2]), mem.string(t[3])}
+end
+local function setArtString(addr, str)
+	if #str > 7 then return end   -- 8-byte slots
+	mem.copy(addr, str, #str)
+	u1[addr + #str] = 0
+end
+local function applyPageArt(pl)
+	for page, t in pairs(ART_STR) do
+		local o = ART_ORIG[page]
+		setArtString(t[1], o[1]); setArtString(t[2], o[2]); setArtString(t[3], o[3])
+	end
+	local fam = pl and familyOf(pl)
+	local art = fam and fam.Page and PAGE_ART[fam.Name]
+	local t = art and ART_STR[fam.Page]
+	if not t then return end
+	if art.Page then setArtString(t[1], art.Page) end
+	if art.Tab then setArtString(t[2], art.Tab .. "u"); setArtString(t[3], art.Tab .. "d") end
+end
+MF.ApplyPageArt = applyPageArt
+-- init_spellbook_dialog: the player is known ([ebp-10h]), the Fire tab is made next
+mem.autohook(0x4CA36A, function(d)
+	applyPageArt(playerFromPtr(u4[d.ebp - 0x10]))
+end)
+
 local cstrCache = {}
 local function cstr(s)
 	local p = cstrCache[s]
