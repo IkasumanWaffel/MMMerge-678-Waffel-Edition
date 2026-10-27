@@ -35,9 +35,11 @@ local MF = Merge.Functions
 
 local ENABLED       = true
 local BACKGROUND    = "CCEditor"         -- 640x480 screen with the boxes (waffel.icons.lod)
--- step tabs: buttons c_<name>_up / _ht / _dn (waffel.D.lod), 90 px apart from x 10
+-- step tabs and Spells: buttons c_<name>_up / _ht / _dn / _problem (waffel.D.lod), 90 px apart
 local TAB_ICONS     = {"c_baseclass", "c_firstpromo", "c_neutral", "c_light", "c_dark"}
-local TAB_X, TAB_STEP = 10, 90
+local SPELLS_ICONS  = "c_spells"
+local TAB_X, TAB_STEP = 54, 90
+local FLASH_TIME    = 0.5                -- seconds per phase of a red flashing button
 local ENTRY_X, ENTRY_Y = 286, 440                -- "Custom" button (83x30) on the creation screen:
 -- the bottom row, between the party slot 5 button (ends at 282, MenuChooseCharacter.lua)
 -- and the game's Clear (373), Cancel (459) and OK (546) buttons
@@ -122,6 +124,7 @@ local function open(mode, player)
 	if mode == "creation" and not CC.IsCreating() then CC.BeginCreation() end
 	E.Mode, E.Player, E.Screen = mode, player, Game.CurrentScreen
 	E.Step, E.Typing, E.Msg = 1, false, nil
+	E.View, E.SpellPage = "skills", 1
 	-- the player's own custom class, or a new one
 	local f = CC.FamilyOf(player.Class)
 	E.NewF = nil
@@ -223,7 +226,13 @@ local function done()
 		for _, sk in ipairs(f.StartSkills) do
 			if pl.Skills[sk] == 0 then
 				pl.Skills[sk] = 1
-				if sk >= 12 and sk <= 20 then pl.Spells[(sk - 12) * 11 + 1] = true end
+				if sk >= 12 and sk <= 20 then
+					-- the school's first spell the class can learn
+					local spells = f.Steps[1].Spells
+					for spell = (sk - 12) * 11 + 1, (sk - 12) * 11 + 11 do
+						if not spells or spells[spell] then pl.Spells[spell] = true break end
+					end
+				end
 			end
 		end
 		local refund = pl.SkillPoints - before
@@ -308,6 +317,39 @@ local function clickSkill(id)
 		if cap >= 4 then return end
 		edit(CC.SetSkill(f, E.Step, id, cap + 1))
 	end
+end
+
+-- spells view: the step's schools, three per page (a school = a heading and its 11 spells)
+local function spellSchools()
+	local t, s = {}, spec()
+	for i, name in ipairs(CC.MagicSchools) do
+		if (s.Skills[const.Skills[name]] or 0) > 0 then t[#t + 1] = i end
+	end
+	return t
+end
+
+local function spellPages()
+	return math.max(1, math.ceil(#spellSchools() / 3))
+end
+
+-- the Spells button: skills -> spells page 1 -> 2 ... -> skills
+local function cycleView()
+	if E.View == "skills" then
+		if #spellSchools() == 0 then message("Buy a magic school first") return end
+		E.View, E.SpellPage = "spells", 1
+	elseif E.SpellPage < spellPages() then
+		E.SpellPage = E.SpellPage + 1
+	else
+		E.View = "skills"
+	end
+end
+
+local function clickSpell(spell)
+	if locked() then message("This class is taken by a character in the game") return end
+	local s = spec()
+	local picked = not s.Spells or s.Spells[spell]   -- older builds: every spell is picked
+	local on = not picked and not Keys.IsPressed(const.Keys.CTRL)
+	edit(CC.SetSpell(fam(), E.Step, spell, on))
 end
 
 -- Ctrl+S: the build to CustomClasses/<name>.txt; Ctrl+L: the next file of that folder
@@ -413,8 +455,9 @@ local function build()
 	SCREENS = {CREATION_SCREEN, const.Screens.House}
 
 	-- the background (CCEditor, waffel.icons.lod) has recessed boxes for the parts below:
-	-- title 8..632 x 8..34, info 8..454 x 78..150, kit / SP 462..632 x 42..150,
-	-- skills 8..632 x 158..424, hint 8..450 x 432..472; tabs at y 42, Cancel / OK at y 440
+	-- title 8..632 x 8..34, info 8..454 x 78..150, kit / SP 462..632 x 78..150,
+	-- skills / spells 8..632 x 158..424, hint 8..450 x 432..472; step tabs and Spells at
+	-- y 42 (x 54, 90 apart), Cancel / OK at y 440
 	local bg = CustomUI.CreateIcon{
 		Icon = BACKGROUND, X = 0, Y = 0, Layer = 0, Screen = SCREENS, BlockBG = true,
 		Condition = function() return shown() end}
@@ -463,18 +506,29 @@ local function build()
 			return string.format("Points: %g / %d", total, budget), total > budget and RED or GREEN
 		end}
 
-	-- step tabs: the step shown glows; "!" after a step with problems
+	-- step tabs and Spells: the one shown glows, one with problems flashes red
+	local function flash(self, icons, selected, bad)
+		local s = icons .. (selected and "_ht" or "_up")
+		if bad and math.floor(os.clock() / FLASH_TIME) % 2 == 0 then s = icons .. "_problem" end
+		self.IUpSrc = s
+	end
 	for step = 1, 5 do
 		local icons = TAB_ICONS[step]
-		local x = TAB_X + (step - 1) * TAB_STEP
-		button{Up = icons .. "_up", Down = icons .. "_dn", Over = icons .. "_ht", X = x, Y = 42,
-			Update = function(self) self.IUpSrc = icons .. (step == E.Step and "_ht" or "_up") end,
+		button{Up = icons .. "_up", Down = icons .. "_dn", Over = icons .. "_ht",
+			X = TAB_X + (step - 1) * TAB_STEP, Y = 42,
+			Update = function(self) flash(self, icons, step == E.Step, #CC.Problems(fam(), step) > 0) end,
 			Click = function() Game.PlaySound(23) E.Step = step end}
-		text{Font = Small, X = x + 85, Y = 44, W = 6, H = 17,
-			Get = function()
-				if #CC.Problems(fam(), step) > 0 then return "!", RED end
-			end}
 	end
+	button{Up = SPELLS_ICONS .. "_up", Down = SPELLS_ICONS .. "_dn", Over = SPELLS_ICONS .. "_ht",
+		X = TAB_X + 5 * TAB_STEP, Y = 42,
+		Update = function(self)
+			if E.View == "spells" then
+				if #spellSchools() == 0 then E.View = "skills" end
+				if E.SpellPage > spellPages() then E.SpellPage = 1 end
+			end
+			flash(self, SPELLS_ICONS, E.View == "spells", #CC.SpellProblems(fam(), E.Step) > 0)
+		end,
+		Click = function() Game.PlaySound(23) cycleView() end}
 
 	-- name and tiers
 	text{Font = Big, X = 16, Y = 84, W = 430, H = 19, KeepTyping = true,
@@ -502,26 +556,24 @@ local function build()
 	tierRow(126, "SP", "Spell points", CC.SPTiers)
 
 	-- resource kit (chosen on the base tab, kept by the promotions) and the SP stats
-	text{Font = Big, X = 470, Y = 48, W = 156, H = 19,
+	text{Font = Big, X = 470, Y = 84, W = 156, H = 19,
 		Get = function()
 			local k = fam().Kit and CC.KitByKey[fam().Kit]
 			return "Kit: " .. (k and k.Name or "none"), k and GOLD or (E.Step == 1 and WHITE or GREY)
 		end,
 		Click = cycleKit}
-	text{Font = Small, X = 470, Y = 68, W = 156, H = 17,
+	text{Font = Small, X = 470, Y = 105, W = 156, H = 17,
 		Get = function()
 			local k = fam().Kit and CC.KitByKey[fam().Kit]
 			if not k then return E.Step == 1 and "click to buy one" or " ", GREY end
 			return string.format("%s, %d pts", k.Resource or "Spell points", k.Price), GREY
 		end,
 		Click = cycleKit}
-	text{Font = Big, X = 470, Y = 100, W = 156, H = 19,
-		Get = function() return "SP from:", spec().SP == 0 and GREY or WHITE end,
-		Click = cycleStats}
-	text{Font = Big, X = 470, Y = 120, W = 156, H = 19,
+	text{Font = Big, X = 470, Y = 126, W = 156, H = 19,
 		Get = function()
 			local s = spec()
-			return ({"Intellect", "Personality", "Int. and Pers."})[s.Stats] or "?", s.SP == 0 and GREY or WHITE
+			return "SP: " .. (({"Intellect", "Personality", "Int. and Pers."})[s.Stats] or "?"),
+				s.SP == 0 and GREY or WHITE
 		end,
 		Click = cycleStats}
 
@@ -539,6 +591,7 @@ local function build()
 		name = NICE[name] or name
 		text{Font = Skill, X = 18 + col * 206, Y = 163 + row * 21, W = 196, H = 18,
 			Get = function()
+				if E.View ~= "skills" then return end
 				local f, s = fam(), spec()
 				local cap = s.Skills[id] or 0
 				local start = false
@@ -549,6 +602,40 @@ local function build()
 			Click = function() clickSkill(id) end}
 	end
 
+	-- spells: three schools per page, a heading and the 11 spells each
+	local RANK = {"N", "E", "M", "G"}
+	local SHORTER = {["Protection from Magic"] = "Prot. from Magic"}
+	for col = 0, 2 do
+		for row = 0, 11 do
+			local function spellAt()
+				local schools = spellSchools()
+				local school = schools[(E.SpellPage - 1) * 3 + col + 1]
+				if not school then return end
+				if row == 0 then return school end
+				return school, (school - 1) * 11 + row
+			end
+			text{Font = Skill, X = 18 + col * 206, Y = 163 + row * 21, W = 200, H = 18,
+				Get = function()
+					if E.View ~= "spells" then return end
+					local school, spell = spellAt()
+					if not school then return end
+					local s = spec()
+					if not spell then
+						local cap = s.Skills[const.Skills[CC.MagicSchools[school]]] or 0
+						return string.format("%s Magic: %s", CC.MagicSchools[school], SHORT[cap]), GREEN
+					end
+					local name = Game.SpellsTxt[spell].Name
+					name = SHORTER[name] or name
+					local picked = not s.Spells or s.Spells[spell]
+					return string.format("%s (%s)", name, RANK[CC.SpellRank(spell)]), picked and GOLD or GREY
+				end,
+				Click = function()
+					local _, spell = spellAt()
+					if spell then clickSpell(spell) end
+				end}
+		end
+	end
+
 	-- hint box: messages, problems or how to use the screen; the keys
 	text{Font = Small, X = 14, Y = 435, W = 432, H = 17,
 		Get = function()
@@ -556,6 +643,11 @@ local function build()
 			if E.Typing then return "Type the name; Enter keeps it, Esc drops it" end
 			local bad = CC.Problems(fam(), E.Step)
 			if #bad > 0 then return bad[1], RED end
+			if E.View == "spells" then
+				local cost = CC.SpellCost
+				return string.format("Spells %d/%d: click to pick (%g/%g/%g/%g points)", E.SpellPage, spellPages(),
+					cost[1], cost[2], cost[3], cost[4])
+			end
 			return "Click +, Ctrl+click -, Shift+click: start skill " ..
 				#(fam().StartSkills or {}) .. "/" .. START_SKILLS
 		end}

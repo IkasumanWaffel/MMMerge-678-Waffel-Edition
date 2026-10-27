@@ -26,6 +26,7 @@
 	  CustomClass.Skill(f, step, skill, cap)    cap 0..4 or "-", "N"/"B", "E", "M", "G"
 	  CustomClass.Export(f)                     writes the build to CustomClasses/<name>.txt
 	  CustomClass.Import(file [, f])            reads a build from CustomClasses (new class, or into f)
+	  CustomClass.Spell(f, step, spell [, false]) picks (or drops) a spell, 1..99
 	  CustomClass.Kit(f, kit)                   resource kit: "Monk", "Barbarian", "Knight", "Thief",
 	                                            "Archer", "Ranger", "Paladin", "DarkElf", "Minotaur",
 	                                            "Technician", or nil / "none"
@@ -87,6 +88,26 @@ local KITS = {
 	{Key = "Minotaur",   Name = "Minotaur",   Kind = 7,  Price = 15, Page = "Fire",  Race = 10},   -- BaseRace Minotaur
 	{Key = "Technician", Name = "Technician", Kind = 15, Price = 15, Page = "Earth", Needs = {"Blaster", "Repair"}},
 }
+-- spells (picked one by one; a spell needs its school's skill): cost by the spell's rank in
+-- its school (spots 1-4 Novice, 5-7 Expert, 8-10 Master, 11 Grand Master), a whole school
+-- 11.5 points. Picked spells are learned from Novice 1, as with most preset classes.
+-- A step without a Spells list (builds made before spells could be picked) has every spell
+-- of its schools, free of charge.
+local SPELL_COST = {0.5, 1, 1.5, 2}
+local SPELL_RANK_NAMES = {"Novice", "Expert", "Master", "Grand Master"}
+local MAGIC_SCHOOLS = {"Fire", "Air", "Water", "Earth", "Spirit", "Mind", "Body", "Light", "Dark"}
+local function spellRank(spell)
+	local i = (spell - 1) % 11
+	return i == 10 and 4 or i >= 7 and 3 or i >= 4 and 2 or 1
+end
+local function spellSchool(spell)       -- skill id of the spell's school
+	return const.Skills[MAGIC_SCHOOLS[math.floor((spell - 1) / 11) + 1]]
+end
+local function spellName(spell)
+	local t = Game.SpellsTxt and Game.SpellsTxt[spell]
+	return t and t.Name or ("spell " .. spell)
+end
+
 local KIT_BY_KEY = {}
 for _, k in ipairs(KITS) do KIT_BY_KEY[k.Key] = k end
 local SKILL_MUL = {Armsmaster = 1.5, Merchant = 1.5, Light = 1.5, Dark = 1.5,
@@ -308,6 +329,10 @@ end
 local function copySpec(s)
 	local t = {Name = s.Name, HP = s.HP, SP = s.SP, Stats = s.Stats, Skills = {}}
 	for k, v in pairs(s.Skills) do t.Skills[k] = v end
+	if s.Spells then
+		t.Spells = {}
+		for k, v in pairs(s.Spells) do t.Spells[k] = v end
+	end
 	return t
 end
 
@@ -353,7 +378,47 @@ local function cost(spec, kitKey)
 		total = total + v
 		lines[#lines + 1] = string.format("%s %s: %g", name, CAP_NAMES[m], v)
 	end
+	if spec.Spells then
+		local n, v = 0, 0
+		for spell in pairs(spec.Spells) do
+			n, v = n + 1, v + SPELL_COST[spellRank(spell)]
+		end
+		if n > 0 then
+			total = total + v
+			lines[#lines + 1] = string.format("%d spells: %g", n, v)
+		end
+	end
 	return total, lines
+end
+
+-- problems of a step's spells: a spell without its school, a school without spells
+local function spellProblems(fam, step)
+	local spec, out = fam.Steps[step], {}
+	if not spec.Spells then return out end
+	local has = {}
+	for spell in pairs(spec.Spells) do
+		local school = spellSchool(spell)
+		has[school] = true
+		if (spec.Skills[school] or 0) == 0 then
+			out[#out + 1] = string.format("%s needs %s Magic", spellName(spell), MAGIC_SCHOOLS[math.floor((spell - 1) / 11) + 1])
+		end
+	end
+	for i, name in ipairs(MAGIC_SCHOOLS) do
+		local school = const.Skills[name]
+		if (spec.Skills[school] or 0) > 0 and not has[school] then
+			out[#out + 1] = name .. " Magic: no spell picked"
+		end
+	end
+	local p = PARENT[step] and fam.Steps[PARENT[step]]
+	if p and p.Spells then
+		for spell in pairs(p.Spells) do
+			if not spec.Spells[spell] then
+				out[#out + 1] = spellName(spell) .. " is lost from the previous step"
+				break
+			end
+		end
+	end
+	return out
 end
 
 -- problems of a step: over budget, tiers too high, less than its parent
@@ -389,6 +454,7 @@ local function problems(fam, step)
 			end
 		end
 	end
+	for _, b in ipairs(spellProblems(fam, step)) do out[#out + 1] = b end
 	return out
 end
 
@@ -423,18 +489,27 @@ local function describe(fam, step)
 			parts[#parts + 1] = CAP_NAMES[m] .. ": " .. table.concat(bySkillCap[m], ", ") .. "."
 		end
 	end
+	if spec.Spells then
+		local n = 0
+		for _ in pairs(spec.Spells) do n = n + 1 end
+		parts[#parts + 1] = string.format("Spells: %d.", n)
+	end
 	return table.concat(parts, " ")
 end
 
-local AllSpellsB1
-local function spellsLearning()
-	if not AllSpellsB1 then
-		AllSpellsB1 = {}
-		for spell = 1, 99 do
-			AllSpellsB1[spell] = {{PlayerLevel = 1, SkillMastery = 1, SkillLevel = 1}}
+-- SpellsLearning entries: every spell of the step's schools (no Spells list: older builds) or
+-- the picked ones, from Novice 1
+local B1 = {{PlayerLevel = 1, SkillMastery = 1, SkillLevel = 1}}
+local function spellsLearning(spec)
+	local t = {}
+	for spell = 1, 99 do
+		if spec.Spells then
+			if spec.Spells[spell] then t[spell] = B1 end
+		else
+			t[spell] = B1
 		end
 	end
-	return AllSpellsB1
+	return t
 end
 
 local function setPromotion(src, dest)
@@ -464,7 +539,7 @@ local function applyClass(id, fam, f, step)
 	ce.Step = STEP_OF[step]
 	ce.Alignment = ALIGN_OF[step]
 	if MT.SpellsLearning then
-		MT.SpellsLearning[id] = spec and spellsLearning() or nil
+		MT.SpellsLearning[id] = spec and spellsLearning(spec) or nil
 	end
 end
 
@@ -562,7 +637,7 @@ local function newFamily(name)
 	end
 	if not f then return nil, "all " .. FAMILIES .. " custom classes are in use" end
 	name = name or ("Custom Class " .. f)
-	local base = {Name = name, HP = 0, SP = 0, Stats = 1, Skills = {}}
+	local base = {Name = name, HP = 0, SP = 0, Stats = 1, Skills = {}, Spells = {}}
 	local fam = {Steps = {base}}
 	local names = {name, name .. " Adept", name .. " Master", "Light " .. name, "Dark " .. name}
 	for step = 2, STEPS do
@@ -663,6 +738,57 @@ local function famSetSkill(fam, step, id, m)
 			if fam.StartSkills[i] == id then table.remove(fam.StartSkills, i) end
 		end
 	end
+	-- a school given up takes its spells with it
+	if id >= const.Skills.Fire and id <= const.Skills.Dark then
+		for _, st in ipairs({step, unpack(children(step))}) do
+			local spec = fam.Steps[st]
+			if spec.Spells and (spec.Skills[id] or 0) == 0 then
+				for spell in pairs(spec.Spells) do
+					if spellSchool(spell) == id then spec.Spells[spell] = nil end
+				end
+			end
+		end
+	end
+	return true
+end
+
+-- builds made before spells could be picked have no Spells lists (every spell of their
+-- schools); the first spell change turns that into explicit lists
+local function materializeSpells(fam)
+	for st = 1, STEPS do
+		local spec = fam.Steps[st]
+		if not spec.Spells then
+			spec.Spells = {}
+			for spell = 1, 99 do
+				if (spec.Skills[spellSchool(spell)] or 0) > 0 then spec.Spells[spell] = true end
+			end
+		end
+	end
+end
+
+-- picks (on = true) or drops a spell on a step; passed on to the later steps (a drop only to
+-- the ones that had it). A promotion step can't drop a spell of its previous step.
+local function famSetSpell(fam, step, spell, on)
+	spell = tonumber(spell)
+	if not spell or spell < 1 or spell > 99 then return nil, "no such spell" end
+	local spec = fam.Steps[step]
+	local school = spellSchool(spell)
+	if on and (spec.Skills[school] or 0) == 0 then
+		return nil, string.format("%s needs %s Magic", spellName(spell), MAGIC_SCHOOLS[math.floor((spell - 1) / 11) + 1])
+	end
+	local p = PARENT[step] and fam.Steps[PARENT[step]]
+	if not on and p and (not p.Spells or p.Spells[spell]) and (p.Skills[school] or 0) > 0 then
+		return nil, spellName(spell) .. " is a spell of the previous step"
+	end
+	materializeSpells(fam)
+	spec.Spells[spell] = on or nil
+	for _, c in ipairs(children(step)) do
+		if on then
+			fam.Steps[c].Spells[spell] = true
+		else
+			fam.Steps[c].Spells[spell] = nil
+		end
+	end
 	return true
 end
 
@@ -695,6 +821,12 @@ function CustomClass.Skill(f, step, skill, cap)
 	local m = capValue(cap)
 	if not m then error('cap must be 0..4 or "-", "N", "E", "M", "G"', 2) end
 	try(famSetSkill(fam, step, id, m))
+	changed()
+end
+
+-- CustomClass.Spell(f, step, spell, on): picks (on true or nil) or drops (false) a spell
+function CustomClass.Spell(f, step, spell, on)
+	try(famSetSpell(family(f), checkStep(step), spell, on ~= false))
 	changed()
 end
 
@@ -831,6 +963,7 @@ local CAP_LETTER = {[1] = "N", [2] = "E", [3] = "M", [4] = "G"}
 local function exportText(fam)
 	local out = {"-- MMMWE custom class build (MMMWE_CustomClasses.lua). Caps: N, E, M, G.",
 		"-- Steps: base, first promotion, neutral, light, dark. Stats: 1 Intellect, 2 Personality, 3 both.",
+		"-- Spells: spell numbers 1..99 (11 per school from Fire to Dark).",
 		"return {"}
 	out[#out + 1] = fam.Kit and string.format("\tKit = %q,", fam.Kit) or "\tKit = nil,"
 	local ss = {}
@@ -845,7 +978,15 @@ local function exportText(fam)
 		table.sort(ids)
 		for _, id in ipairs(ids) do sk[#sk + 1] = string.format("%s = %q", SKILL_IDS[id], CAP_LETTER[spec.Skills[id]]) end
 		out[#out + 1] = string.format("\t\t{Name = %q, HP = %d, SP = %d, Stats = %d,", spec.Name, spec.HP, spec.SP, spec.Stats)
-		out[#out + 1] = "\t\t\tSkills = {" .. table.concat(sk, ", ") .. "}},"
+		local sp
+		if spec.Spells then
+			local ids = {}
+			for spell in pairs(spec.Spells) do ids[#ids + 1] = spell end
+			table.sort(ids)
+			sp = "{" .. table.concat(ids, ", ") .. "}"
+		end
+		out[#out + 1] = "\t\t\tSkills = {" .. table.concat(sk, ", ") .. "}" ..
+			(sp and (",\r\n\t\t\tSpells = " .. sp) or "") .. "},"
 	end
 	out[#out + 1] = "\t},"
 	out[#out + 1] = "}"
@@ -878,6 +1019,16 @@ local function importText(text)
 			if not id then return nil, "unknown skill: " .. tostring(k) end
 			if not m then return nil, "unknown cap: " .. tostring(v) end
 			spec.Skills[id] = m > 0 and m or nil
+		end
+		if type(src.Spells) == "table" then
+			spec.Spells = {}
+			for _, v in ipairs(src.Spells) do
+				local spell = tonumber(v)
+				if not spell or spell < 1 or spell > 99 or spell ~= math.floor(spell) then
+					return nil, "unknown spell: " .. tostring(v)
+				end
+				spec.Spells[spell] = true
+			end
 		end
 		fam.Steps[step] = spec
 	end
@@ -978,6 +1129,13 @@ MF.CustomClasses = {
 	SetStats = famSetStats,
 	SetSkill = famSetSkill,
 	SetKit = famSetKit,
+	SetSpell = famSetSpell,
+	SpellRank = spellRank,
+	SpellSchool = spellSchool,
+	SpellCost = SPELL_COST,
+	SpellRankNames = SPELL_RANK_NAMES,
+	MagicSchools = MAGIC_SCHOOLS,
+	SpellProblems = spellProblems,
 	ExportBuild = exportBuild,
 	ImportFile = importFile,
 	BuildFiles = buildFiles,
