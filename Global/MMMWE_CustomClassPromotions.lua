@@ -15,6 +15,7 @@
 -- Skills above the caps of the new class are lowered and the skill points come back
 -- (MF.ConvertCharacter), which can only happen when a neutral character goes light or dark.
 
+local MF = Merge.Functions
 local CC = MF.CustomClasses
 if not CC then
 	return
