@@ -424,9 +424,13 @@ end
 
 local SCREENS
 
+-- CustomUI keys texts on screen lists by the first 3 characters of the text and the position,
+-- so texts at the same place (skills / spells views) need different initial texts
+local TextCount = 0
 local function text(t)
+	TextCount = TextCount + 1
 	local el = CustomUI.CreateText{
-		Text = "  ", Font = t.Font, X = t.X, Y = t.Y, Width = t.W, Height = t.H or 14,
+		Text = string.format("%03d", TextCount), Font = t.Font, X = t.X, Y = t.Y, Width = t.W, Height = t.H or 14,
 		Layer = 0, Screen = SCREENS, AlignLeft = t.Left ~= false,
 		ColorStd = WHITE, ColorMouseOver = HOVER,
 		Condition = function(self)
