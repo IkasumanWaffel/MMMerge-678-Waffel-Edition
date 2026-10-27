@@ -1545,7 +1545,7 @@
 		[4] = {44646, 44647, 44648, 44649, 44650, 44651},
 		[5] = {44605, 44606, 44607, 44608, 44609, 44605},
 		[6] = {44616, 44617, 44618, 44619, 44620, 44621},
-		[7] = {44671, 44672, 44673, 44671, 44672, 44673},
+		[7] = {44674, 44675, 44676, 44677, 44678, 44679, 44680},   -- plasmacrit01..07
 		[33] = {44634, 44635, 44636, 44637, 44638, 44639},
 	}
 
@@ -1691,7 +1691,7 @@
 		if chance > 0 and math.random() * 100 < chance then
 			local snd = sndSkill and CritSounds[sndSkill]
 			if snd and Game.CurrentScreen ~= 7 then
-				Game.PlaySound(snd[math.random(1, 6)], MonSoundRef(Mon))
+				Game.PlaySound(snd[math.random(1, #snd)], MonSoundRef(Mon))
 			end
 			return d
 		end

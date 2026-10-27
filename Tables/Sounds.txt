@@ -8640,3 +8640,10 @@ staffparry06	44663	system	-
 blastercrit01	44671	system	-
 blastercrit02	44672	system	-
 blastercrit03	44673	system	-
+plasmacrit01	44674	system	-
+plasmacrit02	44675	system	-
+plasmacrit03	44676	system	-
+plasmacrit04	44677	system	-
+plasmacrit05	44678	system	-
+plasmacrit06	44679	system	-
+plasmacrit07	44680	system	-
