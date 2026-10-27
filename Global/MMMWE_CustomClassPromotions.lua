@@ -4,7 +4,7 @@
 -- milestone of that continent. Resurectra and Kastore give the light or the dark second
 -- promotion; King Nicolai gives the neutral one.
 --
---   Jadame      Bastian Loudrin   base -> first promotion     the Alliance Council is formed
+--   Jadame      Bastian Loudrin   base -> first promotion     Overdune, the troll witness, is brought to him
 --   Antagarich  Queen Catherine   base -> first promotion     Castle Harmondale is restored
 --   Antagarich  Resurectra        first/neutral -> light      the party chose the path of Light
 --   Antagarich  Kastore           first/neutral -> dark       the party chose the path of Dark
@@ -36,7 +36,7 @@ end
 -- step numbers: 1 base, 2 first promotion, 3 neutral, 4 light, 5 dark
 local PROMOTERS = {
 	{NPC = 5, Slot = 1,      -- Bastian Loudrin
-		{From = {1}, To = 2, Gate = qbits(34), Need = "the Alliance Council has been formed"},
+		{From = {1}, To = 2, Gate = qbits(59), Need = "you have brought me the witness from the Ironsand Desert"},
 	},
 	{NPC = 408, Slot = 5,    -- Queen Catherine
 		{From = {1}, To = 2, Gate = qbits(610), Need = "Castle Harmondale has been restored"},
