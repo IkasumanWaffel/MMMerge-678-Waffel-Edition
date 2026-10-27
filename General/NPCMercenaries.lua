@@ -723,7 +723,10 @@ local function RefillMercenaries()
 			end
 		end
 
-		local MaxClass = table.find(ClassStages[ClassTypes[Party[0].Class]], Party[0].Class) or 1
+		-- MMMWE: custom classes (and any class without a stage list) use their promotion step
+		local Stages = ClassStages[ClassTypes[Party[0].Class]]
+		local Extra = Game.ClassesExtra[Party[0].Class]
+		local MaxClass = Stages and table.find(Stages, Party[0].Class) or (Extra and Extra.Step and Extra.Step + 1) or 1
 		CurClass = ClassStages[trandom(CurClass)]
 		CurClass = CurClass[math.random(1, math.min(MaxClass, #CurClass))]
 
