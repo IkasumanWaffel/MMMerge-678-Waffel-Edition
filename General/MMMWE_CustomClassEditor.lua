@@ -511,10 +511,31 @@ local function build()
 		end}
 
 	-- step tabs and Spells: the one shown glows, one with problems flashes red
+	-- the game keeps 15 characters of a bitmap's name, and CustomUI reloads a button's picture
+	-- whenever the kept name differs from IUpSrc: "c_baseclass_problem" would be loaded anew
+	-- every frame until the bitmap list is full. So the pictures are loaded once and the
+	-- button gets the pointer and the name as kept.
+	local pics = {}
+	local function pic(name)
+		local p = pics[name]
+		if not p then
+			p = CustomUI.LoadIcon(name)
+			if type(p) ~= "number" or p == 0 then return end
+			pics[name] = p
+		end
+		return p
+	end
 	local function flash(self, icons, selected, bad)
 		local s = icons .. (selected and "_ht" or "_up")
 		if bad and math.floor(os.clock() / FLASH_TIME) % 2 == 0 then s = icons .. "_problem" end
-		self.IUpSrc = s
+		local p = pic(s)
+		if p then
+			self.IUpPtr = p
+			self.IUpSrc = mem.string(p)
+			if (self.Wt or 1) <= 1 then   -- the size CustomUI takes from the first picture it loads
+				self.Wt, self.Ht = mem.u2[p + 0x18], mem.u2[p + 0x1A]
+			end
+		end
 	end
 	for step = 1, 5 do
 		local icons = TAB_ICONS[step]
