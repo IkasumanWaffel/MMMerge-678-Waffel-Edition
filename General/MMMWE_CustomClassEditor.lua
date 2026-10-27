@@ -33,8 +33,9 @@ local MF = Merge.Functions
 local ENABLED       = true
 local BACKGROUND    = "ExSetScr2"        -- 640x480 panel (mmmerge.icons.lod)
 local PX, PY        = 76, 154            -- top left of the panel's content
-local ENTRY_X, ENTRY_Y = 287, 440                -- "Custom" button (83x30) on the creation screen:
--- the bottom row, left of the game's Clear (373), Cancel (459) and OK (546) buttons
+local ENTRY_X, ENTRY_Y = 286, 440                -- "Custom" button (83x30) on the creation screen:
+-- the bottom row, between the party slot 5 button (ends at 282, MenuChooseCharacter.lua)
+-- and the game's Clear (373), Cancel (459) and OK (546) buttons
 local ENTRY_ICONS = {"c_custom_up", "c_custom_DN", "c_custom_ht"}   -- up, down, hover (mmmerge.icons.lod)
 local EXTRA_SKILLS  = 2                  -- skills the creation screen asks to pick on top
 local START_SKILLS  = 2

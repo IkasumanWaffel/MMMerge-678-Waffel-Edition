@@ -553,7 +553,7 @@ function events.GameInitialized2()
 			Screen		= 21,
 			Layer		= 1,
 			DynLoad = true,
-			X		=	58 + i*40,
+			X		=	60 + i*38,	-- MMMWE: 38 apart (was 40) to make room for the Custom button
 			Y		=	439,
 			Action	=	function() SetActive(i, true) end,
 			Condition 	= function() return PartySize > i - 1 end
