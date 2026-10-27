@@ -1794,11 +1794,17 @@
 					eradicationChance = math.min(eradicationChance, BLASTER.EradMaxPerHit)
 				end
 
-				if eradicationChance > 0 and math.random() < eradicationChance then
+				local eradicated = eradicationChance > 0 and math.random() < eradicationChance
+				-- a critical hit's sound (plasmacrit01..07); an eradication has its own sound
+				if CritProc == 1 and not eradicated and Game.CurrentScreen ~= 7 then
+					local snd = CritSounds[7]
+					Game.PlaySound(snd[math.random(1, #snd)], MonSoundRef(Mon))
+				end
+				if eradicated then
 					local hit = t.Result
 					t.Result = Mon.HP
 					if MF.BlasterChain then MF.BlasterChain(Pl, Mon, hit) end
-					Game.PlaySound(math.random(44671,44673), MonSoundRef(Mon))
+					Game.PlaySound(math.random(44671,44673), MonSoundRef(Mon))   -- blastercrit01..03
 					Mon:ChangeLook(241)
 					Mon:SetCustomFrames(nil, nil, nil, nil, nil, nil, 'm203x', 'm207d', nil)
 					mem.u4[CombatMsgAddr] = mem_cstring(string.format(
