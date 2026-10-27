@@ -24,6 +24,11 @@
 	  CustomClass.HP(f, step, tier)             tier 0..5 (6 first promotion, 7 second)
 	  CustomClass.SP(f, step, tier, stats)      stats "I", "P" or "IP"
 	  CustomClass.Skill(f, step, skill, cap)    cap 0..4 or "-", "N"/"B", "E", "M", "G"
+	  CustomClass.Export(f)                     writes the build to CustomClasses/<name>.txt
+	  CustomClass.Import(file [, f])            reads a build from CustomClasses (new class, or into f)
+	  CustomClass.Kit(f, kit)                   resource kit: "Monk", "Barbarian", "Knight", "Thief",
+	                                            "Archer", "Ranger", "Paladin", "DarkElf", "Minotaur",
+	                                            "Technician", or nil / "none"
 	  CustomClass.Show(f), CustomClass.List()
 	  CustomClass.Give(player, f, step)         player: party slot 0..4 (default: selected);
 	                                            skills the class can't learn are removed and
@@ -58,6 +63,32 @@ local HP_TIERS = {[0] = {20, 3}, {25, 4}, {30, 5}, {35, 6}, {35, 7}, {40, 8}, {4
 local SP_TIERS = {[0] = {0, 0}, {5, 1}, {5, 2}, {10, 3}, {15, 3}, {20, 4}, {20, 5}, {25, 5}}
 
 local CAP_COST  = {[0] = 0, 2, 4, 7, 10}         -- total cost of a mastery cap
+
+-- resource kits (stage 4): bought with the base class and kept by its promotions; the price
+-- counts on every step. A kit gives the resource (if any) and the abilities of one preset
+-- family (MMMWE_Resources.lua). Kind: that family's Class Extra kind. Page: the magic school
+-- whose spellbook page holds the abilities (the class can't buy it). Resource kits replace
+-- the spell points, so their builds keep the SP tier at 0. Branches: the promotion branch
+-- each second-promotion step stands for (light / dark abilities of the family).
+-- Breath (Dragons) is never sold.
+local KITS = {
+	{Key = "Monk",       Name = "Monk",       Kind = 8,  Price = 35, Page = "Water", Resource = "Ki",
+		Branches = {[4] = "MasterMonk", [5] = "Ninja"}},
+	{Key = "Barbarian",  Name = "Barbarian",  Kind = 12, Price = 30, Page = "Fire",  Resource = "Rage"},
+	{Key = "Knight",     Name = "Knight",     Kind = 6,  Price = 25, Page = "Air",   Resource = "Resolve",
+		Branches = {[3] = "Champion", [4] = "Templar", [5] = "BlackKnight"}},
+	{Key = "Thief",      Name = "Thief",      Kind = 11, Price = 20, Page = "Mind",  Resource = "Energy",
+		Branches = {[4] = "Spy", [5] = "Assassin"}},
+	{Key = "Archer",     Name = "Archer",     Kind = 1,  Price = 15, Page = "Body",
+		Branches = {[4] = "MasterArcher", [5] = "Sniper"}},
+	{Key = "Ranger",     Name = "Ranger",     Kind = 10, Price = 15, Page = "Light"},
+	{Key = "Paladin",    Name = "Paladin",    Kind = 9,  Price = 15, Page = "Air"},
+	{Key = "DarkElf",    Name = "Dark Elf",   Kind = 3,  Price = 15, Page = "Body"},
+	{Key = "Minotaur",   Name = "Minotaur",   Kind = 7,  Price = 15, Page = "Fire",  Race = 10},   -- BaseRace Minotaur
+	{Key = "Technician", Name = "Technician", Kind = 15, Price = 15, Page = "Earth", Needs = {"Blaster", "Repair"}},
+}
+local KIT_BY_KEY = {}
+for _, k in ipairs(KITS) do KIT_BY_KEY[k.Key] = k end
 local SKILL_MUL = {Armsmaster = 1.5, Merchant = 1.5, Light = 1.5, Dark = 1.5,
 	Learning = 1.25, Alchemy = 1.25, Blaster = 1.25}
 local GROUPS    = {{"Fire", "Air", "Water", "Earth"}, {"Spirit", "Mind", "Body"}}
@@ -281,8 +312,13 @@ local function copySpec(s)
 end
 
 -- point cost of one step's build, and the lines that explain it
-local function cost(spec)
+local function cost(spec, kitKey)
 	local total, lines = 0, {}
+	local kit = kitKey and KIT_BY_KEY[kitKey]
+	if kit then
+		total = total + kit.Price
+		lines[#lines + 1] = string.format("%s kit: %g", kit.Name, kit.Price)
+	end
 	local hp, sp = tierCost(spec.HP), tierCost(spec.SP)
 	total = total + hp + sp
 	lines[#lines + 1] = string.format("HP tier %d (%d/%d per level): %g", spec.HP, HP_TIERS[spec.HP][1], HP_TIERS[spec.HP][2], hp)
@@ -323,12 +359,26 @@ end
 -- problems of a step: over budget, tiers too high, less than its parent
 local function problems(fam, step)
 	local spec, out = fam.Steps[step], {}
-	local total = cost(spec)
+	local total = cost(spec, fam.Kit)
 	if total > BUDGET[step] then
 		out[#out + 1] = string.format("%g points of %d", total, BUDGET[step])
 	end
 	if spec.HP > MAX_TIER[step] then out[#out + 1] = "HP tier above " .. MAX_TIER[step] end
 	if spec.SP > MAX_TIER[step] then out[#out + 1] = "SP tier above " .. MAX_TIER[step] end
+	local kit = fam.Kit and KIT_BY_KEY[fam.Kit]
+	if kit then
+		if (spec.Skills[const.Skills[kit.Page]] or 0) > 0 then
+			out[#out + 1] = string.format("the %s kit uses the %s page: no %s Magic", kit.Name, kit.Page, kit.Page)
+		end
+		if kit.Resource and spec.SP > 0 then
+			out[#out + 1] = string.format("%s replaces spell points: SP tier 0", kit.Resource)
+		end
+		for _, need in ipairs(kit.Needs or {}) do
+			if (spec.Skills[const.Skills[need]] or 0) == 0 then
+				out[#out + 1] = string.format("the %s kit needs %s", kit.Name, need == "Repair" and "Repair Item" or need)
+			end
+		end
+	end
 	local p = PARENT[step] and fam.Steps[PARENT[step]]
 	if p then
 		if spec.HP < p.HP or spec.SP < p.SP then out[#out + 1] = "lower HP/SP tier than the previous step" end
@@ -362,6 +412,11 @@ local function describe(fam, step)
 	end
 	local parts = {string.format("A custom class. Hit points: tier %d. Spell points: tier %d%s.",
 		spec.HP, spec.SP, spec.SP > 0 and (", from " .. (STATS_NAME[spec.Stats] or "?")) or "")}
+	local kit = fam.Kit and KIT_BY_KEY[fam.Kit]
+	if kit then
+		parts[#parts + 1] = string.format("%s kit: %s and the %s abilities (%s page of the spellbook).",
+			kit.Name, kit.Resource or "spell points", kit.Name, kit.Page)
+	end
 	for m = 4, 1, -1 do
 		if bySkillCap[m] then
 			table.sort(bySkillCap[m])
@@ -648,7 +703,7 @@ function CustomClass.Show(f)
 	local out = {}
 	for step = 1, STEPS do
 		local spec = fam.Steps[step]
-		local total, lines = cost(spec)
+		local total, lines = cost(spec, fam.Kit)
 		local bad = problems(fam, step)
 		out[#out + 1] = string.format("%d. %s (%s, class %d): %g / %d points%s", step, spec.Name, STEP_NAMES[step],
 			classId(f, step), total, BUDGET[step], #bad > 0 and ("  !! " .. table.concat(bad, "; ")) or "")
@@ -670,7 +725,7 @@ function CustomClass.List()
 				local pl = Party.PlayersArray[i]
 				if familyOf(pl.Class) == f and pl.Name ~= "" then users[#users + 1] = pl.Name end
 			end
-			out[#out + 1] = string.format("%d: %s (%g points)%s", f, fam.Steps[1].Name, (cost(fam.Steps[1])),
+			out[#out + 1] = string.format("%d: %s (%g points)%s", f, fam.Steps[1].Name, (cost(fam.Steps[1], fam.Kit)),
 				#users > 0 and (" - " .. table.concat(users, ", ")) or "")
 		end
 	end
@@ -692,6 +747,8 @@ function CustomClass.Give(player, f, step)
 	end
 	local pl = playerOf(player)
 	if not pl then error("no such party member", 2) end
+	local okKit, kitErr = MF.CustomClassKitAllowed(pl, fam.Kit)
+	if not okKit then error(kitErr, 2) end
 	applyAll()
 	local id = classId(f, step)
 	if pl.Class == id then
@@ -728,8 +785,182 @@ local function promote(pl, step)
 	return pl.SkillPoints - before
 end
 
+-- the kit of a custom class: nil for other classes, false for a custom class without a kit,
+-- else {Kind, Race, Branch, Resource, Key, Name} (MMMWE_Resources.lua)
+function MF.CustomClassKit(class)
+	local f, step = familyOf(class)
+	if not f then return nil end
+	local fam = builds()[f]
+	local kit = fam and fam.Kit and KIT_BY_KEY[fam.Kit]
+	if not kit then return false end
+	return {Kind = kit.Kind, Race = kit.Race, Branch = kit.Branches and kit.Branches[step],
+		Resource = kit.Resource, Key = kit.Key, Name = kit.Name}
+end
+
+-- can this character take a class with this kit (the Minotaur kit is for Minotaurs only)?
+local function kitAllowed(pl, key)
+	local kit = key and KIT_BY_KEY[key]
+	if not (kit and kit.Race) then return true end
+	local r = GetCharRace and GetCharRace(pl)
+	local race = r and Game.Races and Game.Races[r]
+	if race and race.BaseRace == kit.Race then return true end
+	return false, string.format("the %s kit is for %ss only", kit.Name, kit.Name)
+end
+MF.CustomClassKitAllowed = kitAllowed
+
+local function famSetKit(fam, key)
+	if key ~= nil and not KIT_BY_KEY[key] then return nil, "unknown kit: " .. tostring(key) end
+	fam.Kit = key
+	return true
+end
+
+function CustomClass.Kit(f, key)
+	local fam = family(f)
+	if key == "" or key == "none" then key = nil end
+	try(famSetKit(fam, key))
+	changed()
+end
+
+---------------------------------------------------------------------------
+-- export and import of builds: text files in the CustomClasses folder of the game
+---------------------------------------------------------------------------
+
+local EXPORT_DIR = "CustomClasses"
+local CAP_LETTER = {[1] = "N", [2] = "E", [3] = "M", [4] = "G"}
+
+local function exportText(fam)
+	local out = {"-- MMMWE custom class build (MMMWE_CustomClasses.lua). Caps: N, E, M, G.",
+		"-- Steps: base, first promotion, neutral, light, dark. Stats: 1 Intellect, 2 Personality, 3 both.",
+		"return {"}
+	out[#out + 1] = fam.Kit and string.format("\tKit = %q,", fam.Kit) or "\tKit = nil,"
+	local ss = {}
+	for _, id in ipairs(fam.StartSkills or {}) do ss[#ss + 1] = string.format("%q", SKILL_IDS[id]) end
+	out[#out + 1] = "\tStartSkills = {" .. table.concat(ss, ", ") .. "},"
+	out[#out + 1] = "\tSteps = {"
+	for step = 1, STEPS do
+		local spec = fam.Steps[step]
+		local sk = {}
+		local ids = {}
+		for id, m in pairs(spec.Skills) do if m > 0 then ids[#ids + 1] = id end end
+		table.sort(ids)
+		for _, id in ipairs(ids) do sk[#sk + 1] = string.format("%s = %q", SKILL_IDS[id], CAP_LETTER[spec.Skills[id]]) end
+		out[#out + 1] = string.format("\t\t{Name = %q, HP = %d, SP = %d, Stats = %d,", spec.Name, spec.HP, spec.SP, spec.Stats)
+		out[#out + 1] = "\t\t\tSkills = {" .. table.concat(sk, ", ") .. "}},"
+	end
+	out[#out + 1] = "\t},"
+	out[#out + 1] = "}"
+	return table.concat(out, "\r\n") .. "\r\n"
+end
+
+-- a build from an exported text, checked field by field; nil and the reason when it can't be read
+local function importText(text)
+	local chunk, err = loadstring(text, "custom class")
+	if not chunk then return nil, "not a custom class file (" .. tostring(err) .. ")" end
+	setfenv(chunk, {})
+	local ok, t = pcall(chunk)
+	if not ok or type(t) ~= "table" or type(t.Steps) ~= "table" then return nil, "not a custom class file" end
+	local fam = {Steps = {}, StartSkills = {}}
+	if t.Kit ~= nil then
+		if not KIT_BY_KEY[t.Kit] then return nil, "unknown kit: " .. tostring(t.Kit) end
+		fam.Kit = t.Kit
+	end
+	for step = 1, STEPS do
+		local src = t.Steps[step]
+		if type(src) ~= "table" then return nil, "step " .. step .. " is missing" end
+		local name = tostring(src.Name or ""):gsub("[%c]", ""):sub(1, 24)
+		if name == "" then return nil, "step " .. step .. " has no name" end
+		local spec = {Name = name, Skills = {},
+			HP = math.max(0, math.min(MAX_TIER[step], math.floor(tonumber(src.HP) or 0))),
+			SP = math.max(0, math.min(MAX_TIER[step], math.floor(tonumber(src.SP) or 0))),
+			Stats = STATS_NAME[tonumber(src.Stats)] and tonumber(src.Stats) or 1}
+		for k, v in pairs(type(src.Skills) == "table" and src.Skills or {}) do
+			local id, m = skillId(k), capValue(v)
+			if not id then return nil, "unknown skill: " .. tostring(k) end
+			if not m then return nil, "unknown cap: " .. tostring(v) end
+			spec.Skills[id] = m > 0 and m or nil
+		end
+		fam.Steps[step] = spec
+	end
+	for _, v in ipairs(type(t.StartSkills) == "table" and t.StartSkills or {}) do
+		local id = skillId(v)
+		if id and (fam.Steps[1].Skills[id] or 0) > 0 and #fam.StartSkills < 2 then
+			table.insert(fam.StartSkills, id)
+		end
+	end
+	return fam
+end
+
+local function fileName(name)
+	local s = tostring(name):gsub("[^%w%-' ]", "_"):match("^%s*(.-)%s*$")
+	return EXPORT_DIR .. "/" .. (s ~= "" and s or "Custom class") .. ".txt"
+end
+
+-- writes the build into CustomClasses/<base name>.txt; returns the path
+local function exportBuild(fam)
+	if os.mkdir then pcall(os.mkdir, EXPORT_DIR) end
+	local path = fileName(fam.Steps[1].Name)
+	local f, err = io.open(path, "wb")
+	if not f then return nil, "can't write " .. path .. ": " .. tostring(err) end
+	f:write(exportText(fam))
+	f:close()
+	return path
+end
+
+local function buildFiles()
+	local t = {}
+	if path and path.find then
+		for p in path.find(EXPORT_DIR .. "/*.txt") do t[#t + 1] = p end
+	end
+	table.sort(t, function(a, b) return a:lower() < b:lower() end)
+	return t
+end
+
+local function importFile(p)
+	local f, err = io.open(p, "rb")
+	if not f then return nil, "can't read " .. tostring(p) .. ": " .. tostring(err) end
+	local text = f:read("*a")
+	f:close()
+	return importText(text)
+end
+
+-- CustomClass.Export(f): returns the file written
+function CustomClass.Export(f)
+	local p, err = exportBuild(family(f))
+	if not p then error(err, 2) end
+	print("saved " .. p)
+	return p
+end
+
+-- CustomClass.Import(file [, f]): file name in CustomClasses (with or without .txt) or a
+-- path; into family f (replacing its build, not while a character has it) or a new one
+function CustomClass.Import(file, f)
+	local p = tostring(file)
+	if not p:find("[/\\]") then p = EXPORT_DIR .. "/" .. p end
+	if not p:lower():find("%.txt$") then p = p .. ".txt" end
+	local fam, err = importFile(p)
+	if not fam then error(err, 2) end
+	if f then
+		family(f)
+		if #members(f) > 0 then error("a character has this class", 2) end
+	else
+		for i = 1, FAMILIES do
+			if not builds()[i] then f = i break end
+		end
+		if not f then error("all " .. FAMILIES .. " custom classes are in use", 2) end
+	end
+	builds()[f] = fam
+	changed()
+	local bad = {}
+	for step = 1, STEPS do
+		for _, b in ipairs(problems(fam, step)) do bad[#bad + 1] = STEP_NAMES[step] .. ": " .. b end
+	end
+	print(string.format("custom class %d: %s%s", f, fam.Steps[1].Name,
+		#bad > 0 and ("  !! " .. table.concat(bad, "; ")) or ""))
+	return f
+end
+
 -- for the creation screen (MMMWE_CustomClassEditor.lua)
-MF.CustomClassCost = function(spec) return cost(spec) end
+MF.CustomClassCost = function(spec, kit) return cost(spec, kit) end
 MF.CustomClasses = {
 	Builds = builds,
 	BeginCreation = function() Creating, Pending, NewGameStarted = true, {}, false; applyAll() end,
@@ -746,6 +977,15 @@ MF.CustomClasses = {
 	SetTier = famSetTier,
 	SetStats = famSetStats,
 	SetSkill = famSetSkill,
+	SetKit = famSetKit,
+	ExportBuild = exportBuild,
+	ImportFile = importFile,
+	BuildFiles = buildFiles,
+	ExportText = exportText,
+	ImportText = importText,
+	KitAllowed = function(pl, key) return MF.CustomClassKitAllowed(pl, key) end,
+	Kits = KITS,
+	KitByKey = KIT_BY_KEY,
 	SkillNames = SKILL_IDS,
 	CapNames = CAP_NAMES,
 	StatsName = STATS_NAME,

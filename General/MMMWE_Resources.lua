@@ -63,6 +63,10 @@
 	  Aimed Shot, Darkfire Arrows (Pioneer+). Ranger (Light page): Aimed Shot, Mark Prey (Hunter+). Minotaur (Fire page):
 	  Gore, Herd Fury (Headsman+), Mark Prey (third stage).
 
+	Custom classes (MMMWE_CustomClasses.lua) with a resource kit count as the kit's family, at
+	their promotion step; their light / dark steps stand for the family's light / dark branch.
+	The Minotaur kit works for Minotaurs only.
+
 	Console: Merge.Functions.ResourceInfo(player)
 --]]
 
@@ -414,6 +418,13 @@ end
 -- included (they have Kind 0 in Class Extra.txt and are found through Promotions.txt)
 local familyCache = {}
 local function classFamily(class)
+	-- custom classes (MMMWE_CustomClasses.lua): the family of their resource kit, if any; not
+	-- cached, the builds change
+	if MF.IsCustomClass and MF.IsCustomClass(class) then
+		local kit = MF.CustomClassKit and MF.CustomClassKit(class)
+		local e = Game.ClassesExtra and Game.ClassesExtra[class]
+		return kit and kit.Kind or 0, e and e.Step or 0
+	end
 	local c = familyCache[class]
 	if c then return c[1], c[2] end
 	local kind, stage, cur, guard = 0, 0, class, 0
@@ -438,6 +449,11 @@ MF.ClassFamily = classFamily
 
 local function familyOf(pl)
 	local kind, stage = classFamily(pl.Class)
+	-- a custom class's Minotaur kit works for Minotaurs only
+	if kind ~= 0 and MF.IsCustomClass and MF.IsCustomClass(pl.Class)
+			and MF.CustomClassKitAllowed and not MF.CustomClassKitAllowed(pl, (MF.CustomClassKit(pl.Class) or {}).Key) then
+		return nil, stage, 0
+	end
 	return FAMILIES[kind], stage, kind
 end
 
@@ -448,6 +464,10 @@ local KNIGHT_BRANCH = {[46] = "Champion", [48] = "Templar", [50] = "BlackKnight"
 	[4] = "MasterArcher", [6] = "Sniper"}
 local function knightBranch(pl)
 	local cur = pl.Class
+	if MF.IsCustomClass and MF.IsCustomClass(cur) then
+		local kit = MF.CustomClassKit and MF.CustomClassKit(cur)
+		return kit and kit.Branch or nil
+	end
 	for _ = 1, 8 do
 		if KNIGHT_BRANCH[cur] then return KNIGHT_BRANCH[cur] end
 		local inv = MT.ClassPromotionsInv and MT.ClassPromotionsInv[cur]

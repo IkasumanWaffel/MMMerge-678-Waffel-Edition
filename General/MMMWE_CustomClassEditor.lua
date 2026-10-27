@@ -66,8 +66,8 @@ local function spec()
 	return f and f.Steps[E.Step]
 end
 
-local function message(s)
-	E.Msg, E.MsgTime = s, os.clock()
+local function message(s, ok)
+	E.Msg, E.MsgTime, E.MsgOk = s, os.clock(), ok
 end
 
 local function locked()
@@ -200,6 +200,8 @@ local function done()
 	if not ok then message(err) return end
 	local f, id = fam(), CC.ClassId(E.F, 1)
 	local pl = E.Player
+	local kitOk, kitErr = CC.KitAllowed(pl, f.Kit)
+	if not kitOk then message(kitErr:gsub("^%l", string.upper)) return end
 	E.Chosen = E.F
 	CC.Apply()
 	if E.Mode == "creation" then
@@ -269,6 +271,17 @@ local function cycleStats()
 	edit(CC.SetStats(fam(), E.Step, s.Stats % 3 + 1))
 end
 
+local function cycleKit()
+	if locked() then message("This class is taken by a character in the game") return end
+	if E.Step ~= 1 then message("The kit is chosen on the base class tab") return end
+	local f = fam()
+	local list, idx = CC.Kits, 0
+	for i, k in ipairs(list) do if k.Key == f.Kit then idx = i end end
+	local d = Keys.IsPressed(const.Keys.CTRL) and -1 or 1
+	idx = (idx + d) % (#list + 1)
+	edit(CC.SetKit(f, idx > 0 and list[idx].Key or nil))
+end
+
 local function clickSkill(id)
 	if locked() then message("This class is taken by a character in the game") return end
 	local f, s = fam(), spec()
@@ -290,6 +303,27 @@ local function clickSkill(id)
 		if cap >= 4 then return end
 		edit(CC.SetSkill(f, E.Step, id, cap + 1))
 	end
+end
+
+-- Ctrl+S: the build to CustomClasses/<name>.txt; Ctrl+L: the next file of that folder
+-- into the class shown (each press loads the next one)
+local function saveBuild()
+	local p, err = CC.ExportBuild(fam())
+	message(p and ("Saved to " .. p) or err, p ~= nil)
+end
+
+local function loadBuild()
+	if locked() then message("This class is taken by a character in the game") return end
+	local files = CC.BuildFiles()
+	if #files == 0 then message("No builds in the CustomClasses folder") return end
+	E.LoadIdx = (E.LoadIdx or 0) % #files + 1
+	local p = files[E.LoadIdx]
+	local new, err = CC.ImportFile(p)
+	if not new then message(err) return end
+	CC.Builds()[E.F] = new
+	E.Step = 1
+	CC.Apply()
+	message(string.format("Loaded %s (%d/%d)", p:match("[^/\\]+$") or p, E.LoadIdx, #files), true)
 end
 
 ---------------------------------------------------------------------------
@@ -321,6 +355,10 @@ function events.KeyDown(t)
 		close()
 	elseif key == K.RETURN then
 		done()
+	elseif key == 83 and Keys.IsPressed(K.CTRL) then   -- S
+		saveBuild()
+	elseif key == 76 and Keys.IsPressed(K.CTRL) then   -- L
+		loadBuild()
 	end
 end
 
@@ -394,7 +432,7 @@ local function build()
 		end}
 	text{Font = Big, X = PX + 300, Y = PY, W = 190, H = 16,
 		Get = function()
-			local total = CC.Cost(spec())
+			local total = CC.Cost(spec(), fam().Kit)
 			local budget = CC.Budget[E.Step]
 			return string.format("Points: %g / %d", total, budget), total > budget and RED or GREEN
 		end}
@@ -444,6 +482,21 @@ local function build()
 	tierRow(PY + 54, "HP", "Hit points", CC.HPTiers)
 	tierRow(PY + 72, "SP", "Spell points", CC.SPTiers)
 
+	-- resource kit (chosen on the base tab, kept by the promotions)
+	text{Font = Small, X = PX + 404, Y = PY + 56, W = 100, H = 14,
+		Get = function()
+			local k = fam().Kit and CC.KitByKey[fam().Kit]
+			return "Kit: " .. (k and k.Name or "none"), k and GOLD or (E.Step == 1 and WHITE or GREY)
+		end,
+		Click = cycleKit}
+	text{Font = Small, X = PX + 404, Y = PY + 74, W = 100, H = 14,
+		Get = function()
+			local k = fam().Kit and CC.KitByKey[fam().Kit]
+			if not k then return E.Step == 1 and "click to buy one" or " ", GREY end
+			return string.format("%s, %d pts", k.Resource or "SP", k.Price), GREY
+		end,
+		Click = cycleKit}
+
 	-- skills: three columns of twelve
 	SKILL_ORDER = {}
 	for id = 0, 38 do
@@ -471,12 +524,12 @@ local function build()
 	-- bottom line
 	text{Font = Small, X = 74, Y = 425, W = 360, H = 14,
 		Get = function()
-			if E.Msg and os.clock() - E.MsgTime < MSG_TIME then return E.Msg, RED end
+			if E.Msg and os.clock() - E.MsgTime < MSG_TIME then return E.Msg, E.MsgOk and GREEN or RED end
 			if E.Typing then return "Type the name; Enter to keep it, Esc to drop it" end
 			local bad = CC.Problems(fam(), E.Step)
 			if #bad > 0 then return bad[1], RED end
-			return "Click +  Ctrl+click -  Shift+click: start skill " ..
-				#(fam().StartSkills or {}) .. "/" .. START_SKILLS
+			return "Click +, Ctrl -, Shift: start skill " ..
+				#(fam().StartSkills or {}) .. "/" .. START_SKILLS .. ".  Ctrl+S/L: save/load"
 		end}
 	text{Font = Big, X = 440, Y = 423, W = 66, H = 16,
 		Get = function() return "Cancel" end, Click = function() close() end}
