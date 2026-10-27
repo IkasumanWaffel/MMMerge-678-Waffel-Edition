@@ -52,7 +52,7 @@ local STEPS      = 5       -- base, first promotion, neutral, light, dark
 local FIRST_KIND = 17      -- Class Extra Kind of family 1 (Peasant is 16)
 local LAST_ID    = FIRST_ID + FAMILIES * STEPS - 1
 
-local BUDGET   = {100, 115, 130, 130, 130}
+local BUDGET   = {100, 120, 140, 140, 140}
 local MAX_TIER = {5, 6, 7, 7, 7}
 local PARENT   = {nil, 1, 2, 2, 2}
 local STEP_OF  = {0, 1, 2, 2, 2}                 -- Class Extra Step
