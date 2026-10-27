@@ -95,12 +95,12 @@ Topic Id	Notes	NPC Id	Autonote Id	NPC	A	NPC	A
 393	Expert Disarm Trap 	527	307	580	307	354	307	181	182
 394	Master Disarm Trap	528	371	182	183
 395	Grand Master Disarm Trap	529	372	183	184
-396	Expert Dodging	530	307	581	307
-397	Master Dodging	531	373
-398	Grand Master Dodging	532	374
-399	Expert Unarmed	533	307	582	307
-400	Master Unarmed	534	375
-401	Grand Master Unarmed	535	376
+396	Expert Dodging	530	307	581	307	229	110	1060	111
+397	Master Dodging	531	373	232	112	1007	300
+398	Grand Master Dodging	532	374	236	301	1009	302
+399	Expert Unarmed	533	307	582	307	247	303	1041	304
+400	Master Unarmed	534	375	230	305	1105	306
+401	Grand Master Unarmed	535	376	237	308	1161	726
 402	Expert Identify Monster	536	307	583	307	205	191
 403	Master Identify Monster	537	377	206	192
 404	Grand Master Identify Monster	538	378	207	193

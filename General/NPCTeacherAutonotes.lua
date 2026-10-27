@@ -86,7 +86,11 @@ function events.GameInitialized2()
 
 	local CurTeacherTopicsPtr = mem.StaticAlloc(24)
 
-	function events.EnterNPC(NPCid)
+	-- MMMWE: also after the topics are set up (ShowNPCTopics), so teacher topics added by
+	-- scripts (Quest{... StdTopic = ...}) get their autonotes; the list is cleared first, so a
+	-- previous NPC's topics don't stay in it
+	local function UpdateTeacherTopics(NPCid, MapNotes)
+		for i = 0, 5 do mem.u4[CurTeacherTopicsPtr + i*4] = 0 end
 		local Counter = 0
 		for i = 0, 5 do
 			local CurEvent = Game.NPC[NPCid].Events[i]
@@ -101,10 +105,18 @@ function events.GameInitialized2()
 					Counter = Counter + 1
 				end
 
-			elseif TopicProps then
+			elseif TopicProps and MapNotes then
 				SetMapNote(Party.X, Party.Y, GetTeacherNoteText(TopicProps.SId, TopicProps.Mas), GenerateTeacherNoteId(TopicProps.SId, TopicProps.Mas), true)
 			end
 		end
+	end
+
+	function events.EnterNPC(NPCid)
+		UpdateTeacherTopics(NPCid, true)
+	end
+
+	function events.ShowNPCTopics(NPCid)
+		UpdateTeacherTopics(NPCid, false)
 	end
 
 	mem.asmpatch(0x4b1538, [[
