@@ -2281,13 +2281,30 @@
 		local dodgeChance = CalcDodgeChance(pl, pl.ItemArmor, pl.ItemExtraHand, shieldM, dodgeS, dodgeM, curseMult)
 		local dodgeable, hitBy = CanDodgeHit(t)
 
-		-- Grand Master Unarmed: evades melee hits and physical missiles (MMMWE_UnarmedGM.lua)
-		if MF.UnarmedEvade and MF.UnarmedEvade(pl, t, hitBy, curseMult) then
+		-- the hit misses completely: Shadow Clone (MMMWE_Resources.lua), Grand Master Unarmed
+		-- evasion of melee hits and physical missiles (MMMWE_UnarmedGM.lua). The monster's
+		-- special effect of the same attack (poison, ...) is cancelled too (MF.MissedPlayer).
+		local areaSpell = type(hitBy) == "table" and hitBy.Spell and hitBy.Spell ~= 0
+			and not DODGE.BoltSpells[hitBy.Spell]
+		local missText
+		if MF.ShadowCloneAbsorb and MF.ShadowCloneAbsorb(pl, hitBy, areaSpell) then
+			missText = "%s's shadow clone takes the blow!"
+		elseif MF.UnarmedEvade and MF.UnarmedEvade(pl, t, hitBy, curseMult) then
+			missText = "%s evades the attack!"
+		end
+		if missText then
 			t.Result = 0
+			MF.MissedPlayer = pl["?ptr"]
 			pl:ShowFaceAnimation(6)
 			Game.PlaySound(16060, 0)
-			Game.ShowStatusText(string.format("%s evades the attack!", pl.Name), 5)
+			Game.ShowStatusText(string.format(missText, pl.Name), 5)
 			return
+		end
+
+		-- Ninja's Evasion (MMMWE_MonkBranches.lua): area spells can be dodged, at half the chance
+		local halfDodge = false
+		if not dodgeable and areaSpell and MF.NinjaEvasion and MF.NinjaEvasion(pl) then
+			dodgeable, halfDodge = true, true
 		end
 
 		if not dodgeable then
@@ -2305,6 +2322,7 @@
 				end
 			end
 			dodgeChance = math.min(math.max(0, dodgeChance), 95)
+			if halfDodge then dodgeChance = dodgeChance / 2 end
 		end
 		local fullDodge = false
 		if dodgeChance > 0 and math.random() * 100 < dodgeChance then

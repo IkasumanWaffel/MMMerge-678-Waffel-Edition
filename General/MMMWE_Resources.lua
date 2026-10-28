@@ -39,7 +39,8 @@
 	  refill 1 charge every 5 game minutes, -2% per point of Meditation (at most -50%);
 	  Meditation from the first promotion (Class Skills.txt). Their spells cost spell points / 5 in Ki (at least 1).
 	  Water page: Stunning Palm, Inner Peace, Flurry (Initiate+), Iron Body (Master Monk),
-	  Vanish (Ninja).
+	  Vanish and Shadow Clone (Ninja). Branch passives (Diamond Body; Evasion, Opportunist,
+	  the stunning blow out of Vanish) are in MMMWE_MonkBranches.lua.
 
 	Thief family (Thief, Rogue, Robber, Spy, Assassin, variants) — Energy and combo points:
 	  Energy 0..100, +ENERGY.PerMinute per game minute; their (Novice) spells cost spell
@@ -204,14 +205,19 @@ local ABILITIES = {
 		Icon = {"sbmk02a", "sbmk02b"},},
 	IronBody = {Spell = 25, Stage = 2, Cost = 3, Branch = "MasterMonk",
 		Name = "Iron Body",
-		Desc = "The monk hardens his body against blows: less physical damage taken for a while.",
+		Desc = "The monk hardens his body against blows: less physical damage taken for a while. Diamond Body (Master Monk, always): immune to the poison and disease of monsters' attacks, +1 to Fire, Air, Water, Earth, Mind, Body and Spirit resistance per 2 points of Meditation.",
 		Lines = {"3 Ki", "-20% physical damage taken", "Master Monk", "Lasts 5 minutes"},
 		Icon = {"sbmk04a", "sbmk04b"},},
 	Vanish = {Spell = 27, Stage = 2, Cost = 3, Branch = "Ninja",
 		Name = "Vanish",
-		Desc = "The ninja slips out of sight: monsters lose track of him and attack the others, until he strikes again.",
-		Lines = {"3 Ki", "Monsters don't pick the ninja as their target", "Ninja", "Lasts 2 minutes; ends when the ninja strikes"},
+		Desc = "The ninja slips out of sight: monsters lose track of him and attack the others, until he strikes again. His first blow out of hiding tries to stun the target. Ninja, always: with Dodging he can dodge area spells (at half his dodge chance), and bare-handed he may follow up a party member's melee hit with a blow of his own (0.5% per point of Unarmed, at most 25%, 60% damage).",
+		Lines = {"3 Ki", "Monsters don't pick the ninja as their target", "Ninja", "Lasts 2 minutes; ends when the ninja strikes, with a stunning blow"},
 		Icon = {"sbmk05a", "sbmk05b"},},
+	ShadowClone = {Spell = 28, Stage = 2, Cost = 4, Branch = "Ninja",
+		Name = "Shadow Clone",
+		Desc = "The ninja leaves shadow copies of himself around: melee blows and missiles aimed at him strike a clone instead. Area spells still reach him.",
+		Lines = {"4 Ki", "The next 3 melee hits or missiles at the ninja hit a clone", "Ninja", "Lasts 5 minutes or 3 hits"},
+		Icon = {"sbmk05a", "sbmk05b"},},   -- placeholder pictures until sbmk06a/b are drawn
 
 	-- Thieves (Mind page)
 	Finisher = {Spell = 59, Stage = 0, Cost = 25, Attack = true,
@@ -336,6 +342,8 @@ local FLURRY_DAMAGE  = 0.60                  -- each of the two extra strikes
 local IRON_BODY      = 0.20                  -- physical damage taken -20%
 local IRON_BODY_TIME = 5 * const.Minute
 local VANISH_TIME    = 2 * const.Minute
+local CLONE_TIME     = 5 * const.Minute      -- Shadow Clone: lasts this long ...
+local CLONE_CHARGES  = 3                     -- ... or until this many hits have struck the clone
 
 local CHALLENGE_TIME  = 4 * const.Minute   -- base duration (about 4-5 monster attacks)
 local CHALLENGE_PERS  = 0.05      -- +5% duration per point of the Personality bonus (never shorter)
@@ -362,7 +370,7 @@ local FAMILIES = {
 		Abilities = {"PowerStance", "AgileStance", "DefensiveStance", "Challenge", "Rally"}},
 	[9]  = {Name = "Paladin", Page = 1, Hybrid = true, Abilities = {"DefensiveStance"}},   -- spell points
 	[8]  = {Name = "Monk", Resource = "Ki", Page = 2,
-		Abilities = {"StunningPalm", "InnerPeace", "Flurry", "IronBody", "Vanish"}},
+		Abilities = {"StunningPalm", "InnerPeace", "Flurry", "IronBody", "Vanish", "ShadowClone"}},
 	[4]  = {Name = "Dragon", Resource = "Breath", Abilities = {}},   -- no ability page
 	[15] = {Name = "Technician", Page = 3, Abilities = {"DeployDroid"}},   -- spell points
 	[11] = {Name = "Thief", Resource = "Energy", Page = 5,
@@ -873,6 +881,28 @@ end)
 local Pending = {}     -- abilities carried out on the next tick
 local Effects = {}     -- [pi] = {Berserk = time, TrollsBlood = {Until, PerMinute}}
 local PartyEffects = {WarCry = 0}
+
+-- Vanish is on (the next blow comes out of hiding)
+function MF.IsVanished(pl)
+	local fx = Effects[playerIndex(pl)]
+	return fx and fx.Vanish and fx.Vanish > Game.Time or false
+end
+
+-- Shadow Clone: takes a melee hit or a missile (not an area spell) aimed at the ninja,
+-- spending a charge; true when the clone took it (called by MMMWE_Main.lua)
+function MF.ShadowCloneAbsorb(pl, hitBy, area)
+	local fx = Effects[playerIndex(pl)]
+	local c = fx and fx.Clone
+	if not c then return false end
+	if c.Until <= Game.Time or c.Charges <= 0 then
+		fx.Clone = nil
+		return false
+	end
+	if area or type(hitBy) ~= "table" or not (hitBy.Monster or hitBy.Object) then return false end
+	c.Charges = c.Charges - 1
+	if c.Charges <= 0 then fx.Clone = nil end
+	return true
+end
 local RageStrikeActive = false
 local FlurryActive = false
 local FinisherPoints              -- combo points of the Finisher being struck
@@ -1307,6 +1337,11 @@ local function castAbility(pl, pi, spell, targetRef)
 		Effects[pi] = Effects[pi] or {}
 		Effects[pi].Vanish = Game.Time + VANISH_TIME
 		Game.ShowStatusText(string.format("%s vanishes from sight", pl.Name))
+		pl:SetRecoveryDelay(60)
+	elseif key == "ShadowClone" then
+		Effects[pi] = Effects[pi] or {}
+		Effects[pi].Clone = {Until = Game.Time + CLONE_TIME, Charges = CLONE_CHARGES}
+		Game.ShowStatusText(string.format("%s splits into shadows", pl.Name))
 		pl:SetRecoveryDelay(60)
 	elseif key == "RageStrike" then
 		local mi = meleeTarget(targetRef)
@@ -1886,7 +1921,7 @@ function events.LoadMap()
 				if GoreActive then t.Result = math.floor(t.Result * (1 + GORE_DAMAGE) + 0.5) end
 			end
 		end
-		-- Vanish ends with the ninja's first blow
+		-- Vanish ends with the ninja's first blow (its stun: MF.IsVanished, MMMWE_WeaponEffects.lua)
 		local fx = Effects[playerIndex(pl)]
 		if fx and fx.Vanish then
 			fx.Vanish = nil

@@ -53,7 +53,13 @@ if UNARMED_STUN then
 	mem.autohook(0x437230, function(d)
 		if mem.i4[d.ebp - 0x24] ~= 0 then return end          -- already stunning
 		local pl = playerFromPtr(mem.u4[d.ebp - 8])
-		if not pl or not isBareHanded(pl) then return end
+		if not pl then return end
+		-- the ninja's first blow out of Vanish (any melee hit): always tries to stun
+		if MF.IsVanished and MF.IsVanished(pl) then
+			mem.i4[d.ebp - 0x24] = 1
+			return
+		end
+		if not isBareHanded(pl) then return end
 		local chance = MF.UnarmedStunChance(pl)
 		if chance > 0 and math.random() * 100 < chance then
 			mem.i4[d.ebp - 0x24] = 1
