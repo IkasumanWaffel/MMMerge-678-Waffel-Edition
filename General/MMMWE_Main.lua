@@ -2013,17 +2013,21 @@
 			local pl, mon = Party.PlayersArray[r.pi], Map.Monsters[r.mi]
 			if pl and mon and mon.HP > 0 and pl:IsConscious() then
 				Game.ShowStatusText(r.msg or string.format("%s dodges and strikes back!", pl.Name), 3)
-				RiposteActive = true
+				RiposteActive = r.mult or DODGE.RiposteDamage
 				local ok, err = pcall(mem.call, 0x436E26, 2, r.pi * 8 + 4, r.mi, RiposteVec)  -- party hits monster
 				RiposteActive = false
 				if not ok then MF.LogWarning("Riposte failed: %s", tostring(err)) end
 			end
 		end
 	end
-	-- counterattack of other origins (small shields, MMMWE_Shields.lua): the same rules
-	function MF.QueueCounterAttack(pi, mi, msg)
-		RiposteQueue[#RiposteQueue + 1] = {pi = pi, mi = mi, msg = msg}
+	-- counterattack of other origins (small shields, MMMWE_Shields.lua; Flurry of blows,
+	-- MMMWE_UnarmedGM.lua): the same rules; mult is the share of the hit's damage
+	-- (DODGE.RiposteDamage when not given)
+	function MF.QueueCounterAttack(pi, mi, msg, mult)
+		RiposteQueue[#RiposteQueue + 1] = {pi = pi, mi = mi, msg = msg, mult = mult}
 	end
+	-- the damage share of the counterattack being carried out, or false
+	function MF.CounterAttackActive() return RiposteActive end
 	-- base damage of a melee hit for Heroism: the average of the game's melee damage range
 	-- (weapon dice and bonus of both hands, Might, the weapon skill and Armsmaster bonuses;
 	-- Heroism itself is taken out in CalcStatBonusByMagic) times the weapon skill damage
@@ -2070,7 +2074,7 @@
 
 		function events.CalcDamageToMonster(t)
 			if RiposteActive and t.ByPlayer then
-				t.Result = round(t.Result * DODGE.RiposteDamage)
+				t.Result = round(t.Result * RiposteActive)
 			end
 		end
 	end
@@ -2276,6 +2280,16 @@
 
 		local dodgeChance = CalcDodgeChance(pl, pl.ItemArmor, pl.ItemExtraHand, shieldM, dodgeS, dodgeM, curseMult)
 		local dodgeable, hitBy = CanDodgeHit(t)
+
+		-- Grand Master Unarmed: evades melee hits and physical missiles (MMMWE_UnarmedGM.lua)
+		if MF.UnarmedEvade and MF.UnarmedEvade(pl, t, hitBy, curseMult) then
+			t.Result = 0
+			pl:ShowFaceAnimation(6)
+			Game.PlaySound(16060, 0)
+			Game.ShowStatusText(string.format("%s evades the attack!", pl.Name), 5)
+			return
+		end
+
 		if not dodgeable then
 			dodgeChance = 0
 		elseif dodgeChance >= 0 then

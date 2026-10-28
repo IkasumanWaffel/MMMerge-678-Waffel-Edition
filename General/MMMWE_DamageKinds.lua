@@ -146,6 +146,13 @@ local function kindReduction(mon, kind)
 end
 MF.PhysKindReduction = kindReduction
 
+-- physical damage reduction in percent the monster actually had against a player's hit of
+-- this kind (the kind's own value when it has one, else the plain Physical resistance)
+function MF.PhysReductionApplied(mon, kind)
+	local r = Enabled and kind and kindReduction(mon, kind)
+	return r or reductionOf(mon.PhysResistance) * 100
+end
+
 function events.CalcDamageToMonster(t)
 	if not t.ByPlayer or t.IsSecondary then return end
 	if t.DamageKind ~= const.Damage.Phys then return end

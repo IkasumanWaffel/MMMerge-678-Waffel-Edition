@@ -475,6 +475,7 @@ local function knightBranch(pl)
 		cur = inv[1]
 	end
 end
+MF.ClassBranch = knightBranch
 
 local function isTroll(pl)
 	local r = GetCharRace and GetCharRace(pl)

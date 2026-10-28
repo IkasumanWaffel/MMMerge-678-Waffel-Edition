@@ -40,6 +40,7 @@ local function isBareHanded(pl)
 	end
 	return true
 end
+MF.IsBareHanded = isBareHanded
 
 function MF.UnarmedStunChance(pl)
 	local S, M = SplitSkill(pl:GetSkill(const.Skills.Unarmed))
