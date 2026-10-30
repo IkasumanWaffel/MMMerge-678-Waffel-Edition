@@ -56,6 +56,8 @@ local S = {
 	BoosterShare     = 0.15,
 	HardenedCost     = 0.80,
 	Full             = 200,       -- MaxCharges of a full shield
+	HitSounds        = {44681, 44694},   -- enshieldhit01..14 (Sounds.txt): a hit the shield takes
+	ChargeSound      = 44695,     -- enshieldchrg: the shield starts recharging after a hit
 	ProjectorShare   = 0.50,
 	BarrierBase      = 20,
 	BarrierPerLevel  = 2,
@@ -87,6 +89,11 @@ end
 -- per character (PlayersArray index): last hit, broken flag, exact charge
 local LastHit, Broken, Exact, LastTick = {}, {}, {}, {}
 local Barrier = {}   -- [PlayersArray index] = {Value, Until} (Shield Projector)
+local Charging = {}  -- [PlayersArray index] = true once the recharge after the last hit began
+
+local function playSound(id)
+	pcall(Game.PlaySound, id, 0)
+end
 
 -- the shield's charge in points (exact), and a setter
 local function charge(pl, pi, it, st)
@@ -173,6 +180,8 @@ local function onHit(t)
 	end
 	t.Result = t.Result - absorbed
 	setCharge(pi, it, pool, cap)
+	Charging[pi] = nil
+	if absorbed > 0 then playSound(math.random(S.HitSounds[1], S.HitSounds[2])) end
 	if pool <= 0 then
 		Broken[pi] = true
 		Game.ShowStatusText(string.format("%s's shield breaks! (%d absorbed)", pl.Name, absorbed), 3)
@@ -222,6 +231,9 @@ function events.Tick()
 				if pool < cap then
 					local since = now - (LastHit[pi] or 0)
 					if since >= delayOf(st, Broken[pi]) then
+						-- the charge-up sound once the delay after a hit is over
+						if LastHit[pi] and not Charging[pi] then playSound(S.ChargeSound) end
+						Charging[pi] = true
 						setCharge(pi, it, pool + ratePerMinute(pl, st) * (now - last) / const.Minute, cap)
 					end
 				else
@@ -261,13 +273,14 @@ function MF.ShieldProjector(caster)
 		if st then
 			local pool, cap = charge(pl, pi, it, st)
 			setCharge(pi, it, pool + S.ProjectorShare * cap, cap)
-			LastHit[pi], Broken[pi] = nil, nil
+			LastHit[pi], Broken[pi], Charging[pi] = nil, nil, true
 			shields = shields + 1
 		elseif pl:IsConscious() then
 			Barrier[pi] = {Value = S.BarrierBase + S.BarrierPerLevel * L, Until = Game.Time + S.BarrierTime}
 			barriers = barriers + 1
 		end
 	end
+	if shields > 0 then playSound(S.ChargeSound) end
 	Game.ShowStatusText(string.format("%s projects energy: %d shield(s) recharged, %d barrier(s)", caster.Name, shields, barriers), 3)
 end
 
