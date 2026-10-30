@@ -690,7 +690,7 @@ end
 
 -- restore pct % of a blaster's cell; returns true if it was a blaster
 function MF.BlasterRecharge(item, pct)
-	if not BLASTERS[item.Number] then return false end
+	if not BLASTERS[item.Number] and item.Number ~= SHIELD then return false end   -- also a shield's charge
 	local st = state(item)
 	st.Cell = min(B.CellFull, st.Cell + floor(pct * 2 + 0.5))
 	item.MaxCharges = st.Cell
@@ -702,7 +702,7 @@ end
 mem.autohook(0x428B9C, function(d)
 	local ptr = d.ecx
 	local num = i4[ptr]
-	if not BLASTERS[num] then return end
+	if not BLASTERS[num] and num ~= SHIELD then return end
 	local mastery = i4[d.ebp - 0xC]
 	local skill = i4[d.ebp - 0x3C]
 	local se = Merge.Tables and Merge.Tables.SpellsExtra and Merge.Tables.SpellsExtra[28]
@@ -716,7 +716,7 @@ mem.autohook(0x428B9C, function(d)
 		for idx, it in pl.Items do
 			if it["?ptr"] == ptr then
 				MF.BlasterRecharge(it, pct)
-				Game.ShowStatusText(string.format("Power cell: %d%%", floor(it.MaxCharges / 2)), 2)
+				Game.ShowStatusText(string.format("%s: %d%%", it.Number == SHIELD and "Shield charge" or "Power cell", floor(it.MaxCharges / 2)), 2)
 			end
 		end
 	end

@@ -91,6 +91,7 @@ local Barrier = {}   -- [PlayersArray index] = {Value, Until} (Shield Projector)
 -- the shield's charge in points (exact), and a setter
 local function charge(pl, pi, it, st)
 	local cap = capacity(pl, st)
+	if it.MaxCharges > S.Full then it.MaxCharges = S.Full end   -- an old wear byte (ItemDurability.lua)
 	local e = Exact[pi]
 	if e and e.Ptr == it["?ptr"] and e.Raw == it.MaxCharges then return e.Value, cap end
 	local v = cap * it.MaxCharges / S.Full

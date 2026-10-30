@@ -190,7 +190,8 @@ local function ensureCache()
 	local entries, pops = {}, {}
 
 	for n, txt in Game.ItemsTxt do
-		if n > 0 then
+		-- the Energy Shield (968) keeps its charge in MaxCharges (MMMWE_EnergyShield.lua): no wear
+		if n > 0 and n ~= 968 then
 			local g = groupOf(txt)
 			if g then
 				local cls = classify(n, txt)
