@@ -1315,18 +1315,37 @@ local function deployTurret(pl, pi)
 	return true
 end
 
--- Scanner: the monster's resistances in the status line
-local SCAN_RES = {{"Fire", "Fire"}, {"Air", "Air"}, {"Water", "Wat"}, {"Earth", "Ear"}, {"Mind", "Mind"},
-	{"Body", "Body"}, {"Spirit", "Spi"}, {"Light", "Lig"}, {"Dark", "Dark"}, {"Phys", "Phys"}}
+-- Scanner: the monster's weakest and strongest resistance, short enough for the status
+-- line and the combat log
+local SCAN_RES = {"Fire", "Air", "Water", "Earth", "Mind", "Body", "Spirit", "Light", "Dark", "Phys"}
 local function scanText(mon)
-	local parts = {}
-	for _, r in ipairs(SCAN_RES) do
-		local ok, v = pcall(function() return mon[r[1] .. "Resistance"] end)
+	local lo, hi
+	for _, name in ipairs(SCAN_RES) do
+		local ok, v = pcall(function() return mon[name .. "Resistance"] end)
 		if ok and v then
-			parts[#parts + 1] = r[2] .. " " .. (v >= const.MonsterImmune and "imm" or tostring(v))
+			if not lo or v < lo[2] then lo = {name, v} end
+			if not hi or v > hi[2] then hi = {name, v} end
 		end
 	end
-	return string.format("%s (HP %d/%d): %s", Game.MonstersTxt[mon.Id].Name, mon.HP, mon.FullHP, table.concat(parts, ", "))
+	local name = Game.MonstersTxt[mon.Id].Name
+	if not lo then return name .. " scanned" end
+	local function val(v) return v >= const.MonsterImmune and "immune" or tostring(v) end
+	return string.format("%s: weak %s %s, strong %s %s", name, lo[1], val(lo[2]), hi[1], val(hi[2]))
+end
+
+-- Targeting: an ability takes the spot of a game spell, and with it the spell's target mode
+-- (a monster, a character, an item). Abilities that don't pick a monster are cast at once
+-- (the target bits 0x3CA of the cast flags cleared, SpellsExtra.lua's SpellTargetType);
+-- the monster ones keep their spot's mode or pick the monster under the cursor / nearest.
+local MONSTER_ABILITIES = {Scanner = true, PlasmaGrenade = true, MarkPrey = true, Challenge = true,
+	RageStrike = true, StunningPalm = true, Flurry = true, Finisher = true, Gore = true}
+function events.SpellTargetType(t)
+	local pl = t.Caster and Party.PlayersArray[t.Caster]
+	if not pl then return end
+	local key = abilityOf(pl, t.Spell)
+	if key and not MONSTER_ABILITIES[key] then
+		t.Flags = bit.band(t.Flags, bit.bnot(0x3CA))
+	end
 end
 
 -- returns true if the cast was taken over
