@@ -90,7 +90,7 @@ local KITS = {
 	{Key = "DarkElf",    Name = "Dark Elf",   Kind = 3,  Price = 15, Page = "Body"},
 	{Key = "Minotaur",   Name = "Minotaur",   Kind = 7,  Price = 15, Page = "Fire",  Race = 10},   -- BaseRace Minotaur
 	{Key = "Technician", Name = "Technician", Kind = 15, Price = 15, Page = "Earth", Resource = "Construction",
-		Needs = {"Blaster", "Repair"}},
+		Needs = {"Blaster", "Repair"}, Branches = {[4] = "AncientResearcher", [5] = "Scientist"}},
 }
 -- spells (picked one by one; a spell needs its school's skill): cost by the spell's rank in
 -- its school (spots 1-4 Novice, 5-7 Expert, 8-10 Master, 11 Grand Master), a whole school

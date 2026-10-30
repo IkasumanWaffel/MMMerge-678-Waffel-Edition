@@ -59,7 +59,9 @@
 	  0..100, +CONSTRUCTION.PerMinute per game minute, +CONSTRUCTION.Salvage for every
 	  monster the party kills. Characters who had the magic skills or Meditation get the
 	  skill points back once (techCleanup).
-	  Earth page: Deploy Droid (Engineer+) - a temporary allied melee
+	  Earth page (TECH below): Scanner and Field Repair (Technician), Plasma Grenade and
+	  Overclock (Engineer+), Shield Projector (Ancient Researcher), Sentry Turret
+	  (Scientist), and Deploy Droid (Engineer+) - a temporary allied melee
 	  robot that draws attacks and helps on single targets; one at a time, it keeps up with
 	  the party on the map (teleported when it falls far behind) and is removed on leaving.
 
@@ -249,7 +251,37 @@ local ABILITIES = {
 		Lines = {"40 Energy", "Party Invisibility and Wizard Eye", "Spy", "Lasts 10 minutes; power by the Stealing skill"},
 		Icon = {"sbth03a", "sbth03b"},},
 
-	-- Technicians (Earth page)
+	-- Technicians (Earth page). Icons: placeholders (the droid's) until sbtc02a/b ... are drawn
+	Scanner = {Spell = 34, Stage = 0, Cost = 10,
+		Name = "Scanner",
+		Desc = "The technician scans a monster (the one under the cursor or the nearest in sight): its resistances are shown in the status line, and for a while it takes more damage from the whole party, as its weak spots are known.",
+		Lines = {"10 Construction", "Shows the target's resistances; it takes +15% damage from the party", "Technician", "Lasts 3 minutes"},
+		Icon = {"sbtc01a", "sbtc01b"},},
+	FieldRepair = {Spell = 35, Stage = 0, Cost = 30,
+		Name = "Field Repair",
+		Desc = "A quick fix in the field: the technician tunes the blaster in hand and patches its power cell back up a little.",
+		Lines = {"30 Construction", "Power cell +5% +0.5% per point of Repair (at most +30%)", "Technician", "Needs a blaster in the main hand"},
+		Icon = {"sbtc01a", "sbtc01b"},},
+	PlasmaGrenade = {Spell = 37, Stage = 1, Cost = 25,
+		Name = "Plasma Grenade",
+		Desc = "A plasma charge thrown at a monster (the one under the cursor or the nearest in sight): the blast hits it and every monster close to it with energy that no resistance stops.",
+		Lines = {"25 Construction", "Energy damage 10 + 1.5 per level + Repair skill x mastery", "Engineer", "Hits every monster near the target"},
+		Icon = {"sbtc01a", "sbtc01b"},},
+	Overclock = {Spell = 38, Stage = 1, Cost = 20,
+		Name = "Overclock",
+		Desc = "The technician overrides the blaster's safety limits: the next shots come without any recovery, but each of them draws twice the power from the cell.",
+		Lines = {"20 Construction", "The next 5 blaster shots have no recovery", "Engineer", "Each of them drains the power cell twice"},
+		Icon = {"sbtc01a", "sbtc01b"},},
+	ShieldProjector = {Spell = 40, Stage = 2, Cost = 35, Branch = "AncientResearcher",
+		Name = "Shield Projector",
+		Desc = "The technician projects energy onto the whole party: every Energy Shield worn gets half of its capacity back and starts recharging at once, and everyone without a shield gets a short-lived barrier.",
+		Lines = {"35 Construction", "Shields +50% and recharging; barriers of 20 + 2 per level", "Ancient Researcher", "Barriers last 3 minutes"},
+		Icon = {"sbtc01a", "sbtc01b"},},
+	SentryTurret = {Spell = 39, Stage = 2, Cost = 40, Branch = "Scientist",
+		Name = "Sentry Turret",
+		Desc = "The technician sets up an automatic gun in front of the party. It doesn't move, and shoots energy bolts at the monsters it sees until its time runs out or it is destroyed. One turret at a time: casting again repairs it and resets its time.",
+		Lines = {"40 Construction", "A stationary allied turret; grows with level and Repair", "Scientist", "Lasts 5 minutes + half a minute per level"},
+		Icon = {"sbtc01a", "sbtc01b"},},
 	DeployDroid = {Spell = 36, Stage = 1, Cost = 40,
 		Name = "Deploy Droid",
 		Desc = "The technician assembles a combat droid that fights at the party's side in melee, drawing the attackers' attention and helping to bring single foes down. One droid at a time: casting again repairs it and resets its time. It keeps up with the party on the map, and shuts down when its time runs out or the party leaves the map.",
@@ -329,6 +361,24 @@ local HERD_DAMAGE    = 0.15                  -- melee damage
 local HERD_PHYS      = 0.10                  -- physical damage taken -10%
 
 -- Technicians: Deploy Droid
+-- Technicians: the other Earth page abilities (30.10.26)
+local TECH = {
+	ScanRange       = 5000,                -- Scanner: the scanned monster takes MARK_DAMAGE more
+	ScanTime        = 3 * const.Minute,    -- damage from the party (as Mark Prey)
+	RepairCell      = 5,                   -- Field Repair: power cell +% ...
+	RepairCellPerSkill = 0.5,              -- ... + % per point of Repair skill
+	RepairCellMax   = 30,
+	GrenadeRange    = 3000,
+	GrenadeRadius   = 300,
+	GrenadeBase     = 10, GrenadePerLevel = 1.5,   -- + Repair skill x mastery; energy, every
+	                                               -- monster within the radius of the target
+	OverclockShots  = 5,                   -- shots without recovery, each drains the cell twice
+	TurretBaseTime  = 5 * const.Minute, TurretPerLevel = const.Minute / 2,
+	TurretHP        = 30, TurretHPPerLevel = 5, TurretHPPerRSM = 1,
+	TurretShotDice  = 1, TurretDicePerLevel = 1 / 8, TurretDiceSides = 10,
+	-- Shield Projector: MMMWE_EnergyShield.lua (MF.ShieldProjector)
+}
+
 local DROID = {
 	-- Engineer: Seeker Droid; Ancient Researcher: Sentinel Droid; Scientist: Assassin Droid
 	-- (the "3" class entries are table placeholders, never reached)
@@ -385,7 +435,8 @@ local FAMILIES = {
 	[8]  = {Name = "Monk", Resource = "Ki", Page = 2,
 		Abilities = {"StunningPalm", "InnerPeace", "Flurry", "IronBody", "Vanish", "ShadowClone"}},
 	[4]  = {Name = "Dragon", Resource = "Breath", Abilities = {}},   -- no ability page
-	[15] = {Name = "Technician", Resource = "Construction", Page = 3, Abilities = {"DeployDroid"}},
+	[15] = {Name = "Technician", Resource = "Construction", Page = 3,
+		Abilities = {"Scanner", "FieldRepair", "DeployDroid", "PlasmaGrenade", "Overclock", "ShieldProjector", "SentryTurret"}},
 	[11] = {Name = "Thief", Resource = "Energy", Page = 5,
 		Abilities = {"Finisher", "PoisonedBlade", "ShadowVeil"}},
 	-- hybrids on spell points (Hybrid = combat refill)
@@ -483,7 +534,7 @@ end
 -- BlackKnight, or nil (Class Extra.txt numbers)
 local KNIGHT_BRANCH = {[46] = "Champion", [48] = "Templar", [50] = "BlackKnight",
 	[64] = "MasterMonk", [66] = "Ninja", [88] = "Spy", [90] = "Assassin",
-	[4] = "MasterArcher", [6] = "Sniper"}
+	[4] = "MasterArcher", [6] = "Sniper", [124] = "AncientResearcher", [126] = "Scientist"}
 local function knightBranch(pl)
 	local cur = pl.Class
 	if MF.IsCustomClass and MF.IsCustomClass(cur) then
@@ -896,6 +947,16 @@ local Pending = {}     -- abilities carried out on the next tick
 local Effects = {}     -- [pi] = {Berserk = time, TrollsBlood = {Until, PerMinute}}
 local PartyEffects = {WarCry = 0}
 
+-- Overclock: true (and one shot used up) when this blaster shot is overclocked
+-- (MMMWE_Blasters.lua: no recovery, twice the power)
+function MF.OverclockShot(pl)
+	local fx = Effects[playerIndex(pl)]
+	if not fx or (fx.Overclock or 0) <= 0 then return false end
+	fx.Overclock = fx.Overclock - 1
+	if fx.Overclock <= 0 then fx.Overclock = nil end
+	return true
+end
+
 -- Vanish is on (the next blow comes out of hiding)
 function MF.IsVanished(pl)
 	local fx = Effects[playerIndex(pl)]
@@ -1045,6 +1106,9 @@ function MF.ClassAbilityUsable(pl, spell)
 	end
 	if MELEE_ABILITIES[key] then return meleeTarget(nil) ~= nil end
 	if key == "Challenge" then return meleeTarget(nil, CHALLENGE_RANGE) ~= nil end
+	if key == "Scanner" then return meleeTarget(nil, TECH.ScanRange) ~= nil end
+	if key == "PlasmaGrenade" then return meleeTarget(nil, TECH.GrenadeRange) ~= nil end
+	if key == "FieldRepair" or key == "Overclock" then return MF.BlasterOf and MF.BlasterOf(pl) ~= nil end
 	return true
 end
 
@@ -1196,6 +1260,75 @@ local function deployDroid(pl, pi)
 	return true
 end
 
+-- Sentry Turret: the droid model as a stationary gun (droids()["T" .. pi])
+local function deployTurret(pl, pi)
+	local L = math.max(1, pl.LevelBase or 1)
+	local untilT = Game.Time + TECH.TurretBaseTime + TECH.TurretPerLevel * L
+	local key = "T" .. pi
+	local mon, d = liveDroid(key)
+	if mon then
+		mon.HP = mon.FullHP
+		d.Until = untilT
+		mon.SpellBuffs[const.MonsterBuff.Summoned or 2].ExpireTime = untilT
+		Game.ShowStatusText(string.format("%s repairs the turret", pl.Name))
+		return true
+	end
+	local x, y, z = partyPoint(DROID.SpawnDist)
+	local ok, m, mi = pcall(SummonMonster, DROID.Models[2], x, y, z, true)
+	if not ok or not m then
+		log("Sentry Turret failed: %s", tostring(m))
+		return false
+	end
+	local RS, RM = SplitSkill(MF.TechRepairSkill and MF.TechRepairSkill(pl) or pl:GetSkill(const.Skills.Repair))
+	local hp = TECH.TurretHP + TECH.TurretHPPerLevel * L + TECH.TurretHPPerRSM * RS * RM
+	m.Level = math.min(L, 255)
+	m.FullHP, m.HP = hp, hp
+	m.ArmorClass = DROID.AC + DROID.ACPerLevel * L
+	m.Exp = 0
+	m.Bonus, m.BonusMul = 0, 0
+	m.SpellChance, m.Spell2Chance = 0, 0
+	m.Special = 0
+	m.MoveType = 5                          -- stands still
+	m.Fly = 0
+	-- the robot's own energy shot is its only attack
+	m.Attack2Chance = 0
+	m.Attack1.DamageDiceCount = math.min(math.floor(TECH.TurretShotDice + TECH.TurretDicePerLevel * L), 255)
+	m.Attack1.DamageDiceSides = TECH.TurretDiceSides
+	m.Attack1.DamageAdd = math.min(math.floor(L / 4 + RS * RM / 8), 255)
+	pcall(function()
+		local res = math.min(DROID.ResMax, DROID.ResBase + DROID.ResPerRepair * RS)
+		m.FireResistance, m.AirResistance, m.WaterResistance, m.EarthResistance = res, res, res, res
+		m.LightResistance, m.DarkResistance = res, res
+		m.MindResistance, m.SpiritResistance, m.BodyResistance = const.MonsterImmune, const.MonsterImmune, const.MonsterImmune
+		m.PhysResistance = DROID.PhysBase + DROID.PhysPerMastery * RM
+	end)
+	m.Ally = 9999
+	m.Group = 0
+	m.Summoner = pi * 8 + 4
+	pcall(function() m.Hostile = false; m.ShowAsHostile = false end)
+	m.GuardX, m.GuardY, m.GuardZ = x, y, z
+	local b = m.SpellBuffs[const.MonsterBuff.Summoned or 2]
+	b.ExpireTime = untilT
+	b.Power, b.Skill = 1, 1
+	droids()[key] = {Map = Map.Name, Index = mi or monIndex(m), Until = untilT, Turret = true}
+	Game.ShowStatusText(string.format("%s sets up a sentry turret", pl.Name))
+	return true
+end
+
+-- Scanner: the monster's resistances in the status line
+local SCAN_RES = {{"Fire", "Fire"}, {"Air", "Air"}, {"Water", "Wat"}, {"Earth", "Ear"}, {"Mind", "Mind"},
+	{"Body", "Body"}, {"Spirit", "Spi"}, {"Light", "Lig"}, {"Dark", "Dark"}, {"Phys", "Phys"}}
+local function scanText(mon)
+	local parts = {}
+	for _, r in ipairs(SCAN_RES) do
+		local ok, v = pcall(function() return mon[r[1] .. "Resistance"] end)
+		if ok and v then
+			parts[#parts + 1] = r[2] .. " " .. (v >= const.MonsterImmune and "imm" or tostring(v))
+		end
+	end
+	return string.format("%s (HP %d/%d): %s", Game.MonstersTxt[mon.Id].Name, mon.HP, mon.FullHP, table.concat(parts, ", "))
+end
+
 -- returns true if the cast was taken over
 local function castAbility(pl, pi, spell, targetRef)
 	local key, a = abilityOf(pl, spell)
@@ -1294,6 +1427,68 @@ local function castAbility(pl, pi, spell, targetRef)
 		end
 		Pending[#Pending + 1] = {Kind = key, pi = pi, mi = mi}
 		pl:SetRecoveryDelay(pl:GetAttackDelay(false))
+	elseif key == "Scanner" then
+		local mi = meleeTarget(targetRef, TECH.ScanRange)
+		if not mi then
+			failCast(pl, "Nothing to scan in sight")
+			return true
+		end
+		Marked[mi] = Game.Time + TECH.ScanTime
+		Game.ShowStatusText(scanText(Map.Monsters[mi]), 6)
+		pl:SetRecoveryDelay(60)
+	elseif key == "FieldRepair" then
+		local gun = MF.BlasterOf and MF.BlasterOf(pl)
+		if not gun or not MF.BlasterRecharge then
+			failCast(pl, "Hold a blaster to repair it in the field")
+			return true
+		end
+		local RS = SplitSkill(MF.TechRepairSkill and MF.TechRepairSkill(pl) or pl:GetSkill(const.Skills.Repair))
+		local pct = math.min(TECH.RepairCellMax, TECH.RepairCell + TECH.RepairCellPerSkill * RS)
+		MF.BlasterRecharge(gun, pct)
+		Game.ShowStatusText(string.format("%s patches the blaster up: power cell %d%%", pl.Name, math.floor(gun.MaxCharges / 2)))
+		pl:SetRecoveryDelay(150)
+	elseif key == "PlasmaGrenade" then
+		local mi = meleeTarget(targetRef, TECH.GrenadeRange)
+		if not mi or not MF.QueueForcedHit then
+			failCast(pl, "No target for the grenade")
+			return true
+		end
+		local L = math.max(1, pl.LevelBase or 1)
+		local RS, RM = SplitSkill(MF.TechRepairSkill and MF.TechRepairSkill(pl) or pl:GetSkill(const.Skills.Repair))
+		local dmg = math.floor(TECH.GrenadeBase + TECH.GrenadePerLevel * L + RS * RM)
+		local target = Map.Monsters[mi]
+		local n = 0
+		for i = 0, Map.Monsters.count - 1 do
+			local m = Map.Monsters[i]
+			if m.HP > 0 and m.AIState ~= const.AIState.Removed and (i == mi or m.Hostile) then
+				local dx, dy, dz = m.X - target.X, m.Y - target.Y, m.Z - target.Z
+				if i == mi or dx * dx + dy * dy + dz * dz <= (TECH.GrenadeRadius + (m.BodyRadius or 0)) ^ 2 then
+					MF.QueueForcedHit(pi, i, dmg)
+					n = n + 1
+				end
+			end
+		end
+		Game.PlaySound(44671)
+		Game.ShowStatusText(string.format("%s's plasma grenade hits %d monster(s)", pl.Name, n))
+		pl:SetRecoveryDelay(pl:GetAttackDelay(true))
+	elseif key == "Overclock" then
+		Effects[pi] = Effects[pi] or {}
+		Effects[pi].Overclock = TECH.OverclockShots
+		Game.ShowStatusText(string.format("%s overclocks the blaster", pl.Name))
+		pl:SetRecoveryDelay(30)
+	elseif key == "ShieldProjector" then
+		if not MF.ShieldProjector then
+			failCast(pl, "The projector doesn't work")
+			return true
+		end
+		MF.ShieldProjector(pl)
+		pl:SetRecoveryDelay(100)
+	elseif key == "SentryTurret" then
+		if not deployTurret(pl, pi) then
+			failCast(pl, "The turret can't be set up here")
+			return true
+		end
+		pl:SetRecoveryDelay(150)
 	elseif key == "DeployDroid" then
 		if not deployDroid(pl, pi) then
 			failCast(pl, "The droid can't be deployed here")
@@ -1634,7 +1829,7 @@ function events.Tick()
 			elseif now >= d.Until then
 				removeMonster(mon)
 				droids()[pi] = nil
-			else
+			elseif not d.Turret then
 				mon.GuardX, mon.GuardY, mon.GuardZ = Party.X, Party.Y, Party.Z
 				local dx, dy = mon.X - Party.X, mon.Y - Party.Y
 				if dx * dx + dy * dy > DROID.FollowDist * DROID.FollowDist then

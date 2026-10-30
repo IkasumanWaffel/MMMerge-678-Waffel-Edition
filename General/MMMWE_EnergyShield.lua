@@ -28,6 +28,11 @@
 	Anyone can wear the shield. No Meditation, spell points or resistances are involved
 	any more.
 
+	Shield Projector (Ancient Researcher, MMMWE_Resources.lua, MF.ShieldProjector): every
+	shield in the party gets ProjectorShare of its capacity back and recharges at once;
+	members without a shield get a barrier of BarrierBase + BarrierPerLevel x the caster's
+	level for BarrierTime, which absorbs hits the same way (before a shield).
+
 	Console: Merge.Functions.ShieldInfo(player)
 --]]
 
@@ -51,6 +56,10 @@ local S = {
 	BoosterShare     = 0.15,
 	HardenedCost     = 0.80,
 	Full             = 200,       -- MaxCharges of a full shield
+	ProjectorShare   = 0.50,
+	BarrierBase      = 20,
+	BarrierPerLevel  = 2,
+	BarrierTime      = 3 * const.Minute,
 }
 MF.EnergyShieldSettings = S
 
@@ -77,6 +86,7 @@ end
 
 -- per character (PlayersArray index): last hit, broken flag, exact charge
 local LastHit, Broken, Exact, LastTick = {}, {}, {}, {}
+local Barrier = {}   -- [PlayersArray index] = {Value, Until} (Shield Projector)
 
 -- the shield's charge in points (exact), and a setter
 local function charge(pl, pi, it, st)
@@ -123,6 +133,25 @@ end
 local function onHit(t)
 	local pl = t.Player
 	if not pl or (t.Result or 0) <= 0 or not MF.ShieldOf then return end
+	-- Shield Projector barrier first
+	local bpi = pl:GetIndex()
+	local br = Barrier[bpi]
+	if br then
+		if br.Until <= Game.Time then
+			Barrier[bpi] = nil
+		else
+			local a = min(t.Result, floor(br.Value))
+			t.Result = t.Result - a
+			br.Value = br.Value - a
+			if br.Value < 1 then
+				Barrier[bpi] = nil
+				Game.ShowStatusText(string.format("%s's barrier collapses (%d absorbed)", pl.Name, a), 3)
+			else
+				Game.ShowStatusText(string.format("%s's barrier absorbs %d", pl.Name, a), 3)
+			end
+			if t.Result <= 0 then return end
+		end
+	end
 	local it = MF.ShieldOf(pl)
 	if not it then return end
 	local pi = pl:GetIndex()
@@ -203,7 +232,29 @@ function events.Tick()
 end
 
 function events.LeaveMap()
-	LastHit, Broken = {}, {}
+	LastHit, Broken, Barrier = {}, {}, {}
+end
+
+-- Shield Projector (caster: the technician)
+function MF.ShieldProjector(caster)
+	local L = max(1, caster.LevelBase or 1)
+	local shields, barriers = 0, 0
+	for slot = 0, Party.count - 1 do
+		local pl = Party[slot]
+		local pi = Party.PlayersIndexes[slot]
+		local it = MF.ShieldOf and MF.ShieldOf(pl)
+		local st = it and shieldState(it)
+		if st then
+			local pool, cap = charge(pl, pi, it, st)
+			setCharge(pi, it, pool + S.ProjectorShare * cap, cap)
+			LastHit[pi], Broken[pi] = nil, nil
+			shields = shields + 1
+		elseif pl:IsConscious() then
+			Barrier[pi] = {Value = S.BarrierBase + S.BarrierPerLevel * L, Until = Game.Time + S.BarrierTime}
+			barriers = barriers + 1
+		end
+	end
+	Game.ShowStatusText(string.format("%s projects energy: %d shield(s) recharged, %d barrier(s)", caster.Name, shields, barriers), 3)
 end
 
 function events.MonsterKilled()

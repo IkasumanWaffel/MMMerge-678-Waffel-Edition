@@ -632,6 +632,9 @@ mem.autohook(0x42609E, function(d)
 	-- one shot's share of the cell, in 0.5% steps; the fraction is kept per gun (by the
 	-- character and the item slot) and adds up, so every shot drains exactly its share
 	local use = B.CellFull / capacity(gun, st)
+	-- Overclock (Technicians, MMMWE_Resources.lua): no recovery, twice the power
+	local overclock = MF.OverclockShot and MF.OverclockShot(pl)
+	if overclock then use = use * 2 end
 	local key = pl:GetIndex() * 1000 + pl.ItemMainHand
 	local fracs = vars and vars.BlasterCellFrac
 	if vars and not fracs then fracs = {} vars.BlasterCellFrac = fracs end
@@ -647,7 +650,7 @@ mem.autohook(0x42609E, function(d)
 	elseif st.Cell <= 0 then
 		Game.ShowStatusText(string.format("%s's blaster: power cell empty", pl.Name), 3)
 	end
-	if st.Tiers[2] >= 4 and random() < B.RapidChance then
+	if overclock or (st.Tiers[2] >= 4 and random() < B.RapidChance) then
 		Pending[#Pending + 1] = {Kind = "Rapid", pi = pl:GetIndex()}
 	end
 end)
