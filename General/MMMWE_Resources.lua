@@ -104,6 +104,7 @@ local RESOURCES = {
 
 local CONSTRUCTION = {
 	PerMinute = 2,                 -- refill per game minute
+	PerIntellect = 0.02,           -- refill +2% per point of the Intellect bonus
 	Salvage   = 5,                 -- for every monster the party kills
 }
 
@@ -136,6 +137,7 @@ local KI = {
 	Cap           = 15,
 	Interval      = 5 * const.Minute,  -- one charge per interval
 	IntervalPerMed = 0.02,         -- interval -2% per point of Meditation (at most -50%)
+	SpeedPerPers  = 0.02,          -- refill +2% per point of the Personality bonus
 	Refill        = {[0] = 1, 1, 1, 1},   -- charges per interval by promotion stage
 }
 
@@ -461,12 +463,12 @@ for name, r in pairs(RESOURCES) do MF.ResourceColors[name] = r.Color end
 -- and the regeneration line (MMMWE_Main.lua) MF.ResourceRegenText
 local SP_LABEL_TXT = 212
 local RESOURCE_DESC = {
-	Rage = "Rage fills when the barbarian takes hits (the heavier the blow, the more) and a little with every melee hit landed. After a while without being hit it slowly drains away, so resting empties it; potions and Meditation don't restore it. Every 5 Rage adds 1% melee damage. At 50 Rage and more the barbarian fights recklessly: -10% of the items' Armor Class (Trolls instead take 5% less physical damage). Rage pays for the barbarian's abilities on the Fire page of the spellbook.",
-	Resolve = "Resolve grows as the knight holds the line: +5 for every block or parry and +2 for every hit taken, twice as much in the Defensive stance. After a while without being hit it slowly fades, so resting empties it; potions and temples don't restore it. Resolve pays for Challenge and Rally (Air page of the spellbook); the stances there are free.",
-	Ki = "Ki is the monk's inner strength, counted in charges: 5, +2 for every promotion and +1 for every 2 points of Meditation (at most 15). It refills on its own, 1 charge every 5 minutes, sooner with Meditation (down to half the time). Ki pays for the monk's abilities on the Water page of the spellbook, and for his spells: a fifth of their spell point cost.",
+	Rage = "Rage fills when the barbarian takes hits (the heavier the blow, the more) and a little with every melee hit landed. After a while without being hit it slowly drains away, so resting empties it; potions and Meditation don't restore it. Every 5 Rage adds 1% melee damage. At 50 Rage and more the barbarian fights recklessly: -10% of the items' Armor Class (Trolls instead take 5% less physical damage). Rage pays for the barbarian's abilities on the Fire page of the spellbook. Its maximum is 100, +2 per point of Personality bonus.",
+	Resolve = "Resolve grows as the knight holds the line: +5 for every block or parry and +2 for every hit taken, twice as much in the Defensive stance. After a while without being hit it slowly fades, so resting empties it; potions and temples don't restore it. Resolve pays for Challenge and Rally (Air page of the spellbook); the stances there are free. Its maximum is 100, +2 per point of Personality bonus.",
+	Ki = "Ki is the monk's inner strength, counted in charges: 5, +2 for every promotion and +1 for every 2 points of Meditation (at most 15). It refills on its own, 1 charge every 5 minutes, sooner with Meditation (down to half the time) and 2% faster per point of Personality bonus. Ki pays for the monk's abilities on the Water page of the spellbook, and for his spells: a fifth of their spell point cost.",
 	Breath = "Breath is the fire in the dragon's chest. It refills on its own, 10 every game minute. Every breath attack costs 25, so a dragon breathes every few attacks and fights with claws and teeth in between; without enough Breath it can't breathe at a far target. The Dragon abilities (Fear, Flame Blast, Flight, Wing Buffet) cost 2 Breath per spell point.",
-	Construction = "Construction is the technician's stock of parts and power for building. It refills on its own, 2 every game minute, and +5 for every monster the party brings down (salvage). It pays for the technician's devices on the Earth page of the spellbook. The Energy Shield doesn't use it: the shield has its own charge.",
-	Energy = "Energy is the thief's quickness. It refills fast, 10 every game minute, and pays for the thief's tricks on the Mind page of the spellbook and for his spells (5 Energy per spell point). Melee hits on the same target build combo points (up to 5, shown in the status line); the Finisher spends them all.",
+	Construction = "Construction is the technician's stock of parts and power for building. Its maximum is 100, +2 per point of Intellect bonus. It refills on its own, 2 every game minute (2% faster per point of Intellect bonus), and +5 for every monster the party brings down (salvage). It pays for the technician's devices on the Earth page of the spellbook. The Energy Shield doesn't use it: the shield has its own charge.",
+	Energy = "Energy is the thief's quickness. It refills fast, 10 every game minute, and pays for the thief's tricks on the Mind page of the spellbook and for his spells (5 Energy per spell point). Melee hits on the same target build combo points (up to 5, shown in the status line); the Finisher spends them all. Its maximum is 100, +2 per point of Personality bonus.",
 }
 function MF.ResourceRegenText(res)
 	if RESOURCES[res] then return "" end
@@ -600,8 +602,19 @@ local function kiMax(pl)
 	local med = SplitSkill(pl:GetSkill(const.Skills.Meditation))
 	return math.min(KI.Cap, KI.Base + KI.PerStage * math.min(stage, 2) + math.floor(KI.PerMeditation * med))
 end
+-- 30.10.26: the stats raise some maximums (+MaxPerBonus per point of the stat's bonus;
+-- a negative bonus doesn't lower them): Personality for Rage, Resolve and Energy,
+-- Intellect for Construction (which also refills faster with it)
+local STAT_MAX = {Rage = "Personality", Resolve = "Personality", Energy = "Personality", Construction = "Intellect"}
+local MAX_PER_BONUS = 2
+local function statBonus(pl, stat)
+	local v = stat == "Intellect" and pl:GetIntellect() or pl:GetPersonality()
+	return math.max(0, Game.GetStatisticEffect(v))
+end
 local function resourceMax(pl, name, r)
 	if name == "Ki" then return kiMax(pl) end
+	local stat = STAT_MAX[name]
+	if stat then return r.Max + MAX_PER_BONUS * statBonus(pl, stat) end
 	return r.Max
 end
 
@@ -1920,17 +1933,19 @@ function events.Tick()
 				e.R = math.min(RESOURCES.Breath.Max, e.R + refill * BREATH.PerMinute * dt / const.Minute)
 			end
 			if dt > 0 and resName == "Construction" then
-				e.R = math.min(RESOURCES.Construction.Max, e.R + refill * CONSTRUCTION.PerMinute * dt / const.Minute)
+				local speed = 1 + CONSTRUCTION.PerIntellect * statBonus(pl, "Intellect")
+				e.R = math.min(resourceMax(pl, resName, res), e.R + refill * speed * CONSTRUCTION.PerMinute * dt / const.Minute)
 			end
 			if dt > 0 and resName == "Energy" then
-				e.R = math.min(RESOURCES.Energy.Max, e.R + refill * ENERGY.PerMinute * dt / const.Minute)
+				e.R = math.min(resourceMax(pl, resName, res), e.R + refill * ENERGY.PerMinute * dt / const.Minute)
 				if e.Combo and now - (e.ComboTime or 0) > ENERGY.ComboTime then e.Combo, e.ComboMon = nil, nil end
 			end
 			if dt > 0 and resName == "Ki" then
 				local _, stage = classFamily(pl.Class)
 				local med = SplitSkill(pl:GetSkill(const.Skills.Meditation))
 				local interval = KI.Interval * math.max(0.5, 1 - KI.IntervalPerMed * med)
-				e.R = math.min(kiMax(pl), e.R + refill * (KI.Refill[math.min(stage, 3)] or 1) * dt / interval)
+				local speed = 1 + KI.SpeedPerPers * statBonus(pl, "Personality")
+				e.R = math.min(kiMax(pl), e.R + refill * speed * (KI.Refill[math.min(stage, 3)] or 1) * dt / interval)
 			end
 			if dt > 0 and res.IdleTime and now - (e.LastHit or 0) > res.IdleTime then
 				e.R = math.max(0, e.R - res.DrainPerMinute * dt / const.Minute)
