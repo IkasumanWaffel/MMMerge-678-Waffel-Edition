@@ -118,6 +118,7 @@ function events.CalcDamageToMonster(t)
 
 	-- Flurry of blows (not from a flurry blow or another counterattack)
 	if MF.CounterAttackActive and MF.CounterAttackActive() then return end
+	if MF.BlasterSpecs and MF.BlasterSpecs.Forced then return end
 	if not t.PlayerIndex or not t.MonsterIndex or not MF.QueueCounterAttack then return end
 	local c = MF.UnarmedFlurryChance(pl)
 	if c > 0 and math.random() * 100 < c then

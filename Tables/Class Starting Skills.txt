@@ -9,7 +9,7 @@ Mace	-	-	-	-	F	F	F	C	C	C	-	-	-	-	-	-	-	-	C	C	C	C	-	-	-	-	C	C	C	C	-	-	-	-	F	F	F	F
 Blaster	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	F	F	F	F	-
 Shield	-	-	-	-	C	C	C	C	C	C	-	-	-	-	-	-	-	-	-	-	-	-	C	C	C	C	-	-	-	-	-	-	-	-	C	C	C	C	-	-	-	-	-	-	-	-	C	C	C	C	C	C	C	C	-	-	-	-	-	-	C	C	C	C	-
 Leather	C	C	C	C	C	C	C	C	C	C	C	C	C	C	-	-	-	-	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	F
-Chain	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	C	C	C	C	C	C	C	C	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	C	C	C	C	-
+Chain	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	C	C	C	C	C	C	C	C	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 Plate	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 Fire	C	C	C	C	-	-	-	-	-	-	C	C	C	C	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	F	C	C	C	C	C	-	-	-	-	-
 Air	F	F	F	F	-	-	-	-	-	-	F	F	F	F	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	C	C	C	C	C	C	-	-	-	-	-
@@ -27,11 +27,11 @@ IdentifyItem	-	-	-	-	-	-	-	-	-	-	C	C	C	C	F	F	F	F	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 Merchant	-	-	-	-	C	C	C	C	C	C	C	C	C	C	C	C	C	C	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	C	C	C	C	-	-	-	-	C	C	C	C	-	-	-	-	-	-	-	-	C	C	-	-	C	-	-	-	-	-	-
 Repair	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	C	C	C	C	-	-	-	-	-	-	-	-	C	C	C	C	-	-	-	-	-	-	-	-	C	C	C	C	-	-	-	-	-	-	-	-	-	-	F	F	F	F	-
 Bodybuilding	-	-	-	-	-	-	-	-	-	-	-	-	-	-	F	F	F	F	-	-	-	-	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	-	-	-	-	F	F	F	F	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
-Meditation	-	-	-	-	C	C	C	C	C	C	-	-	-	-	C	C	C	C	C	C	C	C	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	C	-	-	C	C	C	C	C	-
+Meditation	-	-	-	-	C	C	C	C	C	C	-	-	-	-	C	C	C	C	C	C	C	C	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	C	-	-	C	-	C	C	C	-
 Perception	C	C	C	C	C	-	-	-	-	-	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	-	-	-	-	F	F	F	F	C	C	C	C	-	-	-	-	C	C	C	C	-	-	-	C	-	-	C	C	C	C	F
 Regeneration	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 DisarmTraps	-	-	-	-	-	-	-	-	-	-	C	C	C	C	-	-	-	-	-	-	-	-	-	-	-	-	C	C	C	C	-	-	-	-	-	-	-	-	C	C	C	C	C	C	C	C	-	-	-	-	C	C	C	C	-	-	-	-	-	-	-	-	-	-	-
-Dodging	-	-	-	-	-	-	-	-	-	-	-	-	-	-	C	C	C	C	-	-	-	-	-	-	-	-	-	-	-	-	F	F	F	F	-	-	-	-	C	C	C	C	C	C	C	C	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
+Dodging	-	-	-	-	-	-	-	-	-	-	-	-	-	-	C	C	C	C	-	-	-	-	-	-	-	-	-	-	-	-	F	F	F	F	-	-	-	-	C	C	C	C	C	C	C	C	-	-	-	-	-	-	-	-	-	-	-	-	-	-	C	C	C	C	-
 Unarmed	-	-	-	-	-	-	-	-	-	-	-	-	-	-	C	C	C	C	-	-	-	-	-	-	-	-	-	-	-	-	F	F	F	F	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-
 IdentifyMonster	-	-	-	-	-	-	-	-	-	-	-	-	-	-	C	C	C	C	-	-	-	-	-	-	-	-	-	-	-	-	C	C	C	C	-	-	-	-	C	C	C	C	-	-	-	-	C	C	C	C	C	C	C	C	C	C	C	-	C	C	C	C	C	C	-
 Armsmaster	C	C	C	C	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	F	F	F	F	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	C	-	-	-	-	C	C	C	C	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-

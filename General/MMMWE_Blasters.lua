@@ -17,7 +17,14 @@
 
 	Work: before each gem the work bar is filled to 100 with ore; the ore needed rises with
 	the number of upgrades on the gun. Two pieces of the same ore smelt into one of the next
-	grade (use ore on a character who isn't holding a blaster).
+	grade (use ore on a character who isn't holding a blaster or wearing an energy shield
+	that can take more work).
+
+	Energy shields (968, MMMWE_EnergyShield.lua) take upgrades the same way, on the same
+	gems and ore, when the character holds no blaster: Nova (warm gems), Recharge rate
+	(blue), Recharge delay (purple), Capacity (green). The board is kept in the same fields
+	(MaxCharges: the shield's charge). The toolkit removes a shield's last upgrade (Ctrl) but
+	moves boards between blasters only.
 	Blaster Toolkit (962): moves the whole board between guns; with Ctrl it removes the
 	last upgrade (the gem is lost).
 
@@ -66,6 +73,10 @@ MF.BlasterSpecs = B
 
 local SPECS = {"Emitter", "Capacitor", "Disruptor", "Power cell"}
 local SPEC_SHORT = {"Emitter", "Capacitor", "Disruptor", "Cell"}
+local SHIELD = 968
+local SHIELD_SPECS = {"Nova", "Recharge rate", "Recharge delay", "Capacity"}
+local SHIELD_SHORT = {"Nova", "Rate", "Delay", "Capacity"}
+B.ShieldSpecNames, B.ShieldItem = SHIELD_SPECS, SHIELD
 B.SpecNames = SPECS
 
 local BLASTERS = {[866] = 1, [867] = 2, [1666] = 1, [1667] = 2}   -- 1 pistol, 2 rifle
@@ -168,8 +179,9 @@ local function state(item)
 		st = decodeBoard(ch)
 		if ch == 0 then
 			-- never touched: a found blaster with a random charge and maybe an upgrade
+			-- (a found shield: fully charged)
 			randomUpgrades(st)
-			item.MaxCharges = random(40, B.CellFull)
+			item.MaxCharges = item.Number == SHIELD and B.CellFull or random(40, B.CellFull)
 		else
 			item.MaxCharges = B.CellFull
 		end
@@ -204,6 +216,25 @@ local function blasterOf(pl)
 	return it, slot
 end
 MF.BlasterOf = blasterOf
+
+-- the energy shield worn (not broken)
+local function shieldOf(pl)
+	local slot = pl.ItemBelt
+	if slot <= 0 then return end
+	local it = pl.Items[slot]
+	if it.Number ~= SHIELD or it.Broken then return end
+	return it, slot
+end
+MF.ShieldOf = shieldOf
+
+-- what gems, ore and the toolkit work on: the blaster in the main hand, else the energy
+-- shield worn. Returns the item, its spec names and its name.
+local function upgradeTarget(pl)
+	local gun = blasterOf(pl)
+	if gun then return gun, SPECS, "blaster" end
+	local sh = shieldOf(pl)
+	if sh then return sh, SHIELD_SPECS, "energy shield" end
+end
 
 ---------------------------------------------------------------------------
 -- effects (used by MMMWE_Main.lua)
@@ -280,6 +311,22 @@ function MF.BlasterCardDamageMult(ch)
 	return 1 + B.EmitterPerTier * view(ch, 0).Levels[1]
 end
 
+-- the "Charges" line of an energy shield's card
+function MF.ShieldCardText(ch, cell)
+	local st = view(ch, cell)
+	local pl = Party:GetCurrentPlayer()
+	local lim = 0
+	if pl then
+		local _, BM = SplitSkill(pl:GetSkill(const.Skills.Blaster))
+		lim = BM > 0 and B.Limit[min(4, BM)] or 0
+	end
+	local info = MF.ShieldCardInfo and MF.ShieldCardInfo(st) or ""
+	return string.format("%s %s  %s %s\n%s %s  %s %s\nUpgrades: %d/%d   Work: %d%%%%\nCharge: %d%%%%%s",
+		SHIELD_SHORT[4], pips(st, 4), SHIELD_SHORT[2], pips(st, 2),
+		SHIELD_SHORT[3], pips(st, 3), SHIELD_SHORT[1], pips(st, 1),
+		st.Count, lim, st.Work, floor(st.Cell / 2), info)
+end
+
 function MF.ToolkitCardText(ch)
 	if ch <= 0 then return "Board: empty" end
 	local st = view(ch, 0)
@@ -349,11 +396,13 @@ end
 local function useOre(pl, item)
 	local grade = ORE[item.Number]
 	if not grade then return end
-	local gun = blasterOf(pl)
+	local gun, _, what = upgradeTarget(pl)
 	if not gun then return smelt(pl, item) end
 	if gun.Broken then return fail("The blaster is broken.") end
 	local st = state(gun)
 	local lim, BM = masteryLimit(pl)
+	-- a shield that can't take more work: the ore is smelted instead
+	if gun.Number == SHIELD and (st.Count >= 8 or st.Count >= lim) then return smelt(pl, item) end
 	if st.Count >= 8 then return fail("This blaster is fully upgraded.") end
 	if st.Count >= lim then
 		return fail(string.format("%s's Blaster mastery allows %d upgrades on a gun.", pl.Name, lim))
@@ -372,7 +421,7 @@ local function useOre(pl, item)
 	st.Work = min(100, st.Work + gain)
 	save(gun, st)
 	evt.PlaySound{12050}
-	Game.ShowStatusText(string.format("Work on the blaster: %d%%", st.Work))
+	Game.ShowStatusText(string.format("Work on the %s: %d%%", what, st.Work))
 	return 2
 end
 
@@ -385,20 +434,21 @@ end
 local function useGem(pl, item)
 	local spec = GEM[item.Number]
 	if not spec then return end
-	local gun = blasterOf(pl)
-	if not gun then return fail("Hold a blaster in the main hand to install a gem.") end
+	local gun, SPECS, what = upgradeTarget(pl)
+	if not gun then return fail("Hold a blaster in the main hand or wear an energy shield to install a gem.") end
 	if gun.Broken then return fail("The blaster is broken.") end
 	if spec == 0 then spec = specFromKeys() end
 	local st = state(gun)
 	local lim = masteryLimit(pl)
-	if st.Count >= 8 then return fail("This blaster is fully upgraded.") end
+	if st.Count >= 8 then return fail(string.format("This %s is fully upgraded.", what)) end
 	if st.Count >= lim then
-		return fail(string.format("%s's Blaster mastery allows %d upgrades on a gun.", pl.Name, lim))
+		return fail(string.format("%s's Blaster mastery allows %d upgrades on a %s.", pl.Name, lim,
+			gun.Number == SHIELD and "shield" or "gun"))
 	end
 	local tier = st.Tiers[spec] + 1
 	if tier > 4 then return fail(string.format("%s is already at tier 4.", SPECS[spec])) end
 	if st.Work < 100 then
-		return fail(string.format("Work on the blaster first: %d/100 (use ore).", st.Work))
+		return fail(string.format("Work on the %s first: %d/100 (use ore).", what, st.Work))
 	end
 	local value = Game.ItemsTxt[item.Number].Value
 	if value < B.GemValue[tier] then
@@ -429,8 +479,8 @@ local function useToolkit(pl, kit)
 		pl.Items[slot].Number = pl.Items[slot].Number - 800
 		return 0
 	end
-	local gun = blasterOf(pl)
-	if not gun then return fail("Hold a blaster in the main hand to use the toolkit.") end
+	local gun, SPECS = upgradeTarget(pl)
+	if not gun then return fail("Hold a blaster in the main hand (or wear an energy shield) to use the toolkit.") end
 	local st = state(gun)
 	if Keys.IsPressed(const.Keys.CTRL) then
 		local last = st.Stack[#st.Stack]
@@ -447,6 +497,9 @@ local function useToolkit(pl, kit)
 		evt.PlaySound{17020}
 		Game.ShowStatusText(string.format("%s tier %d removed. The gem is lost.", SPECS[last.Spec], tier))
 		return 0
+	end
+	if gun.Number == SHIELD then
+		return fail("The toolkit moves boards between blasters only (Ctrl: remove the shield's last upgrade).")
 	end
 	if #st.Stack > 0 or st.Work > 0 then
 		if kit.Charges > 0 then return fail("The toolkit already holds a board.") end
@@ -484,15 +537,15 @@ local function gemNote(id)
 	local top = 0
 	for t = 1, 4 do if value >= B.GemValue[t] then top = t end end
 	if spec == 0 then
-		return string.format("\n\nBlaster upgrade: any spec up to tier %d (no key Emitter, Shift Capacitor, Ctrl Disruptor, Ctrl+Shift Power cell).", top)
+		return string.format("\n\nBlaster or shield upgrade: any spec up to tier %d (no key Emitter / Nova, Shift Capacitor / Recharge rate, Ctrl Disruptor / Recharge delay, Ctrl+Shift Power cell / Capacity).", top)
 	end
 	if top == 0 then return "" end
-	return string.format("\n\nBlaster upgrade: %s up to tier %d.", SPECS[spec], top)
+	return string.format("\n\nUpgrade up to tier %d: %s on a blaster, %s on an energy shield.", top, SPECS[spec], SHIELD_SPECS[spec])
 end
 
 local function oreNote(id)
 	local g = ORE[id]
-	local s = string.format("\n\nBlaster upgrade work (needs Repair %d, %s).", ORE_RS[g],
+	local s = string.format("\n\nBlaster and shield upgrade work (needs Repair %d, %s).", ORE_RS[g],
 		select(ORE_RM[g], "Novice", "Expert", "Master", "Grand Master"))
 	if g < 6 then s = s .. string.format(" Two pieces can be smelted into %s ore.", ORE_NAMES[g + 1]) end
 	return s
@@ -605,6 +658,12 @@ local function forcedHit(pi, mi, dmg)
 	local ok, err = pcall(mem.call, 0x436E26, 2, pi * 8 + 4, mi, HitVec)
 	B.Forced = nil
 	return ok
+end
+
+-- a hit of fixed damage by character pi on monster mi, carried out on the next tick
+-- (energy shield Nova and Spike, MMMWE_EnergyShield.lua)
+function MF.QueueForcedHit(pi, mi, dmg)
+	if dmg and dmg > 0 then Pending[#Pending + 1] = {Kind = "Chain", pi = pi, mi = mi, dmg = floor(dmg)} end
 end
 
 -- Disruptor 4: an eradicated target's neighbours take half the hit (MMMWE_Main.lua)

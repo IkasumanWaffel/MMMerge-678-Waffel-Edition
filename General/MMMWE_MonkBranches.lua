@@ -102,6 +102,7 @@ function events.CalcDamageToMonster(t)
 	if not t.ByPlayer or t.IsSecondary or not t.Melee then return end
 	if t.DamageKind ~= const.Damage.Phys or not t.PlayerIndex or not t.MonsterIndex then return end
 	if not MF.QueueCounterAttack or (MF.CounterAttackActive and MF.CounterAttackActive()) then return end
+	if MF.BlasterSpecs and MF.BlasterSpecs.Forced then return end   -- bash, chain, shield hits
 	local mon = t.Monster
 	if not mon or mon.HP <= 0 then return end
 	-- one follow-up per hit, by the first ninja in the party order who gets it

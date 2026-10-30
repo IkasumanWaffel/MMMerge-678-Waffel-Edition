@@ -2229,28 +2229,10 @@
 
 	-- Shield block: MF.ShieldBlock (MMMWE_Shields.lua)
 
-	-- Energy Shield Absorb
+	-- Energy Shield: 30.10.26 the shield has its own capacity and absorbs the final damage
+	-- (MMMWE_EnergyShield.lua); it no longer takes a share of each hit from the spell points
 	local function CalcEnergyShieldDR(pl, damageTotal, dodgeDR, weaponDR, shieldDR, absStr)
-		local slot = pl.ItemBelt
-		if slot <= 0 then return 1, 0 end
-		
-		local itnum = pl.Items[slot].Number
-		if itnum ~= 968 or pl.SP <= 0 then
-			return 1, 0
-		end
-
-		local spDrain = damageTotal * math.min(dodgeDR, math.min(weaponDR, shieldDR)) * absStr
-		local esDR
-
-		if pl.SP >= spDrain then
-			esDR = 1 - absStr
-		else
-			local coeff = pl.SP / spDrain
-			pl.SP = 0
-			esDR = 1 - (coeff * absStr)
-		end
-
-		return esDR, spDrain
+		return 1, 0
 	end
 
 	-- Main Handler
@@ -2690,8 +2672,8 @@
 		for _, dr in pairs(RegenDrip) do dr.Last = Game.Time end
 	end
 
-	-- Technicians (Class Extra.txt kind 15): their spell points feed the energy shield, so
-	-- their Meditation refill comes every game minute instead of every regen tick
+	-- Technicians (Class Extra.txt kind 15): Construction instead of spell points
+	-- (MMMWE_Resources.lua); the energy shield has its own capacity (MMMWE_EnergyShield.lua)
 	local TECH_KIND = 15
 	local function isTechnician(Player)
 		local kind = MF.ClassFamily and MF.ClassFamily(Player.Class)
@@ -2706,38 +2688,12 @@
 	-- Meditation SP, the Regeneration skill HP and the fraction of the Regeneration spell, exact
 	function events.RegenTick(Player)
 		if not CanRegen(Player) then return end
-		local sp = isTechnician(Player) and 0 or CalcMeditationSPRegen(Player)   -- Technicians: per minute
+		local sp = CalcMeditationSPRegen(Player)
 		local hp = CalcSkillHPRegen(Player)
 		local Buff = Player.SpellBuffs[const.PlayerBuff.Regeneration]
 		if Game.Time < Buff.ExpireTime then hp = hp + (RegenSpellFrac[Player:GetIndex()] or 0) end
 		if hp > 0 or sp > 0 then MF.RegenGive(Player, hp, sp) end
 		if Player.HP > 0 then Player.Conditions[13] = 0 end
-	end
-
-	-- Technicians: the full Meditation amount every game minute (fractions add up)
-	local TechRegenLast, TechRegenAcc = {}, {}
-	function events.Tick()
-		local now = Game.Time
-		for slot = 0, Party.count - 1 do
-			local Player = Party[slot]
-			if isTechnician(Player) then
-				local pi = Party.PlayersIndexes[slot]
-				local last = TechRegenLast[pi]
-				if not last or last > now then
-					TechRegenLast[pi] = now
-				elseif now - last >= const.Minute then
-					local n = math.floor((now - last) / const.Minute)
-					TechRegenLast[pi] = last + n * const.Minute
-					local acc = (TechRegenAcc[pi] or 0) + CalcMeditationSPRegen(Player) * math.min(n, 24 * 60)
-					local whole = math.floor(acc)
-					TechRegenAcc[pi] = acc - whole
-					local full = Player:GetFullSP()
-					if whole > 0 and Player.SP < full then
-						Player.SP = math.min(full, Player.SP + whole)
-					end
-				end
-			end
-		end
 	end
 
 	-- Regeneration spell MM7-alike effect: 0.5% of full HP + 0.1% per skill x mastery each
@@ -2780,7 +2736,7 @@
 	-- Special items
 	local SpecialItemGroups = {
 		[191] = 1, [192] = 2, [193] = 3,
-		[866] = 4, [867] = 4, [1666] = 4, [1667] = 4, [962] = 7,
+		[866] = 4, [867] = 4, [1666] = 4, [1667] = 4, [962] = 7, [968] = 8,
 		[970] = 5, [971] = 5, [972] = 5, [973] = 5, [975] = 5, [976] = 5,
 		[977] = 5, [978] = 5, [980] = 5, [981] = 5, [982] = 5, [983] = 5,
 		[984] = 5, [985] = 5, [986] = 5, [987] = 5,
@@ -2920,6 +2876,8 @@
 			return cachedCstring(MF.BlasterCardText(ch, DICell))
 		elseif group == 7 then
 			return cachedCstring(MF.ToolkitCardText(ch))
+		elseif group == 8 then
+			return cachedCstring(MF.ShieldCardText(ch, DICell))
 		elseif group == 5 then
 			return cachedCstring(string.format("Ant: %d Jad: %d",
 				math.fmod(math.modf(ch / 100), 100), math.fmod(ch, 100)))
@@ -3352,7 +3310,7 @@
 
 	local ArtRegen = {
 		[509] = {2, 0}, [513] = {0, 3}, [520] = {2, 0}, [550] = {5, 5},
-		[968] = {0, 5}, [1331] = {3, 3}, [1334] = {0, 3}, [1335] = {3, 0},
+		[1331] = {3, 3}, [1334] = {0, 3}, [1335] = {3, 0},
 		[1337] = {3, 0}, [2024] = {0, 3}, [2027] = {3, 0}, [2032] = {0, 3},
 		[2033] = {0, 3}, [2034] = {0, 3}, [2035] = {-3, 0}, [1317] = {-3, 0},
 	}
@@ -3781,12 +3739,6 @@
 			-- class resource (MMMWE_Resources.lua): no regeneration, it drains when idle
 			-- the resource name only (it doesn't regenerate; a longer text runs into the value)
 			MV.SPR = cachedCstring(resName)
-		elseif isTechnician(Pl) then
-			-- Meditation every game minute (items and potions on the regen tick as usual)
-			local med = CalcMeditationSPRegen(Pl)
-			local other = totalSPR - med
-			local m = med + other / REGEN_SPREAD
-			MV.SPR = cachedCstring(string.format('SP\t30 (%s%.1f/min)', m >= 0 and '+' or '', m))
 		else
 			MV.SPR = cachedCstring(string.format('SP\t30 (%s/min)', perMin(totalSPR)))
 		end

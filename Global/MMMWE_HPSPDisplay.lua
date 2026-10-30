@@ -45,6 +45,8 @@ local CONFIG = {
     },
     -- power cell of a blaster in the main hand (MMMWE_Blasters.lua), small font, above HP
     cell = {anchor = "portrait", dx = 0, dy = -104},
+    -- charge of a worn energy shield (MMMWE_EnergyShield.lua), above the power cell
+    shield = {anchor = "portrait", dx = 0, dy = -124},
     cellH = 18,
     sp = {
         [0] = {anchor = "portrait", dx = 0, dy = -54},
@@ -55,7 +57,7 @@ local CONFIG = {
     },
 
     --=== Debuffs (Game.PlayersExtra[i].Debuffs[]) ===
-    debuffDY       = 880,   
+    debuffDY       = 865,   
     debuffW        = 180,
     debuffH        = 18,
     debuffLineH   = 20,
@@ -702,8 +704,13 @@ local function getValues(nPlayers)
                     if gun then cell = math.floor(Merge.Functions.BlasterState(gun).Cell / 2) end
                 end)
             end
+            local shield
+            if Merge.Functions.ShieldCharge then
+                pcall(function() shield = Merge.Functions.ShieldCharge(p) end)
+            end
             v[i] = {
                 cell = cell,
+                shield = shield,
                 resource = resource,
                 hp = p.HP or 0,
                 sp = p.SP or 0,
@@ -775,7 +782,7 @@ local function valuesChanged(v, nPlayers)
     for i = 0, nPlayers - 1 do
         local a, b = v[i], lastValues[i]
         if not b then return true end
-        if a.hp ~= b.hp or a.sp ~= b.sp or a.maxHP ~= b.maxHP or a.maxSP ~= b.maxSP or a.cell ~= b.cell then
+        if a.hp ~= b.hp or a.sp ~= b.sp or a.maxHP ~= b.maxHP or a.maxSP ~= b.maxSP or a.cell ~= b.cell or a.shield ~= b.shield then
             return true
         end
         -- Debuffs
@@ -1105,6 +1112,14 @@ local function drawOverlay()
                 local c = 0x88FF88
                 if d.cell < 10 then c = 0x4444FF elseif d.cell < 50 then c = 0x00FFFF end
                 drawText(hdc, string.format("Cell %d%%", d.cell), cx, cy, cw, cellH, c)
+            end
+            -- energy shield charge: light blue, yellow below 50%, red when broken
+            local sx, sy = labelScreenXY(CONFIG.shield, portraitX[i], hpBarX[i], spBarX[i], portraitY, barY)
+            fillRect(hdc, sx, sy, cw, cellH, COLOR_KEY)
+            if d and d.exists and d.shield then
+                local c = 0xFFD080
+                if d.shield <= 0 then c = 0x4444FF elseif d.shield < 50 then c = 0x00FFFF end
+                drawText(hdc, string.format("Shield %d%%", d.shield), sx, sy, cw, cellH, c)
             end
         end
 

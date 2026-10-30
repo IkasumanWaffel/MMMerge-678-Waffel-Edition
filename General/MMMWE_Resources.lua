@@ -53,8 +53,13 @@
 	  attack, spell 137) costs BREATH.AttackCost, without enough Breath the dragon can't
 	  breathe (its turn passes); Dragon school spells cost spell points x 2 in Breath.
 
-	Technician family (Technician, Engineer, Ancient Researcher, Scientist, variants):
-	  spell points as before; Earth page: Deploy Droid (Engineer+) - a temporary allied melee
+	Technician family (Technician, Engineer, Ancient Researcher, Scientist, variants) —
+	  Construction (30.10.26, instead of spell points; the class has no magic and no
+	  Meditation any more, and the Energy Shield has its own charge, MMMWE_EnergyShield.lua):
+	  0..100, +CONSTRUCTION.PerMinute per game minute, +CONSTRUCTION.Salvage for every
+	  monster the party kills. Characters who had the magic skills or Meditation get the
+	  skill points back once (techCleanup).
+	  Earth page: Deploy Droid (Engineer+) - a temporary allied melee
 	  robot that draws attacks and helps on single targets; one at a time, it keeps up with
 	  the party on the map (teleported when it falls far behind) and is removed on leaving.
 
@@ -90,6 +95,14 @@ local RESOURCES = {
 	-- Energy: spells cost spell points x SpellCostMul
 	Energy  = {Max = 100, Bar = "manaO", Color = 0x30B0FF, SpellCostMul = 5},
 	Breath  = {Max = 100, Bar = "manar", Color = 0x2080FF, SpellCostMul = 2},
+	-- Construction: Technicians (the spell point bar); spells of a custom class with the
+	-- Technician kit cost Construction 1:1
+	Construction = {Max = 100, Color = 0xFFB060, SpellCostMul = 1},
+}
+
+local CONSTRUCTION = {
+	PerMinute = 2,                 -- refill per game minute
+	Salvage   = 5,                 -- for every monster the party kills
 }
 
 local BREATH = {
@@ -237,10 +250,10 @@ local ABILITIES = {
 		Icon = {"sbth03a", "sbth03b"},},
 
 	-- Technicians (Earth page)
-	DeployDroid = {Spell = 36, Stage = 1, Cost = 25,
+	DeployDroid = {Spell = 36, Stage = 1, Cost = 40,
 		Name = "Deploy Droid",
 		Desc = "The technician assembles a combat droid that fights at the party's side in melee, drawing the attackers' attention and helping to bring single foes down. One droid at a time: casting again repairs it and resets its time. It keeps up with the party on the map, and shuts down when its time runs out or the party leaves the map.",
-		Lines = {"25 SP", "An allied droid: melee first, an energy shot now and then; grows with level and Repair", "Engineer", "Lasts 20 minutes + 2 per level"},
+		Lines = {"40 Construction", "An allied droid: melee first, an energy shot now and then; grows with level and Repair", "Engineer", "Lasts 20 minutes + 2 per level"},
 		Icon = {"sbtc01a", "sbtc01b"},},
 
 	-- Hybrids (spell points). The spot is the family's (FAMILIES[].Spots) when it differs.
@@ -372,7 +385,7 @@ local FAMILIES = {
 	[8]  = {Name = "Monk", Resource = "Ki", Page = 2,
 		Abilities = {"StunningPalm", "InnerPeace", "Flurry", "IronBody", "Vanish", "ShadowClone"}},
 	[4]  = {Name = "Dragon", Resource = "Breath", Abilities = {}},   -- no ability page
-	[15] = {Name = "Technician", Page = 3, Abilities = {"DeployDroid"}},   -- spell points
+	[15] = {Name = "Technician", Resource = "Construction", Page = 3, Abilities = {"DeployDroid"}},
 	[11] = {Name = "Thief", Resource = "Energy", Page = 5,
 		Abilities = {"Finisher", "PoisonedBlade", "ShadowVeil"}},
 	-- hybrids on spell points (Hybrid = combat refill)
@@ -386,7 +399,7 @@ local FAMILIES = {
 
 local TROLL_RACES = {[15] = true, [16] = true, [17] = true, [18] = true}
 
-MF.ResourceSettings = {Resources = RESOURCES, Rage = RAGE, Resolve = RESOLVE, Ki = KI, Energy = ENERGY, Breath = BREATH, Stances = STANCES,
+MF.ResourceSettings = {Resources = RESOURCES, Construction = CONSTRUCTION, Rage = RAGE, Resolve = RESOLVE, Ki = KI, Energy = ENERGY, Breath = BREATH, Stances = STANCES,
 	Abilities = ABILITIES, Durations = DUR, Families = FAMILIES}
 
 -- colours of the resource numbers over the portraits (MMMWE_HPSPDisplay.lua, Windows BGR)
@@ -401,6 +414,7 @@ local RESOURCE_DESC = {
 	Resolve = "Resolve grows as the knight holds the line: +5 for every block or parry and +2 for every hit taken, twice as much in the Defensive stance. After a while without being hit it slowly fades, so resting empties it; potions and temples don't restore it. Resolve pays for Challenge and Rally (Air page of the spellbook); the stances there are free.",
 	Ki = "Ki is the monk's inner strength, counted in charges: 5, +2 for every promotion and +1 for every 2 points of Meditation (at most 15). It refills on its own, 1 charge every 5 minutes, sooner with Meditation (down to half the time). Ki pays for the monk's abilities on the Water page of the spellbook, and for his spells: a fifth of their spell point cost.",
 	Breath = "Breath is the fire in the dragon's chest. It refills on its own, 10 every game minute. Every breath attack costs 25, so a dragon breathes every few attacks and fights with claws and teeth in between; without enough Breath it can't breathe at a far target. The Dragon abilities (Fear, Flame Blast, Flight, Wing Buffet) cost 2 Breath per spell point.",
+	Construction = "Construction is the technician's stock of parts and power for building. It refills on its own, 2 every game minute, and +5 for every monster the party brings down (salvage). It pays for the technician's devices on the Earth page of the spellbook. The Energy Shield doesn't use it: the shield has its own charge.",
 	Energy = "Energy is the thief's quickness. It refills fast, 10 every game minute, and pays for the thief's tricks on the Mind page of the spellbook and for his spells (5 Energy per spell point). Melee hits on the same target build combo points (up to 5, shown in the status line); the Finisher spends them all.",
 }
 function MF.ResourceRegenText(res)
@@ -1691,6 +1705,9 @@ function events.Tick()
 			if dt > 0 and resName == "Breath" then
 				e.R = math.min(RESOURCES.Breath.Max, e.R + refill * BREATH.PerMinute * dt / const.Minute)
 			end
+			if dt > 0 and resName == "Construction" then
+				e.R = math.min(RESOURCES.Construction.Max, e.R + refill * CONSTRUCTION.PerMinute * dt / const.Minute)
+			end
 			if dt > 0 and resName == "Energy" then
 				e.R = math.min(RESOURCES.Energy.Max, e.R + refill * ENERGY.PerMinute * dt / const.Minute)
 				if e.Combo and now - (e.ComboTime or 0) > ENERGY.ComboTime then e.Combo, e.ComboMon = nil, nil end
@@ -1749,6 +1766,40 @@ function events.Tick()
 	end
 end
 
+-- Technicians lost the magic skills and Meditation (30.10.26): a character of the family who
+-- still has a skill the class can't learn any more gets its skill points back and loses the
+-- spells of that school (once per character; custom classes keep what their build allows)
+local CLEANUP_SKILLS = {"Fire", "Air", "Water", "Earth", "Spirit", "Mind", "Body", "Light", "Dark", "Meditation"}
+local function techCleanup(pl)
+	if not vars or classFamily(pl.Class) ~= 15 or not GetMaxAvailableSkill then return end
+	vars.MMMWE_TechCleanup = vars.MMMWE_TechCleanup or {}
+	local pi = playerIndex(pl)
+	if vars.MMMWE_TechCleanup[pi] then return end
+	vars.MMMWE_TechCleanup[pi] = true
+	local race = pl.Attrs and pl.Attrs.Race or (GetCharRace and GetCharRace(pl))
+	local maturity = pl.Attrs and pl.Attrs.Maturity or 0
+	local refunded = 0
+	for i, name in ipairs(CLEANUP_SKILLS) do
+		local id = const.Skills[name]
+		local rank = SplitSkill(pl.Skills[id])
+		if rank > 0 and GetMaxAvailableSkill(race, pl.Class, id, maturity) == 0 then
+			local pts = MF.GetSkillLevelSkillpoints and MF.GetSkillLevelSkillpoints(rank) or 0
+			pl.Skills[id] = 0
+			pl.SkillPoints = pl.SkillPoints + pts
+			refunded = refunded + pts
+			if i <= 9 then
+				for spell = (i - 1) * 11 + 1, i * 11 do
+					if not abilityOf(pl, spell) then pl.Spells[spell] = false end
+				end
+			end
+		end
+	end
+	if refunded > 0 then
+		Game.ShowStatusText(string.format("%s: magic and Meditation are gone, %d skill points refunded", pl.Name, refunded), 5)
+		log("techCleanup %s: %d skill points refunded", pl.Name, refunded)
+	end
+end
+
 function events.AfterLoadMap()
 	-- droids don't travel between maps: any of the party's droids found here is a leftover
 	for i = 0, Map.Monsters.count - 1 do
@@ -1762,8 +1813,19 @@ function events.AfterLoadMap()
 	Marked = {}
 	for slot = 0, Party.count - 1 do
 		local pl = Party[slot]
+		techCleanup(pl)
 		updateSpells(pl)
 		if resourceOf(pl) then state(playerIndex(pl)).Last = Game.Time end
+	end
+end
+
+-- Construction: salvage from every monster the party kills
+function events.MonsterKilled()
+	for slot = 0, Party.count - 1 do
+		local pl = Party[slot]
+		if resourceOf(pl) == "Construction" and pl:IsConscious() then
+			addResource(pl, CONSTRUCTION.Salvage)
+		end
 	end
 end
 

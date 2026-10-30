@@ -89,7 +89,8 @@ local KITS = {
 	{Key = "Paladin",    Name = "Paladin",    Kind = 9,  Price = 15, Page = "Air"},
 	{Key = "DarkElf",    Name = "Dark Elf",   Kind = 3,  Price = 15, Page = "Body"},
 	{Key = "Minotaur",   Name = "Minotaur",   Kind = 7,  Price = 15, Page = "Fire",  Race = 10},   -- BaseRace Minotaur
-	{Key = "Technician", Name = "Technician", Kind = 15, Price = 15, Page = "Earth", Needs = {"Blaster", "Repair"}},
+	{Key = "Technician", Name = "Technician", Kind = 15, Price = 15, Page = "Earth", Resource = "Construction",
+		Needs = {"Blaster", "Repair"}},
 }
 -- spells (picked one by one; a spell needs its school's skill): cost by the spell's rank in
 -- its school (spots 1-4 Novice, 5-7 Expert, 8-10 Master, 11 Grand Master), a whole school
@@ -571,6 +572,15 @@ local function applyAll()
 	local all = builds()
 	for f = 1, FAMILIES do
 		local fam = all[f]
+		-- a resource kit replaces the spell points (30.10.26: the Technician kit got
+		-- Construction): builds made before keep no SP tier
+		local kit = fam and fam.Kit and KIT_BY_KEY[fam.Kit]
+		if kit and kit.Resource then
+			for step = 1, STEPS do
+				local spec = fam.Steps and fam.Steps[step]
+				if spec and spec.SP > 0 then spec.SP = 0 end
+			end
+		end
 		for step = 1, STEPS do
 			applyClass(classId(f, step), fam, f, step)
 		end

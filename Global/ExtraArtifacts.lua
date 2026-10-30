@@ -1234,23 +1234,8 @@ GetBonusList(1328).Skills =	{	[const.Skills.Bow] = 5}
 -- Hades
 GetBonusList(2035).Skills =	{	[const.Skills.DisarmTraps] = 10}
 
--- Energy Shield Meditation bonus
-function events.CalcStatBonusByItems(t)
-	local Player = t.Player
-	local MedS, MedM = SplitSkill(Player.Skills[const.Skills.Meditation])
-	
-	if MedS == 0 then return end
-	if t.Stat ~= const.Stats.Meditation then return end
-	
-	local BS, BM = SplitSkill(Player:GetSkill(7))
-	local BeltItem = Player.ItemBelt
-	if BeltItem > 0 then
-		local BeltNum = Player.Items[BeltItem].Number
-		if BeltNum == 968 and not Player.Items[BeltItem].Broken then
-			t:SetArtifactBonus(BS)
-		end
-	end
-end
+-- Energy Shield: 30.10.26 no Meditation bonus, regeneration or resistances any more; the
+-- shield has its own capacity (MMMWE_EnergyShield.lua)
 
 --------------------------------
 ---- Spell bonuses
@@ -1437,23 +1422,6 @@ GetBonusList(2033).HPSPRegen = {SP = 3}
 GetBonusList(2034).HPSPRegen = {SP = 3}
 -- Hades
 GetBonusList(2035).HPSPRegen = {HP = -3}
-
--- Energy Shield
-GetBonusList(968).HPSPRegen = {SP = 5}
-
-function events.CalcStatBonusByItems(t)
-	local Player = t.Player
-	local ResStatInd = {10, 11, 12, 13, 14, 15, 9, 33, 50, 51}
-	--local ResBonusInd = {0, 1, 2, 3, 7, 8}
-	--local HiddenStats = {}
-	if Player.ItemBelt > 0 and Player.Items[Player.ItemBelt].Number == 968 and not Player.Items[Player.ItemBelt].Broken then
-		for i = 1, 10 do
-			if t.Stat == ResStatInd[i] then
-				t.Result = t.Result + Player.SP/10
-			end
-		end
-	end
-end
 
 GetSpcBonusList(1).Stats = {
 	[const.Stats.SpiritResistance] = 10,
