@@ -58,6 +58,7 @@ local CONFIG = {
 
     --=== Debuffs (Game.PlayersExtra[i].Debuffs[]) ===
     debuffDY       = 865,   
+    debuffDYTech   = 845,   -- Technicians (their Shield line takes room above the portrait)
     debuffW        = 180,
     debuffH        = 18,
     debuffLineH   = 20,
@@ -708,9 +709,14 @@ local function getValues(nPlayers)
             if Merge.Functions.ShieldCharge then
                 pcall(function() shield = Merge.Functions.ShieldCharge(p) end)
             end
+            local tech = false
+            if Merge.Functions.IsTechnician then
+                pcall(function() tech = Merge.Functions.IsTechnician(p) and true or false end)
+            end
             v[i] = {
                 cell = cell,
                 shield = shield,
+                tech = tech,
                 resource = resource,
                 hp = p.HP or 0,
                 sp = p.SP or 0,
@@ -782,7 +788,7 @@ local function valuesChanged(v, nPlayers)
     for i = 0, nPlayers - 1 do
         local a, b = v[i], lastValues[i]
         if not b then return true end
-        if a.hp ~= b.hp or a.sp ~= b.sp or a.maxHP ~= b.maxHP or a.maxSP ~= b.maxSP or a.cell ~= b.cell or a.shield ~= b.shield then
+        if a.hp ~= b.hp or a.sp ~= b.sp or a.maxHP ~= b.maxHP or a.maxSP ~= b.maxSP or a.cell ~= b.cell or a.shield ~= b.shield or a.tech ~= b.tech then
             return true
         end
         -- Debuffs
@@ -1053,6 +1059,7 @@ local function drawOverlay()
     local debuffH = math.max(1, math.floor(CONFIG.debuffH * baseScaleY))
     local debuffLineH = math.max(1, math.floor(CONFIG.debuffLineH * baseScaleY))
     local debuffScreenY = math.floor(gameOffsetY + CONFIG.debuffDY * baseScaleY)
+    local debuffScreenYTech = math.floor(gameOffsetY + (CONFIG.debuffDYTech or CONFIG.debuffDY) * baseScaleY)
 
     local buffW = uiScale(CONFIG.buffW)
     local buffH = math.max(1, math.floor(CONFIG.buffH * baseScaleY))
@@ -1131,10 +1138,11 @@ local function drawOverlay()
 				for line = 1, math.min(#d.debuffs, CONFIG.maxDebuffLines) do
                     local db = d.debuffs[line]
                     local ly
+                    local baseY = d.tech and debuffScreenYTech or debuffScreenY
                     if CONFIG.debuffBottomAnchor then
-                        ly = debuffScreenY - line * debuffLineH
+                        ly = baseY - line * debuffLineH
                     else
-                        ly = debuffScreenY + (line - 1) * debuffLineH
+                        ly = baseY + (line - 1) * debuffLineH
                     end
                     fillRect(hdc, colX, ly, debuffW, debuffH, COLOR_KEY)
                     drawText(hdc, db.label, colX, ly, debuffW, debuffH, db.color)
