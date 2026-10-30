@@ -52,7 +52,10 @@ local STEPS      = 5       -- base, first promotion, neutral, light, dark
 local FIRST_KIND = 17      -- Class Extra Kind of family 1 (Peasant is 16)
 local LAST_ID    = FIRST_ID + FAMILIES * STEPS - 1
 
-local BUDGET   = {100, 120, 140, 140, 140}
+-- 30.10.26: the preset classes priced with this file's costs (Class Skills caps, HP/SP
+-- tiers by the HP/SP at level 25, the spells SpellsLearning gives them, their kit) average
+-- 150 / 187 / 222 / 238 / 238 points by step; the budgets follow those averages
+local BUDGET   = {150, 185, 220, 240, 240}
 local MAX_TIER = {5, 6, 7, 7, 7}
 local PARENT   = {nil, 1, 2, 2, 2}
 local STEP_OF  = {0, 1, 2, 2, 2}                 -- Class Extra Step

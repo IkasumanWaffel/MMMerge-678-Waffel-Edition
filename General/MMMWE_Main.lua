@@ -1369,7 +1369,8 @@
 	-- 25.10.26: damage, fire rate, eradication and the power cell come from the gun's specs
 	-- (MMMWE_Blasters.lua); the Blaster skill gives the attack bonus and critical hits.
 	local BLASTER = {
-		CritChancePerSkill = 1,    -- % crit chance per point of skill
+		CritChanceBase   = 5,      -- % base crit chance (30.10.26: was 10)
+		CritChancePerSkill = 0.5,  -- % crit chance per point of skill (30.10.26: was 1)
 		CritDamagePerSkill = 4,    -- % crit damage per point of skill
 		EradCritMul      = 1.5,    -- a critical hit's eradication chance multiplier
 		EradMaxPerHit    = 0.5,    -- cap per hit
@@ -1414,7 +1415,7 @@
 		local DMin    = select(blasterType, 10, 15)
 		local DMax    = select(blasterType, 20, 30)
 		local CDBase  = 50
-		local CCBase  = 10
+		local CCBase  = BLASTER.CritChanceBase
 
 		-- Item crit bonus (Bonus2 == 145)
 		local specCritC, specCritD = 0, 0
