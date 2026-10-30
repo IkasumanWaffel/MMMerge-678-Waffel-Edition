@@ -38,7 +38,10 @@
 	end
 	
 	-- Unidentified items give no special bonuses (except artifacts and relics)
-	local EXCLUDED_ITEMS = { [866] = true, [867] = true, [966] = true, [967] = true, [1666] = true, [1667] = true}
+	-- (blasters, the Blaster Toolkit and the Energy Shield keep their upgrade board in Charges,
+	-- which can be above PACK_FLAG: MMMWE_Blasters.lua)
+	local EXCLUDED_ITEMS = { [866] = true, [867] = true, [962] = true, [966] = true, [967] = true, [968] = true,
+		[1666] = true, [1667] = true}
 
 	local VALID_SCREENS = { [0] = true, [7] = true, [10] = true, [13] = true, [14] = true, [15] = true }
 

@@ -232,6 +232,19 @@ function events.Tick()
 	end
 end
 
+-- shields whose board was taken for packed enchantments by the "unidentified items" code
+-- of MMMWE_Main.lua (before 30.10.26): the bogus enchantments are removed
+function events.AfterLoadMap()
+	for _, pl in Party do
+		for i = 1, 138 do
+			local it = pl.Items[i]
+			if it.Number == 968 and (it.Bonus ~= 0 or it.Bonus2 ~= 0 or it.BonusStrength ~= 0) then
+				it.Bonus, it.Bonus2, it.BonusStrength = 0, 0, 0
+			end
+		end
+	end
+end
+
 function events.LeaveMap()
 	LastHit, Broken, Barrier = {}, {}, {}
 end
