@@ -57,8 +57,8 @@ local CONFIG = {
     },
 
     --=== Debuffs (Game.PlayersExtra[i].Debuffs[]) ===
-    debuffDY       = 865,   
-    debuffDYTech   = 845,   -- Technicians (their Shield line takes room above the portrait)
+    debuffDY       = 885,   -- no Cell / Shield line above the portrait
+    debuffDYPerLine = 20,   -- moved up this much for each of them shown (865 one, 845 both)
     debuffW        = 180,
     debuffH        = 18,
     debuffLineH   = 20,
@@ -709,14 +709,9 @@ local function getValues(nPlayers)
             if Merge.Functions.ShieldCharge then
                 pcall(function() shield = Merge.Functions.ShieldCharge(p) end)
             end
-            local tech = false
-            if Merge.Functions.IsTechnician then
-                pcall(function() tech = Merge.Functions.IsTechnician(p) and true or false end)
-            end
             v[i] = {
                 cell = cell,
                 shield = shield,
-                tech = tech,
                 resource = resource,
                 hp = p.HP or 0,
                 sp = p.SP or 0,
@@ -788,7 +783,7 @@ local function valuesChanged(v, nPlayers)
     for i = 0, nPlayers - 1 do
         local a, b = v[i], lastValues[i]
         if not b then return true end
-        if a.hp ~= b.hp or a.sp ~= b.sp or a.maxHP ~= b.maxHP or a.maxSP ~= b.maxSP or a.cell ~= b.cell or a.shield ~= b.shield or a.tech ~= b.tech then
+        if a.hp ~= b.hp or a.sp ~= b.sp or a.maxHP ~= b.maxHP or a.maxSP ~= b.maxSP or a.cell ~= b.cell or a.shield ~= b.shield then
             return true
         end
         -- Debuffs
@@ -1059,7 +1054,6 @@ local function drawOverlay()
     local debuffH = math.max(1, math.floor(CONFIG.debuffH * baseScaleY))
     local debuffLineH = math.max(1, math.floor(CONFIG.debuffLineH * baseScaleY))
     local debuffScreenY = math.floor(gameOffsetY + CONFIG.debuffDY * baseScaleY)
-    local debuffScreenYTech = math.floor(gameOffsetY + (CONFIG.debuffDYTech or CONFIG.debuffDY) * baseScaleY)
 
     local buffW = uiScale(CONFIG.buffW)
     local buffH = math.max(1, math.floor(CONFIG.buffH * baseScaleY))
@@ -1121,7 +1115,7 @@ local function drawOverlay()
                 drawText(hdc, string.format("Cell %d%%", d.cell), cx, cy, cw, cellH, c)
             end
             -- energy shield charge: light blue, yellow below 50%, red when broken
-            local sx, sy = labelScreenXY(CONFIG.shield, portraitX[i], hpBarX[i], spBarX[i], portraitY, barY)
+            local sx, sy = labelScreenXY((d and d.cell) and CONFIG.shield or CONFIG.cell, portraitX[i], hpBarX[i], spBarX[i], portraitY, barY)
             fillRect(hdc, sx, sy, cw, cellH, COLOR_KEY)
             if d and d.exists and d.shield then
                 local c = 0xFFD080
@@ -1138,7 +1132,8 @@ local function drawOverlay()
 				for line = 1, math.min(#d.debuffs, CONFIG.maxDebuffLines) do
                     local db = d.debuffs[line]
                     local ly
-                    local baseY = d.tech and debuffScreenYTech or debuffScreenY
+                    local extra = (d.cell and 1 or 0) + (d.shield and 1 or 0)
+                    local baseY = math.floor(gameOffsetY + (CONFIG.debuffDY - extra * CONFIG.debuffDYPerLine) * baseScaleY)
                     if CONFIG.debuffBottomAnchor then
                         ly = baseY - line * debuffLineH
                     else
