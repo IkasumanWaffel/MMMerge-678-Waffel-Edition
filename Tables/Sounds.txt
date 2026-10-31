@@ -8662,3 +8662,4 @@ enshieldhit12	44692	system	-
 enshieldhit13	44693	system	-
 enshieldhit14	44694	system	-
 enshieldchrg	44695	system	-
+tcoverclock	44696	system	-

@@ -380,10 +380,11 @@ local TECH = {
 	GrenadeGroup    = "lzrbolt",           -- its SFT group ...
 	GrenadeScale    = 32768,               -- ... and the size while a grenade flies (bolt 16384)
 	GrenadeSpeed    = 1500,                -- horizontal speed of the throw
-	GrenadeGravity  = 640,                 -- the fall the throw is aimed for (raise if it falls short)
+	GrenadeGravity  = 720,                 -- the fall the throw is aimed for (raise if it falls short)
 	GrenadeExplosion = 1051, GrenadeSound = 8,     -- the fireball explosion of a failed potion mix
 	GrenadeMaxTime  = 2 * const.Minute,    -- a grenade still flying after this blows up
 	GrenadeFuse     = 48,                  -- proximity fuse: this close to a monster's body
+	OverclockSound  = 44696,               -- tcoverclock (Sounds.txt, English.D.lod)
 	OverclockShots  = 5,                   -- shots with recovery 5 (MMMWE_Blasters.lua), each drains the cell twice
 	TurretModel     = 624,                 -- MM6 Terminator Unit
 	TurretBaseTime  = 5 * const.Minute, TurretPerLevel = const.Minute / 2,
@@ -1688,6 +1689,7 @@ local function castAbility(pl, pi, spell, targetRef)
 		Effects[pi] = Effects[pi] or {}
 		Effects[pi].Overclock = TECH.OverclockShots
 		Game.ShowStatusText(string.format("%s overclocks the blaster", pl.Name))
+		pcall(Game.PlaySound, TECH.OverclockSound, 0)
 		pl:SetRecoveryDelay(30)
 	elseif key == "ShieldProjector" then
 		if not MF.ShieldProjector then
