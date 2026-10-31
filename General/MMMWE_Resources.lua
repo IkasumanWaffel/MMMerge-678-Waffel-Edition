@@ -375,6 +375,7 @@ local TECH = {
 	GrenadeBase     = 10, GrenadePerLevel = 1.5,   -- + Repair skill x mastery; energy, every
 	                                               -- monster within the radius of the target
 	OverclockShots  = 5,                   -- shots without recovery, each drains the cell twice
+	TurretModel     = 624,                 -- MM6 Terminator Unit
 	TurretBaseTime  = 5 * const.Minute, TurretPerLevel = const.Minute / 2,
 	TurretHP        = 30, TurretHPPerLevel = 5, TurretHPPerRSM = 1,
 	TurretShotDice  = 1, TurretDicePerLevel = 1 / 8, TurretDiceSides = 10,
@@ -1183,6 +1184,7 @@ local function droids()
 	return st.Droids
 end
 local function isDroidModel(id)
+	if id == TECH.TurretModel then return true end
 	for _, m in pairs(DROID.Models) do if m == id then return true end end
 end
 local function monIndex(mon)
@@ -1273,7 +1275,7 @@ local function deployDroid(pl, pi)
 	return true
 end
 
--- Sentry Turret: the droid model as a stationary gun (droids()["T" .. pi])
+-- Sentry Turret: a stationary gun, the MM6 Terminator Unit (droids()["T" .. pi])
 local function deployTurret(pl, pi)
 	local L = math.max(1, pl.LevelBase or 1)
 	local untilT = Game.Time + TECH.TurretBaseTime + TECH.TurretPerLevel * L
@@ -1287,7 +1289,7 @@ local function deployTurret(pl, pi)
 		return true
 	end
 	local x, y, z = partyPoint(DROID.SpawnDist)
-	local ok, m, mi = pcall(SummonMonster, DROID.Models[2], x, y, z, true)
+	local ok, m, mi = pcall(SummonMonster, TECH.TurretModel, x, y, z, true)
 	if not ok or not m then
 		log("Sentry Turret failed: %s", tostring(m))
 		return false
