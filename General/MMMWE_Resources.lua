@@ -379,7 +379,8 @@ local TECH = {
 	GrenadeSpeed    = 1500,                -- horizontal speed of the throw
 	GrenadeGravity  = 640,                 -- the fall the throw is aimed for (raise if it falls short)
 	GrenadeExplosion = 1051, GrenadeSound = 8,     -- the fireball explosion of a failed potion mix
-	GrenadeMaxTime  = 3 * const.Minute,    -- a grenade still flying after this blows up
+	GrenadeMaxTime  = 2 * const.Minute,    -- a grenade still flying after this blows up
+	GrenadeFuse     = 48,                  -- proximity fuse: this close to a monster's body
 	OverclockShots  = 5,                   -- shots with recovery 5 (MMMWE_Blasters.lua), each drains the cell twice
 	TurretModel     = 624,                 -- MM6 Terminator Unit
 	TurretBaseTime  = 5 * const.Minute, TurretPerLevel = const.Minute / 2,
@@ -1445,7 +1446,22 @@ function events.MonsterAttacked(t, attacker)
 	end
 	pcall(function() o.Removed = true end)
 end
--- a grenade that is gone (it hit the ground or a wall), or has flown too long
+-- the grenade blows up when it comes close to a hostile monster's body (the engine lets it
+-- fly through), when it lands (it was falling and has stopped falling, or stopped moving),
+-- when it is gone (a wall), or when it has flown too long
+local function nearMonster(o)
+	for i = 0, Map.Monsters.count - 1 do
+		local m = Map.Monsters[i]
+		if m.HP > 0 and m.Hostile and m.AIState ~= const.AIState.Removed then
+			local r = (m.BodyRadius or 0) + TECH.GrenadeFuse
+			local dx, dy = m.X - o.X, m.Y - o.Y
+			if dx * dx + dy * dy <= r * r and o.Z >= m.Z - TECH.GrenadeFuse
+					and o.Z <= m.Z + (m.BodyHeight or 100) + TECH.GrenadeFuse then
+				return true
+			end
+		end
+	end
+end
 function events.Tick()
 	if #Grenades == 0 then return end
 	local keep = {}
@@ -1453,12 +1469,25 @@ function events.Tick()
 		if not g.Done then
 			local o = g.Index < Map.Objects.count and Map.Objects[g.Index]
 			local alive = o and o.Type == TECH.GrenadeObject and not o.Removed
-			if alive and Game.Time - g.Start < TECH.GrenadeMaxTime then
-				g.X, g.Y, g.Z = o.X, o.Y, o.Z
-				keep[#keep + 1] = g
+			local why
+			if not alive then
+				why = "gone"
+			elseif Game.Time - g.Start >= TECH.GrenadeMaxTime then
+				why = "time"
+			elseif nearMonster(o) then
+				why = "monster"
 			else
+				if o.VelocityZ < 0 then g.Falling = true end
+				local still = o.X == g.X and o.Y == g.Y and o.Z == g.Z
+				if not still then g.Moved = true end
+				if g.Falling and g.Moved and (o.VelocityZ >= 0 or still) then why = "landed" end
+			end
+			if alive then g.X, g.Y, g.Z = o.X, o.Y, o.Z end
+			if why then
 				if alive then pcall(function() o.Removed = true end) end
-				detonate(g, g.X, g.Y, g.Z, alive and "time" or "landed")
+				detonate(g, g.X, g.Y, g.Z, why)
+			else
+				keep[#keep + 1] = g
 			end
 		end
 	end
