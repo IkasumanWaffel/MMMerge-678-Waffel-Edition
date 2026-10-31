@@ -1379,6 +1379,16 @@ end
 local function throwGrenade(pl, pi, mi, dmg)
 	local mon = Map.Monsters[mi]
 	MF.LoadSFTGroup("plasgren")
+	-- the grenade's frame shows the blaster bolt's picture (same sprite, sp92b): the loaded
+	-- picture of the bolt's group is copied into it, in case loading the new group left it empty
+	pcall(function()
+		local SFT = Game.SFTBin
+		local bolt, gren = SFT:FindGroup("lzrbolt"), SFT:FindGroup("plasgren")
+		SFT:LoadGroup(bolt)
+		local fb, fg = SFT.Frames[bolt], SFT.Frames[gren]
+		for k = 0, 7 do fg.SpriteIndex[k] = fb.SpriteIndex[k] end
+		fg.Loaded = true
+	end)
 	MF.LoadSFTGroup("spell01")      -- the explosion
 	local before = grenadeIndices()
 	local ang = (Party.Direction or 0) * math.pi / 1024
@@ -1416,8 +1426,9 @@ local function throwGrenade(pl, pi, mi, dmg)
 			for i, d in Game.ObjListBin do
 				if d.Id == id then
 					local f = Game.SFTBin.Frames[d.SFTIndex]
-					return string.format("objlist %d '%s' SFTIndex %d Invisible %s Bits %X frame '%s'/'%s' scale %d start %s",
-						i, d.Name, d.SFTIndex, tostring(d.Invisible), d.Bits, f.GroupName, f.SpriteName, f.Scale, tostring(f.GroupStart))
+					return string.format("objlist %d '%s' SFTIndex %d Invisible %s Bits %X frame '%s'/'%s' scale %d start %s sprite %d loaded %s",
+						i, d.Name, d.SFTIndex, tostring(d.Invisible), d.Bits, f.GroupName, f.SpriteName, f.Scale, tostring(f.GroupStart),
+						f.SpriteIndex[0], tostring(f.Loaded))
 				end
 			end
 			return "objlist: no entry " .. id
