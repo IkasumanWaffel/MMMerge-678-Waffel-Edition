@@ -1403,10 +1403,26 @@ local function throwGrenade(pl, pi, mi, dmg)
 	o.Owner = pi * 8 + 4
 	o.Target = mi * 8 + 3
 	o.Spell, o.SpellSkill, o.SpellMastery = 0, 0, 0
-	pcall(function() o.HaltTurnBased = true; o.Missile = false end)
+	pcall(function() o.HaltTurnBased = true; o.Missile = false; o.Visible = true end)
 	Grenades[#Grenades + 1] = {Index = idx, pi = pi, mi = mi, dmg = dmg, X = o.X, Y = o.Y, Z = o.Z, Start = Game.Time}
 	log("grenade %d thrown from %d,%d,%d velocity %d,%d,%d at monster %d (%d,%d,%d)", idx, o.X, o.Y, o.Z,
 		o.VelocityX, o.VelocityY, o.VelocityZ, mi, mon.X, mon.Y, mon.Z)
+	-- diagnostics: how the game sees the object and its picture (the plasma bolt for comparison)
+	pcall(function()
+		local function desc(id)
+			for i, d in Game.ObjListBin do
+				if d.Id == id then
+					local f = Game.SFTBin.Frames[d.SFTIndex]
+					return string.format("objlist %d '%s' SFTIndex %d Invisible %s Bits %X frame '%s'/'%s' scale %d start %s",
+						i, d.Name, d.SFTIndex, tostring(d.Invisible), d.Bits, f.GroupName, f.SpriteName, f.Scale, tostring(f.GroupStart))
+				end
+			end
+			return "objlist: no entry " .. id
+		end
+		log("grenade %d: Type %d TypeIndex %d Bits %X Room %d MaxAge %d; %s; group plasgren %s",
+			idx, o.Type, o.TypeIndex, o.Bits, o.Room, o.MaxAge, desc(TECH.GrenadeObject), tostring(Game.SFTBin:FindGroup("plasgren")))
+		log("grenade: for comparison %s; group lzrbolt %s", desc(555), tostring(Game.SFTBin:FindGroup("lzrbolt")))
+	end)
 	Game.PlaySound(44671)
 	return true
 end
