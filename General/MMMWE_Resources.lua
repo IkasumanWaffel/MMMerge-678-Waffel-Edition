@@ -1477,6 +1477,7 @@ local function castAbility(pl, pi, spell, targetRef)
 		local RS = SplitSkill(MF.TechRepairSkill and MF.TechRepairSkill(pl) or pl:GetSkill(const.Skills.Repair))
 		local pct = math.min(TECH.RepairCellMax, TECH.RepairCell + TECH.RepairCellPerSkill * RS)
 		MF.BlasterRecharge(gun, pct)
+		evt.PlaySound{12050}             -- the blaster upgrade's sound (MMMWE_Blasters.lua)
 		Game.ShowStatusText(string.format("%s patches the blaster up: power cell %d%%", pl.Name, math.floor(gun.MaxCharges / 2)))
 		pl:SetRecoveryDelay(150)
 	elseif key == "PlasmaGrenade" then
