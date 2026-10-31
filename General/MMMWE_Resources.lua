@@ -253,12 +253,12 @@ local ABILITIES = {
 		Lines = {"40 Energy", "Party Invisibility and Wizard Eye", "Spy", "Lasts 10 minutes; power by the Stealing skill"},
 		Icon = {"sbth03a", "sbth03b"},},
 
-	-- Technicians (Earth page). Icons sbtc01..06 (waffel.icons.lod); Scanner: the droid's until it has its own
+	-- Technicians (Earth page). Icons sbtc01..07 (waffel.icons.lod)
 	Scanner = {Spell = 34, Stage = 0, Cost = 10,
 		Name = "Scanner",
 		Desc = "The technician scans a monster (the one under the cursor or the nearest in sight): its resistances are shown in the status line, and for a while it takes more damage from the whole party, as its weak spots are known.",
 		Lines = {"10 Construction", "Shows the target's resistances; it takes +15% damage from the party", "Technician", "Lasts 3 minutes"},
-		Icon = {"sbtc01a", "sbtc01b"},},
+		Icon = {"sbtc07a", "sbtc07b"},},
 	FieldRepair = {Spell = 35, Stage = 0, Cost = 30,
 		Name = "Field Repair",
 		Desc = "A quick fix in the field: the technician tunes the blaster in hand and patches its power cell back up a little.",
