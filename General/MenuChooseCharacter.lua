@@ -561,6 +561,10 @@ function events.GameInitialized2()
 	end
 
 	function events.MenuAction(t)
+		-- MMMWE: a click on a screen drawn over this one (the custom class editor's OK sits on
+		-- the game's OK, action 66) is not this screen's: it would make the first character active
+		local ed = MF.CustomClassEditor
+		if t.Handled or (ed and ed.State and ed.State.Open) then return end
 		if OverAction then
 			t.Action = OverAction
 			OverAction = false
