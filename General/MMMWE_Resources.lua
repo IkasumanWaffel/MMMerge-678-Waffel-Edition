@@ -1048,6 +1048,16 @@ local function monsterDistance(mon)
 	return math.sqrt(dx * dx + dy * dy + dz * dz)
 end
 
+-- a monster an ability can be aimed at: alive and in the world (not dying, a corpse, removed,
+-- still to appear or unseen), and not on the party's side (droids, turrets, summons)
+local AS = const.AIState
+local NOT_A_TARGET = {[AS.Dying] = true, [AS.Dead] = true, [AS.Removed] = true,
+	[AS.Summoned] = true, [AS.Invisible] = true}
+local function liveFoe(m)
+	return m and m.HP > 0 and not NOT_A_TARGET[m.AIState] and m.Ally ~= 9999
+end
+MF.LiveFoe = liveFoe
+
 local function meleeTarget(targetRef, range)
 	range = range or RAGE.MeleeRange
 	local mi
@@ -1057,15 +1067,14 @@ local function meleeTarget(targetRef, range)
 		if ok and tg and tg.Kind == 3 then mi = tg.Index end
 	end
 	local function valid(i)
-		local m = i and Map.Monsters[i]
-		return m and m.HP > 0 and m.AIState ~= const.AIState.Removed
-			and monsterDistance(m) <= range + (m.BodyRadius or 0)
+		local m = i and i >= 0 and i < Map.Monsters.count and Map.Monsters[i]
+		return liveFoe(m) and monsterDistance(m) <= range + (m.BodyRadius or 0)
 	end
 	if valid(mi) then return mi end
 	local best, bd
 	for i = 0, Map.Monsters.count - 1 do
 		local m = Map.Monsters[i]
-		if m.HP > 0 and m.Hostile then
+		if m.Hostile and liveFoe(m) then
 			local dist = monsterDistance(m)
 			if dist <= range + (m.BodyRadius or 0) and (not bd or dist < bd) then best, bd = i, dist end
 		end
@@ -1441,7 +1450,7 @@ local function detonate(g, x, y, z, why)
 	local n = 0
 	for i = 0, Map.Monsters.count - 1 do
 		local m = Map.Monsters[i]
-		if m.HP > 0 and m.AIState ~= const.AIState.Removed and (i == g.mi or m.Hostile) then
+		if liveFoe(m) and (i == g.mi or m.Hostile) then
 			local dx, dy = m.X - x, m.Y - y
 			local dz = m.Z + (m.BodyHeight or 100) / 2 - z
 			local r = TECH.GrenadeRadius + (m.BodyRadius or 0)
@@ -1472,7 +1481,7 @@ end
 local function nearMonster(o)
 	for i = 0, Map.Monsters.count - 1 do
 		local m = Map.Monsters[i]
-		if m.HP > 0 and m.Hostile and m.AIState ~= const.AIState.Removed then
+		if m.Hostile and liveFoe(m) then
 			local r = (m.BodyRadius or 0) + TECH.GrenadeFuse
 			local dx, dy = m.X - o.X, m.Y - o.Y
 			if dx * dx + dy * dy <= r * r and o.Z >= m.Z - TECH.GrenadeFuse
