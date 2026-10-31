@@ -57,6 +57,7 @@ local B = {
 	LowWarn          = 20,      -- warn below 10%
 	OverchargeBody   = 0.5,     -- Emitter 4: share of Body resistance counted on a crit
 	RapidChance      = 0.15,    -- Capacitor 4: share of shots without recovery
+	OverclockRecovery = 5,      -- recovery of an overclocked shot (Technicians' Overclock)
 	ChainRadius      = 300,     -- Disruptor 4
 	ChainShare       = 0.5,
 	SelfRechargePerHour = 2,    -- Power cell 4: +1% (2 steps) per game hour
@@ -636,7 +637,11 @@ mem.autohook(0x42609E, function(d)
 	local use = B.CellFull / capacity(gun, st)
 	-- Overclock (Technicians, MMMWE_Resources.lua): no recovery, twice the power
 	local overclock = MF.OverclockShot and MF.OverclockShot(pl)
-	if overclock then use = use * 2 end
+	if overclock then
+		use = use * 2
+		-- the recovery the game gives this shot right after (GetAttackDelay, MMMWE_Main.lua)
+		B.OverclockNow = pl:GetIndex()
+	end
 	local key = pl:GetIndex() * 1000 + pl.ItemMainHand
 	local fracs = vars and vars.BlasterCellFrac
 	if vars and not fracs then fracs = {} vars.BlasterCellFrac = fracs end
@@ -652,7 +657,7 @@ mem.autohook(0x42609E, function(d)
 	elseif st.Cell <= 0 then
 		Game.ShowStatusText(string.format("%s's blaster: power cell empty", pl.Name), 3)
 	end
-	if overclock or (st.Tiers[2] >= 4 and random() < B.RapidChance) then
+	if st.Tiers[2] >= 4 and random() < B.RapidChance then
 		Pending[#Pending + 1] = {Kind = "Rapid", pi = pl:GetIndex()}
 	end
 end)
@@ -734,6 +739,7 @@ end)
 ---------------------------------------------------------------------------
 
 function events.Tick()
+	B.OverclockNow = nil
 	if #Pending > 0 then
 		local q = Pending
 		Pending = {}

@@ -23395,15 +23395,16 @@
 23393	7obj410	7obj410	65536	-	x	x	-	-	-	-	-	-	-	-	-	-	-	-	-	-	0	5	2
 23394	7obj411	7obj411	65536	x	x	x	-	-	-	-	-	-	-	-	-	-	-	-	-	-	32	9	2
 23395	7obj412	7obj412	65536	x	x	x	-	-	-	-	-	-	-	-	-	-	-	-	-	-	32	9	2
-23396	spell135c	spell135c10	35000	x	x	x	x	-	-	x	x	x	x	x	x	x	x	-	x	-	32	9	1
-23397		spell135c20	35000	x	-	x	x	-	-	x	x	x	x	x	x	x	x	-	x	-	64	9	1
-23398		spell135c30	35000	x	-	x	x	-	-	x	x	x	x	x	x	x	x	-	x	-	80	9	1
-23399		spell135c40	35000	x	-	x	x	-	-	x	x	x	x	x	x	x	x	-	x	-	48	9	1
-23400		spell135c50	35000	x	-	x	x	-	-	x	x	x	x	x	x	x	x	-	x	-	32	9	1
-23401		spell135c60	35000	x	-	x	x	-	-	x	x	x	x	x	x	x	x	-	x	-	16	9	1
-23402		spell135x	35000	x	-	x	x	-	-	x	x	x	x	x	x	x	x	-	x	-	8	9	1
+23396	spell135c	spell135c10	40000	x	x	x	x	-	-	-	-	-	-	-	-	-	-	-	x	-	32	9	1
+23397		spell135c20	40000	x	-	x	x	-	-	-	-	-	-	-	-	-	-	-	x	-	64	9	1
+23398		spell135c30	40000	x	-	x	x	-	-	-	-	-	-	-	-	-	-	-	x	-	80	9	1
+23399		spell135c40	40000	x	-	x	x	-	-	-	-	-	-	-	-	-	-	-	x	-	48	9	1
+23400		spell135c50	40000	x	-	x	x	-	-	-	-	-	-	-	-	-	-	-	x	-	32	9	1
+23401		spell135c60	40000	x	-	x	x	-	-	-	-	-	-	-	-	-	-	-	x	-	16	9	1
+23402		spell135x	40000	x	-	x	x	-	-	-	-	-	-	-	-	-	-	-	x	-	8	9	1
 23403	7obj413	7obj413	65536	x	x	x	-	-	-	-	-	-	-	-	-	-	-	-	-	-	32	9	2
 23404	mbobj	mbobj	65536	-	x	x	-	-	-	-	-	-	-	-	-	-	-	-	-	-	0	9	2
 23405	hammerobj	hammerobj	65536	-	x	x	-	-	-	-	-	-	-	-	-	-	-	-	-	-	0	9	2
 23406	botboxobj	botboxobj	65536	-	x	x	-	-	-	-	-	-	-	-	-	-	-	-	-	-	0	9	2
 23407	runbladeobj	runbladeobj	65536	-	x	x	-	-	-	-	-	-	-	-	-	-	-	-	-	-	0	9	2
+23408	plasgren	sp92b	32768	x	x	x	x	-	-	-	-	-	-	-	-	-	-	-	-	-	160	5	1

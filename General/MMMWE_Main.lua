@@ -599,8 +599,13 @@
 
 		-- Blaster: fixed recovery
 		if main and not main.Broken and Game.ItemsTxt[main.Number].Skill == const.Skills.Blaster then
-			-- the Capacitor spec sets it (MMMWE_Blasters.lua)
-			t.Result = MF.BlasterRecovery(main)
+			-- the Capacitor spec sets it (MMMWE_Blasters.lua); an overclocked shot: OverclockRecovery
+			local bs = MF.BlasterSpecs
+			if bs and bs.OverclockNow and bs.OverclockNow == Pl:GetIndex() then
+				t.Result = bs.OverclockRecovery or 5
+			else
+				t.Result = MF.BlasterRecovery(main)
+			end
 			return
 		end
 		-- wands keep the game's recovery (their spell's)

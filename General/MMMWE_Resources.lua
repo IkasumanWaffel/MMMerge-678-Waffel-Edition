@@ -266,13 +266,13 @@ local ABILITIES = {
 		Icon = {"sbtc06a", "sbtc06b"},},
 	PlasmaGrenade = {Spell = 37, Stage = 1, Cost = 25,
 		Name = "Plasma Grenade",
-		Desc = "A plasma charge thrown at a monster (the one under the cursor or the nearest in sight): the blast hits it and every monster close to it with energy that no resistance stops.",
+		Desc = "A plasma charge thrown in an arc at a monster (the one under the cursor or the nearest in sight). It blows up where it hits - the monster, the ground or a wall - and the blast hits every monster close to it with energy that no resistance stops.",
 		Lines = {"25 Construction", "Energy damage 10 + 1.5 per level + Repair skill x mastery", "Engineer", "Hits every monster near the target"},
 		Icon = {"sbtc02a", "sbtc02b"},},
 	Overclock = {Spell = 38, Stage = 1, Cost = 20,
 		Name = "Overclock",
-		Desc = "The technician overrides the blaster's safety limits: the next shots come without any recovery, but each of them draws twice the power from the cell.",
-		Lines = {"20 Construction", "The next 5 blaster shots have no recovery", "Engineer", "Each of them drains the power cell twice"},
+		Desc = "The technician overrides the blaster's safety limits: the next shots come with almost no recovery (5), but each of them draws twice the power from the cell.",
+		Lines = {"20 Construction", "The next 5 blaster shots have a recovery of 5", "Engineer", "Each of them drains the power cell twice"},
 		Icon = {"sbtc03a", "sbtc03b"},},
 	ShieldProjector = {Spell = 40, Stage = 2, Cost = 35, Branch = "AncientResearcher",
 		Name = "Shield Projector",
@@ -373,8 +373,14 @@ local TECH = {
 	GrenadeRange    = 3000,
 	GrenadeRadius   = 300,
 	GrenadeBase     = 10, GrenadePerLevel = 1.5,   -- + Repair skill x mastery; energy, every
-	                                               -- monster within the radius of the target
-	OverclockShots  = 5,                   -- shots without recovery, each drains the cell twice
+	                                               -- monster within the radius of the blast
+	GrenadeObject   = 12060,               -- ObjList.txt "Plasma Grenade" (the blaster's plasma
+	                                       -- sphere, sprite group plasgren, x2; gravity on)
+	GrenadeSpeed    = 1500,                -- horizontal speed of the throw
+	GrenadeGravity  = 640,                 -- the fall the throw is aimed for (raise if it falls short)
+	GrenadeExplosion = 1051, GrenadeSound = 8,     -- the fireball explosion of a failed potion mix
+	GrenadeMaxTime  = 3 * const.Minute,    -- a grenade still flying after this blows up
+	OverclockShots  = 5,                   -- shots with recovery 5 (MMMWE_Blasters.lua), each drains the cell twice
 	TurretModel     = 624,                 -- MM6 Terminator Unit
 	TurretBaseTime  = 5 * const.Minute, TurretPerLevel = const.Minute / 2,
 	TurretHP        = 30, TurretHPPerLevel = 5, TurretHPPerRSM = 1,
@@ -1349,6 +1355,106 @@ local function scanText(mon)
 	return string.format("%s: weak %s %s, strong %s %s", name, lo[1], val(lo[2]), hi[1], val(hi[2]))
 end
 
+-- Plasma Grenade: a thrown plasma sphere (an object that falls) aimed at the monster; it blows
+-- up where it hits a monster, the ground or a wall: the fireball explosion of a failed potion
+-- mix, and energy damage to every hostile monster within TECH.GrenadeRadius (and the target)
+local Grenades = {}   -- {Index, pi, mi, dmg, X, Y, Z, Start}
+local function grenadeIndices()
+	local t = {}
+	for i = 0, Map.Objects.count - 1 do
+		local o = Map.Objects[i]
+		if o.Type == TECH.GrenadeObject and not o.Removed then t[i] = true end
+	end
+	return t
+end
+local function throwGrenade(pl, pi, mi, dmg)
+	local mon = Map.Monsters[mi]
+	local before = grenadeIndices()
+	local ang = (Party.Direction or 0) * math.pi / 1024
+	local x0 = math.floor(Party.X + 64 * math.cos(ang))
+	local y0 = math.floor(Party.Y + 64 * math.sin(ang))
+	local z0 = Party.Z + mem.i4[0xB20E9C]
+	local ok = pcall(Game.SummonObjects, TECH.GrenadeObject, x0, y0, z0, 0, 1)
+	if not ok then return false end
+	local idx
+	for i in pairs(grenadeIndices()) do if not before[i] then idx = i end end
+	if not idx then return false end
+	local o = Map.Objects[idx]
+	-- aimed at the middle of the monster, along an arc the fall brings down onto it
+	local tz = mon.Z + math.floor((mon.BodyHeight or 100) / 2)
+	local dx, dy, dz = mon.X - x0, mon.Y - y0, tz - z0
+	local dist = math.max(1, math.sqrt(dx * dx + dy * dy))
+	local vh = TECH.GrenadeSpeed
+	local t = dist / vh
+	local vz = dz / t + TECH.GrenadeGravity * t / 2
+	local function clamp(v) return math.max(-32000, math.min(32000, math.floor(v))) end
+	o.VelocityX, o.VelocityY, o.VelocityZ = clamp(dx / dist * vh), clamp(dy / dist * vh), clamp(vz)
+	o.Owner = pi * 8 + 4
+	o.Target = mi * 8 + 3
+	o.Spell, o.SpellSkill, o.SpellMastery = 0, 0, 0
+	pcall(function() o.HaltTurnBased = true; o.Missile = false end)
+	Grenades[#Grenades + 1] = {Index = idx, pi = pi, mi = mi, dmg = dmg, X = o.X, Y = o.Y, Z = o.Z, Start = Game.Time}
+	Game.PlaySound(44671)
+	return true
+end
+local function detonate(g, x, y, z)
+	if g.Done then return end
+	g.Done = true
+	pcall(function()
+		Game.SummonObjects(TECH.GrenadeExplosion, x, y, z, 0, 1)
+		Game.PlaySound(TECH.GrenadeSound)
+	end)
+	local n = 0
+	for i = 0, Map.Monsters.count - 1 do
+		local m = Map.Monsters[i]
+		if m.HP > 0 and m.AIState ~= const.AIState.Removed and (i == g.mi or m.Hostile) then
+			local dx, dy = m.X - x, m.Y - y
+			local dz = m.Z + (m.BodyHeight or 100) / 2 - z
+			local r = TECH.GrenadeRadius + (m.BodyRadius or 0)
+			if dx * dx + dy * dy + dz * dz <= r * r then
+				if MF.QueueForcedHit then MF.QueueForcedHit(g.pi, i, g.dmg) end
+				n = n + 1
+			end
+		end
+	end
+	local pl = Party.PlayersArray[g.pi]
+	Game.ShowStatusText(string.format("%s's plasma grenade hits %d monster(s)", pl and pl.Name or "The", n), 3)
+end
+-- a grenade that touches a monster: the engine's hit is replaced by the blast
+function events.MonsterAttacked(t, attacker)
+	local o = attacker and attacker.Object
+	if not o or o.Type ~= TECH.GrenadeObject then return end
+	t.Handled = true
+	for _, g in ipairs(Grenades) do
+		if g.Index == attacker.ObjectIndex and not g.Done then
+			detonate(g, o.X, o.Y, o.Z)
+		end
+	end
+	pcall(function() o.Removed = true end)
+end
+-- a grenade that is gone (it hit the ground or a wall), or has flown too long
+function events.Tick()
+	if #Grenades == 0 then return end
+	local keep = {}
+	for _, g in ipairs(Grenades) do
+		if not g.Done then
+			local o = g.Index < Map.Objects.count and Map.Objects[g.Index]
+			local alive = o and o.Type == TECH.GrenadeObject and not o.Removed
+			if alive and Game.Time - g.Start < TECH.GrenadeMaxTime then
+				g.X, g.Y, g.Z = o.X, o.Y, o.Z
+				keep[#keep + 1] = g
+			else
+				if alive then pcall(function() o.Removed = true end) end
+				detonate(g, g.X, g.Y, g.Z)
+			end
+		end
+	end
+	Grenades = keep
+end
+function events.LeaveMap()
+	Grenades = {}
+end
+
 -- Targeting: an ability takes the spot of a game spell, and with it the spell's target mode
 -- (a monster, a character, an item). Abilities that don't pick a monster are cast at once
 -- (the target bits 0x3CA of the cast flags cleared, SpellsExtra.lua's SpellTargetType);
@@ -1492,20 +1598,11 @@ local function castAbility(pl, pi, spell, targetRef)
 		local L = math.max(1, pl.LevelBase or 1)
 		local RS, RM = SplitSkill(MF.TechRepairSkill and MF.TechRepairSkill(pl) or pl:GetSkill(const.Skills.Repair))
 		local dmg = math.floor(TECH.GrenadeBase + TECH.GrenadePerLevel * L + RS * RM)
-		local target = Map.Monsters[mi]
-		local n = 0
-		for i = 0, Map.Monsters.count - 1 do
-			local m = Map.Monsters[i]
-			if m.HP > 0 and m.AIState ~= const.AIState.Removed and (i == mi or m.Hostile) then
-				local dx, dy, dz = m.X - target.X, m.Y - target.Y, m.Z - target.Z
-				if i == mi or dx * dx + dy * dy + dz * dz <= (TECH.GrenadeRadius + (m.BodyRadius or 0)) ^ 2 then
-					MF.QueueForcedHit(pi, i, dmg)
-					n = n + 1
-				end
-			end
+		if not throwGrenade(pl, pi, mi, dmg) then
+			failCast(pl, "The grenade can't be thrown here")
+			return true
 		end
-		Game.PlaySound(44671)
-		Game.ShowStatusText(string.format("%s's plasma grenade hits %d monster(s)", pl.Name, n))
+		Game.ShowStatusText(string.format("%s throws a plasma grenade", pl.Name))
 		pl:SetRecoveryDelay(pl:GetAttackDelay(true))
 	elseif key == "Overclock" then
 		Effects[pi] = Effects[pi] or {}
