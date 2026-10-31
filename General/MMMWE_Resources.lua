@@ -751,6 +751,7 @@ local PAGE_ART = {
 	Archer    = {Page = "SBHY000"},
 	["Dark Elf"] = {Page = "SBHY000"},
 	Ranger    = {Page = "SBHY000"},
+	Technician = {Tab = "STTC"},          -- Earth page tab (waffel.icons.lod)
 }
 local ART_STR = {   -- page: background, tab up, tab down
 	[0] = {0x502054, 0x50204C, 0x502044}, {0x50205C, 0x50203C, 0x502034}, {0x502064, 0x50202C, 0x502024},
