@@ -1403,6 +1403,9 @@ local function throwGrenade(pl, pi, mi, dmg)
 	o.Owner = pi * 8 + 4
 	o.Target = mi * 8 + 3
 	o.Spell, o.SpellSkill, o.SpellMastery = 0, 0, 0
+	-- the summon leaves the lifetime at 0 (an expired temporary object); a thrown one lives
+	-- as long as ObjList.txt says
+	o.Age, o.MaxAge = 0, 768
 	pcall(function() o.HaltTurnBased = true; o.Missile = false; o.Visible = true end)
 	Grenades[#Grenades + 1] = {Index = idx, pi = pi, mi = mi, dmg = dmg, X = o.X, Y = o.Y, Z = o.Z, Start = Game.Time}
 	log("grenade %d thrown from %d,%d,%d velocity %d,%d,%d at monster %d (%d,%d,%d)", idx, o.X, o.Y, o.Z,
