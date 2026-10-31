@@ -579,6 +579,7 @@ end
 local Pending = {}
 local CellFrac = {}   -- while no game is loaded
 B.Forced = nil       -- damage forced on the next hit (bash, chain); read by MMMWE_Main.lua
+B.ForcedKind = nil   -- its damage kind (nil: the hit's own, physical for a bash)
 
 local function monsterDistance(m, x, y, z)
 	local dx, dy, dz = m.X - x, m.Y - y, m.Z - z
@@ -657,17 +658,20 @@ mem.autohook(0x42609E, function(d)
 end)
 
 local HitVec = mem.StaticAlloc(12)
-local function forcedHit(pi, mi, dmg)
-	B.Forced = dmg
+local function forcedHit(pi, mi, dmg, kind)
+	B.Forced, B.ForcedKind = dmg, kind
 	local ok, err = pcall(mem.call, 0x436E26, 2, pi * 8 + 4, mi, HitVec)
-	B.Forced = nil
+	B.Forced, B.ForcedKind = nil, nil
 	return ok
 end
 
 -- a hit of fixed damage by character pi on monster mi, carried out on the next tick
--- (energy shield Nova and Spike, MMMWE_EnergyShield.lua)
-function MF.QueueForcedHit(pi, mi, dmg)
-	if dmg and dmg > 0 then Pending[#Pending + 1] = {Kind = "Chain", pi = pi, mi = mi, dmg = floor(dmg)} end
+-- (energy shield Nova and Spike, MMMWE_EnergyShield.lua; Plasma Grenade); kind: the damage
+-- kind it counts as (default Energy)
+function MF.QueueForcedHit(pi, mi, dmg, kind)
+	if dmg and dmg > 0 then
+		Pending[#Pending + 1] = {Kind = "Chain", pi = pi, mi = mi, dmg = floor(dmg), dmgKind = kind or const.Damage.Energy}
+	end
 end
 
 -- Disruptor 4: an eradicated target's neighbours take half the hit (MMMWE_Main.lua)
@@ -680,7 +684,7 @@ function MF.BlasterChain(pl, mon, damage)
 		local m = Map.Monsters[i]
 		if m ~= mon and m.HP > 0 and m.Hostile and m.AIState ~= const.AIState.Removed
 				and monsterDistance(m, mon.X, mon.Y, mon.Z) <= B.ChainRadius + (m.BodyRadius or 0) then
-			Pending[#Pending + 1] = {Kind = "Chain", pi = pl:GetIndex(), mi = i, dmg = dmg}
+			Pending[#Pending + 1] = {Kind = "Chain", pi = pl:GetIndex(), mi = i, dmg = dmg, dmgKind = const.Damage.Energy}
 		end
 	end
 end
@@ -742,7 +746,7 @@ function events.Tick()
 				if m and m.HP > 0 then forcedHit(r.pi, r.mi, random(B.BashMin, B.BashMax)) end
 			elseif r.Kind == "Chain" then
 				local m = Map.Monsters[r.mi]
-				if m and m.HP > 0 then forcedHit(r.pi, r.mi, r.dmg) end
+				if m and m.HP > 0 then forcedHit(r.pi, r.mi, r.dmg, r.dmgKind) end
 			end
 		end
 	end

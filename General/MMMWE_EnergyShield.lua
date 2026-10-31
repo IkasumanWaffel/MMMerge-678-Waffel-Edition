@@ -52,6 +52,11 @@ local S = {
 	ShockCost        = 2,
 	NovaShare        = 0.25,      -- of the capacity per level of the Nova spec
 	NovaRadius       = 600,
+	-- the explosion drawn (ObjList.txt id): 1051 Fireball (fire), 12050 blaster / Laser,
+	-- 2081 Implosion, 3061 Acid Burst, 4031 Deadly Swarm, 6031 Mind Blast, 9081 Dragon
+	-- Breath, 10031 DarkFire Bolt, 11061 Finger of Death, 601 explosive death
+	NovaExplosion    = 1051,
+	NovaSound        = 8,         -- the failed potion mix's explosion
 	SpikeShare       = 0.25,
 	BoosterShare     = 0.15,
 	HardenedCost     = 0.80,
@@ -138,8 +143,8 @@ local function nova(pl, pi, st, cap)
 		local x = floor(Party.X + 64 * math.cos(ang))
 		local y = floor(Party.Y + 64 * math.sin(ang))
 		local z = Party.Z + mem.i4[0xB20E9C]
-		Game.SummonObjects(1051, x, y, z, 0, 1)
-		Game.PlaySound(8)
+		Game.SummonObjects(S.NovaExplosion, x, y, z, 0, 1)
+		Game.PlaySound(S.NovaSound)
 	end)
 	Game.ShowStatusText(string.format("%s's shield bursts in a nova!", pl.Name), 3)
 end

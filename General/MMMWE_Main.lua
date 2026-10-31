@@ -1724,8 +1724,18 @@
 		end
 
 		-- an empty blaster's bash or a Chain disruption hit (MMMWE_Blasters.lua)
+		-- (the weapon's enchantment calls of the same hit add nothing; the hit counts as its
+		-- own damage kind for the combat log: Energy for chain, Nova, Spike and grenades)
 		if MF.BlasterSpecs and MF.BlasterSpecs.Forced then
+			if t.IsSecondary then
+				t.Result = 0
+				return
+			end
 			t.Result = MF.BlasterSpecs.Forced
+			if MF.BlasterSpecs.ForcedKind then
+				t.DamageKind = MF.BlasterSpecs.ForcedKind
+				t.PhysDamageKind = nil
+			end
 			return
 		end
 
