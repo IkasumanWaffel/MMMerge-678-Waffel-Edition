@@ -374,8 +374,11 @@ local TECH = {
 	GrenadeRadius   = 300,
 	GrenadeBase     = 10, GrenadePerLevel = 1.5,   -- + Repair skill x mastery; energy, every
 	                                               -- monster within the radius of the blast
-	GrenadeObject   = 12060,               -- ObjList.txt "Plasma Grenade" (the blaster's plasma
-	                                       -- sphere, sprite group plasgren, x2; gravity on)
+	-- the grenade is the blaster's plasma bolt (ObjList 555, the game draws new object types
+	-- added to ObjList.txt), drawn larger while grenades fly and pulled down by this script
+	GrenadeObject   = 555,
+	GrenadeGroup    = "lzrbolt",           -- its SFT group ...
+	GrenadeScale    = 32768,               -- ... and the size while a grenade flies (bolt 16384)
 	GrenadeSpeed    = 1500,                -- horizontal speed of the throw
 	GrenadeGravity  = 640,                 -- the fall the throw is aimed for (raise if it falls short)
 	GrenadeExplosion = 1051, GrenadeSound = 8,     -- the fireball explosion of a failed potion mix
@@ -1368,6 +1371,19 @@ function MF.LoadSFTGroup(name)
 		if id and id >= 0 then Game.SFTBin:LoadGroup(id) end
 	end)
 end
+-- the bolt's picture is drawn larger while grenades fly (blaster bolts fired meanwhile too)
+local boltScale
+local function grenadeScale(on)
+	pcall(function()
+		local f = Game.SFTBin.Frames[Game.SFTBin:FindGroup(TECH.GrenadeGroup)]
+		if on then
+			boltScale = boltScale or f.Scale
+			f.Scale = TECH.GrenadeScale
+		elseif boltScale then
+			f.Scale = boltScale
+		end
+	end)
+end
 local function grenadeIndices()
 	local t = {}
 	for i = 0, Map.Objects.count - 1 do
@@ -1378,18 +1394,9 @@ local function grenadeIndices()
 end
 local function throwGrenade(pl, pi, mi, dmg)
 	local mon = Map.Monsters[mi]
-	MF.LoadSFTGroup("plasgren")
-	-- the grenade's frame shows the blaster bolt's picture (same sprite, sp92b): the loaded
-	-- picture of the bolt's group is copied into it, in case loading the new group left it empty
-	pcall(function()
-		local SFT = Game.SFTBin
-		local bolt, gren = SFT:FindGroup("lzrbolt"), SFT:FindGroup("plasgren")
-		SFT:LoadGroup(bolt)
-		local fb, fg = SFT.Frames[bolt], SFT.Frames[gren]
-		for k = 0, 7 do fg.SpriteIndex[k] = fb.SpriteIndex[k] end
-		fg.Loaded = true
-	end)
+	MF.LoadSFTGroup(TECH.GrenadeGroup)
 	MF.LoadSFTGroup("spell01")      -- the explosion
+	grenadeScale(true)
 	local before = grenadeIndices()
 	local ang = (Party.Direction or 0) * math.pi / 1024
 	local x0 = math.floor(Party.X + 64 * math.cos(ang))
@@ -1413,30 +1420,13 @@ local function throwGrenade(pl, pi, mi, dmg)
 	o.Owner = pi * 8 + 4
 	o.Target = mi * 8 + 3
 	o.Spell, o.SpellSkill, o.SpellMastery = 0, 0, 0
-	-- the summon leaves the lifetime at 0 (an expired temporary object); a thrown one lives
-	-- as long as ObjList.txt says
+	-- the summon leaves the lifetime at 0 (an expired temporary object)
 	o.Age, o.MaxAge = 0, 768
 	pcall(function() o.HaltTurnBased = true; o.Missile = false; o.Visible = true end)
-	Grenades[#Grenades + 1] = {Index = idx, pi = pi, mi = mi, dmg = dmg, X = o.X, Y = o.Y, Z = o.Z, Start = Game.Time}
+	Grenades[#Grenades + 1] = {Index = idx, pi = pi, mi = mi, dmg = dmg, X = o.X, Y = o.Y, Z = o.Z,
+		Start = Game.Time, Last = Game.Time, VZ = o.VelocityZ}
 	log("grenade %d thrown from %d,%d,%d velocity %d,%d,%d at monster %d (%d,%d,%d)", idx, o.X, o.Y, o.Z,
 		o.VelocityX, o.VelocityY, o.VelocityZ, mi, mon.X, mon.Y, mon.Z)
-	-- diagnostics: how the game sees the object and its picture (the plasma bolt for comparison)
-	pcall(function()
-		local function desc(id)
-			for i, d in Game.ObjListBin do
-				if d.Id == id then
-					local f = Game.SFTBin.Frames[d.SFTIndex]
-					return string.format("objlist %d '%s' SFTIndex %d Invisible %s Bits %X frame '%s'/'%s' scale %d start %s sprite %d loaded %s",
-						i, d.Name, d.SFTIndex, tostring(d.Invisible), d.Bits, f.GroupName, f.SpriteName, f.Scale, tostring(f.GroupStart),
-						f.SpriteIndex[0], tostring(f.Loaded))
-				end
-			end
-			return "objlist: no entry " .. id
-		end
-		log("grenade %d: Type %d TypeIndex %d Bits %X Room %d MaxAge %d; %s; group plasgren %s",
-			idx, o.Type, o.TypeIndex, o.Bits, o.Room, o.MaxAge, desc(TECH.GrenadeObject), tostring(Game.SFTBin:FindGroup("plasgren")))
-		log("grenade: for comparison %s; group lzrbolt %s", desc(555), tostring(Game.SFTBin:FindGroup("lzrbolt")))
-	end)
 	Game.PlaySound(44671)
 	return true
 end
@@ -1467,14 +1457,14 @@ end
 -- a grenade that touches a monster: the engine's hit is replaced by the blast
 function events.MonsterAttacked(t, attacker)
 	local o = attacker and attacker.Object
-	if not o or o.Type ~= TECH.GrenadeObject then return end
-	t.Handled = true
+	if not o or o.Type ~= TECH.GrenadeObject or #Grenades == 0 then return end
 	for _, g in ipairs(Grenades) do
 		if g.Index == attacker.ObjectIndex and not g.Done then
+			t.Handled = true
 			detonate(g, o.X, o.Y, o.Z, "monster")
+			pcall(function() o.Removed = true end)
 		end
 	end
-	pcall(function() o.Removed = true end)
 end
 -- the grenade blows up when it comes close to a hostile monster's body (the engine lets it
 -- fly through), when it lands (it was falling and has stopped falling, or stopped moving),
@@ -1507,6 +1497,13 @@ function events.Tick()
 			elseif nearMonster(o) then
 				why = "monster"
 			else
+				-- the fall (the bolt has no gravity of its own)
+				local dt = (Game.Time - g.Last) / 128      -- 128 game time units: a real second
+				g.Last = Game.Time
+				if dt > 0 then
+					g.VZ = g.VZ - TECH.GrenadeGravity * dt
+					o.VelocityZ = math.max(-32000, math.min(32000, math.floor(g.VZ)))
+				end
 				if o.VelocityZ < 0 then g.Falling = true end
 				local still = o.X == g.X and o.Y == g.Y and o.Z == g.Z
 				if not still then g.Moved = true end
@@ -1522,9 +1519,11 @@ function events.Tick()
 		end
 	end
 	Grenades = keep
+	if #Grenades == 0 then grenadeScale(false) end
 end
 function events.LeaveMap()
 	Grenades = {}
+	grenadeScale(false)
 end
 
 -- Targeting: an ability takes the spot of a game spell, and with it the spell's target mode
