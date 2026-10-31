@@ -131,7 +131,17 @@ local function nova(pl, pi, st, cap)
 			n = n + 1
 		end
 	end
-	if n > 0 then Game.ShowStatusText(string.format("%s's shield bursts in a nova!", pl.Name), 3) end
+	-- the fireball explosion and sound of a failed potion mix (0x415BB6..0x415C55: sound 8,
+	-- object 1051 summoned 64 in front of the party at eye level)
+	pcall(function()
+		local ang = (Party.Direction or 0) * math.pi / 1024
+		local x = floor(Party.X + 64 * math.cos(ang))
+		local y = floor(Party.Y + 64 * math.sin(ang))
+		local z = Party.Z + mem.i4[0xB20E9C]
+		Game.SummonObjects(1051, x, y, z, 0, 1)
+		Game.PlaySound(8)
+	end)
+	Game.ShowStatusText(string.format("%s's shield bursts in a nova!", pl.Name), 3)
 end
 
 ---------------------------------------------------------------------------
