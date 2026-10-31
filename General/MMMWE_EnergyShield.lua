@@ -143,6 +143,7 @@ local function nova(pl, pi, st, cap)
 		local x = floor(Party.X + 64 * math.cos(ang))
 		local y = floor(Party.Y + 64 * math.sin(ang))
 		local z = Party.Z + mem.i4[0xB20E9C]
+		if MF.LoadSFTGroup then MF.LoadSFTGroup("spell01") end   -- the fireball explosion's pictures
 		Game.SummonObjects(S.NovaExplosion, x, y, z, 0, 1)
 		Game.PlaySound(S.NovaSound)
 	end)

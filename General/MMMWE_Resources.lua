@@ -1359,6 +1359,14 @@ end
 -- up where it hits a monster, the ground or a wall: the fireball explosion of a failed potion
 -- mix, and energy damage to every hostile monster within TECH.GrenadeRadius (and the target)
 local Grenades = {}   -- {Index, pi, mi, dmg, X, Y, Z, Start}
+-- sprites of objects the map didn't load itself (the game loads a spell's pictures with
+-- the map; these aren't spells): loaded by their SFT group before they are summoned
+function MF.LoadSFTGroup(name)
+	pcall(function()
+		local id = Game.SFTBin:FindGroup(name)
+		if id and id >= 0 then Game.SFTBin:LoadGroup(id) end
+	end)
+end
 local function grenadeIndices()
 	local t = {}
 	for i = 0, Map.Objects.count - 1 do
@@ -1369,16 +1377,18 @@ local function grenadeIndices()
 end
 local function throwGrenade(pl, pi, mi, dmg)
 	local mon = Map.Monsters[mi]
+	MF.LoadSFTGroup("plasgren")
+	MF.LoadSFTGroup("spell01")      -- the explosion
 	local before = grenadeIndices()
 	local ang = (Party.Direction or 0) * math.pi / 1024
 	local x0 = math.floor(Party.X + 64 * math.cos(ang))
 	local y0 = math.floor(Party.Y + 64 * math.sin(ang))
 	local z0 = Party.Z + mem.i4[0xB20E9C]
 	local ok = pcall(Game.SummonObjects, TECH.GrenadeObject, x0, y0, z0, 0, 1)
-	if not ok then return false end
+	if not ok then log("grenade: SummonObjects failed") return false end
 	local idx
 	for i in pairs(grenadeIndices()) do if not before[i] then idx = i end end
-	if not idx then return false end
+	if not idx then log("grenade: no new object of type %d", TECH.GrenadeObject) return false end
 	local o = Map.Objects[idx]
 	-- aimed at the middle of the monster, along an arc the fall brings down onto it
 	local tz = mon.Z + math.floor((mon.BodyHeight or 100) / 2)
@@ -1394,12 +1404,15 @@ local function throwGrenade(pl, pi, mi, dmg)
 	o.Spell, o.SpellSkill, o.SpellMastery = 0, 0, 0
 	pcall(function() o.HaltTurnBased = true; o.Missile = false end)
 	Grenades[#Grenades + 1] = {Index = idx, pi = pi, mi = mi, dmg = dmg, X = o.X, Y = o.Y, Z = o.Z, Start = Game.Time}
+	log("grenade %d thrown from %d,%d,%d velocity %d,%d,%d at monster %d (%d,%d,%d)", idx, o.X, o.Y, o.Z,
+		o.VelocityX, o.VelocityY, o.VelocityZ, mi, mon.X, mon.Y, mon.Z)
 	Game.PlaySound(44671)
 	return true
 end
-local function detonate(g, x, y, z)
+local function detonate(g, x, y, z, why)
 	if g.Done then return end
 	g.Done = true
+	log("grenade %d blows up at %d,%d,%d (%s)", g.Index, x, y, z, why or "?")
 	pcall(function()
 		Game.SummonObjects(TECH.GrenadeExplosion, x, y, z, 0, 1)
 		Game.PlaySound(TECH.GrenadeSound)
@@ -1427,7 +1440,7 @@ function events.MonsterAttacked(t, attacker)
 	t.Handled = true
 	for _, g in ipairs(Grenades) do
 		if g.Index == attacker.ObjectIndex and not g.Done then
-			detonate(g, o.X, o.Y, o.Z)
+			detonate(g, o.X, o.Y, o.Z, "monster")
 		end
 	end
 	pcall(function() o.Removed = true end)
@@ -1445,7 +1458,7 @@ function events.Tick()
 				keep[#keep + 1] = g
 			else
 				if alive then pcall(function() o.Removed = true end) end
-				detonate(g, g.X, g.Y, g.Z)
+				detonate(g, g.X, g.Y, g.Z, alive and "time" or "landed")
 			end
 		end
 	end
@@ -1459,7 +1472,7 @@ end
 -- (a monster, a character, an item). Abilities that don't pick a monster are cast at once
 -- (the target bits 0x3CA of the cast flags cleared, SpellsExtra.lua's SpellTargetType);
 -- the monster ones keep their spot's mode or pick the monster under the cursor / nearest.
-local MONSTER_ABILITIES = {Scanner = true, PlasmaGrenade = true, MarkPrey = true, Challenge = true,
+local MONSTER_ABILITIES = {MarkPrey = true, Challenge = true,
 	RageStrike = true, StunningPalm = true, Flurry = true, Finisher = true, Gore = true}
 function events.SpellTargetType(t)
 	local pl = t.Caster and Party.PlayersArray[t.Caster]
