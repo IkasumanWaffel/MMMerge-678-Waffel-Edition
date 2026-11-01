@@ -1226,6 +1226,30 @@ GetBonusList(2211).Stats = {	[const.Stats.Speed] = 20}
 -- Mountain's Heart (relic)
 GetBonusList(2212).Stats = {	[const.Stats.Might] = 40, [const.Stats.Endurance] = 40, [const.Stats.EarthResistance] = 30,
 								[const.Stats.Speed] = -20, [const.Stats.Accuracy] = -20}
+-- Ancient artifacts and relics (MMMWE_AncientArtifacts.lua; not found in game until their pictures are drawn)
+-- Padish's Signet
+GetBonusList(2213).Stats = {	[const.Stats.Personality] = 15}
+GetBonusList(2213).Skills =	{	[const.Skills.Merchant] = 5}
+-- VARN Officer's Visor
+GetBonusList(2214).Skills =	{	[const.Skills.IdentifyMonster] = 10, [const.Skills.Perception] = 10}
+GetBonusList(2214).Stats = {	[const.Stats.LightResistance] = 20}
+GetBonusList(2214).PartyBuffs = {ReqMastery = 0, Buff = {[const.PartyBuff.WizardEye] = JoinSkill(10, 4)}}
+-- Servo Gauntlets
+GetBonusList(2215).Stats = {	[const.Stats.Might] = 25}
+-- Gravity Treads
+GetBonusList(2217).Stats = {	[const.Stats.Speed] = 20}
+GetBonusList(2217).PartyBuffs = {ReqMastery = 0, Buff = {[const.PartyBuff.WaterWalk] = JoinSkill(10, 4),
+	[const.PartyBuff.FeatherFall] = JoinSkill(10, 4)}}
+-- Command Cube
+GetBonusList(2220).Stats = {	[const.Stats.Intellect] = 20}
+-- Ancient Power Core (relic)
+GetBonusList(2222).Stats = {	[const.Stats.Intellect] = 50, [const.Stats.BodyResistance] = -30}
+-- Sentinel Frame (relic)
+GetBonusList(2223).Stats = {	[const.Stats.Might] = 50, [const.Stats.Endurance] = 30, [const.Stats.Speed] = -30,
+								[const.Stats.Accuracy] = -20}
+-- Neural Crown (relic)
+GetBonusList(2224).Stats = {	[const.Stats.Intellect] = 40, [const.Stats.Personality] = -30, [const.Stats.MindResistance] = -40}
+GetBonusList(2224).Skills =	{	[const.Skills.Learning] = 10}
 -- Ethric's Staff
 GetBonusList(1317).Skills =	{	[const.Skills.Meditation] = 15}
 -- Hareck's Leather

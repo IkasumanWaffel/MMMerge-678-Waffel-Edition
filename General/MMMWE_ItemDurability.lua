@@ -191,7 +191,7 @@ local function ensureCache()
 
 	for n, txt in Game.ItemsTxt do
 		-- the Energy Shield (968) keeps its charge in MaxCharges (MMMWE_EnergyShield.lua): no wear
-		if n > 0 and n ~= 968 then
+		if n > 0 and n ~= 968 and n ~= 2218 and n ~= 2221 then   -- 2218 / 2221: MMMWE_AncientArtifacts.lua
 			local g = groupOf(txt)
 			if g then
 				local cls = classify(n, txt)
@@ -345,6 +345,11 @@ end
 
 local function wearItem(it, amount, pl)
 	if not canWear(it) or it.Broken then return end
+	-- a wear multiplier for the wearer's item (Padish's Signet: Heavenly Forge items, MMMWE_AncientArtifacts.lua)
+	if pl and MF.WearMultiplier then
+		amount = (amount or 1) * MF.WearMultiplier(pl, it)
+		if amount <= 0 then return end
+	end
 
 	local before = itemStage(it)
 	addWear(it, amount or 1)

@@ -3,9 +3,9 @@ Id	Item id	Notes		X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y
 1	84	Leather Jerkin		0	0	0	0	0	0	0	0	0	0		
 2	85	Hardened Leather Vest		0	0	0	0	0	0	0	0	0	0		
 3	86	Caravaner's Leather		0	0	0	0	0	0	0	0	0	0		
-4	87	Regnan Leather		0	0	0	0	0	0	0	0	0	0		
+4	87	Regnan Leather		0	0	1	0	0	0	0	0	0	0		
 5	88	Alvarian Leather		0	0	0	0	0	0	0	0	0	0		
-6	89	Rusty Mail Vest		0	0	0	0	0	0	0	0	0	0		
+6	89	Rusty Mail Vest		1	-1	0	0	0	0	0	0	0	0		
 7	90	Steel Chainmail		0	0	0	0	0	0	0	0	0	0		
 8	91	Minotaur Chainmail		0	0	0	0	0	0	0	0	0	0		
 9	92	Siertal Chainmail		0	0	0	0	0	0	0	0	0	0		
@@ -20,8 +20,8 @@ Id	Item id	Notes		X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y
 18	515	Supreme Plate		30	69	52	82	35	107	0	0	30	94		
 19	533	Last Stage Cuirass		29	57	47	70	27	100	0	0	33	96		
 20	868	Crude Leather Armor		29	81	60	97	47	110	0	0	45	108		
-21	869	Studded Leather		29	81	57	87	45	111	0	0	45	106		
-22	870	Officer's Leather		28	76	58	86	45	111	0	0	45	106		
+21	869	Studded Leather		29	81	57	90	45	111	0	0	45	106		
+22	870	Officer's Leather		27	78	58	86	45	111	0	0	45	106		
 23	871	Regnan Leather		28	76	60	88	45	111	0	0	45	106		
 24	872	Royal Leather		26	75	56	84	25	108	23	92	35	109		
 25	873	Disheveled Chain Mail		31	81	60	98	46	111	0	0	41	107		
@@ -34,7 +34,7 @@ Id	Item id	Notes		X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y
 32	880	Noble Plate Armor		31	73	39	92	22	103	20	95	35	110	
 33	1306	Governor's Armor		39	75	60	97	41	103	35	96	45	110		
 34	1307	Yoruba		31	73	39	89	37	103	35	95	45	110		
-35	1318	Hareck's Leather		26	75	56	84	25	108	23	92	35	109		
+35	1318	Hareck's Leather		26	75	55	85	25	108	23	92	35	109		
 36	1335	Elven Chainmail		44	75	59	97	40	105	38	94	47	110		
 37	1406	Wetsuit		0	-1	0	0	9	23	0	17	15	44		
 38	1668	Leather Armor		46	73	60	97	37	103	0	0	40	110
@@ -54,9 +54,10 @@ Id	Item id	Notes		X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y
 52	2027	Pellinore		23	73	37	93	31	104	0	88	35	113
 53	2041	Apollo		43	81	60	97	45	110	41	98	49	112		
 54	2042	Zeus		23	73	32	91	31	104	0	88	35	113
+55	2223	Sentinel Frame		31	73	39	89	37	103	35	95	45	110		
 
 		Helms	Complex												
-1	109	Helm	x	87	28	72	41	74	44	77	42	72	67		
+1	109	Helm	x	87	28	73	41	74	44	77	42	72	67		
 2	110	Lizardman Helm	x	79	24	65	35	66	43	64	30	64	63		
 3	111	Full Helm	x	85	27	74	45	55	47	68	41	70	63		
 4	112	Battle Helm	x	57	8	49	25	52	48	43	13	44	45		
@@ -67,12 +68,12 @@ Id	Item id	Notes		X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y
 9	520	Drogg's Helm	x	77	6	68	26	64	47	61	17	62	44		
 10	521	Crown of Final Dominion	x	81	0	67	-5	0	0	77	12	65	40		
 11	536	Lucky Hat		78	14	66	30	54	52	74	35	62	48		
-12	891	Horned Helm	x	77	8	67	29	74	44	62	22	62	44
+12	891	Horned Helm	x	77	8	69	33	74	44	62	22	62	44
 13	892	Conscript's Helm	x	78	8	67	29	74	44	62	22	62	47
-14	893	Full Helm	x	78	22	66	38	74	44	56	37	62	60
+14	893	Full Helm	x	77	27	66	38	74	44	56	37	62	60
 15	894	Phynaxian Helm	x	79	28	67	38	74	44	56	37	62	68
 16	895	Mogred Helm	x	77	6	67	29	74	44	62	22	62	44
-17	896	Peasant Hat	x	79	9	67	29	74	44	62	22	62	44
+17	896	Peasant Hat	x	79	9	70	33	74	44	62	22	62	44
 18	897	Traveller's Hat	x	77	9	67	29	74	44	62	22	61	47
 19	898	Fancy Hat	x	79	9	67	29	74	44	62	22	63	47
 20	899	Crown	x	78	10	69	28	74	44	62	22	62	47
@@ -88,19 +89,21 @@ Id	Item id	Notes		X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y
 30	1693	Guardian Helm	x	72	21	54	30	48	39	47	34	51	58		
 31	1694	Defender Helm	x	71	14	56	30	49	32	58	26	58	57		
 32	1695	Angelic Helm	x	75	22	59	34	51	41	62	31	62	61		
-33	1696	Cloth Hat	x	89	23	72	32	67	36	77	38	71	62		
+33	1696	Cloth Hat	x	89	23	73	33	67	36	77	38	71	62		
 34	1697	Dandy Hat	x	61	16	47	31	45	49	45	40	48	60		
 35	1698	Wizard Cap	x	80	-2	67	9	65	05	66	10	67	38		
 36	1699	Wreath Crown	x	88	35	70	47	63	64	75	53	74	75		
 37	1700	Regal Crown	x	87	33	73	43	65	53	73	48	75	71		
 38	1701	Almighty Crown	x	88	29	75	45	64	61	75	52	74	70		
-39	2029	Arthur	x	88	26	73	43	64	61	75	52	74	70		
+39	2029	Arthur	x	87	27	73	43	64	61	75	52	74	70		
 40	2044	Odin	x	88	26	73	43	64	61	75	52	74	70		
+41	2214	VARN Officer's Visor	x	75	22	59	34	51	41	62	31	62	61		
+42	2224	Neural Crown	x	81	0	67	-5	0	0	77	12	65	40		
 
 		Belts	Complex												
 1	117	Leather Belt	x	64	147	68	151	55	194	58	182	61	190		
 2	118	Sturdy Belt	x	66	147	70	154	57	194	59	182	62	189		
-3	119	Wyvern Leather Belt	x	63	146	71	155	52	193	52	182	58	191		
+3	119	Wyvern Leather Belt	x	62	155	71	155	52	193	52	182	58	191		
 4	120	Steel Belt	x	67	138	70	154	58	186	60	172	62	180		
 5	121	Artificer's Belt	x	65	151	72	153	56	196	58	180	61	188		
 6	537	Berserker Belt	x	64	150	71	152	57	197	57	179	60	187		
@@ -109,7 +112,7 @@ Id	Item id	Notes		X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y
 9	904	Strong Belt	x	63	146	70	144	52	188	55	174	58	183		
 10	905	Silver Belt	x	65	148	68	154	57	194	58	178	62	186		
 11	906	Gilded Belt	x	63	145	71	151	54	190	54	176	61	186		
-12	968	Energy Shield	x	65	145	68	148	57	192	56	187	61	185
+12	968	Energy Shield	x	63	148	69	151	57	192	56	187	61	185
 13	1326	Titan's Belt	x	63	142	70	148	54	187	54	170	58	183
 14	1337	Hero's Belt	x	66	149	71	150	57	190	54	175	61	188		
 15	1702	Leather Belt	x	64	147	67	154	56	188	58	175	61	183		
@@ -117,6 +120,7 @@ Id	Item id	Notes		X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y
 17	1704	Vanguard Belt	x	63	146	67	151	55	191	56	176	62	183		
 18	1705	Warlord Belt	x	64	144	68	152	57	187	58	173	62	186		
 19	1706	Sovereign Belt	x	63	144	68	151	57	188	56	174	61	183		
+20	2218	Officer's Shield Module	x	63	148	69	151	57	192	56	187	61	185
 
 		Boots	n/u
 1	132	Walking Boots		46	261	75	260	75	260	46	290	52	276		
@@ -125,7 +129,7 @@ Id	Item id	Notes		X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y
 4	135	Alvarian Boots		30	250	64	257	21	276	45	268	43	256		
 5	136	Dragonning Boots		26	241	57	242	19	266	45	250	45	238		
 6	518	Herald's Boots		41	254	70	250	17	318	47	272	54	263		
-7	917	Leather Boots		27	246	62	255	21	276	43	268	43	256
+7	917	Leather Boots		28	248	62	255	21	276	43	268	43	256
 8	918	Steel Plated Boots		27	246	62	255	21	276	43	268	43	256
 9	919	Ranger Boots		27	246	62	255	21	276	43	268	43	256
 10	920	Knight's Boots		27	246	62	255	21	276	43	268	43	256
@@ -133,13 +137,14 @@ Id	Item id	Notes		X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y
 12	1314	Seven League Boots		27	246	62	255	21	276	43	268	43	256
 13	1331	Hermes' Sandals		41	254	70	250	17	318	47	272	54	263		
 14	1439	Winged Sandals		41	254	70	250	17	318	47	272	54	263		
-15	1717	Leather Boots		30	250	68	265	21	276	45	268	43	256
-16	1718	Steel Boots		30	250	68	265	21	276	45	268	43	256
+15	1717	Leather Boots		30	251	68	265	21	276	45	268	43	256
+16	1718	Steel Boots		31	252	68	265	21	276	45	268	43	256
 17	1719	Armored Boots		30	250	68	265	21	276	45	268	43	256
 18	1720	Sterling Boots		30	250	68	265	21	276	45	268	43	256
 19	1721	Ultimate Boots		30	250	68	265	21	276	45	268	43	256
 20	2031	Lucius		30	250	68	265	21	276	45	268	43	256
 21	2046	Hermes		30	250	68	265	21	276	45	268	43	256
+22	2217	Gravity Treads		30	250	68	265	21	276	45	268	43	256
 
 		Cloaks	Complex													Collars											
 1	122	Traveler's Cloak		51	79	47	90	40	120	41	94	43	117			84	80	75	90	68	120	61	99	68	120		
@@ -167,3 +172,4 @@ Id	Item id	Notes		X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y
 23	2030	Pendragon		38	68	35	76	28	102	29	83	29	98			0	0	0	0	0	0	0	0	0	0
 24	2045	Atlas		38	68	35	76	28	102	29	83	29	98			0	0	0	0	0	0	0	0	0	0
 25	2105	Cloak of Baa		38	68	35	76	28	102	29	83	29	98			0	0	0	0	0	0	0	0	0	0
+26	2216	Phase Cloak		38	68	35	76	28	102	29	83	29	98			0	0	0	0	0	0	0	0	0	0

@@ -47,7 +47,7 @@ local function DamageHook(ret)
 			local Charge = item.Charges
 			local ModTier = math.floor(Charge/1000)
 			local itnum = item.Number
-			local BlasterType = itnum - select(math.floor(itnum/800),865,1665)
+			local BlasterType = (Merge.Functions.BlasterKind and Merge.Functions.BlasterKind(itnum)) or (itnum - select(math.floor(itnum/800),865,1665))
 			local DMin = select(BlasterType, 10, 15)
 			local DMax = select(BlasterType, 20, 30)
 			if ModTier > 0 then

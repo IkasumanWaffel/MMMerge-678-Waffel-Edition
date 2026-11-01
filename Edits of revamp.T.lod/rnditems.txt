@@ -2214,6 +2214,18 @@ Item #	Pic File	1	2	3	4	5	6
 2210	cestus10	0	0	0	0	0	1	Palms of Serenity
 2211	cestus11	0	0	0	0	0	1	Shadowgrip
 2212	cestus12	0	0	0	0	0	1	Mountain's Heart
+2213	anc01	0	0	0	0	0	0	Padish's Signet
+2214	anc02	0	0	0	0	0	0	VARN Officer's Visor
+2215	anc03	0	0	0	0	0	0	Servo Gauntlets
+2216	anc04	0	0	0	0	0	0	Phase Cloak
+2217	anc05	0	0	0	0	0	0	Gravity Treads
+2218	anc06	0	0	0	0	0	0	Officer's Shield Module
+2219	anc07	0	0	0	0	0	0	Padish's Sidearm
+2220	anc08	0	0	0	0	0	0	Command Cube
+2221	anc09	0	0	0	0	0	0	Plasma Edge
+2222	anc10	0	0	0	0	0	0	Ancient Power Core
+2223	anc11	0	0	0	0	0	0	Sentinel Frame
+2224	anc12	0	0	0	0	0	0	Neural Crown
 								
 								
 								

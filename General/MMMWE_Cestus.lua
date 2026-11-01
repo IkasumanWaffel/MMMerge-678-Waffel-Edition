@@ -48,9 +48,10 @@ local CESTUS = {
 	[2210] = {Kind = D.Mind,  Dice = {2, 6}},             -- Palms of Serenity (artifact)
 	[2211] = {Kind = D.Dark,  Dice = {2, 6}},             -- Shadowgrip (artifact)
 	[2212] = {Kind = D.Earth, Dice = {3, 6}},             -- Mountain's Heart (relic)
+	[2215] = {Kind = D.Energy, Dice = {2, 8}},            -- Servo Gauntlets (MMMWE_AncientArtifacts.lua)
 }
 MF.Cestuses = CESTUS
-local ARTIFACTS = {[2209] = true, [2210] = true, [2211] = true, [2212] = true}
+local ARTIFACTS = {[2209] = true, [2210] = true, [2211] = true, [2212] = true, [2215] = true}
 
 local FOUR = {D.Fire, D.Air, D.Water, D.Earth}
 

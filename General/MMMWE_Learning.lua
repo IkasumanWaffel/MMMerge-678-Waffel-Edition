@@ -49,5 +49,6 @@ function events.GetLearningTotalSkill(t)
 	if not pl then return end
 	local ok, learn, int = pcall(function() return MF.LearningPercent(pl), MF.IntellectExpPercent(pl) end)
 	if not ok then return end
-	t.Result = math.max(L.MinPercent, math.floor(learn + int))
+	local items = MF.ItemExpBonus and MF.ItemExpBonus(pl) or 0     -- Neural Crown (MMMWE_AncientArtifacts.lua)
+	t.Result = math.max(L.MinPercent, math.floor(learn + int + items))
 end

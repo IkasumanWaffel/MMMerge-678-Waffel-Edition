@@ -80,9 +80,20 @@ local SHIELD_SHORT = {"Nova", "Rate", "Delay", "Capacity"}
 B.ShieldSpecNames, B.ShieldItem = SHIELD_SPECS, SHIELD
 B.SpecNames = SPECS
 
-local BLASTERS = {[866] = 1, [867] = 2, [1666] = 1, [1667] = 2}   -- 1 pistol, 2 rifle
+local BLASTERS = {[866] = 1, [867] = 2, [1666] = 1, [1667] = 2,   -- 1 pistol, 2 rifle
+	[2219] = 1}                                                      -- Padish's Sidearm (MMMWE_AncientArtifacts.lua)
+-- shields: the Energy Shield and the Officer's Shield Module (MMMWE_AncientArtifacts.lua)
+local SHIELDS = {[968] = true, [2218] = true}
+-- boards built in and fixed (no upgrades, no toolkit): {spec, ...}
+local FIXED = {
+	[2219] = {1, 1, 1, 3, 3, 2, 2, 4},     -- Sidearm: Emitter 3, Disruptor 2, Capacitor 2, Power cell 1
+	[2218] = {4, 4, 4, 2, 2},              -- Shield Module: Capacity 3, Recharge rate 2
+}
+MF.FixedBoards = FIXED
 local TOOLKIT = 962
 MF.IsBlasterItem = function(n) return BLASTERS[n] ~= nil end
+MF.BlasterKind = function(n) return BLASTERS[n] end   -- 1 pistol, 2 rifle
+MF.IsShieldItem = function(n) return SHIELDS[n] == true end
 
 -- ore item -> grade (1 Iron .. 6 Stalt); same grade in both item sets
 local ORE = {
@@ -179,11 +190,14 @@ local function state(item)
 	local st
 	if ch < OFFSET then
 		st = decodeBoard(ch)
-		if ch == 0 then
+		if ch == 0 and FIXED[item.Number] then
+			for _, sp in ipairs(FIXED[item.Number]) do st.Stack[#st.Stack + 1] = {Spec = sp, Fine = false} end
+			item.MaxCharges = B.CellFull
+		elseif ch == 0 then
 			-- never touched: a found blaster with a random charge and maybe an upgrade
 			-- (a found shield: fully charged)
 			randomUpgrades(st)
-			item.MaxCharges = item.Number == SHIELD and B.CellFull or random(40, B.CellFull)
+			item.MaxCharges = SHIELDS[item.Number] and B.CellFull or random(40, B.CellFull)
 		else
 			item.MaxCharges = B.CellFull
 		end
@@ -224,7 +238,7 @@ local function shieldOf(pl)
 	local slot = pl.ItemBelt
 	if slot <= 0 then return end
 	local it = pl.Items[slot]
-	if it.Number ~= SHIELD or it.Broken then return end
+	if not SHIELDS[it.Number] or it.Broken then return end
 	return it, slot
 end
 MF.ShieldOf = shieldOf
@@ -400,11 +414,12 @@ local function useOre(pl, item)
 	if not grade then return end
 	local gun, _, what = upgradeTarget(pl)
 	if not gun then return smelt(pl, item) end
+	if FIXED[gun.Number] then return fail("Its board was sealed by the Heavenly Forge: it can't be upgraded.") end
 	if gun.Broken then return fail("The blaster is broken.") end
 	local st = state(gun)
 	local lim, BM = masteryLimit(pl)
 	-- a shield that can't take more work: the ore is smelted instead
-	if gun.Number == SHIELD and (st.Count >= 8 or st.Count >= lim) then return smelt(pl, item) end
+	if SHIELDS[gun.Number] and (st.Count >= 8 or st.Count >= lim) then return smelt(pl, item) end
 	if st.Count >= 8 then return fail("This blaster is fully upgraded.") end
 	if st.Count >= lim then
 		return fail(string.format("%s's Blaster mastery allows %d upgrades on a gun.", pl.Name, lim))
@@ -437,6 +452,7 @@ local function useGem(pl, item)
 	local spec = GEM[item.Number]
 	if not spec then return end
 	local gun, SPECS, what = upgradeTarget(pl)
+	if gun and FIXED[gun.Number] then return fail("Its board was sealed by the Heavenly Forge: it can't be upgraded.") end
 	if not gun then return fail("Hold a blaster in the main hand or wear an energy shield to install a gem.") end
 	if gun.Broken then return fail("The blaster is broken.") end
 	if spec == 0 then spec = specFromKeys() end
@@ -445,7 +461,7 @@ local function useGem(pl, item)
 	if st.Count >= 8 then return fail(string.format("This %s is fully upgraded.", what)) end
 	if st.Count >= lim then
 		return fail(string.format("%s's Blaster mastery allows %d upgrades on a %s.", pl.Name, lim,
-			gun.Number == SHIELD and "shield" or "gun"))
+			SHIELDS[gun.Number] and "shield" or "gun"))
 	end
 	local tier = st.Tiers[spec] + 1
 	if tier > 4 then return fail(string.format("%s is already at tier 4.", SPECS[spec])) end
@@ -483,6 +499,7 @@ local function useToolkit(pl, kit)
 	end
 	local gun, SPECS = upgradeTarget(pl)
 	if not gun then return fail("Hold a blaster in the main hand (or wear an energy shield) to use the toolkit.") end
+	if FIXED[gun.Number] then return fail("Its board was sealed by the Heavenly Forge: the toolkit can't open it.") end
 	local st = state(gun)
 	if Keys.IsPressed(const.Keys.CTRL) then
 		local last = st.Stack[#st.Stack]
@@ -500,7 +517,7 @@ local function useToolkit(pl, kit)
 		Game.ShowStatusText(string.format("%s tier %d removed. The gem is lost.", SPECS[last.Spec], tier))
 		return 0
 	end
-	if gun.Number == SHIELD then
+	if SHIELDS[gun.Number] then
 		return fail("The toolkit moves boards between blasters only (Ctrl: remove the shield's last upgrade).")
 	end
 	if #st.Stack > 0 or st.Work > 0 then
@@ -700,7 +717,7 @@ end
 
 -- restore pct % of a blaster's cell; returns true if it was a blaster
 function MF.BlasterRecharge(item, pct)
-	if not BLASTERS[item.Number] and item.Number ~= SHIELD then return false end   -- also a shield's charge
+	if not BLASTERS[item.Number] and not SHIELDS[item.Number] then return false end   -- also a shield's charge
 	local st = state(item)
 	st.Cell = min(B.CellFull, st.Cell + floor(pct * 2 + 0.5))
 	item.MaxCharges = st.Cell
@@ -712,7 +729,7 @@ end
 mem.autohook(0x428B9C, function(d)
 	local ptr = d.ecx
 	local num = i4[ptr]
-	if not BLASTERS[num] and num ~= SHIELD then return end
+	if not BLASTERS[num] and not SHIELDS[num] then return end
 	local mastery = i4[d.ebp - 0xC]
 	local skill = i4[d.ebp - 0x3C]
 	local se = Merge.Tables and Merge.Tables.SpellsExtra and Merge.Tables.SpellsExtra[28]
@@ -726,7 +743,7 @@ mem.autohook(0x428B9C, function(d)
 		for idx, it in pl.Items do
 			if it["?ptr"] == ptr then
 				MF.BlasterRecharge(it, pct)
-				Game.ShowStatusText(string.format("%s: %d%%", it.Number == SHIELD and "Shield charge" or "Power cell", floor(it.MaxCharges / 2)), 2)
+				Game.ShowStatusText(string.format("%s: %d%%", SHIELDS[it.Number] and "Shield charge" or "Power cell", floor(it.MaxCharges / 2)), 2)
 			end
 		end
 	end

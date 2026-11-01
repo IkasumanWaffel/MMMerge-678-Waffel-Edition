@@ -266,7 +266,7 @@ function events.AfterLoadMap()
 	for _, pl in Party do
 		for i = 1, 138 do
 			local it = pl.Items[i]
-			if it.Number == 968 and (it.Bonus ~= 0 or it.Bonus2 ~= 0 or it.BonusStrength ~= 0) then
+			if (it.Number == 968 or it.Number == 2218) and (it.Bonus ~= 0 or it.Bonus2 ~= 0 or it.BonusStrength ~= 0) then
 				it.Bonus, it.Bonus2, it.BonusStrength = 0, 0, 0
 			end
 		end

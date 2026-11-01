@@ -626,7 +626,8 @@ end
 local function resourceMax(pl, name, r)
 	if name == "Ki" then return kiMax(pl) end
 	local stat = STAT_MAX[name]
-	if stat then return r.Max + MAX_PER_BONUS * statBonus(pl, stat) end
+	local extra = MF.ResourceMaxBonus and MF.ResourceMaxBonus(pl, name) or 0   -- Command Cube (MMMWE_AncientArtifacts.lua)
+	if stat then return r.Max + MAX_PER_BONUS * statBonus(pl, stat) + extra end
 	return r.Max
 end
 
@@ -1233,7 +1234,7 @@ end
 local function deployDroid(pl, pi)
 	local L = math.max(1, pl.LevelBase or 1)
 	local _, stage = classFamily(pl.Class)
-	local untilT = Game.Time + DROID.BaseTime + DROID.PerLevel * L
+	local untilT = Game.Time + (DROID.BaseTime + DROID.PerLevel * L) * (MF.MachineTimeMult and MF.MachineTimeMult(pl) or 1)
 	local mon, d = liveDroid(pi)
 	if mon then
 		mon.HP = mon.FullHP
@@ -1252,7 +1253,7 @@ local function deployDroid(pl, pi)
 	end
 	local RS, RM = SplitSkill(MF.TechRepairSkill and MF.TechRepairSkill(pl) or pl:GetSkill(const.Skills.Repair))
 	local RSM = RS * RM
-	local hp = DROID.HP + DROID.HPPerLevel * L + DROID.HPPerRSM * RSM
+	local hp = math.floor((DROID.HP + DROID.HPPerLevel * L + DROID.HPPerRSM * RSM) * (MF.MachineHPMult and MF.MachineHPMult(pl) or 1))
 	m.Level = math.min(L, 255)
 	m.FullHP = hp
 	m.HP = hp
@@ -1299,7 +1300,7 @@ end
 -- Sentry Turret: a stationary gun, the MM6 Terminator Unit (droids()["T" .. pi])
 local function deployTurret(pl, pi)
 	local L = math.max(1, pl.LevelBase or 1)
-	local untilT = Game.Time + TECH.TurretBaseTime + TECH.TurretPerLevel * L
+	local untilT = Game.Time + (TECH.TurretBaseTime + TECH.TurretPerLevel * L) * (MF.MachineTimeMult and MF.MachineTimeMult(pl) or 1)
 	local key = "T" .. pi
 	local mon, d = liveDroid(key)
 	if mon then
@@ -1316,7 +1317,7 @@ local function deployTurret(pl, pi)
 		return false
 	end
 	local RS, RM = SplitSkill(MF.TechRepairSkill and MF.TechRepairSkill(pl) or pl:GetSkill(const.Skills.Repair))
-	local hp = TECH.TurretHP + TECH.TurretHPPerLevel * L + TECH.TurretHPPerRSM * RS * RM
+	local hp = math.floor((TECH.TurretHP + TECH.TurretHPPerLevel * L + TECH.TurretHPPerRSM * RS * RM) * (MF.MachineHPMult and MF.MachineHPMult(pl) or 1))
 	m.Level = math.min(L, 255)
 	m.FullHP, m.HP = hp, hp
 	m.ArmorClass = DROID.AC + DROID.ACPerLevel * L

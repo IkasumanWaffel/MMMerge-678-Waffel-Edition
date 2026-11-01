@@ -41,7 +41,7 @@
 	-- (blasters, the Blaster Toolkit and the Energy Shield keep their upgrade board in Charges,
 	-- which can be above PACK_FLAG: MMMWE_Blasters.lua)
 	local EXCLUDED_ITEMS = { [866] = true, [867] = true, [962] = true, [966] = true, [967] = true, [968] = true,
-		[1666] = true, [1667] = true}
+		[1666] = true, [1667] = true, [2218] = true, [2219] = true, [2221] = true}
 
 	local VALID_SCREENS = { [0] = true, [7] = true, [10] = true, [13] = true, [14] = true, [15] = true }
 
@@ -1398,7 +1398,7 @@
 		if slot <= 0 then return end
 		local it = Player.Items[slot]
 		if Game.ItemsTxt[it.Number].Skill ~= 7 then return end
-		local blasterType = it.Number - select(math.floor(it.Number / 800), 865, 1665)
+		local blasterType = (MF.BlasterKind and MF.BlasterKind(it.Number)) or (it.Number - select(math.floor(it.Number / 800), 865, 1665))
 		local scale = blasterScale(it)
 		return round(select(blasterType, 10, 15) * scale), round(select(blasterType, 20, 30) * scale)
 	end
@@ -1419,7 +1419,7 @@
 
 		-- Blaster stats dependent on type (pistol or rifle)
 		local base = math.floor(itnum / 800)
-		local blasterType = itnum - select(base, 865, 1665)
+		local blasterType = (MF.BlasterKind and MF.BlasterKind(itnum)) or (itnum - select(base, 865, 1665))
 		local DMin    = select(blasterType, 10, 15)
 		local DMax    = select(blasterType, 20, 30)
 		local CDBase  = 50
@@ -2755,6 +2755,7 @@
 	local SpecialItemGroups = {
 		[191] = 1, [192] = 2, [193] = 3,
 		[866] = 4, [867] = 4, [1666] = 4, [1667] = 4, [962] = 7, [968] = 8,
+		[2219] = 4, [2218] = 8,   -- Padish's Sidearm, Officer's Shield Module (MMMWE_AncientArtifacts.lua)
 		[970] = 5, [971] = 5, [972] = 5, [973] = 5, [975] = 5, [976] = 5,
 		[977] = 5, [978] = 5, [980] = 5, [981] = 5, [982] = 5, [983] = 5,
 		[984] = 5, [985] = 5, [986] = 5, [987] = 5,
@@ -2908,7 +2909,7 @@
 
 	function DefineBlasterModString(ItNumber, BS)
 		local base = math.floor(ItNumber / 800) == 1 and 865 or 1665
-		local bt = ItNumber - base
+		local bt = (MF.BlasterKind and MF.BlasterKind(ItNumber)) or (ItNumber - base)
 		local dMin = bt == 1 and 10 or 15
 		local dMax = bt == 1 and 20 or 30
 		local cBase = bt == 1 and 8 or 12
@@ -3869,7 +3870,9 @@
 			return
 		end
 
-		item.Charges = item.Charges - 1
+		-- Gravity Treads (MMMWE_AncientArtifacts.lua): every other minute is free
+		f.saved = MF.JetpackSaver and MF.JetpackSaver(Player) and not f.saved
+		if not f.saved then item.Charges = item.Charges - 1 end
 		Game.ShowStatusText(string.format(
 			"Flight mode active. Remaining charge: %3.1f%%", item.Charges / 10))
 
@@ -3904,7 +3907,7 @@
 		if item.Charges >= JUMP_COST then
 			Game.PlaySound(42440)
 			CastSpellDirect(16, 15, 4)
-			item.Charges = item.Charges - JUMP_COST
+			item.Charges = item.Charges - ((MF.JetpackSaver and MF.JetpackSaver(Player)) and math.ceil(JUMP_COST / 2) or JUMP_COST)
 			Game.ShowStatusText(string.format(
 				"Remaining charge: %3.1f%%.", item.Charges / 10))
 		else
