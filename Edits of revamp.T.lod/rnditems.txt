@@ -2202,6 +2202,18 @@ Item #	Pic File	1	2	3	4	5	6
 2198	keys6	0	0	0	0	0	0	Sewer Key
 2199	amulet5	0	0	0	0	0	0	Fire Amulet
 2200	scroll4	0	0	0	0	0	0	Dark Containment
+2201	cestus01	6	12	4	1	0	0	Leather Cestus
+2202	cestus02	2	8	10	5	2	0	Studded Cestus
+2203	cestus03	0	2	6	8	6	3	Ember Cestus
+2204	cestus04	0	2	6	8	6	3	Storm Cestus
+2205	cestus05	0	2	6	8	6	3	Frost Cestus
+2206	cestus06	0	2	6	8	6	3	Stone Cestus
+2207	cestus07	0	0	2	6	10	10	Mithril Cestus
+2208	cestus08	0	0	0	2	6	10	Dragonbone Cestus
+2209	cestus09	0	0	0	0	0	1	Fists of the Four Winds
+2210	cestus10	0	0	0	0	0	1	Palms of Serenity
+2211	cestus11	0	0	0	0	0	1	Shadowgrip
+2212	cestus12	0	0	0	0	0	1	Mountain's Heart
 								
 								
 								

@@ -222,7 +222,7 @@ local ABILITIES = {
 		Icon = {"sbmk02a", "sbmk02b"},},
 	IronBody = {Spell = 25, Stage = 2, Cost = 3, Branch = "MasterMonk",
 		Name = "Iron Body",
-		Desc = "The monk hardens his body against blows: less physical damage taken for a while. Diamond Body (Master Monk, always): immune to the poison and disease of monsters' attacks, +1 to Fire, Air, Water, Earth, Mind, Body and Spirit resistance per 2 points of Meditation.",
+		Desc = "The monk hardens his body against blows: less physical damage taken for a while. Master Monk, always: Diamond Body (immune to the poison and disease of monsters' attacks, +1 to Fire, Air, Water, Earth, Mind, Body and Spirit resistance per 2 points of Meditation) and Ki strikes (bare-handed blows add 1% of their damage per point of Unarmed, at most 25%, as the element of Fire, Air, Water and Earth the target resists least).",
 		Lines = {"3 Ki", "-20% physical damage taken", "Master Monk", "Lasts 5 minutes"},
 		Icon = {"sbmk04a", "sbmk04b"},},
 	Vanish = {Spell = 27, Stage = 2, Cost = 3, Branch = "Ninja",

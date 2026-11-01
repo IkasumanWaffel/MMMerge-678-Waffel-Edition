@@ -82,7 +82,7 @@ function E.GetMultiplier(pl, item, damageKind)
 	local bonus = 0
 	if mode == "Weapon" or mode == "Both" then
 		local skill = txt.Skill
-		if skill and skill >= 0 and skill <= 7 then  -- staff .. blaster
+		if skill and ((skill >= 0 and skill <= 7) or skill == SK.Unarmed) then  -- staff .. blaster, cestuses (Unarmed)
 			bonus = bonus + skillPart(pl, skill, E.PerSkillMastery)
 		end
 	end

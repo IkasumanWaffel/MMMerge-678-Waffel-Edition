@@ -1212,6 +1212,20 @@ GetBonusList(1305).Skills =	{	[const.Skills.DisarmTraps] = 10}
 -- Hands of the Master
 GetBonusList(1313).Skills =	{	[const.Skills.Unarmed] = 10,
 								[const.Skills.Dodging] = 10}
+-- Cestuses (MMMWE_Cestus.lua; the elemental damage is there)
+-- Fists of the Four Winds
+GetBonusList(2209).Skills =	{	[const.Skills.Unarmed] = 5}
+GetBonusList(2209).Stats = {	[const.Stats.FireResistance] = 20, [const.Stats.AirResistance] = 20,
+								[const.Stats.WaterResistance] = 20, [const.Stats.EarthResistance] = 20}
+-- Palms of Serenity
+GetBonusList(2210).Skills =	{	[const.Skills.Meditation] = 8}
+GetBonusList(2210).Stats = {	[const.Stats.Personality] = 15, [const.Stats.Intellect] = 15}
+-- Shadowgrip
+GetBonusList(2211).Skills =	{	[const.Skills.Dodging] = 8}
+GetBonusList(2211).Stats = {	[const.Stats.Speed] = 20}
+-- Mountain's Heart (relic)
+GetBonusList(2212).Stats = {	[const.Stats.Might] = 40, [const.Stats.Endurance] = 40, [const.Stats.EarthResistance] = 30,
+								[const.Stats.Speed] = -20, [const.Stats.Accuracy] = -20}
 -- Ethric's Staff
 GetBonusList(1317).Skills =	{	[const.Skills.Meditation] = 15}
 -- Hareck's Leather
