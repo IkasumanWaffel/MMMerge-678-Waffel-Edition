@@ -9,9 +9,10 @@
 	added to the skill through events.GetSkill) and item bonuses were added flat.
 
 	Now:
-	    mastery multiplier x (Learning level + items + hirelings)  +  9
+	    Mult x Learning level  +  BonusMult x (items + hirelings)  +  9
 	  + IntellectPerPoint x the Intellect bonus (negative bonuses lower it)
-	The mastery multiplier is the game's: Novice 1, Expert 2, Master 3, Grand Master 5.
+	Mult is the game's: Novice 1, Expert 2, Master 3, Grand Master 5; the bonuses from
+	items and hirelings grow more gently with the mastery (BonusMult).
 	A character without the Learning skill gets the hirelings' and items' bonus once
 	(Novice) and the 9% start, as before, plus the Intellect part.
 	Experience is never lowered by more than MinPercent.
@@ -23,17 +24,20 @@ local L = {
 	IntellectPerPoint = 2,      -- % experience per point of the Intellect bonus (-25 .. +40)
 	Base              = 9,      -- the game's starting bonus with any Learning
 	MinPercent        = -90,    -- the total never takes away more than this
-	Mult              = {[0] = 1, 1, 2, 3, 5},   -- by Learning mastery (the game's)
+	Mult              = {[0] = 1, 1, 2, 3, 5},     -- trained Learning, by mastery (the game's)
+	BonusMult         = {[0] = 1, 1, 1.5, 2, 3},   -- items and hirelings, by Learning mastery
 }
 MF.LearningSettings = L
 
 local LEARNING = const.Skills.Learning
 
--- the Learning part: (level + items + hirelings) x the mastery multiplier + 9
+-- the Learning part: trained level x Mult + (items + hirelings) x BonusMult + 9
 function MF.LearningPercent(pl)
-	local S, M = SplitSkill(pl:GetSkill(LEARNING))
+	local S, M = SplitSkill(pl:GetSkill(LEARNING))       -- with items and hirelings
 	if S <= 0 then return 0 end
-	return S * (L.Mult[M] or 1) + L.Base
+	local raw = SplitSkill(pl.Skills[LEARNING])
+	raw = math.min(raw, S)
+	return raw * (L.Mult[M] or 1) + (S - raw) * (L.BonusMult[M] or 1) + L.Base
 end
 
 function MF.IntellectExpPercent(pl)
