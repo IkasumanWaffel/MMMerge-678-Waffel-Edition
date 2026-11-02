@@ -7,7 +7,8 @@ the way MM facets are: same material, convex, at most 19 corners (the editor tri
 facets with more), corners at most BENT units from the facet's plane (the editor
 triangulates facets bent more than 5 outdoors and 2 indoors). Duplicate vertices are
 welded first. With "all", the parts the editor split a model into (name_1, name_2... of at
-most 64 facets each) are merged as one model named after the first part.
+most 64 facets each) are merged back into one model each (name_N joins name when a group
+named name exists).
 
 Keeps vertices, texture coordinates, groups and materials. Polygons are merged only when
 they lie in the same plane, use the same material and the same texture mapping, and the
@@ -145,12 +146,16 @@ def weld(V,faces):
 def main(src,dst,across_groups=False):
     V,T,items=read(src)
     import re
+    groupnames={it[1] for it in items if it[0]=='g'}
     order=[]; buckets={}; g=None; m=None; faces=[]; tags=[]
     base=None
     for it in items:
         if it[0]=='g':
             g=it[1]
-            if base is None: base=re.sub(r'_\d+$','',g)   # the editor's parts of one model: name_1, name_2...
+            # the editor's parts of one model: name, name_1, name_2... (a name that only
+            # ends in a number, like bridge_135, stays a model of its own)
+            cand=re.sub(r'_\d+$','',g)
+            base=cand if cand in groupnames else g
         elif it[0]=='m': m=it[1]
         elif it[0]=='f':
             faces.append(it[1]); tags.append((base if across_groups else g, m))
@@ -159,6 +164,9 @@ def main(src,dst,across_groups=False):
     for f,t in zip(faces,tags):
         if t not in buckets: buckets[t]=[]; order.append(t)
         buckets[t].append(f)
+    first={}
+    for t in order: first.setdefault(t[0],len(first))
+    order.sort(key=lambda t: first[t[0]])     # each model's materials together
     res={t:process(V,T,buckets[t],t[1]) for t in order}
     after=sum(len(r) for r in res.values())
     with open(dst,'w',encoding='latin1',newline='\n') as f:
