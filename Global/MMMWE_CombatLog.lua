@@ -345,7 +345,7 @@ local function createFont()
     local key = tostring(actualSize)
     if key == lastFontKey and hFont ~= 0 then return end
     if hFont ~= 0 then gdi32.DeleteObject(hFont) end
-    hFont = gdi32.CreateFontA(actualSize, 0, 0, 0, 400, 0, 0, 0, 1, 0, 0, 5, 0, "Sovngarde")
+    hFont = gdi32.CreateFontA(actualSize, 0, 0, 0, 400, 0, 0, 0, 1, 0, 0, 5, 0, Merge.Functions.FontFace and Merge.Functions.FontFace("Sovngarde", "Book Antiqua") or "Book Antiqua")
     lastFontKey = key
     G.font = hFont
 end
