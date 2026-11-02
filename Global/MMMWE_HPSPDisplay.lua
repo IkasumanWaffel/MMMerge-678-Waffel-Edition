@@ -350,6 +350,11 @@ local afterDrawFired = false
 local cutsceneActive = false
 local mouseEvent = nil
 local postRenderFallback = 0
+-- frames in a row without AfterDrawNoDialogs before the overlay counts a dialog as open and
+-- hides itself (a single skipped frame used to clear and redraw it: flicker)
+local DIALOG_FRAMES = 3
+local missedFrames = 0
+local SRCCOPY = 0x00CC0020
 
 local screenW     = 0
 local screenH     = 0
@@ -830,7 +835,7 @@ local function createFont()
     local key = tostring(actualSize)
     if key ~= lastFontKey or hFont == 0 then
         if hFont ~= 0 then gdi32.DeleteObject(hFont) end
-        hFont = gdi32.CreateFontA(actualSize, 0, 0, 0, 700, 0, 0, 0, 1, 0, 0, 0, 0, "Book Antiqua")
+        hFont = gdi32.CreateFontA(actualSize, 0, 0, 0, 700, 0, 0, 0, 1, 0, 0, 0, 0, "Sovngarde")
         lastFontKey = key
         G.font = hFont
     end
@@ -838,7 +843,7 @@ local function createFont()
     local skey = tostring(smallSize)
     if skey ~= lastFontSmallKey or hFontSmall == 0 then
         if hFontSmall ~= 0 then gdi32.DeleteObject(hFontSmall) end
-        hFontSmall = gdi32.CreateFontA(smallSize, 0, 0, 0, 400, 0, 0, 0, 1, 0, 0, 5, 0, "Book Antiqua")
+        hFontSmall = gdi32.CreateFontA(smallSize, 0, 0, 0, 400, 0, 0, 0, 1, 0, 0, 5, 0, "Sovngarde")
         lastFontSmallKey = skey
         G.fontSmall = hFontSmall
     end
@@ -1071,12 +1076,25 @@ local function drawOverlay()
     local pDebuffScreenY = math.floor(gameOffsetY + CONFIG.partyDebuffDY * baseScaleY)
 
     local ok, err = pcall(function()
-        local hdc = user32.GetDC(overlayHwnd)
-        if not hdc or hdc == 0 then return end
+        local wdc = user32.GetDC(overlayHwnd)
+        if not wdc or wdc == 0 then return end
+        user32.GetClientRect(overlayHwnd, clientRect)
+        local bw, bh = mem.u4[clientRect + 8], mem.u4[clientRect + 12]
+
+        -- everything is drawn into a memory bitmap and copied to the window in one step, so
+        -- the window never shows the erased state in between (flicker)
+        local hdc = gdi32.CreateCompatibleDC(wdc)
+        local bmp = (hdc ~= 0) and gdi32.CreateCompatibleBitmap(wdc, bw, bh) or 0
+        if hdc == 0 or bmp == 0 then
+            if hdc ~= 0 then gdi32.DeleteDC(hdc) end
+            user32.ReleaseDC(overlayHwnd, wdc)
+            needRedraw = true
+            return
+        end
+        local oldBmp = gdi32.SelectObject(hdc, bmp)
 
         -- Clear all screens
-        user32.GetClientRect(overlayHwnd, clientRect)
-        fillRect(hdc, 0, 0, mem.u4[clientRect + 8], mem.u4[clientRect + 12], COLOR_KEY)
+        fillRect(hdc, 0, 0, bw, bh, COLOR_KEY)
 
         --=== HP/SP TEXT ===
         local oldFont = gdi32.SelectObject(hdc, hFont)
@@ -1238,7 +1256,11 @@ local function drawOverlay()
         end
 
         gdi32.SelectObject(hdc, oldFont)
-        user32.ReleaseDC(overlayHwnd, hdc)
+        gdi32.BitBlt(wdc, 0, 0, bw, bh, hdc, 0, 0, SRCCOPY)
+        gdi32.SelectObject(hdc, oldBmp)
+        gdi32.DeleteObject(bmp)
+        gdi32.DeleteDC(hdc)
+        user32.ReleaseDC(overlayHwnd, wdc)
     end)
 
     if not ok then
@@ -1281,7 +1303,8 @@ function events.PostRender()
     end
 
     if not afterDrawFired then
-        if not dialogActive then
+        missedFrames = missedFrames + 1
+        if not dialogActive and missedFrames >= DIALOG_FRAMES then
             dialogActive = true
             clearOverlay()
         end
@@ -1290,6 +1313,7 @@ function events.PostRender()
             drawOverlay()
         end
     else
+        missedFrames = 0
         if dialogActive then
             dialogActive = false
             needRedraw = true
@@ -1305,6 +1329,7 @@ end
 --====================================================
 function events.AfterDrawNoDialogs()
     afterDrawFired = true
+    missedFrames = 0
     if cutsceneActive then return end
     if dialogActive then
         dialogActive = false
