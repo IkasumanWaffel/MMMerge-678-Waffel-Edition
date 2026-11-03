@@ -765,16 +765,61 @@ mem.hook(NewCode + 8, function(d)
 end)
 
 -- IsMonsterOfKind
-mem.hookfunction(0x436542, 2, 0, function(d, def, id, kind)
-	local t = {
-		Id = id,
-		-- :const.MonsterKind
-		Kind = kind,
-		Result = def(id, kind),
-	}
-	events.cocall("IsMonsterOfKind", t)
-	return t.Result
-end)
+-- (03.11.26, MMMWE) The game asks this for every monster many times a frame (some 300 calls a
+-- frame in a big fight, the function calls itself for combined kinds), and each call went
+-- through Lua. The answers are kept in a table in game memory: a known answer is returned
+-- by a few Asm instructions, only a new (monster, kind) pair goes to Lua and the event.
+-- The table is cleared on each map load (Merge.Functions.ClearMonsterKindCache()).
+do
+	local MAX_ID, MAX_KIND = 4096, 32          -- larger ids/kinds simply aren't cached
+	local size = MAX_ID * MAX_KIND
+	local cache = mem.StaticAlloc(size)
+	mem.fill(cache, size, 0)                   -- 0 = unknown, 1 = no, 2 = yes
+
+	-- the original function, entered through a copy of its first 6 bytes
+	local orig = mem.copycode(0x436542, 6)
+	-- the slow way: a Lua hook placed on a stub that then runs the original
+	local miss = mem.asmproc("nop\nnop\nnop\nnop\nnop\njmp absolute " .. orig)
+	mem.hookfunction(miss, 2, 0, function(d, def, id, kind)
+		local t = {
+			Id = id,
+			-- :const.MonsterKind
+			Kind = kind,
+			Result = def(id, kind),
+		}
+		events.cocall("IsMonsterOfKind", t)
+		if id >= 0 and id < MAX_ID and kind >= 0 and kind < MAX_KIND then
+			mem.u1[cache + id*MAX_KIND + kind] = (t.Result and t.Result ~= 0) and 2 or 1
+		end
+		return t.Result
+	end, 5)
+	local fast = mem.asmproc(string.format([[
+		cmp ecx, %d
+		jae @miss
+		cmp edx, %d
+		jae @miss
+		mov eax, ecx
+		shl eax, 5
+		movzx eax, byte [eax+edx+%d]
+		test eax, eax
+		jz @miss
+		dec eax
+		ret
+	@miss:
+		jmp absolute %d
+	]], MAX_ID, MAX_KIND, cache, miss))
+	mem.asmpatch(0x436542, "jmp absolute " .. fast, 6)
+
+	function Merge.Functions.ClearMonsterKindCache()
+		mem.fill(cache, size, 0)
+	end
+	function events.LoadMap()
+		mem.fill(cache, size, 0)
+	end
+	function events.GameInitialized2()
+		mem.fill(cache, size, 0)
+	end
+end
 
 ---------------------------------------
 -- On HasItemBonus

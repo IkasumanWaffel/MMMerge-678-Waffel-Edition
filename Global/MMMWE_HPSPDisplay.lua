@@ -23,7 +23,10 @@ local kernel32 = mem.dll.kernel32
 --====================================================
 -- КОНФИГ
 --====================================================
+local lastPoll = 0      -- timeGetTime() of the last reading of the values
+
 local CONFIG = {
+    pollMs   = 100,     -- the values are read this often (ms)
     baseW    = 1920,
     baseH    = 1200,
     gameW    = 640,
@@ -1039,6 +1042,12 @@ local function drawOverlay()
         end
         return
     end
+
+    -- (03.11.26) the values are read CONFIG.pollMs apart, not every frame: reading them
+    -- (full HP/SP of everyone, buffs, debuffs) was the overlay's main cost
+    local tNow = timeGetTime()
+    if not needRedraw and tNow - lastPoll < CONFIG.pollMs then return end
+    lastPoll = tNow
 
     local nPlayers, portraitX, hpBarX, spBarX, portraitY, barY = getGamePositions()
 

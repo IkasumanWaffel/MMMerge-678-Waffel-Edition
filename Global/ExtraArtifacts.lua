@@ -1173,7 +1173,9 @@ GetBonusList(2049).Stats = {[const.Stats.HP] = 50,
 							[const.Stats.Personality] = -50}
 							
 -- Spirit, Light and Dark resistances stdbonuses
+local SLDStat = {[const.Stats.SpiritResistance] = true, [const.Stats.LightResistance] = true, [const.Stats.DarkResistance] = true}
 function events.CalcStatBonusByItems(t)
+	if not SLDStat[t.Stat] then return end      -- (03.11.26) was run for every stat
 	local SLDBonuses = {30, 31, 32}
 	local SLDRes = {const.Stats.SpiritResistance, const.Stats.LightResistance, const.Stats.DarkResistance}
 	local Player = t.Player
