@@ -1,6 +1,6 @@
 """MergeObjFacets.py — fewer facets for models exported from CAD (Siemens NX) and the editor
 
-Usage:  python MergeObjFacets.py in.obj out.obj [all]
+Usage:  python MergeObjFacets.py in.obj out.obj [all] [bent=0.5]
 
 Merges neighbouring triangles that lie in (almost) the same plane into convex polygons,
 the way MM facets are: same material, convex, at most 19 corners (the editor triangulates
@@ -16,9 +16,12 @@ result stays convex with at most MAXV corners."""
 import sys, math
 from collections import defaultdict
 MAXV = 19          # the editor triangulates facets with more (Editor Import.lua)
-ANG = 0.985        # normals' cosine pre-filter (about 10 degrees)
-BENT = 4.0         # max distance of a merged facet's corners from its plane (the editor
-                   # triangulates facets bent more than 5 outdoors, 2 indoors)
+ANG = 0.9995       # normals' cosine (about 1.8 degrees)
+BENT = 0.5         # max distance of a merged facet's corners from its plane. Keep it small:
+                   # the game draws a facet as a fan of triangles, and on a bent facet some of
+                   # them turn their back to the camera at grazing angles and are culled (holes
+                   # that come and go with the view). The editor itself only triangulates
+                   # facets bent more than 5 outdoors / 2 indoors, which is too loose for this.
 UVTOL = 0.5        # texture coordinate tolerance (texels)
 
 def sub(a,b): return (a[0]-b[0],a[1]-b[1],a[2]-b[2])
@@ -190,5 +193,7 @@ def items_header(src):
         if s.startswith('mtllib'): h.append(s)
     return h
 
+for _a in list(sys.argv):
+    if _a.startswith('bent='): BENT = float(_a[5:]); sys.argv.remove(_a)
 if __name__=='__main__':
     b,a=main(sys.argv[1],sys.argv[2],len(sys.argv)>3); print('facets',b,'->',a)
