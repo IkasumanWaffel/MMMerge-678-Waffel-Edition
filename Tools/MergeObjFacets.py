@@ -1,6 +1,11 @@
 """MergeObjFacets.py — fewer facets for models exported from CAD (Siemens NX) and the editor
 
-Usage:  python MergeObjFacets.py in.obj out.obj [all] [bent=0.5] [maxv=8] [loose]
+Usage:  python MergeObjFacets.py in.obj out.obj [all] [bent=0.5] [maxv=8] [loose] [part=64]
+
+Each OBJ group stays a model of its own, written in spatially compact parts of at most
+64 facets. Do not use "all" on maps of many separate models (deyja_bridge_ns,
+deyja_bridge_ns_1...): it joins them into one long model, and the editor's 64-facet parts
+of it span the whole map and vanish at some view angles.
 
 Merges neighbouring triangles that lie in (almost) the same plane into convex polygons,
 the way MM facets are: same material, convex, at most 19 corners (the editor triangulates
@@ -185,14 +190,39 @@ def main(src,dst,across_groups=False):
         for h in items_header(src): f.write(h+'\n')
         for v in V: f.write('v %g %g %g\n' % v)
         for t in T: f.write('vt %.8g %.8g\n' % t)
-        lastg=object()
+        # each model is written in compact parts of at most PART facets (name, name_1...):
+        # the editor cuts a model into 64-facet parts in file order, and a part that spans
+        # the whole model (merged facets of one material lie all along it) gets culled
+        # by the game at some view angles
+        models={}; morder=[]
         for t in order:
-            if t[0]!=lastg:
-                f.write('g %s\n' % (t[0] or 'model')); lastg=t[0]
-            f.write('usemtl %s\n' % t[1])
-            for p in res[t]:
-                f.write('f '+' '.join('%d/%d'%(a+1,b+1) if b>=0 else '%d'%(a+1) for a,b in p)+'\n')
+            if t[0] not in models: models[t[0]]=[]; morder.append(t[0])
+            models[t[0]]+= [(t[1],p) for p in res[t]]
+        used={n or 'model' for n in morder}
+        for name in morder:
+            base=name or 'model'; k=0
+            for i,part in enumerate(split_parts(V,models[name])):
+                gname=base
+                if i>0:
+                    while gname in used: k+=1; gname='%s_%d' % (base,k)
+                    used.add(gname)
+                f.write('g %s\n' % gname)
+                lastm=None
+                for m,p in sorted(part,key=lambda x:x[0] or ''):
+                    if m!=lastm: f.write('usemtl %s\n' % m); lastm=m
+                    f.write('f '+' '.join('%d/%d'%(a+1,b+1) if b>=0 else '%d'%(a+1) for a,b in p)+'\n')
     return before, after
+
+PART = 64
+
+def split_parts(V,faces):
+    """Cut a list of (material, poly) into spatially compact groups of at most PART."""
+    if len(faces)<=PART: return [faces]
+    cs=[tuple(sum(V[a][i] for a,_ in p)/len(p) for i in range(3)) for _,p in faces]
+    ax=max(range(3),key=lambda i:max(c[i] for c in cs)-min(c[i] for c in cs))
+    idx=sorted(range(len(faces)),key=lambda j:cs[j][ax])
+    n=-(-len(faces)//PART); half=(n//2)*PART      # left side gets whole parts
+    return split_parts(V,[faces[j] for j in idx[:half]])+split_parts(V,[faces[j] for j in idx[half:]])
 
 def items_header(src):
     h=[]
@@ -204,6 +234,7 @@ def items_header(src):
 for _a in list(sys.argv):
     if _a.startswith('bent='): BENT = float(_a[5:]); sys.argv.remove(_a)
     elif _a.startswith('maxv='): MAXV = int(_a[5:]); sys.argv.remove(_a)
+    elif _a.startswith('part='): PART = int(_a[5:]); sys.argv.remove(_a)
     elif _a == 'loose': STRICT = False; sys.argv.remove(_a)
 if __name__=='__main__':
     b,a=main(sys.argv[1],sys.argv[2],len(sys.argv)>3); print('facets',b,'->',a)
