@@ -1,6 +1,6 @@
 """MergeObjFacets.py — fewer facets for models exported from CAD (Siemens NX) and the editor
 
-Usage:  python MergeObjFacets.py in.obj out.obj [all] [bent=0.5]
+Usage:  python MergeObjFacets.py in.obj out.obj [all] [bent=0.5] [maxv=8] [loose]
 
 Merges neighbouring triangles that lie in (almost) the same plane into convex polygons,
 the way MM facets are: same material, convex, at most 19 corners (the editor triangulates
@@ -15,7 +15,7 @@ they lie in the same plane, use the same material and the same texture mapping, 
 result stays convex with at most MAXV corners."""
 import sys, math
 from collections import defaultdict
-MAXV = 19          # the editor triangulates facets with more (Editor Import.lua)
+MAXV = 8           # corners per facet (the editor triangulates facets with more than 19)
 ANG = 0.9995       # normals' cosine (about 1.8 degrees)
 BENT = 0.5         # max distance of a merged facet's corners from its plane. Keep it small:
                    # the game draws a facet as a fan of triangles, and on a bent facet some of
@@ -72,12 +72,20 @@ def uvmap(V,T,tri):
         return (u0[0]+s*du1[0]+t*du2[0], u0[1]+s*du1[1]+t*du2[1])
     return f
 
+STRICT = True      # every corner a real corner: no three corners in a line (straight
+                   # corners made the game drop parts of facets at some view angles)
+
 def convex(V,poly,n):
     k=len(poly)
     if k<3: return False
     for i in range(k):
         a=V[poly[i][0]]; b=V[poly[(i+1)%k][0]]; c=V[poly[(i+2)%k][0]]
-        if dot(cross(sub(b,a),sub(c,b)),n) < -1e-6: return False
+        e1=sub(b,a); e2=sub(c,b)
+        t=dot(cross(e1,e2),n)
+        if STRICT and k>3:
+            l=math.sqrt(dot(e1,e1)*dot(e2,e2))
+            if l<=0 or t/l < 0.02: return False      # sin of the turn below ~1 degree
+        elif t < -1e-6: return False
     return len(set(p[0] for p in poly))==k
 
 def merge_two(P,Q,i,j):
@@ -195,5 +203,7 @@ def items_header(src):
 
 for _a in list(sys.argv):
     if _a.startswith('bent='): BENT = float(_a[5:]); sys.argv.remove(_a)
+    elif _a.startswith('maxv='): MAXV = int(_a[5:]); sys.argv.remove(_a)
+    elif _a == 'loose': STRICT = False; sys.argv.remove(_a)
 if __name__=='__main__':
     b,a=main(sys.argv[1],sys.argv[2],len(sys.argv)>3); print('facets',b,'->',a)
