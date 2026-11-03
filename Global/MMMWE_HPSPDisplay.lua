@@ -917,14 +917,38 @@ end
 --====================================================
 -- DRAW WIDGETS
 --====================================================
+local brushes = {}     -- [color] = brush, kept (only a few colours are used)
 local function fillRect(hdc, x, y, w, h, color)
-    local b = gdi32.CreateSolidBrush(color)
+    local b = brushes[color]
+    if not b or b == 0 then
+        b = gdi32.CreateSolidBrush(color)
+        brushes[color] = b
+    end
     mem.u4[rectBuf + 0]  = x
     mem.u4[rectBuf + 4]  = y
     mem.u4[rectBuf + 8]  = x + w
     mem.u4[rectBuf + 12] = y + h
     user32.FillRect(hdc, rectBuf, b)
-    gdi32.DeleteObject(b)
+end
+
+-- the memory bitmap the widgets are drawn into, kept between redraws (made anew only
+-- when the window size changes; a full-screen bitmap took milliseconds to make)
+local memDC, memBmp, memOldBmp, memW, memH = 0, 0, 0, 0, 0
+local function getMemDC(wdc, w, h)
+    if memDC ~= 0 and memW == w and memH == h then return memDC end
+    if memDC ~= 0 then
+        gdi32.SelectObject(memDC, memOldBmp)
+        if memBmp ~= 0 then gdi32.DeleteObject(memBmp) end
+        gdi32.DeleteDC(memDC)
+        memDC, memBmp = 0, 0
+    end
+    local dc = gdi32.CreateCompatibleDC(wdc)
+    if dc == 0 then return 0 end
+    local bmp = gdi32.CreateCompatibleBitmap(wdc, w, h)
+    if bmp == 0 then gdi32.DeleteDC(dc); return 0 end
+    memDC, memBmp, memW, memH = dc, bmp, w, h
+    memOldBmp = gdi32.SelectObject(dc, bmp)
+    return dc
 end
 
 local OUTLINE_COLOR = 0x505050
@@ -1032,6 +1056,12 @@ local function uiScale(val)
 end
 
 local function drawOverlay()
+    -- (03.11.26) the values are read CONFIG.pollMs apart, not every frame: reading them
+    -- (full HP/SP of everyone, buffs, debuffs) and checking the window was the overlay's main cost
+    local tNow = timeGetTime()
+    if not needRedraw and tNow - lastPoll < CONFIG.pollMs then return end
+    lastPoll = tNow
+
     if not ensureWindow() then return end
     syncPosition()
 
@@ -1042,12 +1072,6 @@ local function drawOverlay()
         end
         return
     end
-
-    -- (03.11.26) the values are read CONFIG.pollMs apart, not every frame: reading them
-    -- (full HP/SP of everyone, buffs, debuffs) was the overlay's main cost
-    local tNow = timeGetTime()
-    if not needRedraw and tNow - lastPoll < CONFIG.pollMs then return end
-    lastPoll = tNow
 
     local nPlayers, portraitX, hpBarX, spBarX, portraitY, barY = getGamePositions()
 
@@ -1092,15 +1116,12 @@ local function drawOverlay()
 
         -- everything is drawn into a memory bitmap and copied to the window in one step, so
         -- the window never shows the erased state in between (flicker)
-        local hdc = gdi32.CreateCompatibleDC(wdc)
-        local bmp = (hdc ~= 0) and gdi32.CreateCompatibleBitmap(wdc, bw, bh) or 0
-        if hdc == 0 or bmp == 0 then
-            if hdc ~= 0 then gdi32.DeleteDC(hdc) end
+        local hdc = getMemDC(wdc, bw, bh)
+        if hdc == 0 then
             user32.ReleaseDC(overlayHwnd, wdc)
             needRedraw = true
             return
         end
-        local oldBmp = gdi32.SelectObject(hdc, bmp)
 
         -- Clear all screens
         fillRect(hdc, 0, 0, bw, bh, COLOR_KEY)
@@ -1266,9 +1287,6 @@ local function drawOverlay()
 
         gdi32.SelectObject(hdc, oldFont)
         gdi32.BitBlt(wdc, 0, 0, bw, bh, hdc, 0, 0, SRCCOPY)
-        gdi32.SelectObject(hdc, oldBmp)
-        gdi32.DeleteObject(bmp)
-        gdi32.DeleteDC(hdc)
         user32.ReleaseDC(overlayHwnd, wdc)
     end)
 

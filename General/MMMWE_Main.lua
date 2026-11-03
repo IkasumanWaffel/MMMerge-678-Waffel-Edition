@@ -2544,23 +2544,22 @@
 	
 	-- Shop, temple, identify and repair prices: moved to MMMWE_Economy.lua (Economy.Settings)
 
-	-- (03.11.26) the code is patched only when a value changes: assembling it took ~70 us and
-	-- the game asks for the merchant skill a couple of times every frame
-	local LastMSGM, LastCharisma
+	-- (03.11.26) the two numbers are written straight into the instructions instead of
+	-- assembling them anew: that took ~70 us, and the game asks for the merchant skill of
+	-- each character every frame
+	--   0x4902B2  mov eax, 10000          (B8 imm32)   Merchant skill at GM
+	--   0x4902D8  lea eax, [eax+esi+7]    (8D 44 30 imm8)  starting bonus from Personality
 	mem.autohook(0x490295, function(d)
 		local Pl = MF.GetPlayerFromPtr(d.ecx)
 		local MS, MM = SplitSkill(Pl:GetSkill(25))
 		local Rep = Party:GetReputation()
 		local Charisma = Game.GetStatisticEffect(Pl:GetPersonality())
 		local MSGM = math.max(0, MS*MM-Rep+Charisma)
-		if MSGM ~= LastMSGM then
-			mem.asmpatch(0x4902b2, "mov eax, " .. MSGM) -- Merchant skill at GM (current value: skill-, reputation- and personality-dependent, default: 10000)
-			LastMSGM = MSGM
-		end
-		if Charisma ~= LastCharisma then
-			mem.asmpatch(0x4902d8, "lea eax, [eax+esi+" .. Charisma .. "]")	--Starting merchant skill bonus is 0.5% per +1 Stat bonus of Personality (default: 7% [eax+esi+7])
-			LastCharisma = Charisma
-		end
+		Charisma = math.max(-128, math.min(127, Charisma))
+		mem.prot(true)
+		mem.i4[0x4902b3] = MSGM -- Merchant skill at GM (current value: skill-, reputation- and personality-dependent, default: 10000)
+		mem.i1[0x4902db] = Charisma	--Starting merchant skill bonus is 0.5% per +1 Stat bonus of Personality (default: 7% [eax+esi+7])
+		mem.prot(false)
 	end)
 	
 	-- Regeneration only works for the living (and zombies)
