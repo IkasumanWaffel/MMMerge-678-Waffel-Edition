@@ -953,7 +953,8 @@ end
 
 local OUTLINE_COLOR = 0x505050
 
-local function drawText(hdc, text, x, y, w, h, color)
+-- the outlined text as the game drew it: 8 copies in the outline colour, then the text
+local function renderText(hdc, text, x, y, w, h, color)
     -- 8-directional contour
     gdi32.SetTextColor(hdc, OUTLINE_COLOR)
     for dx = -1, 1 do
@@ -976,6 +977,59 @@ local function drawText(hdc, text, x, y, w, h, color)
     mem.u4[drawRect + 12] = y + h
     user32.DrawTextA(hdc, text, #text, drawRect,
         DT_CENTER + DT_SINGLELINE + DT_NOCLIP)
+end
+
+-- (04.11.26) Text cache: each text (with its font, colour and box) is drawn once, outline
+-- and all, into a small bitmap of its own; later redraws only copy that bitmap, with the
+-- colour key left out (TransparentBlt). Drawing the outline (9 DrawTextA calls a text) was
+-- most of the overlay's time. The cache is emptied when it holds TEXT_CACHE_MAX texts.
+local TEXT_CACHE_MAX = 256
+local OBJ_FONT = 6
+local textCache, textCacheN = {}, 0      -- [key] = {bmp, w, h, ox}
+local cacheDC, cacheDefBmp = 0, 0
+local sizeBuf = mem.StaticAlloc(8)
+local msimg32
+pcall(function() msimg32 = mem.dll.msimg32 end)
+
+local function clearTextCache()
+    if cacheDC ~= 0 and cacheDefBmp ~= 0 then gdi32.SelectObject(cacheDC, cacheDefBmp) end
+    for _, e in pairs(textCache) do gdi32.DeleteObject(e.bmp) end
+    textCache, textCacheN = {}, 0
+end
+
+local function drawText(hdc, text, x, y, w, h, color)
+    if not msimg32 then return renderText(hdc, text, x, y, w, h, color) end
+    local font = gdi32.GetCurrentObject(hdc, OBJ_FONT)
+    local key = font .. "|" .. w .. "|" .. h .. "|" .. color .. "|" .. text
+    local e = textCache[key]
+    if not e then
+        if cacheDC == 0 then
+            cacheDC = gdi32.CreateCompatibleDC(hdc)
+            if cacheDC == 0 then return renderText(hdc, text, x, y, w, h, color) end
+        end
+        if textCacheN >= TEXT_CACHE_MAX then clearTextCache() end
+        gdi32.SelectObject(cacheDC, font)
+        gdi32.GetTextExtentPoint32A(cacheDC, text, #text, sizeBuf)
+        local tw, th = mem.i4[sizeBuf], mem.i4[sizeBuf + 4]
+        -- room for text wider than its box (it's centred and not clipped) and the outline
+        local bw = math.max(w, tw) + 4
+        local bh = math.max(h, th) + 2
+        local ox = math.floor((bw - w) / 2)
+        local bmp = gdi32.CreateCompatibleBitmap(hdc, bw, bh)
+        if bmp == 0 then return renderText(hdc, text, x, y, w, h, color) end
+        local old = gdi32.SelectObject(cacheDC, bmp)
+        if cacheDefBmp == 0 then cacheDefBmp = old end
+        fillRect(cacheDC, 0, 0, bw, bh, COLOR_KEY)
+        gdi32.SetBkMode(cacheDC, 1)
+        renderText(cacheDC, text, ox, 1, w, h, color)
+        e = {bmp = bmp, w = bw, h = bh, ox = ox}
+        textCache[key] = e
+        textCacheN = textCacheN + 1
+    else
+        gdi32.SelectObject(cacheDC, e.bmp)
+    end
+    local ok = msimg32.TransparentBlt(hdc, x - e.ox, y - 1, e.w, e.h, cacheDC, 0, 0, e.w, e.h, COLOR_KEY)
+    if ok == 0 then renderText(hdc, text, x, y, w, h, color) end
 end
 
 
