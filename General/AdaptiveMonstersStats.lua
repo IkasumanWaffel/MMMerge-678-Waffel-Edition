@@ -490,9 +490,9 @@ end
 --	Multipliers
 
 local Multipliers = {
-	HP = 1.1,
-	AC = 1.1,
-	MaxDamage = 1.1,
+	HP = 1,
+	AC = 1,
+	MaxDamage = 1,
 	PlayerAC = 1,
 	MoveSpeed = 1.1,
 }
