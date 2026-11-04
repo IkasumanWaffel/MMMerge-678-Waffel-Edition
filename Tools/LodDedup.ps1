@@ -194,7 +194,11 @@ foreach ($k in $Kinds) {
             $lines += ("      {0,-24} {1,10:N0}  {2} in {3}" -f $e.Name, $e.Size, $(if ($isSame) { 'identical to the copy' } else { 'replaced by the copy' }), $lods[$w].File)
         }
         if ($rm.Count -gt 0 -and $rm.Count -eq $l.Entries.Count) {
-            Say ("  {0}: all {1} files are replaced by later archives; left as it is (it could be deleted)" -f $l.File, $rm.Count)
+            if ($l.File -ieq $k.Base) {
+                Say ("  {0}: all {1} files are replaced by later archives; left as it is (the game needs the original archives to exist)" -f $l.File, $rm.Count)
+            } else {
+                Say ("  {0}: all {1} files are replaced by later archives; left as it is" -f $l.File, $rm.Count)
+            }
         } elseif ($rm.Count -gt 0) {
             Say ("  {0}: {1} files to remove ({2} identical, {3} replaced), {4:N1} MB" -f $l.File, $rm.Count, $same, $over, ($bytes / 1MB))
             foreach ($s in $lines) { $report.Add($s) }
