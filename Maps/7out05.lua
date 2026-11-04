@@ -49,4 +49,38 @@ end
 evt.HouseDoor(17, 494)  -- "Ship"
 evt.house[18] = 494  -- "Ship"
 
+evt.hint[457] = evt.str[100]  -- ""
+evt.map[457] = function()
+	if not evt.Cmp{"MapVar29", Value = 5} then
+		if evt.Cmp{"QBits", Value = 761} then         -- Don't get ambushed
+			evt.Set{"MapVar29", Value = 5}
+		else
+			evt.Add{"QBits", Value = 761}         -- Don't get ambushed
+			evt.SummonMonsters{TypeIndexInMapStats = 3, Level = 1, Count = 10, X = 1310, Y = 4720, Z = 3853, NPCGroup = 66, unk = 0}         -- ""
+			evt.SummonMonsters{TypeIndexInMapStats = 3, Level = 1, Count = 10, X = 1310, Y = -7800, Z = 3853, NPCGroup = 66, unk = 0}         -- ""
+			evt.SetMonGroupBit{NPCGroup = 66, Bit = const.MonsterBits.Hostile, On = true}         -- ""
+			evt.Set{"MapVar29", Value = 5}
+		end
+	end
+	evt.SetNPCTopic{NPC = 461, Index = 0, Event = 513}         -- "Lunius Shador" : "Pay 1000 Gold"
+	evt.SetNPCTopic{NPC = 461, Index = 1, Event = 514}         -- "Lunius Shador" : "Don't Pay"
+end
+
+evt.hint[458] = evt.str[100]  -- ""
+evt.map[458] = function()
+	if not evt.Cmp{"MapVar29", Value = 5} then
+		if evt.Cmp{"QBits", Value = 761} then         -- Don't get ambushed
+			evt.Set{"MapVar29", Value = 5}
+		else
+			evt.Add{"QBits", Value = 761}         -- Don't get ambushed
+			evt.SummonMonsters{TypeIndexInMapStats = 3, Level = 1, Count = 10, X = 12435, Y = 2180, Z = 3680, NPCGroup = 66, unk = 0}         -- ""
+			evt.SummonMonsters{TypeIndexInMapStats = 3, Level = 1, Count = 10, X = 12435, Y = -5030, Z = 3680, NPCGroup = 66, unk = 0}         -- ""
+			evt.SetMonGroupBit{NPCGroup = 66, Bit = const.MonsterBits.Hostile, On = true}         -- ""
+			evt.Set{"MapVar29", Value = 5}
+		end
+	end
+	evt.SetNPCTopic{NPC = 461, Index = 0, Event = 513}         -- "Lunius Shador" : "Pay 1000 Gold"
+	evt.SetNPCTopic{NPC = 461, Index = 1, Event = 514}         -- "Lunius Shador" : "Don't Pay"
+end
+
 
