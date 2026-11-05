@@ -8,7 +8,12 @@ scaled to size x size. Sprites have no partial transparency, so the outer part o
 (from EDGE of the radius) is dithered: fewer and fewer pixels are kept toward the edge, which
 reads as a soft edge from afar. falloff above 1 thins the dots out faster (a softer halo). Palette 536 matches a white and yellow-orange sun closely.
 
-The sun of 06.11.26: --image sun_photo.jpg 941.5 542.5 360 ... 256 536 0.64 1.6
+    python make_sun_sprite.py --set <picture> <cx> <cy> <radius> <bitmaps.lod> <template sprites lod> <out lod> [size=256] [edge] [falloff]
+
+--set: the four suns by height (sunwe white, sunwe1 golden, sunwe2 orange, sunwe3 red: TINTS),
+each with the palette of bitmaps.lod that matches its colours best.
+
+The suns of 06.11.26: --set sun_photo.jpg 941.5 542.5 360 bitmaps.lod mm6.sprites.lod waffel.sprites.lod 256 0.64 1.6
 
 Without --image, the placeholder:
 The picture: a white core, a yellow-orange glow fading to black. Palette index 0 is
@@ -66,8 +71,8 @@ def image_pixels(picture, cx, cy, radius, size, edge=EDGE, falloff=1.0):
         return px[x, y]
     return pixel
 
-def build(bitmaps, template, out, size=128, pal=230, pixel=None):
-    P = palette(bitmaps, pal)
+def sprite_bytes(name, P, pal, size, pixel=None):
+    """a sprite of size x size; pixel(x, y) gives the colour or None (transparent)"""
     def nearest(c):
         return min(range(1, 256), key=lambda i: (P[i][0]-c[0])**2 + (P[i][1]-c[1])**2 + (P[i][2]-c[2])**2)
     cache = {}
@@ -98,20 +103,81 @@ def build(bitmaps, template, out, size=128, pal=230, pixel=None):
         table += struct.pack('<hhI', x1, x2, len(data))
         data += bytes(row[x1:x2 + 1])
     packed = zlib.compress(data, 9)
-    hdr = b'sunwe'.ljust(12, b'\0') + struct.pack('<IHHHHHHI', len(packed), size, size, pal, 0, 0, 0, len(data))
-    sprite = hdr + table + packed
-    # archive: the 0x100-byte header of a sprites lod, one directory entry, the sprite
+    hdr = name.encode().ljust(12, b'\0') + struct.pack('<IHHHHHHI', len(packed), size, size, pal, 0, 0, 0, len(data))
+    return hdr + table + packed
+
+def write_lod(template, out, sprites):
+    """archive: the 0x100-byte header of a sprites lod, the directory, the sprites"""
     t = open(template, 'rb').read()
     head = bytearray(t[:0x120])
-    struct.pack_into('<I', head, 0x114, 32 + len(sprite))
-    struct.pack_into('<I', head, 0x11C, 1)
-    entry = b'sunwe'.ljust(16, b'\0') + struct.pack('<IIII', 32, len(sprite), 0, 0)
-    open(out, 'wb').write(bytes(head) + entry + sprite)
-    return len(sprite)
+    dirsize = 32 * len(sprites)
+    entries = b''; blobs = b''
+    for name, b in sprites:
+        entries += name.encode().ljust(16, b'\0') + struct.pack('<IIII', dirsize + len(blobs), len(b), 0, 0)
+        blobs += b
+    struct.pack_into('<I', head, 0x114, dirsize + len(blobs))
+    struct.pack_into('<I', head, 0x11C, len(sprites))
+    open(out, 'wb').write(bytes(head) + entries + blobs)
+
+def build(bitmaps, template, out, size=128, pal=230, pixel=None):
+    b = sprite_bytes('sunwe', palette(bitmaps, pal), pal, size, pixel)
+    write_lod(template, out, [('sunwe', b)])
+    return len(b)
+
+# --set: the sun by its height: white high up, golden, orange and red toward the horizon.
+# A colour of the picture is multiplied by the tint (the white disc becomes the tint).
+TINTS = [('sunwe',  (1.00, 1.00, 1.00)),
+         ('sunwe1', (1.00, 0.88, 0.58)),
+         ('sunwe2', (1.00, 0.64, 0.30)),
+         ('sunwe3', (1.00, 0.40, 0.16))]
+
+def all_palettes(bitmaps):
+    pals = {}
+    for name, b in lod_entries(open(bitmaps, 'rb').read()):
+        n = name.lower()
+        if n.startswith('pal') and n[3:].isdigit() and len(b) >= 48 + 768:
+            pals[int(n[3:])] = [tuple(b[48 + i*3: 51 + i*3]) for i in range(256)]
+    return pals
+
+def best_palette(pals, colours):
+    """the palette closest to the colours (a list of (colour, count))"""
+    best = None
+    for k, P in pals.items():
+        err = 0
+        for c, n in colours:
+            err += n * min((P[i][0]-c[0])**2 + (P[i][1]-c[1])**2 + (P[i][2]-c[2])**2 for i in range(1, 256))
+        if best is None or err < best[0]: best = (err, k)
+    return best[1]
+
+def build_set(picture, cx, cy, radius, bitmaps, template, out, size=256, edge=EDGE, falloff=1.0):
+    base = image_pixels(picture, cx, cy, radius, size, edge, falloff)
+    pals = all_palettes(bitmaps)
+    sprites = []
+    for name, (tr, tg, tb) in TINTS:
+        def pixel(x, y, tr=tr, tg=tg, tb=tb):
+            c = base(x, y)
+            return c and (round(c[0]*tr), round(c[1]*tg), round(c[2]*tb))
+        hist = {}
+        for y in range(0, size, 2):
+            for x in range(0, size, 2):
+                c = pixel(x, y)
+                if c:
+                    q = (c[0] // 8 * 8 + 4, c[1] // 8 * 8 + 4, c[2] // 8 * 8 + 4)
+                    hist[q] = hist.get(q, 0) + 1
+        pal = best_palette(pals, list(hist.items()))
+        sprites.append((name, sprite_bytes(name, pals[pal], pal, size, pixel)))
+        print(name, 'palette', pal)
+    write_lod(template, out, sprites)
 
 if __name__ == '__main__':
     a = sys.argv[1:]
-    if a and a[0] == '--image':
+    if a and a[0] == '--set':
+        pic, cx, cy, rad = a[1], float(a[2]), float(a[3]), float(a[4])
+        size = int(a[8]) if len(a) > 8 else 256
+        edge = float(a[9]) if len(a) > 9 else EDGE
+        falloff = float(a[10]) if len(a) > 10 else 1.0
+        build_set(pic, cx, cy, rad, a[5], a[6], a[7], size, edge, falloff)
+    elif a and a[0] == '--image':
         pic, cx, cy, rad = a[1], float(a[2]), float(a[3]), float(a[4])
         size = int(a[8]) if len(a) > 8 else 256
         pal = int(a[9]) if len(a) > 9 else 536

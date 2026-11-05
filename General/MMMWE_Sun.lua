@@ -7,8 +7,15 @@
 	south at noon (SUN.MaxElevation degrees) and sets in the west at SUN.Sunset. Mountains,
 	trees and buildings between the party and the sun hide it, as it is a real object.
 
-	Known limit: the sun can't be farther than the game draws objects, so at sunrise and
-	sunset it shows in front of mountains that are farther away than SUN.Distance.
+	Low in the sky it turns golden, orange and red (SUN.Groups, by SUN.Redden degrees of
+	elevation): the four pictures are the photo tinted by Tools\make_sun_sprite.py --set.
+
+	The skyline: mountains closer than SUN.Distance hide the sun as they stand in front of it,
+	but the land farther away doesn't. So the script looks along the map's height grid toward
+	the sun, up to the map's edge, and hides the sun once its centre sinks below the highest
+	land in its direction (SUN.SkylineMargin degrees lower or higher). It is checked again when
+	the party moves to another 512 x 512 square, climbs or drops, or the sun moves a quarter
+	of a degree.
 
 	Not shown: indoors, at night, in thick fog (weather fog that ends before the sun, and
 	always-foggy maps like Deyja after the Necromancers' quest), and on the maps in
@@ -33,12 +40,15 @@
 
 local MF = Merge.Functions
 local floor, sin, cos, pi, max, min = math.floor, math.sin, math.cos, math.pi, math.max, math.min
+local atan2 = math.atan2
 
 local SUN = {
 	Id           = 12170,      -- ObjList.txt (12110..12999: see above)
 	SummonId     = 555,        -- what is summoned and turned into the sun (Laser)
-	Group        = "sunwe",    -- SFT group
-	Picture      = "own",      -- "bolt": the blaster bolt's picture (a test)
+	Groups       = {"sunwe", "sunwe1", "sunwe2", "sunwe3"},   -- SFT groups: white, golden, orange, red
+	Redden       = {15, 8, 3}, -- elevation (degrees) below which the sun is golden, orange, red
+	Skyline      = true,       -- hidden below the land in its direction
+	SkylineMargin = 0,         -- degrees: above 0 hides it earlier, below 0 later
 	Convert      = true,       -- false: the summoned Laser stays a Laser (a test)
 	Scale        = 291200,     -- size of the picture (65536 = 1:1; the 256 px sprite, its disc about 155 px)
 	Distance     = 7000,       -- from the party (keep below ViewDistanceD3D in mm8.ini)
@@ -62,37 +72,46 @@ local function findType(id)
 	end
 end
 
-local function group()
-	local ok, g = pcall(function() return Game.SFTBin:FindGroup(SUN.Group) end)
+local groups = {}    -- SFT indexes of SUN.Groups
+local stage          -- the picture shown (index in SUN.Groups)
+
+local function findGroup(name)
+	local ok, g = pcall(function() return Game.SFTBin:FindGroup(name) end)
 	return ok and g and g >= 0 and g or nil
 end
 
--- the frame of the sun's group, loaded, at SUN.Scale; with SUN.Picture = "bolt" it shows the
--- blaster bolt's picture instead (to tell a picture that doesn't load from an object that
--- isn't drawn)
+local function group()
+	return groups[stage or 1] or groups[1]
+end
+
+-- the sun's frames, loaded, at SUN.Scale
 local function prepareFrame()
-	local g = group()
+	groups = {}
+	for k, name in ipairs(SUN.Groups) do
+		local g = findGroup(name)
+		if g then
+			groups[k] = g
+			pcall(function()
+				Game.SFTBin:LoadGroup(g)
+				Game.SFTBin.Frames[g].Scale = SUN.Scale
+			end)
+		elseif k == 1 then
+			MF.LogWarning("Sun: no SFT group %s", name)
+		end
+	end
+	stage = nil
+end
+
+-- the ObjList line points to the group of the picture to show
+local function setStage(k)
+	if k == stage then return end
+	local g = groups[k] or groups[1]
 	if not g then return end
 	pcall(function()
-		local SFT = Game.SFTBin
-		SFT:LoadGroup(g)
-		local f = SFT.Frames[g]
-		if SUN.Picture == "bolt" then
-			local b = SFT:FindGroup("lzrbolt")
-			SFT:LoadGroup(b)
-			for k = 0, 7 do f.SpriteIndex[k] = SFT.Frames[b].SpriteIndex[k] end
-			f.Loaded = true
-		end
-		f.Scale = SUN.Scale
-	end)
-	-- the ObjList line points to the group (in case the table was compiled before the group existed)
-	pcall(function()
 		local d = Game.ObjListBin[typeIndex]
-		if d.Name == "Sun" and d.SFTIndex ~= g then
-			MF.LogWarning("Sun: ObjList %d pointed to SFT %d, set to %d (%s)", SUN.Id, d.SFTIndex, g, SUN.Group)
-			d.SFTIndex = g
-		end
+		if d.Name == "Sun" then d.SFTIndex = g end
 	end)
+	stage = k
 end
 
 local function diag()
@@ -102,7 +121,7 @@ local function diag()
 		t[#t + 1] = string.format("objlist %d '%s' SFTIndex %d Bits %X", typeIndex, d.Name, d.SFTIndex, d.Bits)
 	end)
 	local g = group()
-	t[#t + 1] = "group " .. tostring(g)
+	t[#t + 1] = string.format("group %s (picture %s)", tostring(g), tostring(stage))
 	if g then pcall(function()
 		local f = Game.SFTBin.Frames[g]
 		t[#t + 1] = string.format("frame '%s'/'%s' sprite %d loaded %s scale %d", f.GroupName, f.SpriteName,
@@ -142,11 +161,40 @@ local function foggy()
 	return fog
 end
 
+-- the highest angle (radians) of the land seen from the party's eyes toward the azimuth, from
+-- the map's height grid (512 per square, heights x 32), up to the map's edge
+local skyKey, skyAngle
+local function skyline(az)
+	local eye = Party.Z + SUN.EyeHeight
+	local key = string.format("%d:%d:%d:%d", floor(Party.X / 512), floor(Party.Y / 512), floor(eye / 64), floor(az * 720 / pi))
+	if key == skyKey then return skyAngle end
+	local best = -pi / 2
+	local ok = pcall(function()
+		local hm = Map.HeightMap
+		local cx, cy = cos(az), sin(az)
+		local d = 512
+		while true do
+			local ix = floor(64 + (Party.X + cx * d) / 512 + 0.5)
+			local iy = floor(64 - (Party.Y + cy * d) / 512 + 0.5)
+			if ix < 0 or ix > 127 or iy < 0 or iy > 127 then break end
+			local a = atan2(hm[iy][ix] * 32 - eye, d)
+			if a > best then best = a end
+			d = d + 256
+		end
+	end)
+	skyKey, skyAngle = key, ok and best or -pi / 2
+	return skyAngle
+end
+MF.SunSkyline = skyline
+
 local function shown()
 	if not Map.IsOutdoor() or not typeIndex then return false end
 	if SUN.NoSunMaps[Map.Name:lower()] then return false end
 	if foggy() then return false end
-	return sunAngles() ~= nil
+	local az, el = sunAngles()
+	if not az then return false end
+	if SUN.Skyline and skyline(az) >= el + SUN.SkylineMargin * pi / 180 then return false end
+	return true
 end
 
 local function sunObject()
@@ -210,6 +258,11 @@ function events.Tick()
 	if not o then return end
 	local az, el = sunAngles()
 	local d = SUN.Distance
+	local k = 1
+	for i, deg in ipairs(SUN.Redden) do
+		if el < deg * pi / 180 then k = i + 1 end
+	end
+	setStage(k)
 	if SUN.Test == "front" then          -- a test: right in front of the party, at eye height
 		az, el, d = (Party.Direction or 0) * pi / 1024, 0, 600
 	end
@@ -232,6 +285,7 @@ function MF.SunInfo()
 	pcall(function() fr = string.format("%s, ends at %d", tostring(Game.Weather.Fog), Game.Weather.FogRange2) end)
 	s = s .. string.format("\nshown %s (outdoor %s, too foggy %s; weather fog %s)", tostring(shown()),
 		tostring(Map.IsOutdoor()), tostring(foggy()), fr)
+	if az then s = s .. string.format("\nskyline toward the sun %.1f degrees", skyline(az) * 180 / pi) end
 	s = s .. "\n" .. diag()
 	print(s)
 	return s

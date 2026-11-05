@@ -23408,3 +23408,6 @@
 23406	botboxobj	botboxobj	65536	-	x	x	-	-	-	-	-	-	-	-	-	-	-	-	-	-	0	9	2
 23407	runbladeobj	runbladeobj	65536	-	x	x	-	-	-	-	-	-	-	-	-	-	-	-	-	-	0	9	2
 23408	sunwe	sunwe	291200	x	x	x	x	-	-	-	-	-	-	-	-	-	-	-	x	-	0	536	1
+23409	sunwe1	sunwe1	291200	x	x	x	x	-	-	-	-	-	-	-	-	-	-	-	x	-	0	5	1
+23410	sunwe2	sunwe2	291200	x	x	x	x	-	-	-	-	-	-	-	-	-	-	-	x	-	0	5	1
+23411	sunwe3	sunwe3	291200	x	x	x	x	-	-	-	-	-	-	-	-	-	-	-	x	-	0	496	1
