@@ -31,7 +31,7 @@
 	It must be a Temporary object (ObjList.txt and the object's bit): the game takes objects
 	that aren't temporary for items lying around and draws the item's picture, so an object
 	without an item isn't drawn at all. Its age is reset every frame, so it never runs out.
-	It is removed and made anew on every map load, so saved games may hold a stray one that
+	It is removed when hidden (night, fog, below the skyline) and made anew when shown, and on every map load, so saved games may hold a stray one that
 	is cleaned up when the map is loaded.
 
 	Console: Merge.Functions.SunInfo() prints the time, the sun's angles, its object and its
@@ -228,13 +228,21 @@ local function makeSun()
 	end
 end
 
--- the sun's object left from a saved game or an earlier visit
+-- the object's Visible bit only marks it as seen (for the map), the game draws it anyway:
+-- an object is hidden by removing it (and, until the game clears it, moving it deep underground)
+local function removeObject(o)
+	o.Removed = true
+	o.Z = -30000
+	o.VelocityX, o.VelocityY, o.VelocityZ = 0, 0, 0
+end
+
+-- the sun's object, and any left from a saved game or an earlier visit
 local function removeStray()
 	local cur = sunIndex and Map.Objects[sunIndex]
-	if cur and not cur.Removed then cur.Removed = true; cur.Visible = false end
+	if cur and not cur.Removed and (cur.Type == SUN.Id or OldIds[cur.Type]) then removeObject(cur) end
 	for i = 0, Map.Objects.count - 1 do
 		local o = Map.Objects[i]
-		if (o.Type == SUN.Id or OldIds[o.Type]) and not o.Removed then o.Removed = true; o.Visible = false end
+		if (o.Type == SUN.Id or OldIds[o.Type]) and not o.Removed then removeObject(o) end
 	end
 	sunIndex = nil
 end
@@ -250,8 +258,8 @@ end
 function events.Tick()
 	if not typeIndex then return end
 	local o = sunObject()
-	if not shown() then
-		if o then o.Visible = false end
+	if not shown() then             -- night, fog, below the skyline: removed, made anew when shown
+		if o then removeObject(o); sunIndex = nil end
 		return
 	end
 	o = o or makeSun()
