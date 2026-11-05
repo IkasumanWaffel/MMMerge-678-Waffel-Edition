@@ -16,6 +16,9 @@
 
 	The object is made from a summoned Laser (555) whose type is changed to 12070: the game
 	doesn't draw objects summoned with a type added to ObjList.txt, but draws them once made.
+	It must be a Temporary object (ObjList.txt and the object's bit): the game takes objects
+	that aren't temporary for items lying around and draws the item's picture, so an object
+	without an item isn't drawn at all. Its age is reset every frame, so it never runs out.
 	It is removed and made anew on every map load, so saved games may hold a stray one that
 	is cleaned up when the map is loaded.
 
@@ -156,10 +159,10 @@ local function makeSun()
 		if o.Type == SUN.SummonId and not o.Removed and before[i] ~= SUN.SummonId then
 			if SUN.Convert then o.Type, o.TypeIndex = SUN.Id, typeIndex end
 			o.VelocityX, o.VelocityY, o.VelocityZ = 0, 0, 0
-			o.Age, o.MaxAge = 0, 0
+			o.Age, o.MaxAge = 0, 30000
 			o.Owner, o.Target = 0, 0
 			pcall(function()
-				o.Missile = false; o.Temporary = false; o.HaltTurnBased = false
+				o.Missile = false; o.Temporary = true; o.HaltTurnBased = false
 				o.Visible = true; o.IgnoreRange = true
 			end)
 			sunIndex = i
@@ -207,6 +210,7 @@ function events.Tick()
 	o.Y = floor(Party.Y + h * sin(az))
 	o.Z = floor(Party.Z + SUN.EyeHeight + d * sin(el))
 	o.VelocityX, o.VelocityY, o.VelocityZ = 0, 0, 0
+	o.Age = 0                            -- it never runs out
 	o.Visible = true
 end
 
