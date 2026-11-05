@@ -2,7 +2,7 @@
 	MMMWE_Sun.lua — a sun in the sky of outdoor maps (06.11.26, prototype)
 
 	The sun is a game object (ObjList.txt "Sun" 12170, SFT group sunwe, sprite sunwe in
-	Data\waffel.sprites.lod: a placeholder glow) kept every frame at SUN.Distance from the
+	Data\waffel.sprites.lod, palette 536: cut from a photo by Tools\make_sun_sprite.py) kept every frame at SUN.Distance from the
 	party in the direction of the sun. It rises in the east at SUN.Sunrise, is highest in the
 	south at noon (SUN.MaxElevation degrees) and sets in the west at SUN.Sunset. Mountains,
 	trees and buildings between the party and the sun hide it, as it is a real object.
@@ -40,7 +40,7 @@ local SUN = {
 	Group        = "sunwe",    -- SFT group
 	Picture      = "own",      -- "bolt": the blaster bolt's picture (a test)
 	Convert      = true,       -- false: the summoned Laser stays a Laser (a test)
-	Scale        = 196608,     -- size of the picture (65536 = 1:1; at 7000 the 128 px sun is about 3 degrees)
+	Scale        = 98304,      -- size of the picture (65536 = 1:1; the 256 px sprite, its disc about 200 px)
 	Distance     = 7000,       -- from the party (keep below ViewDistanceD3D in mm8.ini)
 	Sunrise      = 5.5,        -- hours
 	Sunset       = 20.5,
