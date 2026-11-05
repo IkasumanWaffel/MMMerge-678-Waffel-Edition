@@ -17,8 +17,12 @@
     and the new archive is checked before it takes its place. To undo, copy the archives
     back from that folder. Close the game and the editor before running it.
 
-    Left alone: the UI layout archives (*.icons.UI.lod), editor.* archives (they may be
-    loaded only by the editor), new.lod, and files listed twice inside one archive.
+    Left alone: the original MM8 archives (bitmaps.lod, icons.lod, sprites.lod, games.lod,
+    EnglishT.lod, EnglishD.lod): the game reads some files from them directly, without
+    looking at the custom archives (pcnames.txt for a new game, for one), so nothing is ever
+    removed from them; they only count as the archives read first. Also left alone: the UI
+    layout archives (*.icons.UI.lod), editor.* archives (they may be loaded only by the
+    editor), new.lod, and files listed twice inside one archive.
 #>
 param(
     [switch]$Apply,
@@ -173,7 +177,7 @@ foreach ($k in $Kinds) {
         if ($l) { $lods += $l } else { Say "  ! skipped (not a known archive layout): $(Split-Path -Leaf $p)" }
     }
     Say "== $($k.Kind): read in this order, the last one wins =="
-    $i = 0; foreach ($l in $lods) { $i++; Say ("  {0,2}. {1} ({2} files)" -f $i, $l.File, $l.Entries.Count) }
+    $i = 0; foreach ($l in $lods) { $i++; Say ("  {0,2}. {1} ({2} files){3}" -f $i, $l.File, $l.Entries.Count, $(if ($l.File -ieq $k.Base) { ', original: never changed' } else { '' })) }
 
     # name -> the archive that wins, and its entry there
     $winner = @{}; $winEntry = @{}
@@ -182,6 +186,7 @@ foreach ($k in $Kinds) {
     }
     for ($li = 0; $li -lt $lods.Count; $li++) {
         $l = $lods[$li]
+        if ($l.File -ieq $k.Base) { continue }     # the original archive: never changed
         $rm = New-Object 'System.Collections.Generic.HashSet[int]'
         $same = 0; $over = 0; $bytes = [int64]0; $lines = @()
         foreach ($e in $l.Entries) {
