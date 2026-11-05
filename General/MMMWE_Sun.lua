@@ -32,7 +32,7 @@ local SUN = {
 	Group        = "sunwe",    -- SFT group
 	Picture      = "own",      -- "bolt": the blaster bolt's picture (a test)
 	Scale        = 196608,     -- size of the picture (65536 = 1:1; at 7000 the 128 px sun is about 3 degrees)
-	Distance     = 6000,       -- from the party (keep below ViewDistanceD3D in mm8.ini)
+	Distance     = 7000,       -- from the party (keep below ViewDistanceD3D in mm8.ini)
 	Sunrise      = 5.5,        -- hours
 	Sunset       = 20.5,
 	MaxElevation = 60,         -- degrees above the horizon at noon
