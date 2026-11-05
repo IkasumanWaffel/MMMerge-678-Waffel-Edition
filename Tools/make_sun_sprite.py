@@ -1,12 +1,14 @@
 """Builds the sun sprite (sunwe) into Data/waffel.sprites.lod (05.11.26, 06.11.26).
 
     python make_sun_sprite.py <bitmaps.lod> <template sprites lod> <out lod> [size=128] [palette=230]
-    python make_sun_sprite.py --image <picture> <cx> <cy> <radius> <bitmaps.lod> <template sprites lod> <out lod> [size=256] [palette=536]
+    python make_sun_sprite.py --image <picture> <cx> <cy> <radius> <bitmaps.lod> <template sprites lod> <out lod> [size=256] [palette=536] [edge=0.85] [falloff=1]
 
 --image: the sun is cut from a picture: the circle at cx, cy (pixels) of the given radius,
 scaled to size x size. Sprites have no partial transparency, so the outer part of the circle
 (from EDGE of the radius) is dithered: fewer and fewer pixels are kept toward the edge, which
-reads as a soft edge from afar. Palette 536 matches a white and yellow-orange sun closely.
+reads as a soft edge from afar. falloff above 1 thins the dots out faster (a softer halo). Palette 536 matches a white and yellow-orange sun closely.
+
+The sun of 06.11.26: --image sun_photo.jpg 941.5 542.5 360 ... 256 536 0.64 1.6
 
 Without --image, the placeholder:
 The picture: a white core, a yellow-orange glow fading to black. Palette index 0 is
@@ -48,7 +50,7 @@ BAYER = [[0, 32, 8, 40, 2, 34, 10, 42], [48, 16, 56, 24, 50, 18, 58, 26],
          [3, 35, 11, 43, 1, 33, 9, 41], [51, 19, 59, 27, 49, 17, 57, 25],
          [15, 47, 7, 39, 13, 45, 5, 37], [63, 31, 55, 23, 61, 29, 53, 21]]
 
-def image_pixels(picture, cx, cy, radius, size):
+def image_pixels(picture, cx, cy, radius, size, edge=EDGE, falloff=1.0):
     from PIL import Image
     im = Image.open(picture).convert('RGB')
     im = im.crop((round(cx - radius), round(cy - radius), round(cx + radius), round(cy + radius)))
@@ -58,8 +60,8 @@ def image_pixels(picture, cx, cy, radius, size):
     def pixel(x, y):
         r = math.hypot(x + 0.5 - R, y + 0.5 - R) / R
         if r >= 1: return None
-        if r > EDGE:
-            keep = 1 - (r - EDGE) / (1 - EDGE)          # 1 at EDGE .. 0 at the rim
+        if r > edge:
+            keep = (1 - (r - edge) / (1 - edge)) ** falloff   # 1 at edge .. 0 at the rim
             if BAYER[y % 8][x % 8] / 64 >= keep: return None
         return px[x, y]
     return pixel
@@ -113,6 +115,8 @@ if __name__ == '__main__':
         pic, cx, cy, rad = a[1], float(a[2]), float(a[3]), float(a[4])
         size = int(a[8]) if len(a) > 8 else 256
         pal = int(a[9]) if len(a) > 9 else 536
-        print(build(a[5], a[6], a[7], size, pal, image_pixels(pic, cx, cy, rad, size)))
+        edge = float(a[10]) if len(a) > 10 else EDGE
+        falloff = float(a[11]) if len(a) > 11 else 1.0
+        print(build(a[5], a[6], a[7], size, pal, image_pixels(pic, cx, cy, rad, size, edge, falloff)))
     else:
         print(build(a[0], a[1], a[2], *(int(x) for x in a[3:])))

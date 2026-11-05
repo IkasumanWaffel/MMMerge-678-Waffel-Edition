@@ -40,7 +40,7 @@ local SUN = {
 	Group        = "sunwe",    -- SFT group
 	Picture      = "own",      -- "bolt": the blaster bolt's picture (a test)
 	Convert      = true,       -- false: the summoned Laser stays a Laser (a test)
-	Scale        = 220000,     -- size of the picture (65536 = 1:1; the 256 px sprite, its disc about 200 px)
+	Scale        = 291200,     -- size of the picture (65536 = 1:1; the 256 px sprite, its disc about 155 px)
 	Distance     = 7000,       -- from the party (keep below ViewDistanceD3D in mm8.ini)
 	Sunrise      = 5.5,        -- hours
 	Sunset       = 20.5,
