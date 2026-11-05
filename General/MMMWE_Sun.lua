@@ -1,7 +1,7 @@
 --[[
 	MMMWE_Sun.lua — a sun in the sky of outdoor maps (06.11.26, prototype)
 
-	The sun is a game object (ObjList.txt "Sun" 12070, SFT group sunwe, sprite sunwe in
+	The sun is a game object (ObjList.txt "Sun" 13070, SFT group sunwe, sprite sunwe in
 	Data\waffel.sprites.lod: a placeholder glow) kept every frame at SUN.Distance from the
 	party in the direction of the sun. It rises in the east at SUN.Sunrise, is highest in the
 	south at noon (SUN.MaxElevation degrees) and sets in the west at SUN.Sunset. Mountains,
@@ -14,7 +14,11 @@
 	always-foggy maps like Deyja after the Necromancers' quest), and on the maps in
 	SUN.NoSunMaps. Light weather fog only fades it.
 
-	The object is made from a summoned Laser (555) whose type is changed to 12070: the game
+	Its id must be 13000 or above: the game hands objects with ids 500-599 and 1000-12999 to
+	its spell effects code, which draws only the spells it knows and skips the rest (why the
+	sun with id 12070, and the Plasma Grenade's 12060 before it, were never drawn outdoors).
+
+	The object is made from a summoned Laser (555) whose type is changed to the sun's: the game
 	doesn't draw objects summoned with a type added to ObjList.txt, but draws them once made.
 	It must be a Temporary object (ObjList.txt and the object's bit): the game takes objects
 	that aren't temporary for items lying around and draws the item's picture, so an object
@@ -30,7 +34,7 @@ local MF = Merge.Functions
 local floor, sin, cos, pi, max, min = math.floor, math.sin, math.cos, math.pi, math.max, math.min
 
 local SUN = {
-	Id           = 12070,      -- ObjList.txt
+	Id           = 13070,      -- ObjList.txt (13000 or above: see below)
 	SummonId     = 555,        -- what is summoned and turned into the sun (Laser)
 	Group        = "sunwe",    -- SFT group
 	Picture      = "own",      -- "bolt": the blaster bolt's picture (a test)
