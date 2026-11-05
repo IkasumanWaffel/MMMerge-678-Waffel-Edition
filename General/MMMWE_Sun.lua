@@ -81,7 +81,7 @@ local function prepareFrame()
 	-- the ObjList line points to the group (in case the table was compiled before the group existed)
 	pcall(function()
 		local d = Game.ObjListBin[typeIndex]
-		if d.SFTIndex ~= g then
+		if d.Name == "Sun" and d.SFTIndex ~= g then
 			MF.LogWarning("Sun: ObjList %d pointed to SFT %d, set to %d (%s)", SUN.Id, d.SFTIndex, g, SUN.Group)
 			d.SFTIndex = g
 		end
@@ -149,6 +149,7 @@ local function sunObject()
 end
 
 local function makeSun()
+	typeIndex = findType(SUN.Id) or typeIndex      -- SUN.Id can be changed for a test
 	prepareFrame()
 	local before = {}
 	for i = 0, Map.Objects.count - 1 do before[i] = Map.Objects[i].Type end
