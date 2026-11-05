@@ -196,6 +196,9 @@ function events.Tick()
 	if not o then return end
 	local az, el = sunAngles()
 	local d = SUN.Distance
+	if SUN.Test == "front" then          -- a test: right in front of the party, at eye height
+		az, el, d = (Party.Direction or 0) * pi / 1024, 0, 600
+	end
 	local h = d * cos(el)
 	o.X = floor(Party.X + h * cos(az))
 	o.Y = floor(Party.Y + h * sin(az))
@@ -221,4 +224,27 @@ end
 
 function MF.SunRemake()
 	removeStray()
+end
+
+-- a test: a plain Laser (the blaster bolt, which the game is known to draw) standing still
+-- 600 in front of the party, untouched by this script after it is made
+function MF.SunTestLaser()
+	local ang = (Party.Direction or 0) * pi / 1024
+	local x, y, z = floor(Party.X + 600 * cos(ang)), floor(Party.Y + 600 * sin(ang)), Party.Z + SUN.EyeHeight
+	local before = {}
+	for i = 0, Map.Objects.count - 1 do before[i] = Map.Objects[i].Type end
+	if MF.LoadSFTGroup then MF.LoadSFTGroup("lzrbolt") end
+	Game.SummonObjects(SUN.SummonId, x, y, z, 0, 1)
+	for i = 0, Map.Objects.count - 1 do
+		local o = Map.Objects[i]
+		if o.Type == SUN.SummonId and not o.Removed and before[i] ~= SUN.SummonId then
+			o.VelocityX, o.VelocityY, o.VelocityZ = 0, 0, 0
+			o.Age, o.MaxAge = 0, 2000
+			pcall(function() o.Visible = true; o.Missile = false end)
+			local s = string.format("laser %d at %d, %d, %d", i, o.X, o.Y, o.Z)
+			print(s)
+			return s
+		end
+	end
+	return "no laser made"
 end
