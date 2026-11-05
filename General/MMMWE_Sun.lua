@@ -31,6 +31,7 @@ local SUN = {
 	SummonId     = 555,        -- what is summoned and turned into the sun (Laser)
 	Group        = "sunwe",    -- SFT group
 	Picture      = "own",      -- "bolt": the blaster bolt's picture (a test)
+	Convert      = true,       -- false: the summoned Laser stays a Laser (a test)
 	Scale        = 196608,     -- size of the picture (65536 = 1:1; at 7000 the 128 px sun is about 3 degrees)
 	Distance     = 7000,       -- from the party (keep below ViewDistanceD3D in mm8.ini)
 	Sunrise      = 5.5,        -- hours
@@ -140,7 +141,7 @@ end
 
 local function sunObject()
 	local o = sunIndex and Map.Objects[sunIndex]
-	if o and o.Type == SUN.Id and not o.Removed then return o end
+	if o and (o.Type == SUN.Id or not SUN.Convert and o.Type == SUN.SummonId) and not o.Removed then return o end
 	sunIndex = nil
 end
 
@@ -153,7 +154,7 @@ local function makeSun()
 	for i = 0, Map.Objects.count - 1 do
 		local o = Map.Objects[i]
 		if o.Type == SUN.SummonId and not o.Removed and before[i] ~= SUN.SummonId then
-			o.Type, o.TypeIndex = SUN.Id, typeIndex
+			if SUN.Convert then o.Type, o.TypeIndex = SUN.Id, typeIndex end
 			o.VelocityX, o.VelocityY, o.VelocityZ = 0, 0, 0
 			o.Age, o.MaxAge = 0, 0
 			o.Owner, o.Target = 0, 0
@@ -170,6 +171,8 @@ end
 
 -- the sun's object left from a saved game or an earlier visit
 local function removeStray()
+	local cur = sunIndex and Map.Objects[sunIndex]
+	if cur and not cur.Removed then cur.Removed = true; cur.Visible = false end
 	for i = 0, Map.Objects.count - 1 do
 		local o = Map.Objects[i]
 		if o.Type == SUN.Id and not o.Removed then o.Removed = true; o.Visible = false end
