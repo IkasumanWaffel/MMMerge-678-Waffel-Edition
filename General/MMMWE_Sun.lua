@@ -1,7 +1,7 @@
 --[[
 	MMMWE_Sun.lua — a sun in the sky of outdoor maps (06.11.26, prototype)
 
-	The sun is a game object (ObjList.txt "Sun" 13070, SFT group sunwe, sprite sunwe in
+	The sun is a game object (ObjList.txt "Sun" 12170, SFT group sunwe, sprite sunwe in
 	Data\waffel.sprites.lod: a placeholder glow) kept every frame at SUN.Distance from the
 	party in the direction of the sun. It rises in the east at SUN.Sunrise, is highest in the
 	south at noon (SUN.MaxElevation degrees) and sets in the west at SUN.Sunset. Mountains,
@@ -14,9 +14,10 @@
 	always-foggy maps like Deyja after the Necromancers' quest), and on the maps in
 	SUN.NoSunMaps. Light weather fog only fades it.
 
-	Its id must be 13000 or above: the game hands objects with ids 500-599 and 1000-12999 to
-	its spell effects code, which draws only the spells it knows and skips the rest (why the
-	sun with id 12070, and the Plasma Grenade's 12060 before it, were never drawn outdoors).
+	Its id must be from 12110 to 12999. The game hands objects with ids 500-599 and 1000-12999
+	to its spell effects code, which draws only the spells it knows (12070 was never drawn);
+	Spells.lua lets ids from 12110 up through (or Game.MissileSetup flags, if set). Ids from
+	13000 up are taken for items by RemoveItemsLimits.lua and crash the game (13070 did).
 
 	The object is made from a summoned Laser (555) whose type is changed to the sun's: the game
 	doesn't draw objects summoned with a type added to ObjList.txt, but draws them once made.
@@ -34,7 +35,7 @@ local MF = Merge.Functions
 local floor, sin, cos, pi, max, min = math.floor, math.sin, math.cos, math.pi, math.max, math.min
 
 local SUN = {
-	Id           = 13070,      -- ObjList.txt (13000 or above: see below)
+	Id           = 12170,      -- ObjList.txt (12110..12999: see above)
 	SummonId     = 555,        -- what is summoned and turned into the sun (Laser)
 	Group        = "sunwe",    -- SFT group
 	Picture      = "own",      -- "bolt": the blaster bolt's picture (a test)
@@ -49,6 +50,8 @@ local SUN = {
 	NoSunMaps    = {},         -- ["7out05.odm"] = true ...
 }
 MF.SunSettings = SUN
+
+local OldIds = {[12070] = true, [13070] = true}   -- ids of earlier versions (13070 crashes when drawn)
 
 local sunIndex     -- Map.Objects index of the sun
 local typeIndex    -- ObjList line of SUN.Id
@@ -183,7 +186,7 @@ local function removeStray()
 	if cur and not cur.Removed then cur.Removed = true; cur.Visible = false end
 	for i = 0, Map.Objects.count - 1 do
 		local o = Map.Objects[i]
-		if o.Type == SUN.Id and not o.Removed then o.Removed = true; o.Visible = false end
+		if (o.Type == SUN.Id or OldIds[o.Type]) and not o.Removed then o.Removed = true; o.Visible = false end
 	end
 	sunIndex = nil
 end
