@@ -6,13 +6,21 @@
 	(t0..t5, Character doll types.txt). Visible gauntlets (VisibleGauntletsRefactored.lua)
 	take theirs from Data/Tables/Visible gauntlets.txt: X, Y per doll type and hand pose.
 
+	Weapons (06.11.26): the right hand weapon, the left hand item and the bow are placed by
+	the item's Equip X / Equip Y (Items.txt), the same for every doll type and for both
+	hands. A pistol in the left hand is drawn turned (MMMWE_Blasters.lua) and has its own
+	offset instead (BlasterSpecs.OffhandIconOffset). Both are kept in
+	Data/Tables/Weapon positions.txt, which is applied at every start, over Items.txt.
+
 	On the character screen, for the current character's doll type:
 	  Ctrl + arrows            move the selected item 1 pixel (Ctrl + Shift: 5 pixels)
 	  Ctrl + PageUp/PageDown   select armor / helm / belt / boots / cloak /
-	                           right gauntlet / left gauntlet
+	                           right gauntlet / left gauntlet / right hand weapon /
+	                           left hand / bow
 	  Ctrl + S                 write the moved positions: armor pieces into Complex item
 	                           pictures.txt (the first save keeps the old file as
-	                           "...txt.bak"), gauntlets into Visible gauntlets.txt
+	                           "...txt.bak"), gauntlets into Visible gauntlets.txt,
+	                           weapons into Weapon positions.txt
 	A gauntlet moves the pose shown right now (empty hand, weapon, open hand), for that
 	gauntlet and doll type only; equip or remove weapons to reach the other poses.
 	The status line shows the item, doll type and position after every key.
@@ -28,14 +36,73 @@ local K = const.Keys
 
 local ENABLED = true
 local FILE    = "Data/Tables/Complex item pictures.txt"
+local WEAPON_FILE = "Data/Tables/Weapon positions.txt"
 local BIG_STEP = 5
 
--- {player slot field, name, gauntlet side}
+-- {player slot field, name, gauntlet side, weapon: "R" right hand / bow, "L" left hand}
 local SLOTS = {
 	{"ItemArmor", "Armor"}, {"ItemHelm", "Helm"}, {"ItemBelt", "Belt"},
 	{"ItemBoots", "Boots"}, {"ItemCloak", "Cloak"},
 	{"ItemGountlets", "Right gauntlet", "R"}, {"ItemGountlets", "Left gauntlet", "L"},
+	{"ItemMainHand", "Right hand", nil, "R"}, {"ItemExtraHand", "Left hand", nil, "L"},
+	{"ItemBow", "Bow", nil, "R"},
 }
+
+---------------------------------------------------------------------------
+-- weapon positions: [item id] = {X, Y, LeftX, LeftY} (Equip X / Y, and the turned left-hand
+-- icon's offset; nil where not set)
+---------------------------------------------------------------------------
+
+local WeaponPos = {}
+local WeaponsChanged = 0
+
+local function offhandOffsets()
+	return MF.BlasterSpecs and MF.BlasterSpecs.OffhandIconOffset
+end
+
+local function loadWeaponPositions()
+	local f = io.open(WEAPON_FILE, "r")
+	if not f then return end
+	local n = 0
+	for line in f:lines() do
+		local w = line:gsub("\r$", ""):split("\t")
+		local id = tonumber(w[1])
+		if id and id > 0 and id <= Game.ItemsTxt.high then
+			local t = {tonumber(w[3]), tonumber(w[4]), tonumber(w[5]), tonumber(w[6])}
+			WeaponPos[id] = t
+			local txt = Game.ItemsTxt[id]
+			if t[1] and t[2] then txt.EquipX, txt.EquipY = t[1], t[2] end
+			local off = offhandOffsets()
+			if t[3] and t[4] and off and off[id] then off[id] = {t[3], t[4]} end
+			n = n + 1
+		end
+	end
+	f:close()
+	if n > 0 and MF.LogInfo then MF.LogInfo("[PaperdollTuner] %d weapon positions from %s", n, WEAPON_FILE) end
+end
+
+-- applied at every start, whether the tuner is on or not
+function events.GameInitialized2()
+	loadWeaponPositions()
+end
+
+local function saveWeapons()
+	local ids = {}
+	for id in pairs(WeaponPos) do ids[#ids + 1] = id end
+	table.sort(ids)
+	local out = {"Id\tName\tEquipX\tEquipY\tLeftX\tLeftY"}
+	for _, id in ipairs(ids) do
+		local t = WeaponPos[id]
+		local function v(x) return x and tostring(x) or "" end
+		out[#out + 1] = table.concat({id, Game.ItemsTxt[id].Name, v(t[1]), v(t[2]), v(t[3]), v(t[4])}, "\t")
+	end
+	local f = io.open(WEAPON_FILE, "wb")
+	if not f then return end
+	f:write(table.concat(out, "\r\n") .. "\r\n")
+	f:close()
+	WeaponsChanged = 0
+	return #ids
+end
 
 ---------------------------------------------------------------------------
 
@@ -56,6 +123,16 @@ local function selected()
 	local id = pl.Items[idx].Number
 	local dt = Game.CharacterPortraits[pl.Face].DollType
 	local side = SLOTS[slot][3]
+	local hand = SLOTS[slot][4]
+	if hand then
+		-- shown on screen as + right / + down: the game draws at base - Equip X / Y
+		local off = offhandOffsets()
+		if hand == "L" and off and off[id] then
+			return id, {X = off[id][1], Y = off[id][2], Kind = "offset"}, dt
+		end
+		local txt = Game.ItemsTxt[id]
+		return id, {X = -txt.EquipX, Y = -txt.EquipY, Kind = "equip"}, dt
+	end
 	if side then
 		local VG = MF.VisibleGauntlets
 		local pose = VG and VG.ShownPose(side)
@@ -69,7 +146,7 @@ local function selected()
 end
 
 local function unsaved()
-	local n = ChangedCount + GauntletsChanged
+	local n = ChangedCount + GauntletsChanged + WeaponsChanged
 	return n > 0 and string.format("  (%d unsaved)", n) or ""
 end
 
@@ -81,15 +158,34 @@ local function show()
 	elseif not c then
 		Game.ShowStatusText(string.format("%s: %s has no paperdoll position", what, Game.ItemsTxt[id].Name))
 	else
-		Game.ShowStatusText(string.format("%s %d%s, doll type %d: X %d, Y %d%s", Game.ItemsTxt[id].Name, id,
-			pose and (" " .. pose) or "", dt, c.X, c.Y, unsaved()))
+		local note = ""
+		if c.Kind == "equip" then
+			note = ", all doll types and both hands"
+		elseif c.Kind == "offset" then
+			note = ", turned left-hand icon"
+		end
+		Game.ShowStatusText(string.format("%s %d%s, doll type %d: X %d, Y %d%s%s", Game.ItemsTxt[id].Name, id,
+			pose and (" " .. pose) or "", dt, c.X, c.Y, note, unsaved()))
 	end
 end
 
 local function move(dx, dy)
 	local id, c, dt, pose = selected()
 	if not c then show() return end
-	if pose then
+	if c.Kind then
+		local t = WeaponPos[id] or {}
+		WeaponPos[id] = t
+		if c.Kind == "offset" then
+			local off = offhandOffsets()
+			off[id] = {c.X + dx, c.Y + dy}
+			t[3], t[4] = off[id][1], off[id][2]
+		else
+			local txt = Game.ItemsTxt[id]
+			txt.EquipX, txt.EquipY = txt.EquipX - dx, txt.EquipY - dy
+			t[1], t[2] = txt.EquipX, txt.EquipY
+		end
+		WeaponsChanged = WeaponsChanged + 1
+	elseif pose then
 		MF.VisibleGauntlets.Set(id, dt, pose, c.X + dx, c.Y + dy)
 		GauntletsChanged = GauntletsChanged + 1
 	else
@@ -168,7 +264,7 @@ local function saveArmor()
 end
 
 local function save()
-	if ChangedCount + GauntletsChanged == 0 then
+	if ChangedCount + GauntletsChanged + WeaponsChanged == 0 then
 		Game.ShowStatusText("Paperdoll: nothing to save")
 		return
 	end
@@ -185,6 +281,14 @@ local function save()
 		end
 		GauntletsChanged = 0
 		parts[#parts + 1] = "gauntlet positions"
+	end
+	if WeaponsChanged > 0 then
+		local n = saveWeapons()
+		if not n then
+			Game.ShowStatusText("Paperdoll: can't write " .. WEAPON_FILE)
+			return
+		end
+		parts[#parts + 1] = string.format("%d weapon position%s", n, n == 1 and "" or "s")
 	end
 	Game.ShowStatusText("Paperdoll: saved " .. table.concat(parts, " and "))
 end

@@ -705,12 +705,15 @@ local function getValues(nPlayers)
             if Merge.Functions.GetResource then
                 pcall(function() resource = select(3, Merge.Functions.GetResource(p)) end)
             end
-            -- power cell (%) of a blaster in the main hand
-            local cell
+            -- power cell (%) of a blaster in the main hand, and of the left-hand pistol that
+            -- fires with it (two pistols, MMMWE_Blasters.lua)
+            local cell, cell2
             if Merge.Functions.BlasterOf and Merge.Functions.BlasterState then
                 pcall(function()
                     local gun = Merge.Functions.BlasterOf(p)
                     if gun then cell = math.floor(Merge.Functions.BlasterState(gun).Cell / 2) end
+                    local left = gun and Merge.Functions.BlasterDualGun and Merge.Functions.BlasterDualGun(p)
+                    if left then cell2 = math.floor(Merge.Functions.BlasterState(left).Cell / 2) end
                 end)
             end
             local shield
@@ -719,6 +722,7 @@ local function getValues(nPlayers)
             end
             v[i] = {
                 cell = cell,
+                cell2 = cell2,
                 shield = shield,
                 resource = resource,
                 hp = p.HP or 0,
@@ -791,7 +795,7 @@ local function valuesChanged(v, nPlayers)
     for i = 0, nPlayers - 1 do
         local a, b = v[i], lastValues[i]
         if not b then return true end
-        if a.hp ~= b.hp or a.sp ~= b.sp or a.maxHP ~= b.maxHP or a.maxSP ~= b.maxSP or a.cell ~= b.cell or a.shield ~= b.shield then
+        if a.hp ~= b.hp or a.sp ~= b.sp or a.maxHP ~= b.maxHP or a.maxSP ~= b.maxSP or a.cell ~= b.cell or a.cell2 ~= b.cell2 or a.shield ~= b.shield then
             return true
         end
         -- Debuffs
@@ -1211,10 +1215,13 @@ local function drawOverlay()
             local cx, cy = labelScreenXY(CONFIG.cell, portraitX[i], hpBarX[i], spBarX[i], portraitY, barY)
             fillRect(hdc, cx, cy, cw, cellH, COLOR_KEY)
             if d and d.exists and d.cell then
-                -- colours are BGR: green, yellow below 50%, red below 10%
+                -- colours are BGR: green, yellow below 50%, red below 10% (the lower cell)
+                local low = d.cell2 and math.min(d.cell, d.cell2) or d.cell
                 local c = 0x88FF88
-                if d.cell < 10 then c = 0x4444FF elseif d.cell < 50 then c = 0x00FFFF end
-                drawText(hdc, string.format("Cell %d%%", d.cell), cx, cy, cw, cellH, c)
+                if low < 10 then c = 0x4444FF elseif low < 50 then c = 0x00FFFF end
+                local text = d.cell2 and string.format("Cell %d%% / %d%%", d.cell, d.cell2)
+                    or string.format("Cell %d%%", d.cell)
+                drawText(hdc, text, cx, cy, cw, cellH, c)
             end
             -- energy shield charge: light blue, yellow below 50%, red when broken
             local sx, sy = labelScreenXY((d and d.cell) and CONFIG.shield or CONFIG.cell, portraitX[i], hpBarX[i], spBarX[i], portraitY, barY)
