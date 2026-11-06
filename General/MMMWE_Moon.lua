@@ -17,8 +17,9 @@
 	Hidden: indoors, under an overcast, stormy or dark sky (MF.SunSettings.CloudySkies), in thick fog, below the skyline (the map's height grid, as the sun),
 	at new moon, and on the maps in MOON.NoMoonMaps.
 
-	The halo: pale dots around the lit part, in the pictures. Far objects fade into the night,
-	so the moon can be brought nearer (MOON.Distance, changed live; it keeps its size).
+	The halo: pale dots around the lit part, in the pictures. At night a sprite is lit by the
+	dark ambient unless its frame has its own light: MOON.LightRadius (SFT LightRadius, as
+	the spells' bolts), changed live. MOON.Distance can be changed live too (the size kept).
 
 	Console: Merge.Functions.MoonInfo() prints the phase, the moon's angles and its object;
 	Merge.Functions.MoonSettings holds the settings.
@@ -37,6 +38,8 @@ local MOON = {
 	Distance     = 6900,       -- a little nearer than the sun: in front of it when they meet
 	RefDistance  = 6900,       -- the picture is scaled by Distance / RefDistance: the same size
 	                           -- in the sky at any distance (nearer: less faded by the night)
+	LightRadius  = 512,        -- the frames' own light: lit by it, not by the dark night ambient
+	                           -- (spells 48..256); changed live
 	MaxElevation = 55,         -- degrees above the horizon at its highest
 	EyeHeight    = 160,
 	MonthDays    = 28,
@@ -151,12 +154,17 @@ local function prepareFrames()
 end
 
 local function scaleFrames()
-	if scaledFor == MOON.Distance then return end
+	local key = MOON.Distance .. ":" .. MOON.LightRadius .. ":" .. MOON.Scale
+	if scaledFor == key then return end
 	local sc = floor(MOON.Scale * MOON.Distance / MOON.RefDistance)
 	for _, g in pairs(groups) do
-		pcall(function() Game.SFTBin.Frames[g].Scale = sc end)
+		pcall(function()
+			local f = Game.SFTBin.Frames[g]
+			f.Scale = sc
+			f.LightRadius = MOON.LightRadius
+		end)
 	end
-	scaledFor = MOON.Distance
+	scaledFor = key
 end
 
 local function setStage(k)
