@@ -554,3 +554,4 @@ Rain	12012	32	32	-	-	x	-	x	x	x	-	-	-	-	Rain	768	4000	0	0	0	0
 Snow	12013	32	32	-	-	x	-	x	x	x	-	-	-	-	Snow	768	4000	0	0	0	0
 blaster explosion	12050	16	16	-	-	x	x	x	x	-	-	-	-	-	spell135c	32	0	0	0	0	0
 Sun	12170	16	16	-	x	x	-	x	x	-	-	-	-	-	sunwe	30000	0	0	0	0	0
+Moon	12171	16	16	-	x	x	-	x	x	-	-	-	-	-	moonwe4	30000	0	0	0	0	0
