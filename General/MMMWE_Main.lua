@@ -1410,14 +1410,14 @@
 
 	-- Two pistols (MMMWE_Blasters.lua): the Damage lines of the Stats screen show both guns,
 	-- right / left. The game prints the value at x = 100 ("%s\t100 %s"); this text moves it to
-	-- x = 62, right after the label, and drops the spaces once a number has three digits, so
+	-- x = 66, just after the label, and drops the spaces once a number has three digits, so
 	-- "160-320/140-280" still ends inside the frame.
 	local function dualRangeText(Player, aMin, aMax)
 		local left = MF.BlasterDualGun and MF.BlasterDualGun(Player)
 		if not left then return end
 		local bMin, bMax = blasterRange(Player, left)
 		if not bMin then return end
-		local fmt = math.max(aMax, bMax) >= 100 and "\t62 %d-%d/%d-%d" or "\t62 %d-%d / %d-%d"
+		local fmt = math.max(aMax, bMax) >= 100 and "\t66 %d-%d/%d-%d" or "\t66 %d-%d / %d-%d"
 		return string.format(fmt, aMin, aMax, bMin, bMax)
 	end
 
