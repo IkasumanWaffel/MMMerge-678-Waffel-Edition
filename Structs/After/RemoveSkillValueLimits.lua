@@ -64,6 +64,30 @@ function SplitSkill(val)
 	return n, mast
 end
 
+-- args: ecx - skill value
+-- returns: eax - skill level, edx - skill mastery
+MO.SplitSkill = asmproc([[
+test cx, cx
+jz @null
+mov edx, 4
+test cx, ]] .. GrandMasterBitV .. [[;
+jnz @skill
+dec edx
+test cx, ]] .. MasterBitV .. [[;
+jnz @skill
+dec edx
+test cx, ]] .. ExpertBitV .. [[;
+jnz @skill
+dec edx
+jmp @skill
+@null:
+xor edx, edx
+@skill:
+mov eax, ecx
+and eax, ]] .. MaxSkillVal .. [[;
+retn
+]])
+
 local ConvertMastery = {[0] = 0, [1] = 0, [2] = 0x400, [3] = 0x800, [4] = 0x1000}
 
 JoinSkill = function(skill, mastery)

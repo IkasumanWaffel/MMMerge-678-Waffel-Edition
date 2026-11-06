@@ -1,47 +1,152 @@
 local LogId = "ItemsModifiers"
+-- Item subtypes (Data/Tables/ItemSubtypes.txt) and equip requirements (ItemsExtra.txt
+-- Subtype, EquipReq, Equip2Req, Equip3Req) from cthscr's Revamp, merged into Waffel Edition
+-- 06.11.26: what can be held in which hand and with which skill comes from the tables
+-- (EquipReq: the item at all; Equip2Req: in the left hand, or a two-handed one in one hand;
+-- Equip3Req: missile weapons). "B1" = Basic 1 of the item's skill, "M1" Master, "1" no skill,
+-- "10M5" player level 10 and Master 5. An empty requirement means it can't be done.
 local MF = Merge.Functions
 MF.LogInit1(LogId)
-local MM, MT, MV = Merge.ModSettings, Merge.Tables, Merge.Vars
+local MC, MM, MO, MT, MV = Merge.Consts, Merge.ModSettings, Merge.Offsets, Merge.Tables, Merge.Vars
 
-local asmpatch, asmproc, autohook2, hook = mem.asmpatch, mem.asmproc, mem.autohook2, mem.hook
-local i4, u4 = mem.i4, mem.u4
+local asmpatch, asmproc, autohook2, hook = MF.Asmpatch, MF.Asmproc, MF.Autohook2, MF.Hook
+local StaticAlloc = MF.StaticAlloc
+local i2, i4, u2, u4 = mem.i2, mem.i4, mem.u2, mem.u4
 local floor, max, random = math.floor, math.max, math.random
 
 local NewCode
 
-local function ProcessItemsExtraTxt()
+MC.ExtraStatType = {
+	RecoveryBase = 0,
+	RecoveryMin = 1,
+	RecoveryMainLvl = 2,
+	RecoveryAddLvl = 3, -- needed?
+	AtttackMainLvl = 4,
+	AtttackAddLvl = 5, -- needed?
+	DamageMainLvl = 6,
+	DamageAddLvl = 7,
+	ACLvl = 8,
+	--Evasion = 9,
+	--EvasionLvl = 9,
+	CritChanceLvl = 9,
+	--CritChanceMax = 10,
+	CritDamage = 10,
+	StunChanceLvl = 11,
+	ParalyzeChanceLvl = 12,
+	CorrosionChanceLvl = 13,
+	CorrosionFactor = 14,
+}
+
+local extra_stat_type_count = 16
+
+local item_extra_fields_offsets = {
+	Subtype = 0,
+	MaterialGroup = 2,
+	Req1PlayerLevel = 4,
+	Req1SkillMastery = 6,
+	Req1SkillLevel = 8,
+	Req2PlayerLevel = 10,
+	Req2SkillMastery = 12,
+	Req2SkillLevel = 14,
+	Req3PlayerLevel = 16,
+	Req3SkillMastery = 18,
+	Req3SkillLevel = 20,
+}
+
+local item_extra_size = 22
+
+local item_subtype_fields_offsets = {
+	ItemType = 0,
+	MainSkill = 2,
+	Flags = 4,
+}
+
+local item_subtype_fields_types = {
+	ItemType = "u2",
+	MainSkill = "i2",
+	Flags = "u4",
+}
+
+local function ProcessItemsExtraFiles()
 	local items_extra = {}
 	local table_file = "Data/Tables/ItemsExtra.txt"
-	local header = "Id\9Note\9ContF\9QCont\9LostQBit\9StartQBit\9EndQBit\9PostEnd"
+	local header = "Id\tNote\tSubtype\tMatGroup\tEquipReq\tEquip2Req\tEquip3Req\tContF\tQCont\tLostQBit\tStartQBit\tEndQBit\tPostEnd"
+
+	MO.ItemsExtra = StaticAlloc(Game.ItemsTxt.count * item_extra_size)
 
 	local txt_table = io.open(table_file, "r")
+	local ok = true
 	if not txt_table then
-		MF.LogWarning("%s: No ItemsExtra.txt found", LogId)
+		MF.LogError("%s: No ItemsExtra.txt found, the equip requirements are off", LogId)
+		ok = false
 	else
 		local iter = txt_table:lines()
 		if iter() ~= header then
-			MF.LogWarning("%s: ItemsExtra.txt has wrong header", LogId)
+			MF.LogError("%s: ItemsExtra.txt has wrong header, the equip requirements are off", LogId)
+			ok = false
 		else
 			local line_num = 1
 			for line in iter do
 				line_num = line_num + 1
-				local words = string.split(line, "\9")
+				local words = string.split(line, "\t")
 				local num = tonumber(words[1])
 				if num then
 					items_extra[num] = {
-						--Continent = tonumber(words[3]),
+						--Subtype = tonumber(words[3]),
+						--MaterialGroup = tonumber(words[4]),
+						EquipReq = {},
+						Equip2Req = {},
+						Equip3Req = {},
 						ContFactor = {},
-						--QuestItem = words[4] == "x",
-						QuestCont = tonumber(words[4]),
-						LostQBit  = tonumber(words[5]),
-						StartQBit = tonumber(words[6]),
-						EndQBit = tonumber(words[7]),
-						PostEnd = words[8] == "x"
+						QuestCont = tonumber(words[9]),
+						LostQBit  = tonumber(words[10]),
+						StartQBit = tonumber(words[11]),
+						EndQBit = tonumber(words[12]),
+						PostEnd = words[13] == "x"
 					}
-					local cf = string.split(words[3], ",")
+					i2[MO.ItemsExtra + num * item_extra_size] = tonumber(words[3]) or 0
+					i2[MO.ItemsExtra + num * item_extra_size + 2] = tonumber(words[4]) or 0
+					local plevel, mastery, level = MF.SplitReq(words[5])
+					items_extra[num].EquipReq.PlayerLevel = plevel
+					items_extra[num].EquipReq.SkillMastery = mastery
+					items_extra[num].EquipReq.SkillLevel = level
+					i2[MO.ItemsExtra + num * item_extra_size + 4] = plevel
+					i2[MO.ItemsExtra + num * item_extra_size + 6] = mastery
+					i2[MO.ItemsExtra + num * item_extra_size + 8] = level
+					plevel, mastery, level = MF.SplitReq(words[6])
+					items_extra[num].Equip2Req.PlayerLevel = plevel
+					items_extra[num].Equip2Req.SkillMastery = mastery
+					items_extra[num].Equip2Req.SkillLevel = level
+					i2[MO.ItemsExtra + num * item_extra_size + 10] = plevel
+					i2[MO.ItemsExtra + num * item_extra_size + 12] = mastery
+					i2[MO.ItemsExtra + num * item_extra_size + 14] = level
+					plevel, mastery, level = MF.SplitReq(words[7])
+					items_extra[num].Equip3Req.PlayerLevel = plevel
+					items_extra[num].Equip3Req.SkillMastery = mastery
+					items_extra[num].Equip3Req.SkillLevel = level
+					i2[MO.ItemsExtra + num * item_extra_size + 16] = plevel
+					i2[MO.ItemsExtra + num * item_extra_size + 18] = mastery
+					i2[MO.ItemsExtra + num * item_extra_size + 20] = level
+					local cf = string.split(words[8] or "", ",")
 					for k, v in pairs(cf) do
 						items_extra[num].ContFactor[k] = tonumber(v)
 					end
+					setmetatable(items_extra[num], {
+						__index = function(tbl, key)
+							if item_extra_fields_offsets[key] then
+								return i2[MO.ItemsExtra + num * item_extra_size
+									+ item_extra_fields_offsets[key]]
+							end
+						end,
+						__newindex = function(tbl, key, value)
+							if item_extra_fields_offsets[key] then
+								i2[MO.ItemsExtra + num * item_extra_size
+									+ item_extra_fields_offsets[key]] = value
+							else
+								rawset(tbl, key, value)
+							end
+						end
+					})
 				end
 			end
 		end
@@ -49,7 +154,541 @@ local function ProcessItemsExtraTxt()
 	end
 
 	MT.ItemsExtra = items_extra
+
+	local item_subtypes = {}
+	local subtype_max = 0
+	table_file = "Data/Tables/ItemSubtypes.txt"
+	txt_table = io.open(table_file, "r")
+	if not txt_table then
+		MF.LogError("%s: No ItemSubtypes.txt found, the equip requirements are off", LogId)
+		ok = false
+	else
+		local iter = txt_table:lines()
+		-- TODO: check header
+		local line_num = 1
+		for line in iter do
+			line_num = line_num + 1
+			local words = string.split(line, "\t")
+			local num = tonumber(words[1])
+			if num and num >= 0 then
+				if num > subtype_max then
+					subtype_max = num
+				end
+				item_subtypes[num] = {}
+				item_subtypes[num].MainSkill = tonumber(words[3]) or -1
+				local flags = 0
+				flags = bit.bor(flags, words[4] == "x" and 0x1 or 0)
+				flags = bit.bor(flags, words[5] == "x" and 0x2 or 0)
+				flags = bit.bor(flags, words[6] == "x" and 0x4 or 0)
+				flags = bit.bor(flags, words[7] == "x" and 0x8 or 0)
+				flags = bit.bor(flags, words[8] == "x" and 0x10 or 0)
+				flags = bit.bor(flags, words[9] == "x" and 0x20 or 0)
+				flags = bit.bor(flags, words[10] == "x" and 0x40 or 0)
+				flags = bit.bor(flags, words[11] == "x" and 0x80 or 0)
+				flags = bit.bor(flags, words[12] == "x" and 0x100 or 0)
+				flags = bit.bor(flags, words[13] == "x" and 0x200 or 0)
+				flags = bit.bor(flags, words[14] == "x" and 0x400 or 0)
+				flags = bit.bor(flags, words[15] == "x" and 0x800 or 0)
+				item_subtypes[num].Flags = flags
+			end
+		end
+		io.close(txt_table)
+	end
+	-- FIXME: replace magic number 8
+	MO.ItemSubtypes = StaticAlloc(8 * (subtype_max + 1))
+	MT.ItemSubtypes = {}
+	for num = 0, subtype_max do
+		if item_subtypes[num] then
+			i2[MO.ItemSubtypes + 8 * num + 2] = item_subtypes[num].MainSkill
+			u4[MO.ItemSubtypes + 8 * num + 4] = item_subtypes[num].Flags
+		else
+			i2[MO.ItemSubtypes + 8 * num + 2] = -1
+			u4[MO.ItemSubtypes + 8 * num + 4] = 0
+		end
+		MT.ItemSubtypes[num] = {}
+		setmetatable(MT.ItemSubtypes[num], {
+			__index = function(tbl, key)
+				if item_subtype_fields_offsets[key] then
+					return mem[item_subtype_fields_types[key]][MO.ItemSubtypes + num * 8
+						+ item_subtype_fields_offsets[key]]
+				end
+			end,
+			__newindex = function(tbl, key, value)
+				if item_subtype_fields_offsets[key] then
+					mem[item_subtype_fields_types[key]][MO.ItemSubtypes + num * 8
+						+ item_subtype_fields_offsets[key]] = value
+				else
+					rawset(tbl, key, value)
+				end
+			end
+		})
+	end
+
+	--[=[
+	local item_stat_extra = {}
+	table_file = "Data/Tables/SkillsExtra.txt"
+	--header = ""
+	txt_table = io.open(table_file, "r")
+	if not txt_table then
+		MF.LogWarning("%s: No SkillsExtra.txt found", LogId)
+	else
+		local iter = txt_table:lines()
+		--if iter() ~= header then
+		--	MF.LogWarning("%s: SkillsExtra.txt has wrong header", LogId)
+		--else
+			local line_num = 1
+			for line in iter do
+				line_num = line_num + 1
+				local words = string.split(line, "\t")
+				local num = tonumber(words[1])
+				if num then
+					item_stat_extra[num] = {}
+					for i = 0, #words - 3 do
+						local vals = string.split(words[i + 3], "/")
+						if #vals == 2 then
+							item_stat_extra[num][i] = tonumber(vals[1]) or 0
+						else
+							item_stat_extra[num][i] = tonumber(words[i + 3]) or 0
+						end
+					end
+				end
+			end
+		--end
+		io.close(txt_table)
+	end
+	MT.ItemStatExtra = item_stat_extra
+	]=]
+	return ok
 end
+
+-- Equippable items (Items.txt Equip Stat 0..12) without the requirement of their slot in
+-- ItemsExtra.txt can't be put on at all: they are listed in the log
+local function CheckItemsRequirements()
+	local missing = {}
+	for i = 1, Game.ItemsTxt.high do
+		local es = Game.ItemsTxt[i].EquipStat
+		if es <= 12 then
+			-- missile weapons: Equip3Req, shields: Equip2Req, the rest: EquipReq
+			local off = es == 2 and 16 or es == 4 and 10 or 4
+			if i2[MO.ItemsExtra + i * item_extra_size + off] <= 0 then
+				missing[#missing + 1] = i
+			end
+		end
+	end
+	if #missing > 0 then
+		MF.LogWarning("%s: %d equippable items have no requirement in ItemsExtra.txt and can't be put on: %s",
+			LogId, #missing, table.concat(missing, ", "))
+	end
+end
+
+-- Base Recovery Time when player has only shield or broken items in arms (i.e. unarmed)
+-- MM8 default values: 60 if player has Unarmed skill, 100 otherwise
+asmpatch(0x48D6B3, [[
+jnz @skill
+mov eax, ]] .. (MM.UnarmedDelayNoSkill or 100) .. [[;
+;mov dword ptr [ebp - 4], eax
+;jmp absolute 0x48D6BE
+jmp @end
+@skill:
+mov eax, ]] .. (MM.UnarmedDelay or 60) .. [[;
+@end:
+]], 0x48D6BC - 0x48D6B3)
+
+local function SetItemsExtraHooks()
+	-- ecx - item id
+	-- preserves ecx, edx
+	MO.GetItemSubtype = asmproc([[
+	mov eax, ecx
+	imul eax, ]] .. item_extra_size .. [[;
+	add eax, ]] .. MO.ItemsExtra .. [[;
+	movzx eax, word ptr [eax]
+	retn
+	]])
+
+	-- ecx - item id
+	-- preserves ecx, edx
+	-- WARNING: expects subtype struct size to be 8 bytes
+	MO.GetItemMainSkill = asmproc([[
+	call absolute ]] .. MO.GetItemSubtype .. [[;
+	shl eax, 3
+	add eax, ]] .. MO.ItemSubtypes .. [[;
+	movsx eax, word ptr [eax + 2]
+	retn
+	]])
+
+	-- ecx - item id
+	-- preserves ecx, edx
+	-- WARNING: expects subtype struct size to be 8 bytes
+	MO.IsItemTwoHand = asmproc([[
+	call absolute ]] .. MO.GetItemSubtype .. [[;
+	shl eax, 3
+	add eax, ]] .. MO.ItemSubtypes .. [[;
+	mov eax, dword ptr [eax + 4]
+	and eax, 0x1
+	retn
+	]])
+
+	-- ecx - item id, edx - slot
+	-- preserves ecx
+	-- WARNING: expects subtype struct size to be 8 bytes
+	MO.IsItemEquipableAtSlot = asmproc([[
+	xor eax, eax
+	inc eax
+	test edx, edx
+	jz @f1
+	push ecx
+	mov ecx, edx
+	shl eax, cl
+	pop ecx
+	@f1:
+	mov edx, eax
+	call absolute ]] .. MO.GetItemSubtype .. [[;
+	shl eax, 3
+	add eax, ]] .. MO.ItemSubtypes .. [[;
+	mov eax, dword ptr [eax + 4]
+	and eax, edx
+	test eax, eax
+	jz @end
+	xor eax, eax
+	inc eax
+	@end:
+	retn
+	]])
+
+	-- 0: skill id; 2: req player level; 4: req skill mastery; 6: req skill level
+	-- 8: ...; 10: player level; 12: skill mastery; 14: skill level
+	MO.SkillReq = StaticAlloc(16)
+
+	-- ecx - player ptr, edx - item id, arg0 - req num
+	MO.PlayerFulfillItemSkillReq = asmproc([[
+	push esi
+	push edi
+	push ebx
+	mov ebx, dword ptr [esp + 0x10]
+	mov esi, ecx
+	mov edi, edx
+	mov eax, edx
+	imul eax, ]] .. item_extra_size .. [[;
+	add eax, ]] .. (MO.ItemsExtra + 4) .. [[;
+	mov edx, ebx
+	dec edx
+	lea edx, [edx + edx * 2]
+	lea eax, [eax + edx * 2]
+	xor edx, edx
+	mov dx, word ptr [eax + 4]
+	mov word ptr []] .. (MO.SkillReq + 6) .. [[], dx
+	mov dx, word ptr [eax + 2]
+	mov word ptr []] .. (MO.SkillReq + 4) .. [[], dx
+	mov dx, word ptr [eax]
+	mov word ptr []] .. (MO.SkillReq + 2) .. [[], dx
+	;test dx, dx
+	;jz @no
+	mov ecx, esi
+	call absolute 0x48C3D7 ; Player.GetLevel
+	mov word ptr []] .. (MO.SkillReq + 10) .. [[], ax
+	;movzx ecx, word ptr []] .. (MO.SkillReq + 2) .. [[]
+	;cmp eax, ecx
+	;jl @no
+
+	;movzx edx, word ptr []] .. (MO.SkillReq + 4) .. [[]
+	;test edx, edx
+	;jz @yes
+	mov ecx, edi
+	call absolute ]] .. MO.GetItemMainSkill .. [[;
+	mov word ptr []] .. MO.SkillReq .. [[], ax
+	push eax
+	mov ecx, esi
+	call absolute 0x48EF4F ; Player.GetSkill
+	mov ecx, eax
+	call absolute ]] .. MO.SplitSkill .. [[;
+	mov word ptr []] .. (MO.SkillReq + 12) .. [[], dx
+	mov word ptr []] .. (MO.SkillReq + 14) .. [[], ax
+
+	mov cx, word ptr []] .. (MO.SkillReq + 2) .. [[]
+	test cx, cx
+	jle @no
+	cmp cx, word ptr []] .. (MO.SkillReq + 10) .. [[]
+	jg @no
+	mov cx, word ptr []] .. (MO.SkillReq + 4) .. [[]
+	test cx, cx
+	jle @yes
+	cmp dx, cx
+	jl @no
+	cmp ax, word ptr []] .. (MO.SkillReq + 6) .. [[]
+	jl @no
+
+	@yes:
+	xor eax, eax
+	inc eax
+	jmp @hook
+	@no:
+	xor eax, eax
+	@hook:
+	nop
+	nop
+	nop
+	nop
+	nop
+	@end:
+	pop ebx
+	pop edi
+	pop esi
+	retn 4
+	]])
+
+	hook(MO.PlayerFulfillItemSkillReq + 0xAC, function(d)
+		MF.LogVerbose("PlayerFulfillItemSkillReq: %d %d - %d", d.edi, d.ebx, d.eax)
+	end)
+
+	-- ecx - player ptr, edx - item id, arg0 - req num
+	MO.PlayerHasItemSkill = asmproc([[
+	push esi
+	mov esi, ecx
+	push dword ptr [esp + 8]
+	call absolute ]] .. MO.PlayerFulfillItemSkillReq .. [[;
+	test eax, eax
+	jnz @yes
+	mov ecx, esi
+	add ecx, 0xA8
+	push ecx
+	push dword ptr [0x601554] ; "%s does not have the skill"
+	mov esi, 0x5DF0E0 ; TextBuffer
+	push esi
+	call absolute 0x4D9F10 ; sprintf
+	add esp, 0xC
+	mov edx, 2
+	mov ecx, esi
+	call absolute 0x4496C5 ; ShowStatusText
+	xor eax, eax
+	jmp @end
+	@yes:
+	xor eax, eax
+	inc eax
+	@end:
+	pop esi
+	retn 4
+	]])
+
+	-- Equiping item
+	--
+	--asmpatch(0x4673E2, "sub esp, 0x4C")
+
+	--   Check main hand item for being two-hand only
+	--   NOTE: spear is one-hand in vanilla MM8
+	--   WARNING: have to preseve edx here
+	asmpatch(0x467453, [[
+	push edx
+	;mov dword ptr [ebp - 0x48], eax
+	mov ecx, eax
+	call absolute ]] .. MO.IsItemTwoHand .. [[;
+	cmp eax, 1
+	jnz @end
+	mov edx, ecx
+	mov ecx, ebx
+	push 2
+	call absolute ]] .. MO.PlayerFulfillItemSkillReq .. [[;
+	test eax, eax
+	@end:
+	pop edx
+	]], 0x467460 - 0x467453)
+
+	--   Two-hand item in mouse
+	asmpatch(0x46748A, [[
+	call absolute ]] .. MO.IsItemTwoHand .. [[;
+	test eax, eax
+	jz absolute 0x4674B8
+	]])
+
+	--   Player can hold mouse two-hand item in one hand
+	asmpatch(0x467493, [[
+	mov edx, ecx
+	mov ecx, ebx
+	push 2
+	call absolute ]] .. MO.PlayerFulfillItemSkillReq .. [[;
+	cmp eax, 1
+	]], 0x4674A6 - 0x467493)
+
+	--   Mouse item equipable in left hand
+	asmpatch(0x4674B8, [[
+	mov edx, 2
+	call absolute ]] .. MO.IsItemEquipableAtSlot .. [[;
+	test eax, eax
+	jz absolute 0x4674EC
+	]], 0x4674C7 - 0x4674B8)
+
+	--   Two-hand item in right hand
+	asmpatch(0x4674D5, [[
+	mov ecx, eax
+	call absolute ]] .. MO.IsItemTwoHand .. [[;
+	cmp eax, 1
+	]], 0x4674E2 - 0x4674D5)
+
+	--   Missile, armor, etc
+	asmpatch(0x467512, [[
+	mov ecx, dword ptr [0xB7CA64]
+	mov edx, 3
+	call absolute ]] .. MO.IsItemEquipableAtSlot .. [[;
+	test eax, eax
+	jnz @missile
+	push 1
+	jmp @f1
+	@missile:
+	push 3
+	@f1:
+	mov ecx, ebx
+	mov edx, dword ptr [0xB7CA64]
+	call absolute ]] .. MO.PlayerHasItemSkill .. [[;
+	]])
+
+	--   Shield
+	asmpatch(0x4675F0, [[
+	push 2
+	mov ecx, ebx
+	mov edx, dword ptr [0xB7CA64]
+	call absolute ]] .. MO.PlayerHasItemSkill .. [[;
+	]])
+
+	--   One-hand: right
+	asmpatch(0x46770E, [[
+	push 1
+	mov ecx, ebx
+	mov edx, dword ptr [0xB7CA64]
+	call absolute ]] .. MO.PlayerHasItemSkill .. [[;
+	]])
+	--   One-hand: left
+	asmpatch(0x467722, [[
+	push 2
+	mov ecx, ebx
+	mov edx, dword ptr [0xB7CA64]
+	call absolute ]] .. MO.PlayerFulfillItemSkillReq .. [[;
+	cmp eax, 1
+	]], 0x46774D - 0x467722)
+
+	--   Two-hand: both
+	asmpatch(0x46790F, [[
+	push 1
+	mov ecx, ebx
+	mov edx, dword ptr [0xB7CA64]
+	call absolute ]] .. MO.PlayerHasItemSkill .. [[;
+	]])
+	--   Two-hand: single
+	asmpatch(0x467925, [[
+	cmp dword ptr [ebp - 4], esi
+	jz absolute 0x467943
+	push 2
+	mov ecx, ebx
+	mov edx, dword ptr [0xB7CA64]
+	call absolute ]] .. MO.PlayerFulfillItemSkillReq .. [[;
+	test eax, eax
+	jg absolute 0x467943
+	]])
+	--   Two-hand: single
+	asmpatch(0x4679B8, [[
+	push 2
+	mov ecx, ebx
+	mov edx, dword ptr [0xB7CA64]
+	call absolute ]] .. MO.PlayerFulfillItemSkillReq .. [[;
+	test eax, eax
+	jnz absolute 0x467A18
+	dec dword ptr [ebp - 4]
+	mov eax, dword ptr [ebp -4]
+	]])
+end
+
+
+local function get_item_subtype(item_id)
+	return mem.call(MO.GetItemSubtype, 1, item_id)
+end
+MF.GetItemSubtype = get_item_subtype
+
+local function get_item_main_skill(item_id)
+	return mem.call(MO.GetItemMainSkill, 1, item_id)
+end
+
+local function is_twohand_item(item_id)
+	return mem.call(MO.IsItemTwoHand, 1, item_id) ~= 0
+end
+
+local function player_fulfill_req(player, item_id, req_num)
+	return mem.call(MO.PlayerFulfillItemSkillReq, 2, player["?ptr"], item_id, req_num) ~= 0
+end
+MF.PlayerFulfillReq = player_fulfill_req
+
+local function can_player_wear_right(player, item_id)
+	if not mem.call(MO.IsItemEquipableAtSlot, 2, item_id, 1) then
+		return false
+	end
+	local left = player.ItemExtraHand
+	local req = 1
+	if left > 0 and is_twohand_item(item_id) then
+		req = 2
+	end
+	if player_fulfill_req(player, item_id, req) then
+		return true
+	end
+	return false
+end
+MF.CanPlayerWearRight = can_player_wear_right
+
+local function can_player_wear_left(player, item_id)
+	if not mem.call(MO.IsItemEquipableAtSlot, 2, item_id, 2) then
+		return false
+	end
+	if is_twohand_item(item_id) then return false end
+	local right = player.ItemMainHand  > 0 and player.Items[player.ItemMainHand - 1].Number
+	if right and is_twohand_item(right) then
+		if not player_fulfill_req(player, right, 2) then
+			return false
+		end
+	end
+	if player_fulfill_req(player, item_id, 2) then
+		return true
+	end
+	return false
+end
+MF.CanPlayerWearLeft = can_player_wear_left
+
+local function can_player_wear_missile(player, item_id)
+	if not mem.call(MO.IsItemEquipableAtSlot, 2, item_id, 3) then
+		return false
+	end
+	if player_fulfill_req(player, item_id, 3) then
+		return true
+	end
+	return false
+end
+MF.CanPlayerWearMissile = can_player_wear_missile
+
+--[=[
+local function player_get_item_extra_stat(player, subtype, stat, extra)
+	if subtype <= 0 then return 0 end
+	local res = 0
+	local id = extra_stat_type_count * (2 * (subtype - 1) + (extra and 1 or 0)) + stat
+	--if stat < 2 then
+	--	if MT.ItemExtraStats and MT.ItemExtraStats[id] then
+	--		res = MT.ItemExtraStats[id][stat] or 0
+	--	end
+	--else
+		if MT.ItemExtraStats and MT.ItemExtraStats[id] then
+			local sm, val
+			for sk = 0, 38 do
+				sm = MF.GetPlayerSkillMastery(player, sk)
+				if sm > 0 then
+					val = MT.ItemExtraStats[id][sk * 4 + sm] or 0
+					if stat < 2 then
+						res = res + val
+					end
+				end
+			end
+			if stat > 1 then
+				res = math.floor(res/16)
+			end
+		end
+	--end
+	return res
+end
+MF.PlayerGetItemExtraStat = player_get_item_extra_stat
+]=]
 
 local function SetItemsModifiersHooks()
 
@@ -817,7 +1456,6 @@ local function SetItemsModifiersHooks()
 	end)
 end
 
-
 -- Spell Scroll stdbonus
 function events.ItemGenerated(t)
 	if MM.SpellScrollRanks ~= 1 then
@@ -949,13 +1587,17 @@ end
 
 function events.GameInitialized2()
 	MF.LogVerbose("%s: GameInitialized2", LogId)
-	ProcessItemsExtraTxt()
+	local ok = ProcessItemsExtraFiles()
 	MT.ItemsChanceByLevel = {}
 	for i = 1, Game.ItemsTxt.high do
 		MT.ItemsChanceByLevel[i] = {}
 		for j = 1, 6 do
 			MT.ItemsChanceByLevel[i][j] = Game.ItemsTxt[i].ChanceByLevel[j]
 		end
+	end
+	if ok then
+		SetItemsExtraHooks()
+		CheckItemsRequirements()
 	end
 end
 
