@@ -1395,16 +1395,31 @@
 
 	-- Damage range of the blaster in the main hand before crits (as CalcBlasterDamage
 	-- rolls it), or nil. Also shown on the Stats screen.
-	local function blasterRange(Player)
-		local slot = Player.ItemMainHand
-		if slot <= 0 then return end
-		local it = Player.Items[slot]
+	local function blasterRange(Player, it)
+		if not it then
+			local slot = Player.ItemMainHand
+			if slot <= 0 then return end
+			it = Player.Items[slot]
+		end
 		if Game.ItemsTxt[it.Number].Skill ~= 7 then return end
 		local blasterType = (MF.BlasterKind and MF.BlasterKind(it.Number)) or (it.Number - select(math.floor(it.Number / 800), 865, 1665))
 		local scale = blasterScale(it)
 		return round(select(blasterType, 10, 15) * scale), round(select(blasterType, 20, 30) * scale)
 	end
 	MF.BlasterDamageRange = blasterRange
+
+	-- Two pistols (MMMWE_Blasters.lua): the Damage lines of the Stats screen show both guns,
+	-- right / left. The game prints the value at x = 100 ("%s\t100 %s"); this text moves it to
+	-- x = 62, right after the label, and drops the spaces once a number has three digits, so
+	-- "160-320/140-280" still ends inside the frame.
+	local function dualRangeText(Player, aMin, aMax)
+		local left = MF.BlasterDualGun and MF.BlasterDualGun(Player)
+		if not left then return end
+		local bMin, bMax = blasterRange(Player, left)
+		if not bMin then return end
+		local fmt = math.max(aMax, bMax) >= 100 and "\t62 %d-%d/%d-%d" or "\t62 %d-%d / %d-%d"
+		return string.format(fmt, aMin, aMax, bMin, bMax)
+	end
 
 	-- gun: the blaster the shot came from (the bolt's copy of it: with two pistols the
 	-- left-hand one fires too, MMMWE_Blasters.lua); the right-hand blaster by default
@@ -3050,6 +3065,14 @@
 			-- Blaster: the range CalcBlasterDamage rolls (skill and upgrade tier), not the item dice
 			local bMin, bMax = blasterRange(armed)
 			if bMin then
+				local dual = dualRangeText(armed, bMin, bMax)
+				if dual then
+					-- the text into the game's buffer, then the function's end (eax = edi)
+					mem.copy(0xAB2FC4, dual .. "\0", #dual + 1)
+					d.edi = 0xAB2FC4
+					d:push(0x48CC93)
+					return true
+				end
 				d.edi, d.eax = bMin, bMax
 				d:push(ret)
 				return true
@@ -3102,6 +3125,13 @@
 			local shooter = Party.PlayersArray[(d.ecx - Party.PlayersArray["?ptr"]) / Party.PlayersArray[0]["?size"]]
 			local bMin, bMax = blasterRange(shooter)
 			if bMin then
+				local dual = dualRangeText(shooter, bMin, bMax)
+				if dual then
+					mem.copy(0xAB2F9C, dual .. "\0", #dual + 1)
+					d.edi = 0xAB2F9C
+					d:push(0x48CD48)
+					return true
+				end
 				d.edi, d.eax = bMin, bMax
 				d:push(ret)
 				return true
