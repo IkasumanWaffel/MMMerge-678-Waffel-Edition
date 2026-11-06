@@ -107,7 +107,10 @@ def sprite_bytes(name, P, pal, size, pixel=None):
     return hdr + table + packed
 
 def write_lod(template, out, sprites):
-    """archive: the 0x100-byte header of a sprites lod, the directory, the sprites"""
+    """archive: the 0x100-byte header of a sprites lod, the directory, the sprites. The
+    directory must be sorted by name: the game looks names up by binary search (07.11.26:
+    with the moon's sprites written after the sun's, the sun's weren't found)"""
+    sprites = sorted(sprites, key=lambda e: e[0].lower())
     t = open(template, 'rb').read()
     head = bytearray(t[:0x120])
     dirsize = 32 * len(sprites)
