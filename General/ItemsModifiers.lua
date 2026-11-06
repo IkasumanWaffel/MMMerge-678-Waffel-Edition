@@ -72,7 +72,11 @@ local function ProcessItemsExtraFiles()
 	local table_file = "Data/Tables/ItemsExtra.txt"
 	local header = "Id\tNote\tSubtype\tMatGroup\tEquipReq\tEquip2Req\tEquip3Req\tContF\tQCont\tLostQBit\tStartQBit\tEndQBit\tPostEnd"
 
-	MO.ItemsExtra = StaticAlloc(Game.ItemsTxt.count * item_extra_size)
+	-- item numbers run up to Game.ItemsTxt.high, which is .count (the table starts at 1): one
+	-- row more than count, or a row for the last item writes past the end (06.11.26: a crash
+	-- at start-up once item 2224 got a row)
+	local items_high = Game.ItemsTxt.high
+	MO.ItemsExtra = StaticAlloc((items_high + 1) * item_extra_size)
 
 	local txt_table = io.open(table_file, "r")
 	local ok = true
@@ -90,6 +94,10 @@ local function ProcessItemsExtraFiles()
 				line_num = line_num + 1
 				local words = string.split(line, "\t")
 				local num = tonumber(words[1])
+				if num and (num < 0 or num > items_high) then
+					MF.LogWarning("%s: ItemsExtra.txt line %d: no item %d in Items.txt, skipped", LogId, line_num, num)
+					num = nil
+				end
 				if num then
 					items_extra[num] = {
 						--Subtype = tonumber(words[3]),
