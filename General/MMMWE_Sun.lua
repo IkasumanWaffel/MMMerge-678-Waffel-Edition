@@ -17,7 +17,8 @@
 	the party moves to another 512 x 512 square, climbs or drops, or the sun moves a quarter
 	of a degree.
 
-	Not shown: indoors, at night, in thick fog (weather fog that ends before the sun, and
+	Not shown: indoors, at night, under an overcast, stormy or dark sky (SUN.CloudySkies, also
+	for the moon), in thick fog (weather fog that ends before the sun, and
 	always-foggy maps like Deyja after the Necromancers' quest), and on the maps in
 	SUN.NoSunMaps. Light weather fog only fades it.
 
@@ -58,8 +59,29 @@ local SUN = {
 	EyeHeight    = 160,
 	FogMargin    = 1.2,        -- weather fog hides the sun when it ends closer than Distance x this
 	NoSunMaps    = {},         -- ["7out05.odm"] = true ...
+	-- skies (the sky bitmap in use: Weather.lua's clear .. storm sets, maps' own skies) that
+	-- are overcast, stormy or dark: no sun and no moon under them (07.11.26)
+	CloudySkies  = {["6sky02"] = true, sky03 = true, stormclds = true, ["6sky19"] = true,
+		cloudsabove = true, sky04 = true, sunsetclouds = true},
 }
 MF.SunSettings = SUN
+
+-- the sky bitmap in use (lower case), cached by its index
+local skyIdx, skyName
+local function skyBitmapName()
+	local idx = Map.LoadedSkyBitmap
+	if idx ~= skyIdx then
+		skyIdx, skyName = idx, nil
+		pcall(function() skyName = Game.BitmapsLod.Bitmaps[idx].Name:lower() end)
+	end
+	return skyName
+end
+
+-- true under an overcast, stormy or dark sky (also used by MMMWE_Moon.lua)
+function MF.SkyCloudy()
+	local n = skyBitmapName()
+	return n ~= nil and SUN.CloudySkies[n] == true
+end
 
 local OldIds = {[12070] = true, [13070] = true}   -- ids of earlier versions (13070 crashes when drawn)
 
@@ -191,6 +213,7 @@ local function shown()
 	if not Map.IsOutdoor() or not typeIndex then return false end
 	if SUN.NoSunMaps[Map.Name:lower()] then return false end
 	if foggy() then return false end
+	if MF.SkyCloudy() then return false end
 	local az, el = sunAngles()
 	if not az then return false end
 	if SUN.Skyline and skyline(az) >= el + SUN.SkylineMargin * pi / 180 then return false end
@@ -290,7 +313,8 @@ function MF.SunInfo()
 		az and string.format("azimuth %d, elevation %d degrees", floor(-az * 180 / pi), floor(el * 180 / pi)) or "below the horizon",
 		o and string.format("%d at %d, %d, %d, visible %s", sunIndex, o.X, o.Y, o.Z, tostring(o.Visible)) or "none")
 	local fr = "?"
-	pcall(function() fr = string.format("%s, ends at %d", tostring(Game.Weather.Fog), Game.Weather.FogRange2) end)
+	pcall(function() fr = string.format("%s, ends at %d; sky %s%s", tostring(Game.Weather.Fog), Game.Weather.FogRange2,
+		tostring(skyBitmapName()), MF.SkyCloudy() and " (cloudy)" or "") end)
 	s = s .. string.format("\nshown %s (outdoor %s, too foggy %s; weather fog %s)", tostring(shown()),
 		tostring(Map.IsOutdoor()), tostring(foggy()), fr)
 	if az then s = s .. string.format("\nskyline toward the sun %.1f degrees", skyline(az) * 180 / pi) end

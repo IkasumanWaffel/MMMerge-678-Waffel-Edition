@@ -14,7 +14,7 @@
 	day it shows as well, pale against the blue (MOON.ByDay = false: only while the sun is
 	down).
 
-	Hidden: indoors, in thick fog, below the skyline (the map's height grid, as the sun),
+	Hidden: indoors, under an overcast, stormy or dark sky (MF.SunSettings.CloudySkies), in thick fog, below the skyline (the map's height grid, as the sun),
 	at new moon, and on the maps in MOON.NoMoonMaps.
 
 	Console: Merge.Functions.MoonInfo() prints the phase, the moon's angles and its object;
@@ -123,6 +123,7 @@ local function shown()
 	if k == 0 then return false end
 	if not MOON.ByDay and sunUp() then return false end
 	if foggy() then return false end
+	if MF.SkyCloudy and MF.SkyCloudy() then return false end   -- overcast, stormy or dark (MMMWE_Sun.lua)
 	local az, el = moonAngles()
 	if not az then return false end
 	if MOON.Skyline and skyline(az) >= el + MOON.SkylineMargin * pi / 180 then return false end
