@@ -436,8 +436,17 @@ local function SetItemsExtraHooks()
 	retn 4
 	]])
 
+	-- events.ItemEquipRequirement(t): t.Player, t.PlayerIndex, t.ItemId, t.Req (1 the item,
+	-- 2 the left hand or a two-handed one in one hand, 3 missile weapons), t.Result (true if
+	-- the requirement is met; a handler can refuse or allow it)
 	hook(MO.PlayerFulfillItemSkillReq + 0xAC, function(d)
 		MF.LogVerbose("PlayerFulfillItemSkillReq: %d %d - %d", d.edi, d.ebx, d.eax)
+		if events.exists("ItemEquipRequirement") then
+			local t = {PlayerPtr = d.esi, ItemId = d.edi, Req = d.ebx, Result = d.eax ~= 0}
+			t.Player, t.PlayerIndex = MF.GetPlayerFromPtr(d.esi)
+			events.call("ItemEquipRequirement", t)
+			d.eax = t.Result and 1 or 0
+		end
 	end)
 
 	-- ecx - player ptr, edx - item id, arg0 - req num

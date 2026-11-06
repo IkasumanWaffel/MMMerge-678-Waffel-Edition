@@ -626,7 +626,119 @@ end
 
 local BLASTER_SPELL = 135
 
+-- one shot's share of a gun's cell, in 0.5% steps; the fraction is kept per gun (by the
+-- character and the item slot) and adds up, so every shot drains exactly its share
+local function drainCell(pl, gun, st, itemSlot, use, which)
+	local key = pl:GetIndex() * 1000 + itemSlot
+	local fracs = vars and vars.BlasterCellFrac
+	if vars and not fracs then fracs = {} vars.BlasterCellFrac = fracs end
+	fracs = fracs or CellFrac
+	local acc = (fracs[key] or 0) + use
+	local steps = floor(acc)
+	fracs[key] = acc - steps
+	local before = st.Cell
+	st.Cell = max(0, st.Cell - steps)
+	gun.MaxCharges = st.Cell
+	if before >= B.LowWarn and st.Cell < B.LowWarn then
+		Game.ShowStatusText(string.format("%s's %s: power cell low (%d%%)", pl.Name, which, floor(st.Cell / 2)), 3)
+	elseif before > 0 and st.Cell <= 0 then
+		Game.ShowStatusText(string.format("%s's %s: power cell empty", pl.Name, which), 3)
+	end
+end
+
+---------------------------------------------------------------------------
+-- two pistols (06.11.26): a Blaster Expert can hold a pistol in each hand (ItemsExtra.txt
+-- Equip2Req E1, the left hand only next to a pistol), and every shot fires both, like the
+-- Bow Master's two arrows: the second bolt carries the left-hand pistol (its upgrades and
+-- cell) and flies just above the first.
+---------------------------------------------------------------------------
+
+B.DualMastery = 2            -- Blaster mastery for two pistols (Expert)
+
+-- the left-hand pistol that fires with the right-hand one, or nil
+local function dualGun(pl)
+	local main = blasterOf(pl)
+	if not main or BLASTERS[main.Number] ~= 1 then return end
+	local slot = pl.ItemExtraHand
+	if slot <= 0 then return end
+	local it = pl.Items[slot]
+	if BLASTERS[it.Number] ~= 1 or it.Broken then return end
+	local _, m = SplitSkill(pl:GetSkill(const.Skills.Blaster))
+	if m < B.DualMastery then return end
+	return it, slot
+end
+MF.BlasterDualGun = dualGun
+
+-- the left hand takes a pistol only next to a pistol in the right hand
+function events.ItemEquipRequirement(t)
+	if t.Req ~= 2 or not t.Result or BLASTERS[t.ItemId] ~= 1 then return end
+	local pl = t.Player
+	local main = pl and pl.ItemMainHand > 0 and pl.Items[pl.ItemMainHand].Number
+	if not (main and BLASTERS[main] == 1) then t.Result = false end
+end
+
+-- set by the shot hook below for the blaster case of the cast code: 1 and the left gun's item
+local Dual = mem.StaticAlloc(8)
+u4[Dual], u4[Dual + 4] = 0, 0
+
+-- the blaster case of the cast code (0x4264D0) ends with "jmp 0x42D078", which launches the
+-- bolt built at [ebp-0xAC] (its item, the gun, at [ebp-0x88]). Here the bolt is launched by
+-- a copy of 0x42D078..0x42D0D7 that returns, then, for two pistols, again with the left gun
+-- and 0x20 higher (as the Bow Master's second arrow, 0x426454).
+local LaunchBolt = mem.asmproc([[
+	cmp dword [0xB21728], 1
+	jnz @f
+	or byte [ebp-0x92], 4
+@@:
+	movsx eax, word [ebx+2]
+	mov ecx, [0x6AE53C]
+	mov edx, [ebp-0xD8]
+	inc eax
+	push eax
+	movsx eax, word [ebp-0xAA]
+	imul eax, eax, 0x38
+	movzx eax, word [eax+ecx+0x30]
+	push eax
+	push dword [ebp-0xD4]
+	lea ecx, [ebp-0xAC]
+	call absolute 0x42E05C
+	cmp eax, -1
+	jz @end
+	cmp dword [0xB21728], 1
+	jnz @end
+	inc dword [0x509CB4]
+@end:
+	retn
+]])
+
+local DualLaunch = mem.asmproc([[
+	call absolute ]] .. LaunchBolt .. [[;
+	cmp dword []] .. Dual .. [[], 0
+	jz @done
+	mov dword []] .. Dual .. [[], 0
+	push esi
+	push edi
+	mov esi, []] .. (Dual + 4) .. [[]
+	lea edi, [ebp-0x88]
+	mov ecx, 9
+	rep movsd
+	pop edi
+	pop esi
+	add dword [ebp-0xA0], 0x20
+	push dword [ebp-0xA0]
+	push dword [ebp-0xA4]
+	push dword [ebp-0xA8]
+	mov ecx, 0x6F3A08
+	call absolute 0x4980BA
+	mov word [ebp-0x90], ax
+	call absolute ]] .. LaunchBolt .. [[;
+@done:
+	jmp absolute 0x42D3AB
+]])
+mem.asmpatch(0x4265D8, "jmp absolute " .. DualLaunch)
+
 mem.autohook(0x42609E, function(d)
+	u4[Dual] = 0       -- the case is shared with the dragon breath (137)
 	local slot = 0x51D820 + u4[d.ebp - 0xC8] * 0x14
 	if u2[slot] ~= BLASTER_SPELL then return end
 	local pl = Party.PlayersArray[u2[slot + 2]]
@@ -649,8 +761,6 @@ mem.autohook(0x42609E, function(d)
 		d:push(0x42D45D)
 		return true
 	end
-	-- one shot's share of the cell, in 0.5% steps; the fraction is kept per gun (by the
-	-- character and the item slot) and adds up, so every shot drains exactly its share
 	local use = B.CellFull / capacity(gun, st)
 	-- Overclock (Technicians, MMMWE_Resources.lua): no recovery, twice the power
 	local overclock = MF.OverclockShot and MF.OverclockShot(pl)
@@ -659,20 +769,17 @@ mem.autohook(0x42609E, function(d)
 		-- the recovery the game gives this shot right after (GetAttackDelay, MMMWE_Main.lua)
 		B.OverclockNow = pl:GetIndex()
 	end
-	local key = pl:GetIndex() * 1000 + pl.ItemMainHand
-	local fracs = vars and vars.BlasterCellFrac
-	if vars and not fracs then fracs = {} vars.BlasterCellFrac = fracs end
-	fracs = fracs or CellFrac
-	local acc = (fracs[key] or 0) + use
-	local steps = floor(acc)
-	fracs[key] = acc - steps
-	local before = st.Cell
-	st.Cell = max(0, st.Cell - steps)
-	gun.MaxCharges = st.Cell
-	if before >= B.LowWarn and st.Cell < B.LowWarn then
-		Game.ShowStatusText(string.format("%s's blaster: power cell low (%d%%)", pl.Name, floor(st.Cell / 2)), 3)
-	elseif st.Cell <= 0 then
-		Game.ShowStatusText(string.format("%s's blaster: power cell empty", pl.Name), 3)
+	local left, leftSlot = dualGun(pl)
+	drainCell(pl, gun, st, pl.ItemMainHand, use, left and "right-hand blaster" or "blaster")
+	-- the left-hand pistol fires too while its cell lasts
+	if left then
+		local lst = state(left)
+		if lst.Cell > 0 then
+			local luse = B.CellFull / capacity(left, lst)
+			if overclock then luse = luse * 2 end
+			drainCell(pl, left, lst, leftSlot, luse, "left-hand blaster")
+			u4[Dual], u4[Dual + 4] = 1, left["?ptr"]
+		end
 	end
 	if st.Tiers[2] >= 4 and random() < B.RapidChance then
 		Pending[#Pending + 1] = {Kind = "Rapid", pi = pl:GetIndex()}

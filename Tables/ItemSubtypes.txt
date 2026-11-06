@@ -21,7 +21,7 @@ Id	Name	MainSkill	TwoHand	Right	Left	Missile	Armor	Helm	Belt	Cloak	Gauntlets	Boo
 19	Bow	5				x
 20	Longbow	5				x
 21	Crossbow	5				x
-22	Blaster	7		x		
+22	Blaster	7		x	x	
 23	Two-Handed Blaster	7	x	x		
 24	Wand	-1		x		
 25	Leather Armor	9					x

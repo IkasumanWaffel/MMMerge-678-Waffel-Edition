@@ -1404,13 +1404,16 @@
 	end
 	MF.BlasterDamageRange = blasterRange
 
-	function CalcBlasterDamage(Player)
+	-- gun: the blaster the shot came from (the bolt's copy of it: with two pistols the
+	-- left-hand one fires too, MMMWE_Blasters.lua); the right-hand blaster by default
+	function CalcBlasterDamage(Player, gun)
 		local item = Player.ItemMainHand
 		if item <= 0 then
 			return
 		end
+		gun = gun or Player.Items[item]
 
-		local itnum = Player.Items[item].Number
+		local itnum = gun.Number
 		if Game.ItemsTxt[itnum].Skill ~= 7 then
 			return
 		end
@@ -1438,7 +1441,7 @@
 		local curseMult = Player.Conditions[0] > 0 and 0.5 or 1
 
 		-- Damage from the Emitter spec only (the skill adds crits)
-		local scale = blasterScale(Player.Items[item])
+		local scale = blasterScale(gun)
 		DMin = round(DMin * scale)
 		DMax = round(DMax * scale)
 
@@ -1790,11 +1793,19 @@
 			if mainHand > 0 and Game.ItemsTxt[Pl.Items[mainHand].Number].Skill == 7
 			   and not Pl.Items[mainHand].Broken then
 				local CritProc = 0
-				t.Result, CritProc = CalcBlasterDamage(Pl)
+				-- the gun that fired this bolt (its item field holds a copy of it)
+				local gun = Pl.Items[mainHand]
+				local op = t.ObjectPtr
+				local objs = Map.Objects
+				if op and op ~= 0 and op >= objs["?ptr"] and op < objs["?ptr"] + objs["?size"]
+						and MF.IsBlasterItem and MF.IsBlasterItem(mem.i4[op + 0x24]) then
+					gun = structs.Item:new(op + 0x24)
+				end
+				t.Result, CritProc = CalcBlasterDamage(Pl, gun)
 
 				-- Disruptor spec (Emitter 4: crits count half the Body resistance and
 				-- eradicate at tier 1 strength without a Disruptor), MMMWE_Blasters.lua
-				local eradStrength, bodyMul = MF.BlasterEradication(Pl.Items[mainHand], CritProc == 1)
+				local eradStrength, bodyMul = MF.BlasterEradication(gun, CritProc == 1)
 				local Mon = t.Monster
 				-- Eradication: tier x Body resistance factor x (share of the full HP this hit
 				-- takes) x (share of HP already lost) x 2. Over a whole fight the shares add up

@@ -632,8 +632,8 @@ Id	Note	Subtype	MatGroup	EquipReq	Equip2Req	Equip3Req	ContF	QCont	LostQBit	Start
 863	Simple Staff	17		B1			1,3,1
 864	Iron Core Staff	17		B1			1,3,1
 865	Wizard Staff	17		B1			1,3,1
-866	Blaster	22		B1			1,3,1
-867	Blaster Rifle	22		B1			1,3,1
+866	Blaster	22		B1	E1		1,3,1
+867	Blaster Rifle	23		B1			1,3,1
 868	Crude Leather Armor	25		B1			1,3,1
 869	Studded Leather	25		B1			1,3,1
 870	Officer's Leather	25		B1			1,3,1
@@ -1114,8 +1114,8 @@ Id	Note	Subtype	MatGroup	EquipReq	Equip2Req	Equip3Req	ContF	QCont	LostQBit	Start
 1663	Staff	17		B1			1,1,3
 1664	Emerald Staff	17		B1			1,1,3
 1665	Power Staff	17		B1			1,1,3
-1666	Blaster	22		B1			1,1,3
-1667	Blaster Rifle	22		B1			1,1,3
+1666	Blaster	22		B1	E1		1,1,3
+1667	Blaster Rifle	23		B1			1,1,3
 1668	Leather Armor	25		B1			1,1,3
 1669	Studded Leather	25		B1			1,1,3
 1670	Enchanted Leather	25		B1			1,1,3
@@ -1520,7 +1520,7 @@ Id	Note	Subtype	MatGroup	EquipReq	Equip2Req	Equip3Req	ContF	QCont	LostQBit	Start
 2216	Phase Cloak			1
 2217	Gravity Treads			1
 2218	Officer's Shield Module			1
-2219	Padish's Sidearm	22		B1
+2219	Padish's Sidearm	22		B1	E1	
 2220	Command Cube	41		1
 2221	Plasma Edge	1		B1	M1
 2222	Ancient Power Core	41		1
