@@ -1,0 +1,2 @@
+Id	Name	EquipX	EquipY	LeftX	LeftY
+866	Blaster	40	47	-3	26

@@ -782,6 +782,26 @@ mem.autohook(0x43B8A5, function(d)
 	end
 end)
 
+-- After the left-hand item the game draws the left arm over it again (0x43B9FB) only for
+-- the items flagged at 0x43B7D3 (Equip Stat 1 and 2). A pistol is gripped: the hand (or its
+-- visible gauntlet) is drawn over it too, so the fingers come over the grip. 0x43B9F1
+-- ("cmp [esp+0x28], bl; jz 0x43BAD8", 10 bytes) is replaced; eax is free there.
+do
+	local cmps = {}
+	for num in pairs(OFFHAND_ICON) do
+		cmps[#cmps + 1] = string.format("cmp eax, %d\njz absolute 0x43B9FB", num)
+	end
+	mem.asmpatch(0x43B9F1, [[
+	cmp byte [esp+0x28], bl
+	jnz absolute 0x43B9FB
+	mov eax, [esp+0x20]
+	mov eax, [eax]
+	]] .. table.concat(cmps, "\n") .. [[
+
+	jmp absolute 0x43BAD8
+	]], 10)
+end
+
 -- set by the shot hook below for the blaster case of the cast code: 1 and the left gun's item
 local Dual = mem.StaticAlloc(8)
 u4[Dual], u4[Dual + 4] = 0, 0
