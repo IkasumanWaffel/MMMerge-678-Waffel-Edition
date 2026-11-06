@@ -1382,6 +1382,8 @@
 		CritDamagePerSkill = 4,    -- % crit damage per point of skill
 		EradCritMul      = 1.5,    -- a critical hit's eradication chance multiplier
 		EradMaxPerHit    = 0.5,    -- cap per hit
+		RifleCritMul     = 1.5,    -- the Blaster Rifle (two-handed): crit damage bonus x this,
+		                           -- as two-handed melee weapons (06.11.26)
 	}
 	MF.BlasterBalance = BLASTER
 
@@ -1453,6 +1455,9 @@
 
 		-- Crit damage mult (percent)
 		local critDamageP = CDBase + 100 + specCritD + BLASTER.CritDamagePerSkill * BS
+		if blasterType == 2 then          -- the rifle is two-handed
+			critDamageP = 100 + (critDamageP - 100) * BLASTER.RifleCritMul
+		end
 		CritD = critDamageP
 
 		-- Crit hit check

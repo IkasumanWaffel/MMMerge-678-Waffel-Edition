@@ -677,6 +677,85 @@ function events.ItemEquipRequirement(t)
 	if not (main and BLASTERS[main] == 1) then t.Result = false end
 end
 
+-- a pistol left alone in the left hand goes to the backpack: when the right hand holds
+-- anything but a pistol, or is empty while the mouse carries no pistol (not in the middle
+-- of swapping pistols). Without room in the backpack it stays, with a message.
+local COLS, ROWS = 14, 9
+local SizeCache = {}
+local function itemCells(number)
+	local c = SizeCache[number]
+	if c == nil then
+		c = false
+		local ok, idx = pcall(function() return Game.IconsLod:LoadBitmap(Game.ItemsTxt[number].Picture) end)
+		if ok and idx and idx >= 0 then
+			local bmp = Game.IconsLod.Bitmaps[idx]
+			if bmp and bmp.Width > 0 and bmp.Height > 0 then
+				c = {floor((max(bmp.Width, 14) - 14) / 32) + 1, floor((max(bmp.Height, 14) - 14) / 32) + 1}
+			end
+		end
+		SizeCache[number] = c
+	end
+	if c then return c[1], c[2] end
+	return 1, 1
+end
+
+local function toBackpack(pl, slot)
+	local w, h = itemCells(pl.Items[slot].Number)
+	local inv = pl.Inventory
+	for col = 0, COLS - w do
+		for row = 0, ROWS - h do
+			local free = true
+			for r = row, row + h - 1 do
+				for c = col, col + w - 1 do
+					if inv[r * COLS + c] ~= 0 then free = false break end
+				end
+				if not free then break end
+			end
+			if free then
+				local main = row * COLS + col
+				for r = row, row + h - 1 do
+					for c = col, col + w - 1 do inv[r * COLS + c] = -(main + 1) end
+				end
+				inv[main] = slot
+				pl.Items[slot].BodyLocation = 0
+				pl.ItemExtraHand = 0
+				return true
+			end
+		end
+	end
+end
+
+local LoneWarned = {}
+local LoneTick = 0
+local function checkLonePistols()
+	LoneTick = LoneTick + 1
+	if LoneTick < 6 then return end
+	LoneTick = 0
+	for i, pl in Party do
+		local slot = pl.ItemExtraHand
+		if slot > 0 and BLASTERS[pl.Items[slot].Number] == 1 then
+			local m = pl.ItemMainHand
+			local mainNum = m > 0 and pl.Items[m].Number
+			local alone
+			if mainNum then
+				alone = BLASTERS[mainNum] ~= 1
+			else
+				alone = BLASTERS[i4[0xB7CA64]] ~= 1      -- the item carried by the mouse
+			end
+			if alone then
+				if toBackpack(pl, slot) then
+					LoneWarned[i] = nil
+					Game.ShowStatusText(string.format("%s puts the left-hand blaster into the backpack", pl.Name), 2)
+				elseif not LoneWarned[i] then
+					LoneWarned[i] = true
+					Game.ShowStatusText(string.format("%s has no room in the backpack for the left-hand blaster", pl.Name), 3)
+				end
+			end
+		end
+	end
+end
+B.CheckLonePistols = checkLonePistols
+
 -- set by the shot hook below for the blaster case of the cast code: 1 and the left gun's item
 local Dual = mem.StaticAlloc(8)
 u4[Dual], u4[Dual + 4] = 0, 0
@@ -864,6 +943,7 @@ end)
 
 function events.Tick()
 	B.OverclockNow = nil
+	checkLonePistols()
 	if #Pending > 0 then
 		local q = Pending
 		Pending = {}
