@@ -253,12 +253,41 @@ local function upgradeTarget(pl)
 end
 
 ---------------------------------------------------------------------------
+-- pistols and rifles (07.11.26)
+--   Two pistols, by Blaster mastery: Expert - the left pistol's shot does half damage, -10
+--   Attack, recovery +15%; Master - no penalties; Grand Master - recovery -10%, +5% crit
+--   chance, the left pistol uses its cell at half rate.
+--   The rifle: every upgrade spec counts 1.5 times, +15 Attack, the two-handed crit damage
+--   bonus (MMMWE_Main.lua, RifleCritMul) and, from Master, a piercing bolt: 25% (GM 40%)
+--   chance that the nearest other monster close to the target takes half the hit.
+---------------------------------------------------------------------------
+
+B.Dual = {
+	ExpertLeftDamage = 0.5, ExpertAttack = -10, ExpertRecovery = 1.15,
+	GMRecovery = 0.9, GMCritChance = 5, GMLeftCellUse = 0.5,
+}
+B.Rifle = {
+	SpecMul = 1.5, Attack = 15,
+	Pierce = {[3] = 0.25, [4] = 0.40}, PierceShare = 0.5, PierceRadius = 300,
+}
+
+local function blasterMastery(pl)
+	local _, m = SplitSkill(pl:GetSkill(const.Skills.Blaster))
+	return m
+end
+
+-- how much an upgrade spec counts on this gun
+local function specMul(num)
+	return BLASTERS[num] == 2 and B.Rifle.SpecMul or 1
+end
+
+---------------------------------------------------------------------------
 -- effects (used by MMMWE_Main.lua)
 ---------------------------------------------------------------------------
 
 function MF.BlasterDamageMult(item)
 	local st = state(item)
-	return 1 + B.EmitterPerTier * st.Levels[1], st
+	return 1 + B.EmitterPerTier * st.Levels[1] * specMul(item.Number), st
 end
 
 function MF.BlasterBaseRange(item)
@@ -269,7 +298,7 @@ end
 function MF.BlasterRecovery(item)
 	local st = state(item)
 	local base = select(BLASTERS[item.Number], 50, 35)
-	return max(5, floor(base - B.CapacitorPerTier * st.Levels[2] + 0.5))
+	return max(5, floor(base - B.CapacitorPerTier * st.Levels[2] * specMul(item.Number) + 0.5))
 end
 
 -- eradication: Disruptor level (Emitter 4 without Disruptor: crits at tier 1 strength),
@@ -282,11 +311,11 @@ function MF.BlasterEradication(item, crit)
 		bodyMul = B.OverchargeBody
 		if lv <= 0 then lv = 1 end
 	end
-	return lv * B.DisruptorPerTier, bodyMul, st
+	return lv * B.DisruptorPerTier * specMul(item.Number), bodyMul, st
 end
 
 local function capacity(item, st)
-	return B.Shots[BLASTERS[item.Number]] * (1 + B.CellPerTier * st.Levels[4])
+	return B.Shots[BLASTERS[item.Number]] * (1 + B.CellPerTier * st.Levels[4] * specMul(item.Number))
 end
 
 ---------------------------------------------------------------------------
@@ -323,8 +352,8 @@ function MF.BlasterCardText(ch, cell)
 		st.Count, lim, st.Work, floor(st.Cell / 2))
 end
 
-function MF.BlasterCardDamageMult(ch)
-	return 1 + B.EmitterPerTier * view(ch, 0).Levels[1]
+function MF.BlasterCardDamageMult(ch, num)
+	return 1 + B.EmitterPerTier * view(ch, 0).Levels[1] * (num and specMul(num) or 1)
 end
 
 -- the "Charges" line of an energy shield's card
@@ -669,6 +698,61 @@ local function dualGun(pl)
 end
 MF.BlasterDualGun = dualGun
 
+-- the recovery of a blaster shot x this (two pistols: Expert slower, Grand Master faster)
+function MF.BlasterRecoveryMul(pl)
+	if not dualGun(pl) then return 1 end
+	local m = blasterMastery(pl)
+	return m >= 4 and B.Dual.GMRecovery or m == 2 and B.Dual.ExpertRecovery or 1
+end
+
+-- Attack bonus of the blaster in hand: two pistols at Expert -10, the rifle +15
+function MF.BlasterAttackBonus(pl)
+	local main = blasterOf(pl)
+	if not main then return 0 end
+	if BLASTERS[main.Number] == 2 then return B.Rifle.Attack end
+	if dualGun(pl) and blasterMastery(pl) == 2 then return B.Dual.ExpertAttack end
+	return 0
+end
+
+-- extra crit chance (%): two pistols at Grand Master
+function MF.BlasterCritChanceBonus(pl)
+	return (dualGun(pl) and blasterMastery(pl) >= 4) and B.Dual.GMCritChance or 0
+end
+
+-- damage multiplier of a bolt: the left pistol's at Expert. gun: the bolt's copy of the gun
+-- (the left one's BodyLocation is the left-hand item's)
+function MF.BlasterShotDamageMul(pl, gun)
+	local left = dualGun(pl)
+	if not left or blasterMastery(pl) ~= 2 then return 1 end
+	local main = blasterOf(pl)
+	if gun.BodyLocation == left.BodyLocation and gun.BodyLocation ~= main.BodyLocation then
+		return B.Dual.ExpertLeftDamage
+	end
+	return 1
+end
+
+-- the rifle's piercing bolt: the nearest other hostile monster close to the target takes a
+-- share of the hit (on the next tick, as Chain disruption)
+function MF.BlasterPierce(pl, mon, damage)
+	local main = blasterOf(pl)
+	if not main or BLASTERS[main.Number] ~= 2 then return end
+	local chance = B.Rifle.Pierce[min(4, blasterMastery(pl))]
+	if not chance or random() >= chance then return end
+	local dmg = floor(damage * B.Rifle.PierceShare)
+	if dmg <= 0 then return end
+	local best, bd
+	for i = 0, Map.Monsters.count - 1 do
+		local m = Map.Monsters[i]
+		if m ~= mon and m.HP > 0 and m.Hostile and m.AIState ~= const.AIState.Removed then
+			local d = monsterDistance(m, mon.X, mon.Y, mon.Z)
+			if d <= B.Rifle.PierceRadius + (m.BodyRadius or 0) and (not bd or d < bd) then best, bd = i, d end
+		end
+	end
+	if best then
+		Pending[#Pending + 1] = {Kind = "Chain", pi = pl:GetIndex(), mi = best, dmg = dmg, dmgKind = const.Damage.Energy}
+	end
+end
+
 -- the left hand takes a pistol only next to a pistol in the right hand
 function events.ItemEquipRequirement(t)
 	if t.Req ~= 2 or not t.Result or BLASTERS[t.ItemId] ~= 1 then return end
@@ -902,6 +986,7 @@ mem.autohook(0x42609E, function(d)
 		if lst.Cell > 0 then
 			local luse = B.CellFull / capacity(left, lst)
 			if overclock then luse = luse * 2 end
+			if blasterMastery(pl) >= 4 then luse = luse * B.Dual.GMLeftCellUse end
 			drainCell(pl, left, lst, leftSlot, luse, "left-hand blaster")
 			u4[Dual], u4[Dual + 4] = 1, left["?ptr"]
 		end

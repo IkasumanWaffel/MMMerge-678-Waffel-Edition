@@ -604,7 +604,9 @@
 			if bs and bs.OverclockNow and bs.OverclockNow == Pl:GetIndex() then
 				t.Result = bs.OverclockRecovery or 5
 			else
-				t.Result = MF.BlasterRecovery(main)
+				-- two pistols: Expert slower, Grand Master faster (MMMWE_Blasters.lua)
+				local mul = MF.BlasterRecoveryMul and MF.BlasterRecoveryMul(Pl) or 1
+				t.Result = math.max(5, round(MF.BlasterRecovery(main) * mul))
 			end
 			return
 		end
@@ -1335,6 +1337,8 @@
 					local AP = ArmorPenalty/75 - 1
 					t.Result = round(t.Result - Game.ItemsTxt[Pl.Items[Pl.ItemMainHand].Number].Mod2*AP - t.Result*AP - Game.GetStatisticEffect(Pl:GetAccuracy())*AP)
 				end
+				-- the rifle +15, two pistols at Expert -10 (MMMWE_Blasters.lua)
+				if MF.BlasterAttackBonus then t.Result = t.Result + MF.BlasterAttackBonus(Pl) end
 			end
 		end
 	end
@@ -1417,6 +1421,8 @@
 		if not left then return end
 		local bMin, bMax = blasterRange(Player, left)
 		if not bMin then return end
+		local mul = MF.BlasterShotDamageMul and MF.BlasterShotDamageMul(Player, left) or 1   -- Expert: half
+		bMin, bMax = round(bMin * mul), round(bMax * mul)
 		local fmt = math.max(aMax, bMax) >= 100 and "\t66 %d-%d/%d-%d" or "\t66 %d-%d / %d-%d"
 		return string.format(fmt, aMin, aMax, bMin, bMax)
 	end
@@ -1465,6 +1471,7 @@
 		-- Crit chance
 		local critChance = CCBase + Player:GetAccuracy() / 20 + specCritC
 			+ BLASTER.CritChancePerSkill * BS
+			+ (MF.BlasterCritChanceBonus and MF.BlasterCritChanceBonus(Player) or 0)   -- two pistols, GM
 		critChance = critChance * curseMult
 		CritC = critChance
 
@@ -1822,6 +1829,12 @@
 					gun = structs.Item:new(op + 0x24)
 				end
 				t.Result, CritProc = CalcBlasterDamage(Pl, gun)
+				-- two pistols at Expert: the left one's shot does half damage
+				if MF.BlasterShotDamageMul then
+					t.Result = round(t.Result * MF.BlasterShotDamageMul(Pl, gun))
+				end
+				-- the rifle's piercing bolt (from Master): a share of this hit on a neighbour
+				if MF.BlasterPierce then MF.BlasterPierce(Pl, t.Monster, t.Result) end
 
 				-- Disruptor spec (Emitter 4: crits count half the Body resistance and
 				-- eradicate at tier 1 strength without a Disruptor), MMMWE_Blasters.lua
@@ -2966,7 +2979,7 @@
 		local cBase = bt == 1 and 8 or 12
 
 		-- the Emitter spec of the item shown (read from its raw Charges)
-		local scale = MF.BlasterCardDamageMult and MF.BlasterCardDamageMult(DICharge) or 1
+		local scale = MF.BlasterCardDamageMult and MF.BlasterCardDamageMult(DICharge, ItNumber) or 1
 		dMin = round(dMin * scale)
 		dMax = round(dMax * scale)
 
