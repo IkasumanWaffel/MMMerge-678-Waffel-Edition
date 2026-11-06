@@ -1,10 +1,13 @@
 local LogId = "SpellsExtra"
-Log(Merge.Log.Info, "Init started: %s", LogId)
-local MF, MM, MO, MT, MV = Merge.Functions, Merge.ModSettings, Merge.Offsets, Merge.Tables, Merge.Vars
+local MF = Merge.Functions
+MF.LogInit1(LogId)
+local MM, MO, MT, MV = Merge.ModSettings, Merge.Offsets, Merge.Tables, Merge.Vars
 
 local floor, max, min = math.floor, math.max, math.min
-local asmpatch, asmproc, hook, nop, nop2 = mem.asmpatch, mem.asmproc, mem.hook, mem.nop, mem.nop2
-local i2, i4, u2, u4 = mem.i2, mem.i4, mem.u2, mem.u4
+local asmpatch, asmproc, StaticAlloc = MF.Asmpatch, MF.Asmproc, MF.StaticAlloc
+local hook = MF.Hook
+local nop, nop2 = mem.nop, mem.nop2
+local i2, i4, u1, u2, u4 = mem.i2, mem.i4, mem.u1, mem.u2, mem.u4
 local max_spell = 137
 local max_mastery = 4
 local spell_dmg_vars_size = 2
@@ -31,7 +34,7 @@ local function ProcessSpellsExtraTxt()
 	local null_tbl = {Mastery = 0, Level = 0}
 	local masteries = {B = 1, E = 2, M = 3, G = 4}
 
-	MO.SpellsDmgVars = mem.StaticAlloc(max_spell * spell_dmg_vars_line_size)
+	MO.SpellsDmgVars = StaticAlloc(max_spell * spell_dmg_vars_line_size)
 
 	local TxtTable = io.open(TableFile, "r")
 	if not TxtTable then
@@ -289,7 +292,7 @@ local function ProcessSpellsExtraTxt()
 end
 
 local function SetSpellsExtraHooks()
-	MO.WaterWalk5Mins = mem.StaticAlloc(16) -- 0xB21734?
+	MO.WaterWalk5Mins = StaticAlloc(16) -- 0xB21734?
 	MO.SpellKeyMods = MO.WaterWalk5Mins + 1
 	MO.LastArmageddonCaster = MO.WaterWalk5Mins + 4
 	MO.CalcSpellDamageCaster = MO.WaterWalk5Mins + 8
@@ -1687,6 +1690,17 @@ local function SetSpellsExtraHooks()
 	jmp absolute 0x47316C
 	@end:
 	]])
+	-- FIXME: move to buffs?
+	-- Allow caster 0 / player -1 (cthscr, Revamp; merged 06.11.26)
+	mem.prot(true)
+	--   decrease sp
+	u1[0x491D5A] = 0x37
+	--   clear if caster is uncoscious (for Water Walk as well)
+	u1[0x492A3A] = 0x31
+	--   movement
+	u1[0x472AB3 + 1] = 0x21
+	u1[0x472BC6 + 1] = 0x21
+	mem.prot(false)
 
 	-------- 22: Starburst --------
 	new_code = asmpatch(0x42848F, [[
@@ -1901,6 +1915,13 @@ local function SetSpellsExtraHooks()
 	]], 0x491DD9 - 0x491DD1)
 	-- FIXME: Disable MM8Patch hook
 	asmpatch(0x491DAD, "test byte ptr [0xB21867], 1", 0x491DB4 - 0x491DAD)
+	-- Allow caster 0 / player -1 (cthscr, Revamp; merged 06.11.26)
+	mem.prot(true)
+	--   decrease sp
+	u1[0x491DBE + 1] = 0x27
+	--   ?
+	u1[0x4726F4 + 1] = 0x28
+	mem.prot(false)
 
 	-------- 28: Recharge Item --------
 	new_code = asmpatch(0x428BC5, [[
@@ -5234,5 +5255,5 @@ function events.GameInitialized2()
 	]], 0x43915F - 0x439157)
 end
 
-Log(Merge.Log.Info, "Init finished: %s", LogId)
+MF.LogInit2(LogId)
 
