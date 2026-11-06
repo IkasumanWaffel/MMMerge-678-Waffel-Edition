@@ -756,6 +756,32 @@ local function checkLonePistols()
 end
 B.CheckLonePistols = checkLonePistols
 
+-- the paperdoll draws the left-hand item at 0x43B7A0: its picture is loaded by name at
+-- 0x43B826 (the name pointer on the stack, the item at [esp+0x30]) and placed at
+-- [esp+0x14], [esp+0x10] (x, y) by 0x43B8A5. A pistol in the left hand is drawn with its
+-- icon turned 90 degrees counter-clockwise (<icon>L in waffel.icons.lod, made by
+-- Tools/offhand_icons.py), moved by B.OffhandIconOffset (x, y): by default the turned
+-- picture keeps the centre of the upright one. Console: change the numbers, the doll
+-- shows it at once.
+local OFFHAND_ICON = {[866] = "7item064L", [1666] = "raygun1L", [2219] = "anc07L"}
+B.OffhandIconOffset = {[866] = {-4, 4}, [1666] = {-33, 33}, [2219] = {-4, 4}}
+local OffhandIconPtr = {}
+for num, name in pairs(OFFHAND_ICON) do OffhandIconPtr[num] = MF.cstring(name) end
+
+mem.autohook(0x43B826, function(d)
+	local p = OffhandIconPtr[i4[u4[d.esp + 0x30]]]
+	if p then u4[d.esp] = p end
+end)
+
+mem.autohook(0x43B8A5, function(d)
+	local num = i4[u4[d.esp + 0x20]]
+	local off = OffhandIconPtr[num] and B.OffhandIconOffset[num]
+	if off then
+		i4[d.esp + 0x14] = i4[d.esp + 0x14] + off[1]
+		i4[d.esp + 0x10] = i4[d.esp + 0x10] + off[2]
+	end
+end)
+
 -- set by the shot hook below for the blaster case of the cast code: 1 and the left gun's item
 local Dual = mem.StaticAlloc(8)
 u4[Dual], u4[Dual + 4] = 0, 0
