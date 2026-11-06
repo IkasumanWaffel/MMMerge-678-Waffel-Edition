@@ -10,6 +10,10 @@ sky shows through); the terminator is dithered over a narrow band. Phases 1..7 =
 1/8 .. 7/8 (waxing crescent, first quarter, waxing gibbous, full, waning gibbous, last
 quarter, waning crescent); the new moon isn't drawn.
 
+A halo (07.11.26): the lit part, blurred, shows as pale dots around the disc (outside it
+only, so a crescent's dark part stays clear), denser near the light; HALO sets how far it
+reaches (the disc's radius x HALO is the sprite's half size).
+
 The other sprites already in <out lod> are kept (the sun's): the moon's are added or
 replaced. Each phase gets the palette of bitmaps.lod that matches its colours best.
 
@@ -22,24 +26,44 @@ from make_sun_sprite import sprite_bytes, write_lod, all_palettes, best_palette,
 
 BAND = 0.08          # terminator half-width (share of the disc radius), dithered
 LIMB = 0.985         # the disc edge (share of the radius); the dark sky around is cut
+HALO = 1.45          # the sprite's half size in disc radii (room for the halo)
+GLOW_BLUR = 0.16     # the halo's blur, in disc radii
+GLOW_GAIN = 2.2      # how dense the halo's dots are
+GLOW_CUT = 0.05      # below this the halo ends
+GLOW_COLOR = (200, 208, 226)
 
 def build(picture, cx, cy, radius, bitmaps, template, out, size=256):
     im = Image.open(picture).convert('RGB')
-    margin = radius * 1.02
+    margin = radius * HALO
     im = im.crop((round(cx - margin), round(cy - margin), round(cx + margin), round(cy + margin)))
     im = im.resize((size, size), Image.LANCZOS)
     px = im.load()
     R = size / 2
-    rd = R / 1.02                       # disc radius in the sprite
+    rd = R / HALO                       # disc radius in the sprite
+    import numpy as np
+    from PIL import ImageFilter
     pals = all_palettes(bitmaps)
     sprites = []
     for k in range(1, 8):
         p = k / 8
         c = math.cos(2 * math.pi * p)
+        def lit(x, y):
+            u, v = (x + 0.5 - R) / rd, (y + 0.5 - R) / rd
+            if math.hypot(u, v) > LIMB: return 0
+            w = math.sqrt(max(0.0, 1 - v * v))
+            d = (u - w * c) if p < 0.5 else (-w * c - u)
+            return 1 if (p == 0.5 or d > 0) else 0
+        mask = Image.new('L', (size, size))
+        mask.putdata([255 * lit(x, y) for y in range(size) for x in range(size)])
+        glow = np.asarray(mask.filter(ImageFilter.GaussianBlur(GLOW_BLUR * rd)), dtype=float) / 255
         def pixel(x, y, c=c, p=p):
             u, v = (x + 0.5 - R) / rd, (y + 0.5 - R) / rd
             r = math.hypot(u, v)
-            if r > LIMB: return None
+            if r > LIMB:
+                g = min(1.0, glow[y][x] * GLOW_GAIN)
+                if g < GLOW_CUT or BAYER[y % 8][x % 8] / 64 >= g * g: return None
+                k = 0.75 + 0.25 * g
+                return tuple(int(ch * k) for ch in GLOW_COLOR)
             w = math.sqrt(max(0.0, 1 - v * v))
             d = (u - w * c) if p < 0.5 else (-w * c - u)     # > 0 lit
             if p == 0.5: d = 1

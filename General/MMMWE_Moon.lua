@@ -17,6 +17,9 @@
 	Hidden: indoors, under an overcast, stormy or dark sky (MF.SunSettings.CloudySkies), in thick fog, below the skyline (the map's height grid, as the sun),
 	at new moon, and on the maps in MOON.NoMoonMaps.
 
+	The halo: pale dots around the lit part, in the pictures. Far objects fade into the night,
+	so the moon can be brought nearer (MOON.Distance, changed live; it keeps its size).
+
 	Console: Merge.Functions.MoonInfo() prints the phase, the moon's angles and its object;
 	Merge.Functions.MoonSettings holds the settings.
 --]]
@@ -29,8 +32,11 @@ local MOON = {
 	Id           = 12171,      -- ObjList.txt (12110..12999, see MMMWE_Sun.lua)
 	SummonId     = 555,        -- what is summoned and turned into the moon (Laser)
 	Groups       = {"moonwe1", "moonwe2", "moonwe3", "moonwe4", "moonwe5", "moonwe6", "moonwe7"},
-	Scale        = 188000,     -- the 256 px sprite (disc 250 px): about the sun's size
+	Scale        = 267000,     -- at RefDistance: the 256 px sprite (disc 176 px, the rest its halo),
+	                           -- about the sun's size
 	Distance     = 6900,       -- a little nearer than the sun: in front of it when they meet
+	RefDistance  = 6900,       -- the picture is scaled by Distance / RefDistance: the same size
+	                           -- in the sky at any distance (nearer: less faded by the night)
 	MaxElevation = 55,         -- degrees above the horizon at its highest
 	EyeHeight    = 160,
 	MonthDays    = 28,
@@ -44,6 +50,7 @@ MF.MoonSettings = MOON
 
 local moonIndex, typeIndex
 local groups, stage = {}, nil
+local scaledFor          -- the distance the frames are scaled for
 
 local function findType(id)
 	for i, o in Game.ObjListBin do
@@ -136,13 +143,20 @@ local function prepareFrames()
 		local ok, g = pcall(function() return Game.SFTBin:FindGroup(name) end)
 		if ok and g and g >= 0 then
 			groups[k] = g
-			pcall(function()
-				Game.SFTBin:LoadGroup(g)
-				Game.SFTBin.Frames[g].Scale = MOON.Scale
-			end)
+			pcall(function() Game.SFTBin:LoadGroup(g) end)
 		end
 	end
 	stage = nil
+	scaledFor = nil
+end
+
+local function scaleFrames()
+	if scaledFor == MOON.Distance then return end
+	local sc = floor(MOON.Scale * MOON.Distance / MOON.RefDistance)
+	for _, g in pairs(groups) do
+		pcall(function() Game.SFTBin.Frames[g].Scale = sc end)
+	end
+	scaledFor = MOON.Distance
 end
 
 local function setStage(k)
@@ -223,6 +237,7 @@ function events.Tick()
 	if not o then return end
 	local _, k = phase()
 	setStage(k)
+	scaleFrames()
 	local az, el = moonAngles()
 	local d = MOON.Distance
 	local h = d * cos(el)
