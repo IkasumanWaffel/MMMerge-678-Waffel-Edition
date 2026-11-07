@@ -1696,14 +1696,33 @@ OnHitEffects[1308] = {
 		CastSpellTowardsMonster(6, Skill, Mas, t.Monster)
 	end}
 -- Heavenly Warhammer
+-- (07.11.26) The Rock Blast it cast had no caster: its rocks bounced around and hurt the party
+-- as well. Now the blast is the bearer's own: Earth damage of a Rock Blast of the bearer's
+-- Mace skill to the target and every foe within HW_BLAST_RADIUS of it (through their Earth
+-- resistance), dealt on the next tick as the bearer's hits (MF.QueueForcedHit).
+local HW_BLAST_RADIUS = 300
 OnHitEffects[1355] = {
 	DamageKind	= const.Damage.Energy,
 	Add			= 20,
 	Special = function(t)
 		local Skill, Mas = SpellPowerByItemSkill(t.Player, t.Item)
 		CastSpellDirect(125,Skill,Mas)
-		evt.CastSpell(41, Mas, Skill, t.Monster.X,t.Monster.Y,t.Monster.Z+50, t.Monster.X,t.Monster.Y,t.Monster.Z)	
-		--evt.PlaySound{44597}
+		local mon = t.Monster
+		if not mon or not MF.QueueForcedHit then return end
+		-- Rock Blast: 10 + 1d8 per skill point
+		local dmg = 10
+		for _ = 1, Skill do dmg = dmg + math.random(1, 8) end
+		local pi = t.Player:GetIndex()
+		for i = 0, Map.Monsters.count - 1 do
+			local m = Map.Monsters[i]
+			if m.HP > 0 and (m == mon or m.Hostile) then
+				local dx, dy, dz = m.X - mon.X, m.Y - mon.Y, m.Z - mon.Z
+				if dx * dx + dy * dy + dz * dz <= HW_BLAST_RADIUS * HW_BLAST_RADIUS then
+					local d = m:CalcTakenDamage(const.Damage.Earth, dmg)
+					if d > 0 then MF.QueueForcedHit(pi, i, d, const.Damage.Earth) end
+				end
+			end
+		end
 	end}
 -- Okkam's Razor
 OnHitEffects[1356] = {
