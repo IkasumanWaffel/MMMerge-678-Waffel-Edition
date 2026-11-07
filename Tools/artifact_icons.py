@@ -145,7 +145,7 @@ def ref_icon(folder, name):
 # the redraws of 08.11.26: upright pictures on a cyan background (0,255,255)
 REDRAWS = {
     # icon name: (picture, icon height)
-    'warscyth': ('f6aa3f5f-image.jpg', 270),
+    'warscyth': ('60b81cac-image.jpg', 270),   # the user's orange-glow variant (08.11.26)
     'rimefall': ('2b4e3864-image.jpg', 205),
     'mjolnir':  ('d526a0c2-image.jpg', 215),
     'dwrunwh2': ('77318e27-image.jpg', 200),   # the runic hammer: now the Dwarven Runic Warhammer
@@ -157,7 +157,8 @@ REDRAWS = {
 FRINGE = {'rimefall': 110}
 # glowing parts (hue range in degrees): never peeled, recoloured to a new hue
 # (the Warscythe's blue energy glow becomes the reddish orange of the blasters' plasma bolts)
-GLOW = {'warscyth': ((198, 250), 14)}
+PEEL = {'warscyth': 2}   # passes of the fringe peeling (default 4): thin parts survive
+GLOW = {}   # was {'warscyth': ((198, 250), 14)} for the blue picture f6aa3f5f
 
 def cyanness(c):
     c = c.astype(int)
@@ -168,7 +169,7 @@ def cyanness(c):
 def edge_of(m):
     return (m > 0) & (cv2.dilate((m == 0).astype(np.uint8), np.ones((3, 3), np.uint8)) > 0)
 
-def cyan_cutout(path, fringe=45, glow=None):
+def cyan_cutout(path, fringe=45, glow=None, passes=4):
     im = np.array(Image.open(path).convert('RGB'))
     f = im.astype(int)
     cy = cyanness(im)
@@ -191,7 +192,7 @@ def cyan_cutout(path, fringe=45, glow=None):
         # (the white line around it as well: it gets a little of the new colour)
         tint = keep | (near & (((hue >= 150) & (hue <= h1)) | (sat < 30)) & (val > 150))
     # peel the cyan fringe off the edge (the JPEG blends the background into it)
-    for _ in range(4):
+    for _ in range(passes):
         peel = edge_of(m) & (cy > fringe) & ~keep
         if not peel.any(): break
         m[peel] = 0
@@ -224,7 +225,7 @@ def clean_fringe(idx, pal, fringe):
 def redraw_icon(folder, name):
     p, h = REDRAWS[name]
     fr = FRINGE.get(name, 45)
-    im, m = cyan_cutout(folder + '/' + p, fr, GLOW.get(name))
+    im, m = cyan_cutout(folder + '/' + p, fr, GLOW.get(name), PEEL.get(name, 4))
     ys, xs = np.nonzero(m)
     im, m = im[ys.min():ys.max() + 1, xs.min():xs.max() + 1], m[ys.min():ys.max() + 1, xs.min():xs.max() + 1]
     img = Image.fromarray(np.dstack([im, m * 255]).astype(np.uint8), 'RGBA').convert('RGBa')
