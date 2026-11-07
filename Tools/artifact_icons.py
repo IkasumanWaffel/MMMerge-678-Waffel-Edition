@@ -155,8 +155,9 @@ REDRAWS = {
 # how cyan a pixel may be at the edge before it counts as the background showing through
 # (Rimefall is cyan itself: only the strongest fringe goes)
 FRINGE = {'rimefall': 110}
-# the pale halo where a glow fades into the background: peeled too (the Warscythe)
-HALO = {'warscyth': 185}
+# glowing parts (hue range in degrees): never peeled, recoloured to a new hue
+# (the Warscythe's blue energy glow becomes the reddish orange of the blasters' plasma bolts)
+GLOW = {'warscyth': ((198, 250), 14)}
 
 def cyanness(c):
     c = c.astype(int)
@@ -167,7 +168,7 @@ def cyanness(c):
 def edge_of(m):
     return (m > 0) & (cv2.dilate((m == 0).astype(np.uint8), np.ones((3, 3), np.uint8)) > 0)
 
-def cyan_cutout(path, fringe=45, halo=None):
+def cyan_cutout(path, fringe=45, glow=None):
     im = np.array(Image.open(path).convert('RGB'))
     f = im.astype(int)
     cy = cyanness(im)
@@ -176,13 +177,29 @@ def cyan_cutout(path, fringe=45, halo=None):
     n, lab, st, _ = cv2.connectedComponentsWithStats(m)
     areas = st[1:, cv2.CC_STAT_AREA]
     m = np.isin(lab, [i + 1 for i, a in enumerate(areas) if a >= 0.002 * areas.sum()]).astype(np.uint8)
+    keep = np.zeros(m.shape, bool)
+    if glow:
+        hsv = cv2.cvtColor(im, cv2.COLOR_RGB2HSV).astype(int)
+        (h0, h1), _ = glow
+        hue, sat, val = hsv[..., 0] * 2, hsv[..., 1], hsv[..., 2]
+        core = (hue >= h0) & (hue <= h1) & (sat > 40) & (val > 110)
+        # the glow's outer edge, where it fades into the cyan background, is glow too - but only
+        # next to the glow: the cyan fringe of the hilt and the shaft is peeled
+        near = cv2.dilate(core.astype(np.uint8), np.ones((25, 25), np.uint8)) > 0
+        keep = core | (near & (hue >= 160) & (hue < h0) & (sat > 40) & (val > 110))
+        # recoloured: the glow and its pale whitish rim
+        # (the white line around it as well: it gets a little of the new colour)
+        tint = keep | (near & (((hue >= 150) & (hue <= h1)) | (sat < 30)) & (val > 150))
     # peel the cyan fringe off the edge (the JPEG blends the background into it)
-    for _ in range(6 if halo else 4):
-        peel = edge_of(m) & (cy > fringe)
-        if halo:
-            peel |= edge_of(m) & (np.minimum(f[..., 1], f[..., 2]) > halo)
+    for _ in range(4):
+        peel = edge_of(m) & (cy > fringe) & ~keep
         if not peel.any(): break
         m[peel] = 0
+    if glow:
+        hsv = cv2.cvtColor(im, cv2.COLOR_RGB2HSV)
+        hsv[..., 0][tint] = glow[1] // 2
+        hsv[..., 1][tint] = np.maximum(hsv[..., 1][tint], 70)
+        im = cv2.cvtColor(hsv, cv2.COLOR_HSV2RGB)
     return im, m
 
 def clean_fringe(idx, pal, fringe):
@@ -207,7 +224,7 @@ def clean_fringe(idx, pal, fringe):
 def redraw_icon(folder, name):
     p, h = REDRAWS[name]
     fr = FRINGE.get(name, 45)
-    im, m = cyan_cutout(folder + '/' + p, fr, HALO.get(name))
+    im, m = cyan_cutout(folder + '/' + p, fr, GLOW.get(name))
     ys, xs = np.nonzero(m)
     im, m = im[ys.min():ys.max() + 1, xs.min():xs.max() + 1], m[ys.min():ys.max() + 1, xs.min():xs.max() + 1]
     img = Image.fromarray(np.dstack([im, m * 255]).astype(np.uint8), 'RGBA').convert('RGBa')
