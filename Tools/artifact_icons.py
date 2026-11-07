@@ -152,33 +152,75 @@ REDRAWS = {
     'dawnbr':   ('6246a410-image.jpg', 215),   # the paladin hammer
 }
 
-def cyan_cutout(path):
-    im = np.array(Image.open(path).convert('RGB')).astype(int)
-    r, g, b = im[..., 0], im[..., 1], im[..., 2]
-    cyan = np.minimum(g, b) - r                          # how cyan a pixel is
-    m = ~((cyan > 140) & (g > 190) & (b > 190))
+# how cyan a pixel may be at the edge before it counts as the background showing through
+# (Rimefall is cyan itself: only the strongest fringe goes)
+FRINGE = {'rimefall': 110}
+# the pale halo where a glow fades into the background: peeled too (the Warscythe)
+HALO = {'warscyth': 185}
+
+def cyanness(c):
+    c = c.astype(int)
+    r, g, b = c[..., 0], c[..., 1], c[..., 2]
+    # cyan: green and blue alike, both above red (the Warscythe's blue glow is not)
+    return np.where(np.abs(g - b) < 45, np.minimum(g, b) - r, 0)
+
+def edge_of(m):
+    return (m > 0) & (cv2.dilate((m == 0).astype(np.uint8), np.ones((3, 3), np.uint8)) > 0)
+
+def cyan_cutout(path, fringe=45, halo=None):
+    im = np.array(Image.open(path).convert('RGB'))
+    f = im.astype(int)
+    cy = cyanness(im)
+    m = ~((np.minimum(f[..., 1], f[..., 2]) - f[..., 0] > 140) & (f[..., 1] > 190) & (f[..., 2] > 190))
     m = cv2.morphologyEx(m.astype(np.uint8), cv2.MORPH_OPEN, np.ones((3, 3), np.uint8))
     n, lab, st, _ = cv2.connectedComponentsWithStats(m)
     areas = st[1:, cv2.CC_STAT_AREA]
     m = np.isin(lab, [i + 1 for i, a in enumerate(areas) if a >= 0.002 * areas.sum()]).astype(np.uint8)
-    # the cyan fringe of the edge: pull the pixels next to the background toward their own red
-    edge = (m > 0) & (cv2.dilate(1 - m, np.ones((5, 5), np.uint8)) > 0) & (cyan > 40)
-    im2 = im.copy()
-    k = np.clip((cyan - 40) / 120.0, 0, 1)[..., None]
-    grey = np.stack([r, np.minimum(g, r + 40), np.minimum(b, r + 60)], -1)
-    im2[edge] = (im[edge] * (1 - k[edge]) + grey[edge] * k[edge]).astype(int)
-    return np.clip(im2, 0, 255).astype(np.uint8), m
+    # peel the cyan fringe off the edge (the JPEG blends the background into it)
+    for _ in range(6 if halo else 4):
+        peel = edge_of(m) & (cy > fringe)
+        if halo:
+            peel |= edge_of(m) & (np.minimum(f[..., 1], f[..., 2]) > halo)
+        if not peel.any(): break
+        m[peel] = 0
+    return im, m
+
+def clean_fringe(idx, pal, fringe):
+    """the icon: edge pixels still cyan take the colour of their inner neighbours, or go"""
+    p = np.frombuffer(pal, np.uint8).reshape(256, 3).astype(int)
+    for _ in range(2):
+        cy = cyanness(p[idx]); cy[idx == 0] = 0
+        bad = edge_of(idx > 0) & (cy > fringe)
+        if not bad.any(): break
+        good = (idx > 0) & ~bad & (cy <= fringe)
+        h, w = idx.shape
+        for y, x in zip(*np.nonzero(bad)):
+            ys, xs = slice(max(0, y - 1), y + 2), slice(max(0, x - 1), x + 2)
+            g = good[ys, xs]
+            if g.sum() >= 3:
+                c = p[idx[ys, xs][g]].mean(0)
+                idx[y, x] = 1 + np.argmin(((p[1:] - c) ** 2).sum(1))
+            else:
+                idx[y, x] = 0
+    return idx
 
 def redraw_icon(folder, name):
     p, h = REDRAWS[name]
-    im, m = cyan_cutout(folder + '/' + p)
+    fr = FRINGE.get(name, 45)
+    im, m = cyan_cutout(folder + '/' + p, fr, HALO.get(name))
     ys, xs = np.nonzero(m)
     im, m = im[ys.min():ys.max() + 1, xs.min():xs.max() + 1], m[ys.min():ys.max() + 1, xs.min():xs.max() + 1]
     img = Image.fromarray(np.dstack([im, m * 255]).astype(np.uint8), 'RGBA').convert('RGBa')
     w = max(1, round(img.width * h / img.height))
     img = img.resize((w, h), Image.LANCZOS).convert('RGBA')
     b = to_icon(img, (w, h), name, sharpen=False)
-    idx, _ = decode(b)
+    idx, pal = decode(b)
+    idx = clean_fringe(idx.copy(), pal, fr - 10)
+    if name != 'rimefall':   # stray specks left by the peeling (Rimefall's droplets stay)
+        n, lab, st, _ = cv2.connectedComponentsWithStats((idx > 0).astype(np.uint8))
+        for i in range(1, n):
+            if st[i, cv2.CC_STAT_AREA] < 6: idx[lab == i] = 0
+    b = blob(name, idx, pal)
     cols = np.nonzero(idx[int(h * 0.7):] > 0)[1]
     grip = int(round(cols.mean())) if len(cols) else w // 2
     return b, (w, h, grip)
