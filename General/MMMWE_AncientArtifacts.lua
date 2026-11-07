@@ -56,6 +56,7 @@ local FORGE = {
 	[1624] = true, [1648] = true, [549] = true,      -- Divine Dagger, Stellar Bow, Supreme Maul
 	[1355] = true, [1356] = true,                    -- Heavenly Warhammer, Okkam's Razor
 	[MODULE] = true, [SIDEARM] = true, [EDGE] = true,
+	[2228] = true,                                   -- Warscythe (Global\ExtraArtifacts.lua)
 }
 MF.HeavenlyForgeItems = FORGE
 

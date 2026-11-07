@@ -1526,3 +1526,7 @@ Id	Note	Subtype	MatGroup	EquipReq	Equip2Req	Equip3Req	ContF	QCont	LostQBit	Start
 2222	Ancient Power Core	41		1
 2223	Sentinel Frame	27		B1
 2224	Neural Crown			1
+2225	Rimefall	15		B1
+2226	Mjolnir	15		B1
+2227	Dawnbringer	15		B1
+2228	Warscythe	8		B1

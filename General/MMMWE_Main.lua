@@ -282,7 +282,7 @@
 		'Flail', 'Artifact Flail', 'Relic Flail', 'Special Flail',
 		'Hammer', 'Artifact Hammer', 'Relic Hammer', 'Special Hammer',
 		'Staff', 'Artifact Staff', 'Relic Staff', 'Special Staff',
-		'Warhammer', 'Ancient Relic Warhammer',
+		'Warhammer', 'Ancient Relic Warhammer', 'Artifact Warhammer',
 		'Artifact Greatsword', 'Relic Greatsword',
 		'Saber'
 	}
@@ -308,7 +308,7 @@
 			0, 0, 0, 0,	-- Flails
 			6, 6, 6, 6,	-- Hammers
 			22, 22, 22, 22,	-- Staves
-			10, 10,	-- Warhammers
+			10, 10, 10,	-- Warhammers
 			10, 10,	-- Greatswords
 			14	-- Sabers
 		},
@@ -329,7 +329,7 @@
 			4, 4, 4, 4,	-- Flails
 			-5, -5, -5, -5,	-- Hammers
 			0, 0, 0, 0,	-- Staves
-			2, 2,	-- Warhammers
+			2, 2, 2,	-- Warhammers
 			8, 8,	-- Greatswords
 			-8	-- Sabers
 		},
@@ -350,7 +350,7 @@
 			6, 6, 6, 6,	-- Flails
 			8, 8, 8, 8,	-- Hammers
 			13, 13, 13, 13,	-- Staves
-			8, 8,	-- Warhammers
+			8, 8, 8,	-- Warhammers
 			14, 14,	-- Greatswords
 			0	-- Sabers
 		},
@@ -371,7 +371,7 @@
 			2, 2, 2, 2,	-- Flails
 			2, 2, 2, 2,	-- Hammers
 			0, 0, 0, 0,	-- Staves
-			-3, -3,	-- Warhammers
+			-3, -3, -3,	-- Warhammers
 			-3, -3,	-- Greatswords
 			6	-- Sabers
 		},
@@ -392,7 +392,7 @@
 			0.30, 0.30, 0.30, 0.30,	-- Flails
 			0.10, 0.10, 0.10, 0.10,	-- Hammers
 			0, 0, 0, 0,	-- Staves
-			0.45, 0.45,	-- Warhammers
+			0.45, 0.45, 0.45,	-- Warhammers
 			0.60, 0.60,	-- Greatswords
 			-0.05	-- Sabers
 		}

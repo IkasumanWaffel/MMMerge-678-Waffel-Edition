@@ -1228,6 +1228,17 @@ GetBonusList(2211).Stats = {	[const.Stats.Speed] = 20}
 -- Mountain's Heart (relic)
 GetBonusList(2212).Stats = {	[const.Stats.Might] = 40, [const.Stats.Endurance] = 40, [const.Stats.EarthResistance] = 30,
 								[const.Stats.Speed] = -20, [const.Stats.Accuracy] = -20}
+-- Warhammers and the Warscythe of 07.11.26 (their on-hit effects are at the end)
+-- Rimefall
+GetBonusList(2225).Stats = {	[const.Stats.Endurance] = 25, [const.Stats.WaterResistance] = 30}
+-- Mjolnir
+GetBonusList(2226).Stats = {	[const.Stats.Might] = 30, [const.Stats.AirResistance] = 30}
+-- Dawnbringer
+GetBonusList(2227).Stats = {	[const.Stats.Personality] = 25, [const.Stats.LightResistance] = 30}
+GetBonusList(2227).Skills =	{	[const.Skills.Spirit] = 5}
+-- Warscythe (relic)
+GetBonusList(2228).Stats = {	[const.Stats.Might] = 40, [const.Stats.Accuracy] = 25,
+								[const.Stats.Personality] = -30, [const.Stats.MindResistance] = -30}
 -- Ancient artifacts and relics (MMMWE_AncientArtifacts.lua; not found in game until their pictures are drawn)
 -- Padish's Signet
 GetBonusList(2213).Stats = {	[const.Stats.Personality] = 15}
@@ -1769,4 +1780,83 @@ OnHitEffects[2040] = {
 		evt.CastSpell(18, Mas, Skill, t.Monster.X,t.Monster.Y,t.Monster.Z+50, t.Monster.X,t.Monster.Y,t.Monster.Z)
 	end}
 	
+-- (07.11.26) Rimefall, Mjolnir, Dawnbringer and the Warscythe
+-- a monster debuff unless the monster resists it by its resistance to kind (as the shield bash)
+local function DebuffMonster(t, kind, buff, time, power)
+	local mon = t.Monster
+	if not mon or mon.HP <= 0 then return end
+	local res = mon.Resistances[kind]
+	if res == const.MonsterImmune then return end
+	local S, M = SplitSkill(t.Player:GetSkill(const.Skills.Mace))
+	if math.random(5, 100) + S + M * 2.5 <= res then return end
+	local b = mon.SpellBuffs[buff]
+	b.ExpireTime = max(Game.Time + time, b.ExpireTime)
+	if power then
+		b.Power = max(b.Power, power)
+		b.Skill = max(b.Skill, 3)
+	end
+	return true
+end
+-- extra hits of kind to hostile monsters near the target (nearest first, at most count)
+local function NearbyHits(t, kind, dmg, radius, count)
+	local mon = t.Monster
+	if not mon or not MF.QueueForcedHit then return end
+	local near = {}
+	for i = 0, Map.Monsters.count - 1 do
+		local m = Map.Monsters[i]
+		if m ~= mon and m.HP > 0 and m.Hostile then
+			local dx, dy, dz = m.X - mon.X, m.Y - mon.Y, m.Z - mon.Z
+			local d2 = dx * dx + dy * dy + dz * dz
+			if d2 <= radius * radius then near[#near + 1] = {i, d2} end
+		end
+	end
+	table.sort(near, function(a, b) return a[2] < b[2] end)
+	local pi = t.Player:GetIndex()
+	for n = 1, min(count, #near) do
+		local i = near[n][1]
+		local d = Map.Monsters[i]:CalcTakenDamage(kind, dmg)
+		if d > 0 then MF.QueueForcedHit(pi, i, d, kind) end
+	end
+end
+-- Rimefall: Water damage, the target is slowed
+OnHitEffects[2225] = {
+	DamageKind	= const.Damage.Water,
+	Add			= 15,
+	Special = function(t)
+		DebuffMonster(t, const.Damage.Water, const.MonsterBuff.Slow, 2 * const.Minute, 2)
+	end}
+-- Mjolnir: Air damage, a chance to stun the target and to strike two foes near it with lightning
+OnHitEffects[2226] = {
+	DamageKind	= const.Damage.Air,
+	Add			= 15,
+	Special = function(t)
+		if random(100) <= 20 then
+			if DebuffMonster(t, const.Damage.Air, const.MonsterBuff.Paralyze, const.Minute) then
+				Game.ShowStatusText("Mjolnir's thunder stuns the foe!", 2)
+			end
+			NearbyHits(t, const.Damage.Air, 10 + random(1, 10) + random(1, 10), 400, 2)
+		end
+	end}
+-- Dawnbringer: Light damage, double against the undead, whose blows also heal the bearer
+OnHitEffects[2227] = {
+	DamageKind	= const.Damage.Light,
+	Add			= 15,
+	Special = function(t)
+		local mon = t.Monster
+		if mon and Game.IsMonsterOfKind(mon.Id, const.MonsterKind.Undead) ~= 0 then
+			t.Result = t.Result * 2
+			local pl = t.Player
+			if pl.HP > 0 then pl.HP = min(pl:GetFullHP(), pl.HP + 3 + floor(t.Result / 5)) end
+		end
+	end}
+-- Warscythe: Energy damage, and the blow may arc to the nearest foe
+OnHitEffects[2228] = {
+	DamageKind	= const.Damage.Energy,
+	Add			= 20,
+	Special = function(t)
+		if random(100) <= 30 then
+			NearbyHits(t, const.Damage.Energy, 15 + random(1, 10) + random(1, 10), 500, 1)
+		end
+	end}
+
 MF.LogInit2(LogId)

@@ -548,7 +548,7 @@ Item #	Pic File	1	2	3	4	5	6
 544	Placeholder	0	0	0	0	0	0	artifact 544
 545	mournbringer	0	0	0	0	0	1	Mournbringer
 546	ironwh	8	2	0	0	0	0	Iron Warhammer
-547	dwrunwh	0	5	7	3	0	0	Dwarven Runic Warhammer
+547	dwrunwh2	0	5	7	3	0	0	Dwarven Runic Warhammer
 548	paladinwh	0	0	5	7	3	0	Paladin Warhammer
 549	mithrilwh	0	0	0	0	10	10	Mithril Warhammer
 550	runeblade	0	0	0	0	0	1	Runeblade
@@ -2226,6 +2226,10 @@ Item #	Pic File	1	2	3	4	5	6
 2222	anc10	0	0	0	0	0	0	Ancient Power Core
 2223	anc11	0	0	0	0	0	0	Sentinel Frame
 2224	anc12	0	0	0	0	0	0	Neural Crown
+2225	rimefall	0	0	0	0	0	1	Rimefall
+2226	mjolnir	0	0	0	0	0	1	Mjolnir
+2227	dawnbr	0	0	0	0	0	1	Dawnbringer
+2228	warscyth	0	0	0	0	0	1	Warscythe
 								
 								
 								
