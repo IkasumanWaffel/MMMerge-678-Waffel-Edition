@@ -141,3 +141,44 @@ def ref_icon(folder, name):
     cols = np.nonzero(rows)[1]
     grip = int(round(cols.mean())) if len(cols) else w // 2
     return b, (w, h, grip)
+
+# the redraws of 08.11.26: upright pictures on a cyan background (0,255,255)
+REDRAWS = {
+    # icon name: (picture, icon height)
+    'warscyth': ('f6aa3f5f-image.jpg', 270),
+    'rimefall': ('2b4e3864-image.jpg', 205),
+    'mjolnir':  ('d526a0c2-image.jpg', 215),
+    'dwrunwh2': ('77318e27-image.jpg', 200),   # the runic hammer: now the Dwarven Runic Warhammer
+    'dawnbr':   ('6246a410-image.jpg', 215),   # the paladin hammer
+}
+
+def cyan_cutout(path):
+    im = np.array(Image.open(path).convert('RGB')).astype(int)
+    r, g, b = im[..., 0], im[..., 1], im[..., 2]
+    cyan = np.minimum(g, b) - r                          # how cyan a pixel is
+    m = ~((cyan > 140) & (g > 190) & (b > 190))
+    m = cv2.morphologyEx(m.astype(np.uint8), cv2.MORPH_OPEN, np.ones((3, 3), np.uint8))
+    n, lab, st, _ = cv2.connectedComponentsWithStats(m)
+    areas = st[1:, cv2.CC_STAT_AREA]
+    m = np.isin(lab, [i + 1 for i, a in enumerate(areas) if a >= 0.002 * areas.sum()]).astype(np.uint8)
+    # the cyan fringe of the edge: pull the pixels next to the background toward their own red
+    edge = (m > 0) & (cv2.dilate(1 - m, np.ones((5, 5), np.uint8)) > 0) & (cyan > 40)
+    im2 = im.copy()
+    k = np.clip((cyan - 40) / 120.0, 0, 1)[..., None]
+    grey = np.stack([r, np.minimum(g, r + 40), np.minimum(b, r + 60)], -1)
+    im2[edge] = (im[edge] * (1 - k[edge]) + grey[edge] * k[edge]).astype(int)
+    return np.clip(im2, 0, 255).astype(np.uint8), m
+
+def redraw_icon(folder, name):
+    p, h = REDRAWS[name]
+    im, m = cyan_cutout(folder + '/' + p)
+    ys, xs = np.nonzero(m)
+    im, m = im[ys.min():ys.max() + 1, xs.min():xs.max() + 1], m[ys.min():ys.max() + 1, xs.min():xs.max() + 1]
+    img = Image.fromarray(np.dstack([im, m * 255]).astype(np.uint8), 'RGBA').convert('RGBa')
+    w = max(1, round(img.width * h / img.height))
+    img = img.resize((w, h), Image.LANCZOS).convert('RGBA')
+    b = to_icon(img, (w, h), name, sharpen=False)
+    idx, _ = decode(b)
+    cols = np.nonzero(idx[int(h * 0.7):] > 0)[1]
+    grip = int(round(cols.mean())) if len(cols) else w // 2
+    return b, (w, h, grip)
