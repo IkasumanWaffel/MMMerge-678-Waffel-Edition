@@ -53,9 +53,13 @@ local function store()
 	return vars.MMMWE_Legendary
 end
 
+-- the roster index (Party.PlayersArray) of a character, from its pointer (called often)
 local function rosterIndex(pl)
-	local ok, i = pcall(pl.GetIndex, pl)
-	return ok and i or nil
+	local arr = Party.PlayersArray
+	local p = pl and pl["?ptr"]
+	if not p then return end
+	local i = (p - arr["?ptr"]) / arr[0]["?size"]
+	if i >= 0 and i == math.floor(i) then return i end
 end
 
 local function baseSkill(pl, skill)
@@ -64,9 +68,10 @@ local function baseSkill(pl, skill)
 end
 
 function MF.LegendarySkill(pl)
-	if not pl or not vars then return end
+	local s = vars and vars.MMMWE_Legendary
+	if not pl or not s or next(s) == nil then return end
 	local i = rosterIndex(pl)
-	local skill = i and store()[i]
+	local skill = i and s[i]
 	if skill and select(2, baseSkill(pl, skill)) >= GM then
 		return skill
 	end
@@ -141,7 +146,7 @@ local function describe()
 	for skill = 0, Game.SkillNames.high do
 		local p = LEGEND.Passives[skill]
 		if p then
-			baseGM[skill] = baseGM[skill] or Game.SkillDesGM[skill]
+			baseGM[skill] = baseGM[skill] or Game.SkillDesGM[skill] or ""
 			Game.SkillDesGM[skill] = string.format("%s\n%s (one skill; second promotion, skill %d, level %d): %s. %s",
 				baseGM[skill], LEGEND.Name, LEGEND.SkillLevel, LEGEND.CharLevel, p.Name, p.Text)
 		end

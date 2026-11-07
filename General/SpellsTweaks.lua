@@ -84,6 +84,10 @@ mem.autohook2(0x437713, function(d)
 	else
 		d.eax = 0
 	end
+	-- a Legendary mace's stun gets no resistance roll (MMMWE_LegendaryPassives.lua)
+	if Merge.Functions.LegendaryMaceNoResist and Merge.Functions.LegendaryMaceNoResist(d) then
+		d.eax = 1
+	end
 end)
 
 -- Change chance calculation for Control Undead

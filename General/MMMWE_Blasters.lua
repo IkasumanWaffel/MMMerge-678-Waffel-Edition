@@ -658,6 +658,8 @@ local BLASTER_SPELL = 135
 -- one shot's share of a gun's cell, in 0.5% steps; the fraction is kept per gun (by the
 -- character and the item slot) and adds up, so every shot drains exactly its share
 local function drainCell(pl, gun, st, itemSlot, use, which)
+	-- a Legendary blaster's shots use less (MMMWE_LegendaryPassives.lua)
+	if MF.BlasterCellUseMul then use = use * MF.BlasterCellUseMul(pl) end
 	local key = pl:GetIndex() * 1000 + itemSlot
 	local fracs = vars and vars.BlasterCellFrac
 	if vars and not fracs then fracs = {} vars.BlasterCellFrac = fracs end

@@ -111,6 +111,7 @@ local function SetStealingHooks()
 		end
 	end)
 	
+	-- (a Legendary thief loses no reputation: MF.LegendaryNoTheftReputation, MMMWE_LegendaryPassives.lua)
 	local function StealItemFromShopGuild(d, value)
 		if not Keys.IsPressed(const.Keys.CTRL) then
 			return 0
@@ -149,7 +150,7 @@ local function SetStealingHooks()
 					-- Face Animation: 0x4BBD25
 					player:ShowFaceAnimation(8, 0)
 					-- Successful stealing
-					evt[0].Add{"Reputation", 1}
+					if not (MF.LegendaryNoTheftReputation and MF.LegendaryNoTheftReputation(player)) then evt[0].Add{"Reputation", 1} end
 					result = 2
 				else
 					-- Unsuccessful stealing: no room in inventory
@@ -182,7 +183,7 @@ local function SetStealingHooks()
 				Party.SpellBuffs[11].OverlayId=0
 				Party.SpellBuffs[11].Power=0
 				Party.SpellBuffs[11].Skill=0
-				evt[0].Add{"Reputation", 2}
+				if not (MF.LegendaryNoTheftReputation and MF.LegendaryNoTheftReputation(player)) then evt[0].Add{"Reputation", 2} end
 				-- FIXME: StatusText isn't shown in shops
 				--Message(strformat(Game.GlobalTxt[376], player.Name))
 				result = result + 2
@@ -192,7 +193,7 @@ local function SetStealingHooks()
 				Game.ShopTheftExpireTime[write_pos] = Game.Time + ban_days * const.Day
 				Party.Fine = Party.Fine + (stolen_this_session or 0) + base_fine
 			else
-				evt[0].Add{"Reputation", 1}
+				if not (MF.LegendaryNoTheftReputation and MF.LegendaryNoTheftReputation(player)) then evt[0].Add{"Reputation", 1} end
 				-- FIXME: StatusText isn't shown in shops
 				Message(strformat(Game.GlobalTxt[377], player.Name))
 				player:ShowFaceAnimation(9, 0)
