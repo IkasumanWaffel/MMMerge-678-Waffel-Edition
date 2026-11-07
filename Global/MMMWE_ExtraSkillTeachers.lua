@@ -3,7 +3,8 @@
 -- As the Dodging and Unarmed teachers of MMMWE_DodgingUnarmedTeachers.lua: house NPCs who
 -- had nothing to teach before (no topics, or only hints) take the topics, chosen by their
 -- professions and homes. On each continent an Expert, a Master and a Grand Master teacher
--- of each skill; the Expert teacher also teaches the skill itself (Novice).
+-- of each skill. The skill itself is learned in houses only (Dual-Wield: training halls and
+-- mercenary guilds; Robe: temples and magic guilds).
 --
 --   Jadame      Dual-Wield: Ravenshore (Expert), Alvar (Master), Regna (Grand Master)
 --               Robe:       Ravenshore, Alvar, Shadowspire
@@ -25,8 +26,12 @@ end
 local DW, ROBE = EXTRA.Skills.DualWield, EXTRA.Skills.Robe
 
 local PRICES = {
-	[DW]   = {Novice = 1000, [2] = 5000, [3] = 10000, [4] = 15000},
-	[ROBE] = {Novice = 1000, [2] = 4000, [3] = 8000,  [4] = 12000},
+	[DW]   = {[2] = 5000, [3] = 10000, [4] = 15000},
+	[ROBE] = {[2] = 4000, [3] = 8000,  [4] = 12000},
+}
+local LEARN_WHERE = {
+	[DW]   = "Training halls and the mercenary guilds teach it.",
+	[ROBE] = "Temples and the guilds of magic teach it.",
 }
 local LEVEL = {[2] = 5, [3] = 10, [4] = 15}
 local MASTERY_NAME = {"Novice", "Expert", "Master", "Grand Master"}
@@ -71,24 +76,10 @@ local function teach(t)
 	local lvl, mas = SplitSkill(MF.GetExtraSkill(pl, skill))
 	lvl, mas = lvl or 0, mas or 0
 	local cap = MF.ClassSkillCap(pl.Class, skill)
-	-- the Expert teachers teach the skill itself first
+	-- the skill itself is learned in houses only (MMMWE_ExtraSkills.lua: training halls and
+	-- mercenary guilds for Dual-Wield, temples and magic guilds for Robe)
 	if mas == 0 then
-		if rank ~= 2 then
-			Message(string.format("You must first learn %s, %s. An Expert teacher can show you the basics.", name, pl.Name))
-			return
-		end
-		if cap < 1 then
-			Message(string.format("%s is not for one of your calling, %s.", name, pl.Name))
-			return
-		end
-		local gold = PRICES[skill].Novice
-		if Party.Gold < gold then
-			Message(string.format("I can teach you %s for %d gold, %s.", name, gold, pl.Name))
-			return
-		end
-		Party.Gold = Party.Gold - gold
-		MF.SetExtraSkill(pl, skill, JoinSkill(1, 1))
-		Message(string.format("%s has learned %s.", pl.Name, name))
+		Message(string.format("You must first learn %s, %s. %s", name, pl.Name, LEARN_WHERE[skill]))
 		return
 	end
 	if mas >= rank then
