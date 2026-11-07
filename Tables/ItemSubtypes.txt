@@ -1,22 +1,22 @@
 Id	Name	MainSkill	TwoHand	Right	Left	Missile	Armor	Helm	Belt	Cloak	Gauntlets	Boots	Ring	Amulet
 0	None	-1
 1	Longsword	1		x	x	
-2	Two-Handed Sword	1	x	x		
+2	Two-Handed Sword	1	x	x	x	
 3	Broadsword	1		x	x	
 4	Cutlass	1		x	x	
 5	Dagger	2		x	x	
 6	Long Dagger	2		x	x	
 7	Axe	3		x	x	
-8	Two-Handed Axe	3	x	x		
-9	Spear	4	x	x		
-10	Halberd	4	x	x		
-11	Trident	4	x	x		
+8	Two-Handed Axe	3	x	x	x	
+9	Spear	4	x	x	x	
+10	Halberd	4	x	x	x	
+11	Trident	4	x	x	x	
 12	Mace	6		x	x	
-13	Two-Handed Mace	6	x	x		
+13	Two-Handed Mace	6	x	x	x	
 14	Hammer	6		x	x	
-15	Two-Handed Hammer	6	x	x		
+15	Two-Handed Hammer	6	x	x	x	
 16	Staff	0		x	x	
-17	Two-Handed Staff	0	x	x		
+17	Two-Handed Staff	0	x	x	x	
 18	Club	-1		x	x	
 19	Bow	5				x
 20	Longbow	5				x

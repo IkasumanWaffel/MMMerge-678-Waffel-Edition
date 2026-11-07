@@ -54,24 +54,46 @@ local EXTRA = {
 	},
 	Normal = {
 		[41] = "Weapons of any kind in the off hand. Both hands: -10 attack, off-hand damage halved, recovery +20%",
-		[42] = "Placeholder: the effects come with the next stage",
+		[42] = "+1 AC per 2 skill points",
 	},
 	Expert = {
 		[41] = "Both hands: -5 attack, off-hand damage 75%, recovery +10%",
-		[42] = "Placeholder",
+		[42] = "Spell recovery 1% faster per skill point",
 	},
 	Master = {
 		[41] = "No penalties",
-		[42] = "Placeholder",
+		[42] = "Spells cost 10% less SP",
 	},
 	GM = {
 		[41] = "A two-handed weapon may be held in each hand",
-		[42] = "Placeholder",
+		[42] = "+1 to all magic resistances per skill point",
 	},
-	-- class caps: [class] = {[id] = mastery}; DefaultCap for the classes not listed
-	-- (stage 1: every class can learn both up to Grand Master, for testing)
-	Caps = {},
-	DefaultCap = 4,
+	-- class caps by class kind (Class Extra.txt "Kind"): the second promotion's; the base
+	-- class gets at most Expert and the first promotion at most Master (StepCap)
+	KindCaps = {
+		--            Dual-Wield  Robe
+		[1]  = {[41] = 3, [42] = 3},   -- Archer (Dark Elf)
+		[2]  = {[41] = 2, [42] = 4},   -- Cleric
+		[3]  = {[41] = 4, [42] = 2},   -- Deerslayer
+		[4]  = {[41] = 3, [42] = 0},   -- Dragon
+		[5]  = {[41] = 1, [42] = 4},   -- Druid
+		[6]  = {[41] = 4, [42] = 0},   -- Knight
+		[7]  = {[41] = 4, [42] = 0},   -- Minotaur
+		[8]  = {[41] = 2, [42] = 3},   -- Monk
+		[9]  = {[41] = 3, [42] = 2},   -- Paladin
+		[10] = {[41] = 4, [42] = 2},   -- Ranger
+		[11] = {[41] = 4, [42] = 0},   -- Thief
+		[12] = {[41] = 4, [42] = 0},   -- Barbarian
+		[13] = {[41] = 3, [42] = 3},   -- Vampire
+		[14] = {[41] = 1, [42] = 4},   -- Sorcerer, Necromancer
+		[15] = {[41] = 3, [42] = 3},   -- Technician
+		[16] = {[41] = 2, [42] = 2},   -- Peasant
+	},
+	StepCap = {[0] = 2, 3, 4},
+	-- custom classes (MMMWE_CustomClasses.lua) until their editor has the new skills
+	CustomCap = 2,
+	Caps = {},          -- [class] = {[id] = mastery}: overrides
+	DefaultCap = 0,
 }
 MF.ExtraSkills = EXTRA
 -- (not added to const.Skills: scripts that go through const.Skills expect ids below 39)
@@ -115,7 +137,13 @@ end
 function MF.ClassSkillCap(class, id)
 	if id < 39 then return Game.Classes.Skills[class][id] end
 	local c = EXTRA.Caps[class]
-	return c and c[id] or EXTRA.DefaultCap
+	if c and c[id] then return c[id] end
+	local ce = Game.ClassesExtra and Game.ClassesExtra[class]
+	if not ce then return EXTRA.DefaultCap end
+	if MF.CustomClassOf and MF.CustomClassOf(class) then return EXTRA.CustomCap end
+	local k = EXTRA.KindCaps[ce.Kind]
+	local cap = k and k[id] or EXTRA.DefaultCap
+	return math.min(cap, EXTRA.StepCap[ce.Step or 0] or cap)
 end
 
 ---------------------------------------------------------------------------
