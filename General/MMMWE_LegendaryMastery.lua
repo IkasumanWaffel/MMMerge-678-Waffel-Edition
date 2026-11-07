@@ -147,8 +147,7 @@ local function describe()
 		local p = LEGEND.Passives[skill]
 		if p then
 			baseGM[skill] = baseGM[skill] or Game.SkillDesGM[skill] or ""
-			Game.SkillDesGM[skill] = string.format("%s\n%s (one skill; second promotion, skill %d, level %d): %s. %s",
-				baseGM[skill], LEGEND.Name, LEGEND.SkillLevel, LEGEND.CharLevel, p.Name, p.Text)
+			Game.SkillDesGM[skill] = string.format("%s\n%s: %s - %s", baseGM[skill], LEGEND.Name, p.Name, p.Text)
 		end
 	end
 end

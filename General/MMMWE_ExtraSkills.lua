@@ -211,9 +211,10 @@ mem.asmpatch(0x43236B, [[
 	pop ecx
 	pop edx
 	]], 8)
--- its message (edi - player, eax - id)
+-- its message (edi - player, eax - id); the flags of the "cmp" before are kept for the jump after
 for _, p in ipairs{0x4C9E69, 0x4C9EB1} do
 	mem.asmpatch(p, [[
+	pushfd
 	push ecx
 	push edx
 	mov ecx, edi
@@ -222,6 +223,7 @@ for _, p in ipairs{0x4C9E69, 0x4C9EB1} do
 	movzx eax, byte [eax]
 	pop edx
 	pop ecx
+	popfd
 	]], 8)
 end
 
@@ -271,6 +273,20 @@ mem.asmpatch(0x417417, [[
 	pop eax
 	xor ecx, ecx
 	]], 7)
+
+-- the skill popup's text went into a 1200-byte buffer (0x517FF0), right before the gamma.pcx
+-- object (0x5184A0): longer texts (the Legendary line, the new skills) overwrote it and the game
+-- crashed on leaving the character screen. Its two users get a buffer of their own.
+local PopupBuf = mem.StaticAlloc(8192)
+mem.IgnoreProtection(true)
+for _, p in ipairs{0x4174BE, 0x41760B} do
+	if u1[p] == 0xBE and u4[p + 1] == 0x517FF0 then
+		u4[p + 1] = PopupBuf
+	else
+		MF.LogWarning("ExtraSkills: unexpected code at 0x%X, the popup buffer not moved", p)
+	end
+end
+mem.IgnoreProtection(false)
 
 ---------------------------------------------------------------------------
 -- the name and description tables, moved to longer copies
