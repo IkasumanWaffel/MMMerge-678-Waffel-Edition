@@ -255,6 +255,85 @@ for _, p in ipairs{0x4C9E69, 0x4C9EB1} do
 	]], 8)
 end
 
+-- learning a skill in a house: "has the character this skill?" (cmp word [player+id*2+0x378], reg)
+-- in the learn lists of the houses, two passes each
+local REG = {eax = true, ecx = true, edx = true}
+local function patchSkillCmp(p, base, idx, reg)
+	if mem.u1[p] ~= 0x66 or mem.u1[p + 1] ~= 0x39 then
+		MF.LogWarning("ExtraSkills: unexpected code at 0x%X, the learn check not patched", p)
+		return
+	end
+	-- the compared register's value: from the saved copy when it's one of the three used here
+	local regval = ({ax = "word [esp+8]", cx = "word [esp+4]", dx = "word [esp]"})[reg]
+	mem.asmpatch(p, [[
+	push eax
+	push ecx
+	push edx
+	push ]] .. base .. [[;
+	push ]] .. idx .. [[;
+	pop edx
+	pop ecx
+	call absolute ]] .. SkillPtr .. [[;
+	]] .. (regval and ("mov dx, " .. regval .. "\n\tcmp word [eax], dx") or ("cmp word [eax], " .. reg)) .. [[;
+	pop edx
+	pop ecx
+	pop eax
+	]], 8)
+end
+patchSkillCmp(0x4B32FA, "esi", "edi", "ax")
+patchSkillCmp(0x4B33F6, "esi", "ebx", "ax")
+for _, p in ipairs{0x4B3F70, 0x4B4BBC, 0x4B5919, 0x4B6954, 0x4B7BFA, 0x4B82BE, 0x4B938E} do
+	patchSkillCmp(p, "eax", "esi", "bx")
+end
+for _, p in ipairs{0x4B4065, 0x4B4CB3, 0x4B5A13, 0x4B6A4F, 0x4B7CEF, 0x4B83B3, 0x4B9483} do
+	patchSkillCmp(p, "eax", "edi", "bx")
+end
+-- buying it (edi - player, ebp - the learn topic, 0x24 + id): the word set to 1
+mem.asmpatch(0x4BAF79, [[
+	push eax
+	push ecx
+	push edx
+	mov ecx, edi
+	lea edx, [ebp-0x24]
+	call absolute ]] .. SkillPtr .. [[;
+	mov ebp, eax
+	pop edx
+	pop ecx
+	pop eax
+	]], 7)
+
+-- the learn lists: the new skills' topics (0x24 + id), added to the houses' lists
+-- (HousesTweaks.lua's lists first, else the game's own); at most 5 topics a house
+EXTRA.LearnAt = {
+	[41] = {[18] = true, [30] = true},               -- Dual-Wield: mercenary guilds, training halls
+	[42] = {[5] = true, [6] = true, [7] = true, [8] = true, [9] = true, [10] = true, [11] = true,
+		[12] = true, [13] = true, [14] = true, [15] = true, [23] = true},   -- Robe: magic guilds, temples
+}
+local GAME_LEARN = {   -- the game's own learn topics of the houses HousesTweaks.lua leaves alone
+	[12] = {0x37, 0x40}, [13] = {0x38, 0x40}, [14] = {0x30, 0x31, 0x33, 0x32, 0x4A},
+	[15] = {0x36, 0x35, 0x34, 0x40}, [30] = {0x47, 0x3F},
+}
+function events.DrawLearnTopics(t)
+	local add = {}
+	for id, types in pairs(EXTRA.LearnAt) do
+		if types[t.HouseType] then add[#add + 1] = 0x24 + id end
+	end
+	if #add == 0 then return end
+	table.sort(add)
+	if t.Handled and #t.NewTopics == 0 then return end   -- not a member of the guild (HousesTweaks.lua)
+	if not t.Handled then
+		local def = GAME_LEARN[t.HouseType]
+		if not def then return end
+		for i, v in ipairs(def) do t.NewTopics[i] = v end
+		t.Handled = true
+	end
+	for _, v in ipairs(add) do
+		local n = #t.NewTopics
+		if n >= 5 then break end
+		if not table.find(t.NewTopics, v) then t.NewTopics[n + 1] = v end
+	end
+end
+
 -- GetSkill (edi - player, esi - id): the base value
 mem.asmpatch(0x48F056, [[
 	push ecx
