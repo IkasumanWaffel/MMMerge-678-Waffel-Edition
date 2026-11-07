@@ -93,11 +93,46 @@ local KITS = {
 		Needs = {"Blaster", "Repair"}, Branches = {[4] = "AncientResearcher", [5] = "Scientist"}},
 }
 -- spells (picked one by one; a spell needs its school's skill): cost by the spell's rank in
--- its school (spots 1-4 Novice, 5-7 Expert, 8-10 Master, 11 Grand Master), a whole school
--- 11.5 points. Picked spells are learned from Novice 1, as with most preset classes.
+-- its school (spots 1-4 Novice, 5-7 Expert, 8-10 Master, 11 Grand Master) times its impact
+-- (SPELL_IMPACT below). Picked spells are learned from Novice 1, as with most preset classes.
 -- A step without a Spells list (builds made before spells could be picked) has every spell
 -- of its schools, free of charge.
 local SPELL_COST = {0.5, 1, 1.5, 2}
+
+-- (07.11.26) a spell's price is its rank's price x its impact: minor utility and things a
+-- potion or a temple does as well x0.5, standard x1, strong (area damage, party buffs,
+-- crowd control, the top single-target damage) x1.5, game-changing (travel, skipping
+-- fights, taking control, undoing death) x2.5. Spells not listed: x1.
+local IMPACT_NAMES = {[0.5] = "minor", [1] = "standard", [1.5] = "strong", [2.5] = "game-changing"}
+local SPELL_IMPACT = {}
+for _, n in ipairs{1, 12, 13, 45, 56, 42, 27, 23,        -- Torch Light, Wizard Eye, Feather Fall,
+		-- Detect Life, Telepathy, Telekinesis, Water Walk, Awaken
+		3, 14, 25, 36, 58, 69,                           -- the six single resistances
+		40, 49, 57, 61, 64, 67, 72, 74,                  -- the cures
+		48} do                                           -- Turn Undead
+	SPELL_IMPACT[n] = 0.5
+end
+for _, n in ipairs{6, 9, 10, 15, 22, 32, 43, 90, 93, 84, 99,   -- area damage
+		11, 44, 87,                                      -- Incinerate, Mass Distortion, Sunray
+		5, 17, 38, 46, 51, 50, 71, 75, 95, 83, 85,       -- party buffs
+		60, 62, 63, 81, 96, 92,                          -- crowd control
+		54, 77, 53,                                      -- Shared Life, Power Cure, Raise Dead
+		30} do                                           -- Enchant Item
+	SPELL_IMPACT[n] = 1.5
+end
+for _, n in ipairs{31, 33, 21,                           -- Town Portal, Lloyd's Beacon, Fly
+		19,                                              -- Invisibility
+		66, 94, 89,                                      -- Enslave, Control Undead, Reanimate
+		55, 88, 86, 98} do                               -- Resurrection, Divine Intervention,
+		                                                 -- Hour of Power, Armageddon
+	SPELL_IMPACT[n] = 2.5
+end
+
+-- (07.11.26) fighter-mages: with Armsmaster at Master or above, a magic school at Master costs
+-- x1.5 and at Grand Master x2 (all nine schools; on top of Light's and Dark's own x1.5, before
+-- the school discount). A master of Armsmaster is a fighter, no longer a hybrid.
+local FIGHTER_MAGE_MUL = {[3] = 1.5, [4] = 2}
+local FIGHTER_MAGE_FROM = 3                      -- Armsmaster cap that starts it
 local SPELL_RANK_NAMES = {"Novice", "Expert", "Master", "Grand Master"}
 local MAGIC_SCHOOLS = {"Fire", "Air", "Water", "Earth", "Spirit", "Mind", "Body", "Light", "Dark"}
 local function spellRank(spell)
@@ -106,6 +141,9 @@ local function spellRank(spell)
 end
 local function spellSchool(spell)       -- skill id of the spell's school
 	return const.Skills[MAGIC_SCHOOLS[math.floor((spell - 1) / 11) + 1]]
+end
+local function spellPrice(spell)
+	return SPELL_COST[spellRank(spell)] * (SPELL_IMPACT[spell] or 1)
 end
 local function spellName(spell)
 	local t = Game.SpellsTxt and Game.SpellsTxt[spell]
@@ -341,6 +379,9 @@ local function copySpec(s)
 end
 
 -- point cost of one step's build, and the lines that explain it
+local IS_MAGIC = {}
+for _, n in ipairs(MAGIC_SCHOOLS) do IS_MAGIC[n] = true end
+
 local function cost(spec, kitKey)
 	local total, lines = 0, {}
 	local kit = kitKey and KIT_BY_KEY[kitKey]
@@ -355,6 +396,20 @@ local function cost(spec, kitKey)
 	lines[#lines + 1] = string.format("SP tier %d (%d/%d per level, %s): %g", spec.SP, SP_TIERS[spec.SP][1], SP_TIERS[spec.SP][2],
 		STATS_NAME[spec.Stats] or "?", sp + stats)
 	total = total + stats
+	-- fighter-mage surcharge on the magic schools (FIGHTER_MAGE_MUL)
+	local fighter = (spec.Skills[const.Skills.Armsmaster] or 0) >= FIGHTER_MAGE_FROM
+	local function capMul(name, m)
+		local mul = SKILL_MUL[name] or 1
+		local fm = fighter and IS_MAGIC[name] and FIGHTER_MAGE_MUL[m]
+		if fm then mul = mul * fm end
+		return mul, fm
+	end
+	local function note(fm, discount)
+		local t = {}
+		if fm then t[1] = string.format("fighter-mage x%g", fm) end
+		if discount then t[#t + 1] = "school discount" end
+		return #t > 0 and " (" .. table.concat(t, ", ") .. ")" or ""
+	end
 	local grouped = {}
 	for _, g in ipairs(GROUPS) do
 		local costs = {}
@@ -362,13 +417,16 @@ local function cost(spec, kitKey)
 			local id = const.Skills[name]
 			grouped[id] = true
 			local m = spec.Skills[id] or 0
-			if m > 0 then costs[#costs + 1] = {CAP_COST[m] * (SKILL_MUL[name] or 1), name, m} end
+			if m > 0 then
+				local mul, fm = capMul(name, m)
+				costs[#costs + 1] = {CAP_COST[m] * mul, name, m, fm}
+			end
 		end
 		table.sort(costs, function(a, b) return a[1] > b[1] end)
 		for i, c in ipairs(costs) do
 			local v = i == 1 and c[1] or c[1] * GROUP_REST
 			total = total + v
-			lines[#lines + 1] = string.format("%s %s: %g%s", c[2], CAP_NAMES[c[3]], v, i > 1 and " (school discount)" or "")
+			lines[#lines + 1] = string.format("%s %s: %g%s", c[2], CAP_NAMES[c[3]], v, note(c[4], i > 1))
 		end
 	end
 	local others = {}
@@ -378,18 +436,19 @@ local function cost(spec, kitKey)
 	table.sort(others)
 	for _, id in ipairs(others) do
 		local name, m = SKILL_IDS[id], spec.Skills[id]
-		local v = CAP_COST[m] * (SKILL_MUL[name] or 1)
+		local mul, fm = capMul(name, m)
+		local v = CAP_COST[m] * mul
 		total = total + v
-		lines[#lines + 1] = string.format("%s %s: %g", name, CAP_NAMES[m], v)
+		lines[#lines + 1] = string.format("%s %s: %g%s", name, CAP_NAMES[m], v, note(fm))
 	end
 	if spec.Spells then
 		local n, v = 0, 0
 		for spell in pairs(spec.Spells) do
-			n, v = n + 1, v + SPELL_COST[spellRank(spell)]
+			n, v = n + 1, v + spellPrice(spell)
 		end
 		if n > 0 then
 			total = total + v
-			lines[#lines + 1] = string.format("%d spells: %g", n, v)
+			lines[#lines + 1] = string.format("%d spells: %g (by rank and impact)", n, v)
 		end
 	end
 	return total, lines
@@ -1146,6 +1205,10 @@ MF.CustomClasses = {
 	SpellRank = spellRank,
 	SpellSchool = spellSchool,
 	SpellCost = SPELL_COST,
+	SpellPrice = spellPrice,
+	SpellImpact = SPELL_IMPACT,
+	ImpactNames = IMPACT_NAMES,
+	FighterMageMul = FIGHTER_MAGE_MUL,
 	SpellRankNames = SPELL_RANK_NAMES,
 	MagicSchools = MAGIC_SCHOOLS,
 	SpellProblems = spellProblems,

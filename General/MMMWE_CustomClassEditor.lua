@@ -628,7 +628,6 @@ local function build()
 	end
 
 	-- spells: three schools per page, a heading and the 11 spells each
-	local RANK = {"N", "E", "M", "G"}
 	local SHORTER = {["Protection from Magic"] = "Prot. from Magic"}
 	for col = 0, 2 do
 		for row = 0, 11 do
@@ -652,7 +651,7 @@ local function build()
 					local name = Game.SpellsTxt[spell].Name
 					name = SHORTER[name] or name
 					local picked = not s.Spells or s.Spells[spell]
-					return string.format("%s (%s)", name, RANK[CC.SpellRank(spell)]), picked and GOLD or GREY
+					return string.format("%s %g", name, CC.SpellPrice(spell)), picked and GOLD or GREY   -- its price (rank x impact)
 				end,
 				Click = function()
 					local _, spell = spellAt()
@@ -669,9 +668,7 @@ local function build()
 			local bad = CC.Problems(fam(), E.Step)
 			if #bad > 0 then return bad[1], RED end
 			if E.View == "spells" then
-				local cost = CC.SpellCost
-				return string.format("Spells %d/%d: click to pick (%g/%g/%g/%g points)", E.SpellPage, spellPages(),
-					cost[1], cost[2], cost[3], cost[4])
+				return string.format("Spells %d/%d: click to pick; the price by rank and impact", E.SpellPage, spellPages())
 			end
 			return "Click +, Ctrl+click -, Shift+click: start skill " ..
 				#(fam().StartSkills or {}) .. "/" .. START_SKILLS
