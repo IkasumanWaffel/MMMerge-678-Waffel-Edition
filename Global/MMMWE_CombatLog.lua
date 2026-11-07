@@ -350,6 +350,23 @@ local function createFont()
     G.font = hFont
 end
 
+-- (07.11.26) font size from the Extra Settings menu (MMMWE_OverlaySettings.lua), at the
+-- 1920x1200 base: the line spacing, line height and width follow it
+MF.CombatLogConfig = CONFIG
+MF.CombatLogDefaults = MF.CombatLogDefaults or {Font = CONFIG.fontSize, Spacing = CONFIG.lineSpacing,
+    Height = CONFIG.textH, Width = CONFIG.textW}
+function MF.SetCombatLogFontSize(size)
+    local d = MF.CombatLogDefaults
+    local k = size / d.Font
+    CONFIG.fontSize = size
+    CONFIG.lineSpacing = math.floor(d.Spacing * k + 0.5)
+    CONFIG.textH = math.floor(d.Height * k + 0.5)
+    CONFIG.textW = math.floor(d.Width * k + 0.5)
+    createFont()
+    needRedraw = true
+end
+if MF.ApplyOverlayFonts then MF.ApplyOverlayFonts() end
+
 local function createWindow()
     local hUser32 = kernel32.GetModuleHandleA("user32.dll")
     local defProc = kernel32.GetProcAddress(hUser32, "DefWindowProcA")

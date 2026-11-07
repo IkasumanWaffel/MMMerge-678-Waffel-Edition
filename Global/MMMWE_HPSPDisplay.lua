@@ -856,6 +856,18 @@ local function createFont()
     end
 end
 
+-- (07.11.26) font sizes from the Extra Settings menu (MMMWE_OverlaySettings.lua): the HP/SP
+-- text and the small text of the conditions and buffs, at the 1920x1200 base
+MF.HPSPDisplayConfig = CONFIG
+MF.HPSPDisplayDefaults = MF.HPSPDisplayDefaults or {Font = CONFIG.fontSize, Small = CONFIG.condFontSize}
+function MF.SetHPSPFontSize(main, small)
+    if main then CONFIG.fontSize = main end
+    if small then CONFIG.condFontSize, CONFIG.buffFontSize = small, small end
+    createFont()
+    needRedraw = true
+end
+if MF.ApplyOverlayFonts then MF.ApplyOverlayFonts() end
+
 local function createWindow()
     local hUser32 = kernel32.GetModuleHandleA("user32.dll")
     local defProc = kernel32.GetProcAddress(hUser32, "DefWindowProcA")
