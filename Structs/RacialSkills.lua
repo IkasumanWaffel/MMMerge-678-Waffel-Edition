@@ -239,7 +239,8 @@ local function SetHooks()
 	local GetPlayer = MF.GetPlayerFromPtr
 
 	function events.GetSkill(t)
-		if t.Result <= 0 or not t.Player.Attrs then
+		-- the skills beyond the 39 (MMMWE_ExtraSkills.lua) have no racial bonuses
+		if t.Skill >= 39 or t.Result <= 0 or not t.Player.Attrs then
 			return
 		end
 		local race, class = t.Player.Attrs.Race, t.Player.Class
@@ -267,6 +268,9 @@ local function SetHooks()
 			maturity = c or a.Attrs and a.Attrs.Maturity or 0
 		end
 
+		if Skill >= 39 then   -- no racial table for the new skills (MMMWE_ExtraSkills.lua)
+			return MF.ClassSkillCap and MF.ClassSkillCap(Class, Skill) or 0, 0
+		end
 		local DefSkill	= Game.Classes.Skills[Class][Skill]
 		local Result	= DefSkill
 

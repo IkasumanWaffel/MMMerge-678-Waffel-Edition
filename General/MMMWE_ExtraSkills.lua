@@ -1,0 +1,403 @@
+--[[
+	MMMWE_ExtraSkills.lua — skills beyond the game's 39 (07.11.26)
+
+	New skills get ids from 41 up (39 and 40 are MMPatch's Club and Misc item skills):
+	  41 Dual-Wield   in the Weapons list
+	  42 Robe         in the Armor list
+	The character record holds only 39 skills, so the values of the new ones live in a block
+	of their own (8 per character, by roster index), kept in the save game
+	(vars.MMMWE_ExtraSkills). Values are coded as the old ones (level + mastery bits,
+	SplitSkill / JoinSkill).
+
+	The game reads a skill as [player + 0x378 + id*2]; the places the new skills reach go
+	through SkillPtr instead (id < 39: the old place, else the block):
+	  the Skills screen (the four lists' lines and the weapons and armor buttons),
+	  raising a skill with skill points and its message, GetSkill, the skill popup.
+	The skill names and the five description tables are moved to longer copies (49 entries)
+	and the code that indexes them by skill id is pointed there.
+
+	Class caps of the new skills: MF.ClassSkillCap(class, skill) (RacialSkills.lua and
+	RemoveClassLimits.lua ask it for ids above 38); the table is EXTRA.Caps.
+
+	Functions:
+	  MF.GetExtraSkill(pl, id)          the value (level + mastery bits)
+	  MF.SetExtraSkill(pl, id, value)
+	  MF.SkillValue(pl, id)             any skill's base value (old or new)
+	  MF.ClassSkillCap(class, id)       the class's mastery cap (0..4)
+	  MF.ExtraSkills                    the settings below
+--]]
+
+local MF = Merge.Functions
+local u1, u2, u4, i4 = mem.u1, mem.u2, mem.u4, mem.i4
+local floor = math.floor
+
+local EXTRA = {
+	First     = 41,     -- the first id of the new skills
+	Slots     = 8,      -- ids 41..48
+	TableSize = 49,     -- the length of the moved name and description tables
+	Skills = {
+		DualWield = 41,
+		Robe      = 42,
+	},
+	-- the Skills screen list each new skill goes to
+	Lists = {
+		[41] = "WeaponSkills",
+		[42] = "ArmorSkills",
+	},
+	Names = {
+		[41] = "Dual-Wield",
+		[42] = "Robe",
+	},
+	Descriptions = {
+		[41] = "Fighting with a weapon in each hand. Any weapon in the off hand needs this skill (the Blaster skill still rules a second blaster pistol). Below Master the two weapons hinder each other; a Master wields them as one would a single weapon; a Grand Master can hold a two-handed weapon in each hand.",
+		[42] = "The art of fighting and casting in robes and plain clothes instead of armor. Works while no body armor is worn (and in robes, when there are robes).",
+	},
+	Normal = {
+		[41] = "Weapons of any kind in the off hand. Both hands: -10 attack, off-hand damage halved, recovery +20%",
+		[42] = "Placeholder: the effects come with the next stage",
+	},
+	Expert = {
+		[41] = "Both hands: -5 attack, off-hand damage 75%, recovery +10%",
+		[42] = "Placeholder",
+	},
+	Master = {
+		[41] = "No penalties",
+		[42] = "Placeholder",
+	},
+	GM = {
+		[41] = "A two-handed weapon may be held in each hand",
+		[42] = "Placeholder",
+	},
+	-- class caps: [class] = {[id] = mastery}; DefaultCap for the classes not listed
+	-- (stage 1: every class can learn both up to Grand Master, for testing)
+	Caps = {},
+	DefaultCap = 4,
+}
+MF.ExtraSkills = EXTRA
+-- (not added to const.Skills: scripts that go through const.Skills expect ids below 39)
+
+local PA = Party.PlayersArray
+local PA_BASE, PA_SIZE, PA_COUNT = PA["?ptr"], PA[0]["?size"], PA.count
+
+-- the block: PA_COUNT characters x Slots words, and a dummy word for anything out of range
+local Store = mem.StaticAlloc(PA_COUNT * EXTRA.Slots * 2 + 4)
+local Dummy = Store + PA_COUNT * EXTRA.Slots * 2
+mem.fill(Store, PA_COUNT * EXTRA.Slots * 2 + 4, 0)
+
+local function slotPtr(roster, id)
+	local s = id - EXTRA.First
+	if roster < 0 or roster >= PA_COUNT or s < 0 or s >= EXTRA.Slots then return end
+	return Store + (roster * EXTRA.Slots + s) * 2
+end
+
+local function rosterOf(pl)
+	local i = (pl["?ptr"] - PA_BASE) / PA_SIZE
+	if i >= 0 and i == floor(i) and i < PA_COUNT then return i end
+end
+
+function MF.GetExtraSkill(pl, id)
+	local r = rosterOf(pl)
+	local p = r and slotPtr(r, id)
+	return p and u2[p] or 0
+end
+
+function MF.SetExtraSkill(pl, id, value)
+	local r = rosterOf(pl)
+	local p = r and slotPtr(r, id)
+	if p then u2[p] = value end
+end
+
+function MF.SkillValue(pl, id)
+	if id < 39 then return pl.Skills[id] end
+	return MF.GetExtraSkill(pl, id)
+end
+
+function MF.ClassSkillCap(class, id)
+	if id < 39 then return Game.Classes.Skills[class][id] end
+	local c = EXTRA.Caps[class]
+	return c and c[id] or EXTRA.DefaultCap
+end
+
+---------------------------------------------------------------------------
+-- SkillPtr: ecx - player, edx - skill id; returns eax - the address of the skill's word.
+-- Keeps every other register.
+---------------------------------------------------------------------------
+
+local SkillPtr = mem.asmproc([[
+	cmp edx, 39
+	jae @extra
+	lea eax, [ecx+edx*2+0x378]
+	retn
+@extra:
+	push ebx
+	push ecx
+	push edx
+	mov ebx, edx
+	sub ebx, ]] .. EXTRA.First .. [[;
+	cmp ebx, ]] .. EXTRA.Slots .. [[;
+	jae @dummy
+	mov eax, ecx
+	sub eax, ]] .. PA_BASE .. [[;
+	jb @dummy
+	xor edx, edx
+	mov ecx, ]] .. PA_SIZE .. [[;
+	div ecx
+	cmp eax, ]] .. PA_COUNT .. [[;
+	jae @dummy
+	imul eax, eax, ]] .. EXTRA.Slots .. [[;
+	add eax, ebx
+	lea eax, [eax*2+]] .. Store .. [[]
+	jmp @done
+@dummy:
+	mov eax, ]] .. Dummy .. [[;
+	mov word [eax], 0
+@done:
+	pop edx
+	pop ecx
+	pop ebx
+	retn
+]])
+MF.ExtraSkillPtrProc = SkillPtr
+
+local MaxSkillVal = "0xFF"   -- as RemoveSkillValueLimits.lua
+
+-- the Skills screen: the line of a skill in each of the four lists (edi - player, edx - id)
+for _, p in ipairs{0x418D82, 0x419125, 0x4194CF, 0x419872} do
+	mem.asmpatch(p, [[
+	push eax
+	push ecx
+	mov ecx, edi
+	call absolute ]] .. SkillPtr .. [[;
+	movzx edx, word [eax]
+	pop ecx
+	pop eax
+	]], 8)
+end
+
+-- the Skills screen buttons of the weapons and armor lists: is the skill learned?
+-- (edx - player, ecx - id; RemoveSkillValueLimits.lua's test, through SkillPtr)
+for _, p in ipairs{0x419E59, 0x419F25} do
+	mem.asmpatch(p, [[
+	push eax
+	push ecx
+	push edx
+	mov eax, ecx
+	mov ecx, edx
+	mov edx, eax
+	call absolute ]] .. SkillPtr .. [[;
+	test word [eax], ]] .. MaxSkillVal .. [[;
+	pop edx
+	pop ecx
+	pop eax
+	]])
+end
+
+-- raising a skill with skill points (ecx - player, eax - id): the word raised, then its cost
+mem.asmpatch(0x43233F, [[
+	push ecx
+	push edx
+	mov edx, eax
+	call absolute ]] .. SkillPtr .. [[;
+	mov esi, eax
+	pop edx
+	pop ecx
+	]], 7)
+mem.asmpatch(0x43236B, [[
+	push edx
+	push ecx
+	mov edx, eax
+	call absolute ]] .. SkillPtr .. [[;
+	movzx eax, byte [eax]
+	pop ecx
+	pop edx
+	]], 8)
+-- its message (edi - player, eax - id)
+for _, p in ipairs{0x4C9E69, 0x4C9EB1} do
+	mem.asmpatch(p, [[
+	push ecx
+	push edx
+	mov ecx, edi
+	mov edx, eax
+	call absolute ]] .. SkillPtr .. [[;
+	movzx eax, byte [eax]
+	pop edx
+	pop ecx
+	]], 8)
+end
+
+-- GetSkill (edi - player, esi - id): the base value
+mem.asmpatch(0x48F056, [[
+	push ecx
+	push edx
+	mov ecx, edi
+	mov edx, esi
+	call absolute ]] .. SkillPtr .. [[;
+	movzx eax, word [eax]
+	pop edx
+	pop ecx
+	]], 8)
+
+-- GetPlayerSkillMastery (RemoveSkillValueLimits.lua's; ecx - player, edx - id): its "lea"
+if Merge.Offsets.GetPlayerSkillMastery then
+	mem.asmpatch(Merge.Offsets.GetPlayerSkillMastery + 3, [[
+	call absolute ]] .. SkillPtr .. [[;
+	mov ecx, eax
+	]], 7)
+end
+
+-- the skill popup (esi / edi - player, ebx - id); 0x417295 replaces RemoveSkillValueLimits.lua's
+mem.asmpatch(0x417295, [[
+	push eax
+	push edx
+	mov ecx, esi
+	mov edx, ebx
+	call absolute ]] .. SkillPtr .. [[;
+	movzx ecx, word [eax]
+	pop edx
+	pop eax
+	and eax, ]] .. MaxSkillVal .. [[;
+	push 0x4F3BB8
+	and ecx, ]] .. MaxSkillVal .. [[;
+	jmp absolute 0x4172A7
+	]])
+mem.asmpatch(0x417417, [[
+	push eax
+	push edx
+	mov ecx, edi
+	mov edx, ebx
+	call absolute ]] .. SkillPtr .. [[;
+	mov edi, eax
+	pop edx
+	pop eax
+	xor ecx, ecx
+	]], 7)
+
+---------------------------------------------------------------------------
+-- the name and description tables, moved to longer copies
+---------------------------------------------------------------------------
+
+-- the code that indexes each table by skill id: the addresses of the table's address in it
+local TABLES = {
+	{"SkillNames", 0xBB3060, {0x416B41, 0x416B8D, 0x417710, 0x418E0A, 0x418E44, 0x4191B7, 0x4191F1,
+		0x419557, 0x419591, 0x4198FA, 0x419934, 0x4334A9, 0x433ADA, 0x4B0FDD, 0x4B10F8, 0x4B1108,
+		0x4B3307, 0x4B3409, 0x4B3F7D, 0x4B4078, 0x4B4BC9, 0x4B4CC6, 0x4B5926, 0x4B5A26, 0x4B6961,
+		0x4B6A62, 0x4B7C07, 0x4B7D02, 0x4B82CB, 0x4B83C6, 0x4B939B, 0x4B9496, 0x4C60A5, 0x4C624F,
+		0x4C643D, 0x4C65BC, 0x4C676B, 0x4C6C04, 0x4C6C30, 0x4C6C8E}},
+	{"SkillDescriptions", 0x5E4CB0, {0x416B3B, 0x4174BA, 0x41763C, 0x433AD4}},
+	{"SkillDesNormal", 0x5E4C10, {0x4174A6, 0x41762E}},
+	{"SkillDesExpert", 0x5E4B70, {0x417498, 0x417620}},
+	{"SkillDesMaster", 0x5E4AD0, {0x41748A, 0x417612}},
+	{"SkillDesGM", 0x5E4A30, {0x41747C, 0x4175F9}},
+}
+local TEXTS = {SkillNames = EXTRA.Names, SkillDescriptions = EXTRA.Descriptions, SkillDesNormal = EXTRA.Normal,
+	SkillDesExpert = EXTRA.Expert, SkillDesMaster = EXTRA.Master, SkillDesGM = EXTRA.GM}
+
+local moved = false
+local function moveTables()
+	if moved then return end
+	moved = true
+	local n = EXTRA.TableSize
+	mem.IgnoreProtection(true)
+	for _, t in ipairs(TABLES) do
+		local name, old, refs = t[1], t[2], t[3]
+		local cur = Game[name]["?ptr"]
+		local new = mem.StaticAlloc(n * 4)
+		mem.fill(new, n * 4, 0)
+		mem.copy(new, cur, 39 * 4)
+		for _, r in ipairs(refs) do
+			r = mem.MovedCode and mem.MovedCode[r] or r
+			if u4[r] == old then
+				u4[r] = new
+			else
+				MF.LogWarning("ExtraSkills: %s: unexpected value 0x%X at 0x%X", name, u4[r], r)
+			end
+		end
+		mem.ChangeGameArray(name, new, n)
+		-- the empty entries: the new skills' texts, "" for the rest
+		for id = 39, n - 1 do
+			Game[name][id] = TEXTS[name][id] or ""
+		end
+	end
+	mem.IgnoreProtection(false)
+end
+
+---------------------------------------------------------------------------
+-- the Skills screen lists
+---------------------------------------------------------------------------
+
+local listed = false
+local function addToLists()
+	if listed then return end
+	listed = true
+	local DL = Game.DialogLogic
+	for id, list in pairs(EXTRA.Lists) do
+		local a = DL[list]
+		local n = a.count
+		a.Resize(n + 1)
+		DL[list][n] = id
+	end
+end
+
+function events.GameInitialized2()
+	moveTables()
+	addToLists()
+end
+
+---------------------------------------------------------------------------
+-- the save game
+---------------------------------------------------------------------------
+
+local function clearAll()
+	mem.fill(Store, PA_COUNT * EXTRA.Slots * 2 + 4, 0)
+end
+
+local function toVars()
+	local t = {}
+	for r = 0, PA_COUNT - 1 do
+		for s = 0, EXTRA.Slots - 1 do
+			local v = u2[Store + (r * EXTRA.Slots + s) * 2]
+			if v ~= 0 then
+				t[r] = t[r] or {}
+				t[r][EXTRA.First + s] = v
+			end
+		end
+	end
+	vars.MMMWE_ExtraSkills = t
+end
+
+local function fromVars()
+	clearAll()
+	for r, skills in pairs(vars.MMMWE_ExtraSkills or {}) do
+		for id, v in pairs(skills) do
+			local p = slotPtr(r, id)
+			if p then u2[p] = v end
+		end
+	end
+end
+
+function events.BeforeSaveGame() toVars() end
+function events.BeforeNewGameAutosave() toVars() end
+function events.InternalBeforeLoadMap(WasInGame)
+	if not WasInGame then fromVars() end
+end
+function events.NewGame() clearAll() end
+
+-- a roster slot that gets a new character (MF.PlayerAttrsClear, 20_PlayersAttrs.lua)
+function events.ScriptsLoaded()
+	local clear = MF.PlayerAttrsClear
+	if clear then
+		MF.PlayerAttrsClear = function(roster, ...)
+			if roster then
+				for s = 0, EXTRA.Slots - 1 do
+					u2[Store + (roster * EXTRA.Slots + s) * 2] = 0
+				end
+			end
+			return clear(roster, ...)
+		end
+	end
+end
+
+-- console: give a character a new skill (JoinSkill(level, mastery))
+function MF.LearnExtraSkill(pl, id, level, mastery)
+	MF.SetExtraSkill(pl, id, JoinSkill(level or 1, mastery or 1))
+end

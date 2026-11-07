@@ -259,7 +259,8 @@ local function ProcessClassExtra()
 		Player = Player or Party[PID]
 		PlayerIndex = PlayerIndex or Party.PlayersIndexes[PID]
 		local t = {Skill = Skill, Class = Class, Player = Player, PlayerIndex = PlayerIndex,
-			MaxLevel = Game.Classes.Skills[Class][Skill], Mastery = Mastery}
+			MaxLevel = MF.ClassSkillCap and MF.ClassSkillCap(Class, Skill) or Game.Classes.Skills[Class][Skill],
+			Mastery = Mastery}
 		events.call("ShowSkillDescr", t)
 		if Mastery == -1 then
 			local max_level = t.MaxLevel
@@ -267,7 +268,7 @@ local function ProcessClassExtra()
 			get_all_promos(promos, Class)
 			for _, v in pairs(promos) do
 				t.Class = v
-				t.MaxLevel = Game.Classes.Skills[v][Skill]
+				t.MaxLevel = MF.ClassSkillCap and MF.ClassSkillCap(v, Skill) or Game.Classes.Skills[v][Skill]
 				events.call("ShowSkillDescr", t)
 				if t.MaxLevel > max_level then
 					max_level = t.MaxLevel
