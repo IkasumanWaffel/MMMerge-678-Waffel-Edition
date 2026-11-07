@@ -49,6 +49,10 @@ for id, text in pairs(NOTES) do
 	end
 end
 
+-- for the Legendary teachers (MMMWE_LegendaryTeachers.lua): the Grand Master topics are set here,
+-- not in NPCData.txt
+Merge.Functions.ExtraTeachers = TEACHERS
+
 for _, t in ipairs(TEACHERS) do
 	Quest{
 		Name = "MMMWE_DodgeUnarmedTeacher_" .. t.NPC,
