@@ -486,7 +486,7 @@ local function build()
 	end
 
 	-- class choice and points
-	text{Font = Big, X = 16, Y = 11, W = 440, H = 19,
+	text{Font = Big, X = 16, Y = 11, W = 390, H = 19,
 		Get = function()
 			local list, idx = familyList(), 1
 			for i, f in ipairs(list) do if f == E.F then idx = i end end
@@ -503,7 +503,7 @@ local function build()
 			E.Step = 1
 			refreshLock()
 		end}
-	text{Font = Big, X = 470, Y = 11, W = 156, H = 19,
+	text{Font = Big, X = 410, Y = 11, W = 216, H = 19,   -- wide enough for "Points: 111.75 / 150"
 		Get = function()
 			local total = CC.Cost(spec(), fam().Kit)
 			local budget = CC.Budget[E.Step]
