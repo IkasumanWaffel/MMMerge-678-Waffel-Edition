@@ -2217,6 +2217,16 @@
 			Damage = txt.Mod1DiceCount * txt.Mod1DiceSides + txt.Mod2}
 	end
 
+	-- (08.11.26) limits as the shields' (MMMWE_Shields.lua: block chance capped at 55 / 62 / 70%
+	-- by the shield's class, block power typically 35-65%): two weapons, or two-handed ones,
+	-- with heavy armor made a fighter next to invulnerable. Chance and power (%) are capped
+	-- by the kind of parry; the Defend stance bonus comes on top of the chance cap.
+	local PARRY = {
+		ChanceCap = {One = 55, Two = 62, Dual = 62},
+		PowerCap  = {One = 55, Two = 65, Dual = 65},
+	}
+	MF.ParrySettings = PARRY
+
 	-- Returns nil if the character can't parry, otherwise a table:
 	-- Chance (%, before curse), Phys/Magic/Energy (parry power, %), Mastery (gates magic/energy
 	-- parry), Skill (weapon skill, for sounds)
@@ -2249,6 +2259,7 @@
 			else
 				p.Mastery, p.Skill = w1.M, w1.Skill
 			end
+			p.Kind = "Dual"
 		else
 			-- single weapon: main hand, two-handed, or extra hand only
 			local w = w1 or w2
@@ -2259,7 +2270,10 @@
 			end
 			p.Mastery = w.M
 			p.Skill = w.Skill
+			p.Kind = w.Txt.EquipStat == 1 and "Two" or "One"
 		end
+		p.Chance = math.min(p.Chance, PARRY.ChanceCap[p.Kind])
+		p.Phys = math.min(p.Phys, PARRY.PowerCap[p.Kind])
 		p.Magic = p.Phys * (2 / 3)
 		p.Energy = p.Phys / 3
 		if MF.StanceDefendBonus then p.Chance = p.Chance + MF.StanceDefendBonus(pl) end   -- MMMWE_Resources.lua
@@ -2930,6 +2944,9 @@
 		local parry = 10 + damage + CalcWeaponStatBonusByWType(ItNumber, 3)
 		local twoHandedMult = {1, 1.25}
 		parry = math.floor(parry * twoHandedMult[item.EquipStat + 1])
+		if MF.ParrySettings then   -- the cap of one weapon (two weapons: the "Dual" cap)
+			parry = math.min(parry, MF.ParrySettings.PowerCap[item.EquipStat == 1 and "Two" or "One"])
+		end
 
 		local parryStr = string.format("\nParry Power: %d%s", parry,"%%")
 
