@@ -21,14 +21,14 @@ local function currentPlayer()
 end
 
 local function isGM(pl, skill)
-	local _, mas = SplitSkill(pl.Skills[skill])
+	local _, mas = SplitSkill(MF.SkillValue and MF.SkillValue(pl, skill) or pl.Skills[skill])
 	return (mas or 0) >= (const.GM or 4)
 end
 
 local function teach(skill)
 	local pl = currentPlayer()
 	if not pl then return end
-	local name = Game.SkillNames[skill]
+	local name = MF.LegendarySkillName and MF.LegendarySkillName(skill) or Game.SkillNames[skill]
 	if MF.IsLegendary(pl, skill) then
 		Message(string.format("%s, you have gone as far in %s as anyone can. There is nothing left for me to teach you.",
 			pl.Name, name))
@@ -54,6 +54,10 @@ local function teach(skill)
 	Message(string.format("%s is now %s in %s.%s", pl.Name, LEGEND.Name, name,
 		p and string.format("\n\n%s: %s.", p.Name, p.Text) or ""))
 end
+
+-- (08.11.26) for the teachers of the new skills (MMMWE_ExtraSkillTeachers.lua)
+MF.TeachLegendary = teach
+MF.IsGMForLegendary = isGM
 
 local function register()
 	local topics = Game.TeacherTopics

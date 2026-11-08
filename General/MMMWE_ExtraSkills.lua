@@ -49,15 +49,15 @@ local EXTRA = {
 		[42] = "Robe",
 	},
 	Descriptions = {
-		[41] = "Fighting with a weapon in each hand. Any weapon in the off hand needs this skill (the Blaster skill still rules a second blaster pistol). Below Master the two weapons hinder each other; a Master wields them as one would a single weapon; a Grand Master can hold a two-handed weapon in each hand.",
+		[41] = "Fighting with a weapon in each hand. Any weapon in the off hand needs this skill (the Blaster skill still rules a second blaster pistol). With a weapon in each hand the skill adds to Attack: -10 plus 1 per point of skill. Below Master the off hand hits weaker and the attacks are slower; a Master wields two weapons as one would a single weapon; a Grand Master can hold a two-handed weapon in each hand.",
 		[42] = "The art of fighting and casting in robes and plain clothes instead of armor. Works while no body armor is worn (and in robes, when there are robes).",
 	},
 	Normal = {
-		[41] = "Weapons of any kind in the off hand. Both hands: -10 attack, off-hand damage halved, recovery +20%",
+		[41] = "Weapons of any kind in the off hand. Off-hand damage halved, recovery +20%",
 		[42] = "+1 AC per 2 skill points",
 	},
 	Expert = {
-		[41] = "Both hands: -5 attack, off-hand damage 75%, recovery +10%",
+		[41] = "Off-hand damage 75%, recovery +10%",
 		[42] = "Spell recovery 1% faster per skill point",
 	},
 	Master = {
@@ -65,7 +65,7 @@ local EXTRA = {
 		[42] = "Spells cost 10% less SP",
 	},
 	GM = {
-		[41] = "A two-handed weapon may be held in each hand",
+		[41] = "A two-handed weapon may be held in each hand; two of them: off-hand damage 75%, recovery +20%",
 		[42] = "+1 to all magic resistances per skill point",
 	},
 	-- class caps by class kind (Class Extra.txt "Kind"): the second promotion's; the base

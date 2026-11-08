@@ -148,3 +148,31 @@ for _, t in ipairs(TEACHERS) do
 		Done = function() teach(t) end,
 	}
 end
+
+-- (08.11.26) the Grand Master teachers of a skill with a Legendary ability (Dual-Wield) teach the
+-- Legendary mastery as the other Grand Master teachers do (Global\MMMWE_LegendaryTeachers.lua):
+-- "Legendary <skill>" in the same slot, shown while the character is a Grand Master of it
+local LEGEND = MF.LegendarySettings
+if LEGEND then
+	for _, t in ipairs(TEACHERS) do
+		if t.Rank == 4 and LEGEND.Passives[t.Skill] then
+			NPCTopic{
+				Name = string.format("MMMWE_ExtraSkillLegendary_%d_%d", t.NPC, t.Skill),
+				NPC = t.NPC,
+				Slot = t.Slot,
+				Topic = string.format("%s %s", LEGEND.Name, EXTRA.Names[t.Skill]),
+				NeverGiven = true,
+				NeverDone = true,
+				CanShow = function()
+					local pl = currentPlayer()
+					if not pl then return false end
+					local _, mas = SplitSkill(MF.GetExtraSkill(pl, t.Skill))
+					return (mas or 0) >= 4
+				end,
+				Done = function()
+					if MF.TeachLegendary then MF.TeachLegendary(t.Skill) end
+				end,
+			}
+		end
+	end
+end

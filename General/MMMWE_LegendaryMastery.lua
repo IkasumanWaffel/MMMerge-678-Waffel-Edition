@@ -63,7 +63,8 @@ local function rosterIndex(pl)
 end
 
 local function baseSkill(pl, skill)
-	local lvl, mas = SplitSkill(pl.Skills[skill])
+	-- (08.11.26) the new skills (Dual-Wield 41, Robe 42) are kept by MMMWE_ExtraSkills.lua
+	local lvl, mas = SplitSkill(MF.SkillValue and MF.SkillValue(pl, skill) or pl.Skills[skill])
 	return lvl or 0, mas or 0
 end
 
@@ -82,8 +83,11 @@ function MF.IsLegendary(pl, skill)
 end
 
 local function skillName(skill)
+	local ex = MF.ExtraSkills
+	if skill >= 39 then return ex and ex.Names[skill] or ("skill " .. tostring(skill)) end
 	return Game.SkillNames[skill] or ("skill " .. tostring(skill))
 end
+MF.LegendarySkillName = skillName
 
 function MF.LegendaryProblems(pl, skill)
 	local out = {}
@@ -127,7 +131,7 @@ end
 local LINE_BUF = 0x5DF0E0
 local function skillLine(d)
 	local p, skill = mem.u4[d.ebp - 0x48], mem.i4[d.ebp - 0x20]
-	if p == 0 or skill < 0 or skill > Game.SkillNames.high then return end
+	if p == 0 or skill < 0 or skill > 48 then return end
 	local ok, pl = pcall(function()
 		local idx = (p - Party.PlayersArray["?ptr"]) / Party.PlayersArray[0]["?size"]
 		return Party.PlayersArray[idx]
@@ -168,9 +172,9 @@ end
 
 -- the best mastery the class (or a promotion of it) can reach in the skill, as the popup's
 -- other lines are coloured (RemoveClassLimits.lua's CanLearnSkill)
-local function bestCap(pl, skill)
+local function bestCap(pl, skill, idx)
 	local function cap(class)
-		local t = {Skill = skill, Class = class, Player = pl,
+		local t = {Skill = skill, Class = class, Player = pl, PlayerIndex = idx,
 			MaxLevel = MF.ClassSkillCap and MF.ClassSkillCap(class, skill) or Game.Classes.Skills[class][skill],
 			Mastery = -1}
 		events.call("ShowSkillDescr", t)
@@ -191,15 +195,15 @@ mem.autohook(0x417650, function(d)
 	local buf = d.esi
 	if not p or buf == 0 then return end
 	local pp = u4[d.ebp - 4]
-	local ok, pl = pcall(function()
+	local ok, pl, idx = pcall(function()
 		local idx = (pp - Party.PlayersArray["?ptr"]) / Party.PlayersArray[0]["?size"]
-		return Party.PlayersArray[idx]
+		return Party.PlayersArray[idx], idx
 	end)
 	if not ok or not pl then return end
 	local color
 	if MF.IsLegendary(pl, skill) then
 		color = rgb(255, 255, 255)
-	elseif bestCap(pl, skill) < GM then
+	elseif (function() local ok, c = pcall(bestCap, pl, skill, idx); return ok and c or GM end)() < GM then
 		color = rgb(255, 0, 0)
 	elseif #MF.LegendaryProblems(pl, skill) > 0 then
 		color = rgb(255, 255, 0)

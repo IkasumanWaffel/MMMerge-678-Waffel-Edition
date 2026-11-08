@@ -8,10 +8,13 @@
 	  keep their own rule (MMMWE_Blasters.lua). A two-handed weapon next to another weapon
 	  needs Grand Master; next to a shield or alone, the table's rule stays (Spear Master).
 	  Holding a weapon in each hand (not a pair of blaster pistols):
-	    Novice (or none, for weapons put on before the rule): -10 attack, the off hand's
-	      damage halved, recovery +20%
-	    Expert: -5 attack, off hand 75%, recovery +10%
+	    Attack -10 + 1 per point of skill, at any mastery (08.11.26)
+	    Novice (or none, for weapons put on before the rule): the off hand's damage halved,
+	      recovery +20%
+	    Expert: off hand 75%, recovery +10%
 	    Master, Grand Master: no penalties
+	    A two-handed weapon in each hand (Grand Master): off hand 75%, recovery +20%; none
+	      for a Legendary Dual-Wield
 	Robe (42), while no body armor is worn (robe items will count too):
 	    Novice: +1 AC per 2 skill points
 	    Expert: spell recovery 1% faster per skill point
@@ -29,9 +32,16 @@ local DW, ROBE = EXTRA.Skills.DualWield, EXTRA.Skills.Robe
 local floor, max, min = math.floor, math.max, math.min
 
 local S = {
-	Attack     = {[0] = -10, -10, -5, 0, 0},
+	-- (08.11.26) Attack with a weapon in each hand: AttackBase + AttackPerPoint x skill
+	-- (-10 at 0, 0 at 10, +10 at 20), at any mastery
+	AttackBase     = -10,
+	AttackPerPoint = 1,
 	OffHandMul = {[0] = 0.5, 0.5, 0.75, 1, 1},
 	DelayMul   = {[0] = 1.2, 1.2, 1.1, 1, 1},
+	-- (08.11.26) a two-handed weapon in each hand (Grand Master): these on top; none for a
+	-- Legendary Dual-Wield (MMMWE_LegendaryPassives.lua)
+	PairedTwoHandedOffHandMul = 0.75,
+	PairedTwoHandedDelayMul   = 1.2,
 	RobeACPer  = 0.5,         -- AC per skill point (Novice+)
 	RobeRecoveryPer = 0.01,   -- spell recovery per point (Expert+)
 	RobeSPMul  = 0.9,         -- Master+
@@ -135,6 +145,14 @@ local function dwMastery(pl)
 	return mas
 end
 
+-- two two-handed weapons, and Dual-Wield not Legendary
+local function pairedTwoHanded(pl)
+	local m, e = dualWeapons(pl)
+	if not (m and isTwoHanded(m) and isTwoHanded(e)) then return false end
+	return not (MF.IsLegendary and MF.IsLegendary(pl, DW))
+end
+MF.DualWieldPairedTwoHanded = pairedTwoHanded
+
 local function avgDamage(num)
 	local t = Game.ItemsTxt[num]
 	return (t.Mod1DiceCount or 0) * ((t.Mod1DiceSides or 0) + 1) / 2 + (t.Mod2 or 0)
@@ -144,7 +162,10 @@ function events.CalcStatBonusBySkills(t)
 	local pl = t.Player
 	if not pl then return end
 	if t.Stat == const.Stats.MeleeAttack then
-		if dualWeapons(pl) then t.Result = t.Result + (S.Attack[dwMastery(pl)] or 0) end
+		if dualWeapons(pl) then
+			local lvl = skill(pl, DW)
+			t.Result = t.Result + S.AttackBase + S.AttackPerPoint * lvl
+		end
 	elseif t.Stat == const.Stats.ArmorClass then
 		local lvl, mas = skill(pl, ROBE)
 		if mas >= 1 and not itemNum(pl, pl.ItemArmor) then
@@ -167,7 +188,9 @@ end
 function events.GetAttackDelay(t)
 	if t.Ranged or not t.Player then return end
 	if dualWeapons(t.Player) then
-		t.Result = floor(t.Result * (S.DelayMul[dwMastery(t.Player)] or 1) + 0.5)
+		local mul = S.DelayMul[dwMastery(t.Player)] or 1
+		if pairedTwoHanded(t.Player) then mul = mul * S.PairedTwoHandedDelayMul end
+		t.Result = floor(t.Result * mul + 0.5)
 	end
 end
 
@@ -178,6 +201,7 @@ function events.CalcDamageToMonster(t)
 	local m, e = dualWeapons(t.Player)
 	if not m then return end
 	local mul = S.OffHandMul[dwMastery(t.Player)] or 1
+	if pairedTwoHanded(t.Player) then mul = mul * S.PairedTwoHandedOffHandMul end
 	if mul >= 1 then return end
 	local am, ae = avgDamage(m), avgDamage(e)
 	if am + ae <= 0 then return end
