@@ -851,42 +851,73 @@ B.CheckLonePistols = checkLonePistols
 -- shows it at once.
 local OFFHAND_ICON = {[866] = "7item064L", [1666] = "raygun1L", [2219] = "anc07L"}
 B.OffhandIconOffset = {[866] = {-4, 4}, [1666] = {-33, 33}, [2219] = {-4, 4}}
+B.OffhandIcons = OFFHAND_ICON
 local OffhandIconPtr = {}
-for num, name in pairs(OFFHAND_ICON) do OffhandIconPtr[num] = MF.cstring(name) end
+local function offhandPtr(num)
+	local name = OFFHAND_ICON[num]
+	if not name then return end
+	local p = OffhandIconPtr[num]
+	if not p then
+		p = MF.cstring(name)
+		OffhandIconPtr[num] = p
+	end
+	return p
+end
+
+-- After the left-hand item the game draws the left arm over it again (0x43B9FB) only for
+-- the items flagged at 0x43B7D3 (Equip Stat 1 and 2). An item with a turned icon is
+-- gripped: the hand (or its visible gauntlet) is drawn over it too, so the fingers come over
+-- the grip. GRIP_FLAGS: a byte per item id, 1 for those. 0x43B9F1 ("cmp [esp+0x28], bl;
+-- jz 0x43BAD8", 10 bytes) is replaced; eax is free there.
+local GRIP_MAX = 8192
+local GripFlags = mem.StaticAlloc(GRIP_MAX)   -- zeroed
+
+-- (08.11.26) other scripts add turned left-hand icons the same way (MMMWE_OffhandWeapons.lua):
+-- num: item id, name: the icon, dx, dy: its offset from the upright icon's place
+-- w, h: the turned icon's size, to keep it inside the screen
+B.OffhandIconSize = {}
+function MF.SetOffhandIcon(num, name, dx, dy, w, h)
+	OFFHAND_ICON[num] = name
+	if w and h then B.OffhandIconSize[num] = {w, h} end
+	OffhandIconPtr[num] = nil
+	B.OffhandIconOffset[num] = B.OffhandIconOffset[num] or {dx or 0, dy or 0}
+	if num >= 0 and num < GRIP_MAX then u1[GripFlags + num] = name and 1 or 0 end
+end
+for num, name in pairs(OFFHAND_ICON) do MF.SetOffhandIcon(num, name) end
 
 mem.autohook(0x43B826, function(d)
-	local p = OffhandIconPtr[i4[u4[d.esp + 0x30]]]
+	local p = offhandPtr(i4[u4[d.esp + 0x30]])
 	if p then u4[d.esp] = p end
 end)
 
 mem.autohook(0x43B8A5, function(d)
 	local num = i4[u4[d.esp + 0x20]]
-	local off = OffhandIconPtr[num] and B.OffhandIconOffset[num]
+	local off = OFFHAND_ICON[num] and B.OffhandIconOffset[num]
 	if off then
-		i4[d.esp + 0x14] = i4[d.esp + 0x14] + off[1]
-		i4[d.esp + 0x10] = i4[d.esp + 0x10] + off[2]
+		local x, y = i4[d.esp + 0x14] + off[1], i4[d.esp + 0x10] + off[2]
+		-- (08.11.26) a picture partly off the screen crashes the game: kept inside
+		local sz = B.OffhandIconSize[num]
+		if sz then
+			x = math.max(0, math.min(x, 640 - sz[1]))
+			y = math.max(0, math.min(y, 480 - sz[2]))
+		end
+		i4[d.esp + 0x14], i4[d.esp + 0x10] = x, y
 	end
 end)
 
--- After the left-hand item the game draws the left arm over it again (0x43B9FB) only for
--- the items flagged at 0x43B7D3 (Equip Stat 1 and 2). A pistol is gripped: the hand (or its
--- visible gauntlet) is drawn over it too, so the fingers come over the grip. 0x43B9F1
--- ("cmp [esp+0x28], bl; jz 0x43BAD8", 10 bytes) is replaced; eax is free there.
-do
-	local cmps = {}
-	for num in pairs(OFFHAND_ICON) do
-		cmps[#cmps + 1] = string.format("cmp eax, %d\njz absolute 0x43B9FB", num)
-	end
-	mem.asmpatch(0x43B9F1, [[
+mem.asmpatch(0x43B9F1, [[
 	cmp byte [esp+0x28], bl
 	jnz absolute 0x43B9FB
 	mov eax, [esp+0x20]
 	mov eax, [eax]
-	]] .. table.concat(cmps, "\n") .. [[
+	cmp eax, ]] .. GRIP_MAX .. [[
 
+	jae @skip
+	cmp byte [eax+]] .. GripFlags .. [[], 0
+	jnz absolute 0x43B9FB
+	@skip:
 	jmp absolute 0x43BAD8
 	]], 10)
-end
 
 -- set by the shot hook below for the blaster case of the cast code: 1 and the left gun's item
 local Dual = mem.StaticAlloc(8)

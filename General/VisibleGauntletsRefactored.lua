@@ -4,7 +4,7 @@
 	type and hand pose, named <item id>v<doll type + 1><pose>, e.g. 600v2RHd:
 	  RHd  right hand, empty          RHu  right hand holding a weapon
 	  LHd  left hand, empty           LHu  left hand holding a weapon
-	  LHo  left hand open (two-handed weapon in the right hand)
+	  LHo  left hand open (two-handed weapon in the right hand, nothing in the left)
 
 	Screen positions (640x480) come from Data/Tables/Visible gauntlets.txt:
 	  Item  Doll type  Pose  X  Y
@@ -115,7 +115,13 @@ local function EquipStatOf(slot)
 	return idx ~= 0 and Game.ItemsTxt[PL.Items[idx].Number].EquipStat or nil
 end
 
-local function LeftWeaponEquiped()     return EquipStatOf("ItemExtraHand") == 0 end
+-- (08.11.26) with Dual-Wield the left hand may hold a two-handed weapon too (Equip Stat 1),
+-- and a two-handed weapon in the right hand no longer means an empty left hand: one pose
+-- of the left gauntlet at a time
+local function LeftWeaponEquiped()
+	local es = EquipStatOf("ItemExtraHand")
+	return es == 0 or es == 1
+end
 local function RightWeaponEquiped()    return EquipStatOf("ItemMainHand") == 0 end
 local function RightWeapon2HEquiped()  return EquipStatOf("ItemMainHand") == 1 end
 
@@ -124,7 +130,7 @@ local Conditions = {
 	RHu = function() return RightWeaponEquiped() or RightWeapon2HEquiped() end,
 	LHd = function() return CurPlayer().ItemExtraHand == 0 and not RightWeapon2HEquiped() end,
 	LHu = function() return LeftWeaponEquiped() end,
-	LHo = function() return RightWeapon2HEquiped() end,
+	LHo = function() return RightWeapon2HEquiped() and CurPlayer().ItemExtraHand == 0 end,
 }
 
 local loupeActive = false
