@@ -290,7 +290,7 @@ function events.GameInitialized2()
 			and (Tx"All save files " .. StrColor(255, 180, 32, Tx"will be deleted ")
 				.. Tx"if the entire party is killed.\n\n")
 			or (Tx"All save files " .. StrColor(255, 180, 32, Tx"will be deleted ")
-				.. "after " .. Limit() .. Tx" party deaths.\n"
+				.. Tx"after " .. Limit() .. Tx" party deaths.\n"
 				.. Tx"Every party death before that "
 				.. StrColor(255, 180, 32, Tx"removes all items ")
 				.. Tx"except artifacts, relics, quest, special and ancient items.\n\n")

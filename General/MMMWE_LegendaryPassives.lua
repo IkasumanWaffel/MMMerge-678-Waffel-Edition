@@ -102,18 +102,18 @@ LEGEND.Effects = P
 local function passive(skill, name, text)
 	LEGEND.Passives[skill] = {Name = name, Text = text}
 end
-passive(SK.Staff, "Spellstaff", Tx"wielding a staff, spells cost 15% less SP and blows get a second stun roll")
-passive(SK.Sword, "Riposte", Tx"10% chance to parry a monster's melee blow completely and strike back (sword in hand)")
-passive(SK.Dagger, "Assassin", Tx"with a dagger in hand, double critical chance; critical hits ignore physical resistance")
-passive(SK.Axe, "Cleave", Tx"each axe blow also hits a foe next to the target for 50% damage")
-passive(SK.Spear, "Impale", Tx"with a spear in hand, blows hit as if the target had half its AC, and +AC equal to the Spear skill")
-passive(SK.Bow, "Volley", Tx"three arrows a shot")
+passive(SK.Staff, Tx"Spellstaff", Tx"wielding a staff, spells cost 15% less SP and blows get a second stun roll")
+passive(SK.Sword, Tx"Riposte", Tx"10% chance to parry a monster's melee blow completely and strike back (sword in hand)")
+passive(SK.Dagger, Tx"Assassin", Tx"with a dagger in hand, double critical chance; critical hits ignore physical resistance")
+passive(SK.Axe, Tx"Cleave", Tx"each axe blow also hits a foe next to the target for 50% damage")
+passive(SK.Spear, Tx"Impale", Tx"with a spear in hand, blows hit as if the target had half its AC, and +AC equal to the Spear skill")
+passive(SK.Bow, Tx"Volley", Tx"three arrows a shot")
 passive(SK.Mace, Tx"Crushing Blows", Tx"a second stun and paralyze roll, and the target gets no resistance roll against them")
-passive(SK.Blaster, "Overcharge", Tx"shots use half the cell charge and deal 20% more damage")
-passive(SK.Shield, "Bulwark", Tx"with a shield in hand, 20% chance to block a missile or a spell bolt completely")
+passive(SK.Blaster, Tx"Overcharge", Tx"shots use half the cell charge and deal 20% more damage")
+passive(SK.Shield, Tx"Bulwark", Tx"with a shield in hand, 20% chance to block a missile or a spell bolt completely")
 passive(SK.Leather, Tx"Light Step", Tx"in leather armor, 10% chance to evade a monster's blow or missile")
-passive(SK.Chain, "Interlinked", Tx"in chain armor, 20% less Fire, Air, Water and Earth damage")
-passive(SK.Plate, "Unbreakable", Tx"worn plate armor takes no wear; Paralysis and Stone don't hold")
+passive(SK.Chain, Tx"Interlinked", Tx"in chain armor, 20% less Fire, Air, Water and Earth damage")
+passive(SK.Plate, Tx"Unbreakable", Tx"worn plate armor takes no wear; Paralysis and Stone don't hold")
 local SCHOOL_TEXT = Tx"the school's spells cost 25% less SP and are 25% stronger (damage, duration, power, healing)"
 passive(SK.Fire, Tx"Archmage of Fire", SCHOOL_TEXT .. Tx"; half the target's fire resistance is ignored")
 passive(SK.Air, Tx"Archmage of Air", SCHOOL_TEXT .. Tx"; they recover 25% faster")
@@ -127,21 +127,21 @@ passive(SK.Dark, Tx"Archmage of Dark", SCHOOL_TEXT .. Tx"; their damage heals th
 passive(SK.DarkElfAbility, Tx"Heir of the Dark Elves", Tx"the Dark Elf abilities are 50% stronger")
 passive(SK.VampireAbility, Tx"Elder Blood", Tx"the Vampire abilities are 50% stronger")
 passive(SK.DragonAbility, Tx"Ancient Wyrm", Tx"the Dragon abilities and the breath are 50% stronger")
-passive(SK.IdentifyItem, "Appraiser", Tx"every item the party carries is identified, and this character sells 10% dearer")
+passive(SK.IdentifyItem, Tx"Appraiser", Tx"every item the party carries is identified, and this character sells 10% dearer")
 passive(SK.Merchant, Tx"Trade Prince", Tx"this character buys at half price and sells at full value")
 passive(SK.Repair, Tx"Master Smith", Tx"the party's equipment wears at half the rate, and broken items are mended while resting")
-passive(SK.Bodybuilding, "Titan", Tx"HP from Bodybuilding doubled, and Weakness doesn't hold")
-passive(SK.Meditation, "Clarity", Tx"SP from Meditation doubled, and 1% of SP comes back every 5 minutes")
+passive(SK.Bodybuilding, Tx"Titan", Tx"HP from Bodybuilding doubled, and Weakness doesn't hold")
+passive(SK.Meditation, Tx"Clarity", Tx"SP from Meditation doubled, and 1% of SP comes back every 5 minutes")
 passive(SK.Perception, Tx"Sixth Sense", Tx"chest and map traps do the party no harm, and 20% more gold is found")
-passive(SK.Regeneration, "Undying", Tx"once a day, a fatal blow leaves 1 HP instead")
-passive(SK.DisarmTraps, "Lockbreaker", Tx"chests always open with their traps disarmed")
-passive(SK.Dodging, "Shadow", Tx"15% chance to evade any attack, spells included")
+passive(SK.Regeneration, Tx"Undying", Tx"once a day, a fatal blow leaves 1 HP instead")
+passive(SK.DisarmTraps, Tx"Lockbreaker", Tx"chests always open with their traps disarmed")
+passive(SK.Dodging, Tx"Shadow", Tx"15% chance to evade any attack, spells included")
 passive(SK.Unarmed, Tx"Iron Fist", Tx"bare-handed blows always hit and strike twice")
 passive(SK.IdentifyMonster, Tx"Know Thy Enemy", Tx"the whole party deals 10% more damage")
 passive(SK.Armsmaster, Tx"Weapon Master", Tx"all weapon skills count 5 higher, and recovery is 10% faster")
 -- (08.11.26) the new skill of MMMWE_ExtraSkills.lua (its effect: MMMWE_ExtraSkillsEffects.lua)
 passive(41, Tx"Twin Titans", Tx"a two-handed weapon in each hand without penalties")
-passive(42, "Unseen", Tx"without body armor, monsters pick this character as a target half as often (threat halved)")
+passive(42, Tx"Unseen", Tx"without body armor, monsters pick this character as a target half as often (threat halved)")
 
 -- Robe: the threat of MMMWE_Threat.lua halved while no body armor is worn (as Robe's own effects)
 P.RobeThreatMul = 0.5
@@ -151,9 +151,9 @@ function MF.LegendaryThreatMult(pl)
 	if slot > 0 and not pl.Items[slot].Broken and pl.Items[slot].Number > 0 then return 1 end
 	return P.RobeThreatMul
 end
-passive(SK.Stealing, "Phantom", Tx"stealing from shops costs no reputation, and corpses give double gold")
+passive(SK.Stealing, Tx"Phantom", Tx"stealing from shops costs no reputation, and corpses give double gold")
 passive(SK.Alchemy, Tx"Philosopher's Stone", Tx"potions brewed from reagents are 50% stronger")
-passive(SK.Learning, "Sage", Tx"the whole party gains 10% more experience")
+passive(SK.Learning, Tx"Sage", Tx"the whole party gains 10% more experience")
 
 ---------------------------------------------------------------------------
 -- helpers
@@ -543,7 +543,7 @@ function events.BeforeChestTrapTriggered(t)
 	if pl then
 		t.Handled = true
 		t.CanOpenChest = true
-		status(string.format(Tx"%s %s the trap", pl.Name, L(pl, SK.DisarmTraps) and "disarms" or "sidesteps"))
+		status(string.format(L(pl, SK.DisarmTraps) and Tx"%s disarms the trap" or Tx"%s sidesteps the trap", pl.Name))
 	end
 end
 

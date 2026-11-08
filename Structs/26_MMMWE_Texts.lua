@@ -3,6 +3,9 @@
 -- The scripts write their texts as Tx"English text". Tx (Merge.Functions.Text) returns the
 -- translation of the text in the chosen language, or the English text itself when there is
 -- none, so the game reads exactly the same in English.
+-- TxN(n, "%d item", "%d items") (Merge.Functions.TextN) picks the text for the number n: the
+-- English singular or plural, or one of the translation's forms, written in one line divided
+-- by "|" (Russian: "%d предмет|%d предмета|%d предметов", for 1 / 2-4 / 5 and more).
 -- Tn"Name" (Merge.Functions.TextKey) marks an English name the scripts also use as a key
 -- (class families, resources, stances...): it always stays English in the data and is
 -- translated where it is shown, through Tx(name).
@@ -22,6 +25,7 @@ local MF = Merge.Functions
 local function identity(s) return s end
 MF.TextKey = identity
 MF.Text = identity
+MF.TextN = function(n, one, many) return n == 1 and one or many end
 MF.TextLanguage = "English"
 
 local function readAll(path)
@@ -64,6 +68,26 @@ if lang ~= "" and lang:lower() ~= "english" then
 		MF.TextTable = T
 		MF.Text = function(s)
 			return s ~= nil and T[s] or s
+		end
+		-- plural forms: "one|few|many" by the Russian/Ukrainian/Belarusian/Polish-like rule,
+		-- "one|many" by n == 1; a single form for every number
+		local function pluralIndex(n, count)
+			if count >= 3 then
+				local n10, n100 = n % 10, n % 100
+				if n10 == 1 and n100 ~= 11 then return 1 end
+				if n10 >= 2 and n10 <= 4 and (n100 < 12 or n100 > 14) then return 2 end
+				return 3
+			end
+			return n == 1 and 1 or 2
+		end
+		MF.TextN = function(n, one, many)
+			local tr = T[one]
+			if not tr then return n == 1 and one or many end
+			local forms = {}
+			for f in (tr .. "|"):gmatch("(.-)|") do forms[#forms + 1] = f end
+			if #forms < 2 then return tr end
+			n = math.abs(math.floor(tonumber(n) or 0))
+			return forms[pluralIndex(n, #forms)] or forms[#forms]
 		end
 		MF.LogInfo(string.format("MMMWE texts: %d translations (%s)", n, lang))
 	end

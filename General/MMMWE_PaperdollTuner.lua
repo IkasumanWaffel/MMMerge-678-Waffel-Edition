@@ -28,7 +28,7 @@
 --]]
 
 local MF = Merge.Functions
-local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
+local Tx, Tn, TxN = Merge.Functions.Text, Merge.Functions.TextKey, Merge.Functions.TextN
 local K = const.Keys
 
 ---------------------------------------------------------------------------
@@ -273,7 +273,7 @@ local function save()
 	if ChangedCount > 0 then
 		local n = saveArmor()
 		if not n then return end
-		parts[#parts + 1] = string.format(Tx"%d armor position%s", n, n == 1 and "" or "s")
+		parts[#parts + 1] = string.format(TxN(n, "%d armor position", "%d armor positions"), n)
 	end
 	if GauntletsChanged > 0 then
 		if not MF.VisibleGauntlets.Save() then
@@ -289,7 +289,7 @@ local function save()
 			Game.ShowStatusText(Tx"Paperdoll: can't write " .. WEAPON_FILE)
 			return
 		end
-		parts[#parts + 1] = string.format(Tx"%d weapon position%s", n, n == 1 and "" or "s")
+		parts[#parts + 1] = string.format(TxN(n, "%d weapon position", "%d weapon positions"), n)
 	end
 	Game.ShowStatusText(Tx"Paperdoll: saved " .. table.concat(parts, " and "))
 end

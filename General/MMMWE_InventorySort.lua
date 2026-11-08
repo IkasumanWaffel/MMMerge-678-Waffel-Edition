@@ -27,7 +27,7 @@
 --]]
 
 local MF = Merge.Functions
-local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
+local Tx, Tn, TxN = Merge.Functions.Text, Merge.Functions.TextKey, Merge.Functions.TextN
 
 local COLS, ROWS = 14, 9
 local CELLS = COLS * ROWS
@@ -483,7 +483,7 @@ local function doGather()
 	end
 	Game.PlaySound(23)
 	local moved, stuck, unsorted = gatherParty()
-	local msg = string.format(Tx"Party gathered: %d item%s moved", moved, moved == 1 and "" or "s")
+	local msg = string.format(TxN(moved, "Party gathered: %d item moved", "Party gathered: %d items moved"), moved)
 	if stuck > 0 then
 		msg = msg .. string.format(Tx", %d didn't fit", stuck)
 	end
@@ -663,7 +663,7 @@ local function doTake(mode)
 	Game.PlaySound(23)
 	local parts = {}
 	if taken > 0 then
-		parts[#parts + 1] = string.format(Tx"%d item%s", taken, taken == 1 and "" or "s")
+		parts[#parts + 1] = string.format(TxN(taken, "%d item", "%d items"), taken)
 	end
 	if gold > 0 then
 		parts[#parts + 1] = string.format(Tx"%d gold", gold)

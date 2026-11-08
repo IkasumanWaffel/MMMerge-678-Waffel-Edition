@@ -15,6 +15,8 @@ DIRS = ['Structs', 'General', 'Global']
 OUT = os.path.join(ROOT, 'Data', 'Text localization', 'Template', 'Scripts.txt')
 
 CALL = re.compile(r'\b(Tx|Tn)\s*\(?\s*("|\')')
+# TxN(n, "one", "many"): the singular is the key, the translation holds the forms divided by |
+PLURAL = re.compile(r'\bTxN\s*\([^,"\']+,\s*(?:"((?:[^"\\]|\\.)*)"|\'((?:[^\'\\]|\\.)*)\')\s*,\s*(?:"((?:[^"\\]|\\.)*)"|\'((?:[^\'\\]|\\.)*)\')')
 LUA_ESC = {'n': '\n', 't': '\t', 'r': '\r', '\\': '\\', '"': '"', "'": "'", 'a': '\a', 'b': '\b', 'f': '\f', 'v': '\v', '\n': '\n'}
 
 
@@ -69,6 +71,11 @@ def collect():
             if not f.endswith('.lua') or 'MMMWE' not in f:
                 continue
             src = strip_comments(open(os.path.join(p, f), encoding='latin-1').read())
+            for m in PLURAL.finditer(src):
+                one = lua_unescape(m.group(1) or m.group(2) or "")
+                many = lua_unescape(m.group(3) or m.group(4) or "")
+                line = src.count('\n', 0, m.start()) + 1
+                texts.setdefault(one, []).append('%s/%s:%d plural, English plural: %s' % (d, f, line, many))
             for m in CALL.finditer(src):
                 q = m.group(2); i = m.end(); j = i
                 while src[j] != q:
@@ -82,6 +89,8 @@ def collect():
 HEADER = """\
 # Waffel Edition script texts. One text per line: English<TAB>translation.
 # Escapes: \\n new line, \\t tab, \\\\ backslash. Keep %s, %d, %.1f, %% etc. in the same order.
+# Texts marked "plural" take their forms divided by |: for Russian three forms, for 1 / 2-4 / 5+
+# (like "1 item|2 items|5 items"); for languages with two forms "singular|plural".
 # Lines starting with # are comments: each text's comment says where the scripts use it.
 # An empty translation leaves the English text. Save the file in the game's code page
 # (e.g. Windows-1251 for Russian) as Data\\Text localization\\<Language>\\Scripts.txt and put

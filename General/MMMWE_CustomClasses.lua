@@ -334,7 +334,7 @@ end
 -- starting skills: they are learned in houses.
 local EXTRA_SKILL_IDS = {[41] = "DualWield", [42] = "Robe"}
 for id, name in pairs(EXTRA_SKILL_IDS) do SKILL_IDS[id] = name end
-local SKILL_LABEL = {DualWield = "Dual-Wield"}
+local SKILL_LABEL = {DualWield = Tx"Dual-Wield"}
 local function skillLabel(id)
 	local name = SKILL_IDS[id]
 	return SKILL_LABEL[name] or name
@@ -728,7 +728,7 @@ local function newFamily(name)
 	for i = 1, FAMILIES do
 		if not all[i] then f = i break end
 	end
-	if not f then return nil, "all " .. FAMILIES .. Tx" custom classes are in use" end
+	if not f then return nil, Tx"all " .. FAMILIES .. Tx" custom classes are in use" end
 	name = name or (Tx"Custom Class " .. f)
 	local base = {Name = name, HP = 0, SP = 0, Stats = 1, Skills = {}, Spells = {}}
 	local fam = {Steps = {base}}
@@ -1100,9 +1100,9 @@ local function importText(text)
 	end
 	for step = 1, STEPS do
 		local src = t.Steps[step]
-		if type(src) ~= "table" then return nil, "step " .. step .. Tx" is missing" end
+		if type(src) ~= "table" then return nil, Tx"step " .. step .. Tx" is missing" end
 		local name = tostring(src.Name or ""):gsub("[%c]", ""):sub(1, 24)
-		if name == "" then return nil, "step " .. step .. Tx" has no name" end
+		if name == "" then return nil, Tx"step " .. step .. Tx" has no name" end
 		local spec = {Name = name, Skills = {},
 			HP = math.max(0, math.min(MAX_TIER[step], math.floor(tonumber(src.HP) or 0))),
 			SP = math.max(0, math.min(MAX_TIER[step], math.floor(tonumber(src.SP) or 0))),

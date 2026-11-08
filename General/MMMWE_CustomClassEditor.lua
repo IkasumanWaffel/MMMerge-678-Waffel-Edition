@@ -623,7 +623,7 @@ local function build()
 	local ROW_H = ROWS > 12 and math.floor(12 * 21 / ROWS) or 21
 	local SHORT = {[0] = "-", "Nov", "Exp", "Mas", "GM"}
 	local NICE = {IdentifyItem = Tx"Ident. Item", DisarmTraps = Tx"Disarm Traps", IdentifyMonster = Tx"Ident. Monster",
-		Bodybuilding = "Bodybuilding", Repair = Tx"Repair Item", DualWield = "Dual-Wield"}
+		Bodybuilding = Tx"Bodybuilding", Repair = Tx"Repair Item", DualWield = Tx"Dual-Wield"}
 	for i, id in ipairs(SKILL_ORDER) do
 		local col, row = math.floor((i - 1) / ROWS), (i - 1) % ROWS
 		local name = CC.SkillNames[id]

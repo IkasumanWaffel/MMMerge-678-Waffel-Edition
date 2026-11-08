@@ -1,5 +1,7 @@
 # Waffel Edition script texts. One text per line: English<TAB>translation.
 # Escapes: \n new line, \t tab, \\ backslash. Keep %s, %d, %.1f, %% etc. in the same order.
+# Texts marked "plural" take their forms divided by |: for Russian three forms, for 1 / 2-4 / 5+
+# (like "1 item|2 items|5 items"); for languages with two forms "singular|plural".
 # Lines starting with # are comments: each text's comment says where the scripts use it.
 # An empty translation leaves the English text. Save the file in the game's code page
 # (e.g. Windows-1251 for Russian) as Data\Text localization\<Language>\Scripts.txt and put
@@ -257,8 +259,8 @@ no blaster in the main hand
 # General/MMMWE_Blasters.lua:1283
 %s: E%d C%d D%d P%d (levels %.1f/%.1f/%.1f/%.1f), order %s, work %d, cell %.1f%%, recovery %d, shots per cell %d	
 
-# General/MMMWE_Chests.lua:113
-%s spots %d hidden item%s!	
+# General/MMMWE_Chests.lua:113 plural, English plural: %s spots %d hidden items!
+%s spots %d hidden item!	
 
 # General/MMMWE_ConcurrentEnchantments.lua:695
 Enchantment	
@@ -356,8 +358,14 @@ Disarm Traps
 # General/MMMWE_CustomClassEditor.lua:625
 Ident. Monster	
 
+# General/MMMWE_CustomClassEditor.lua:626
+Bodybuilding	
+
 # General/MMMWE_CustomClassEditor.lua:626, General/MMMWE_CustomClasses.lua:517
 Repair Item	
+
+# General/MMMWE_CustomClassEditor.lua:626, General/MMMWE_CustomClasses.lua:337, General/MMMWE_ExtraSkills.lua:49
+Dual-Wield	
 
 # General/MMMWE_CustomClassEditor.lua:645
 Prot. from Magic	
@@ -489,6 +497,9 @@ spell points
 Spells: %d.	
 
 # General/MMMWE_CustomClasses.lua:731
+all 	
+
+# General/MMMWE_CustomClasses.lua:731
  custom classes are in use	
 
 # General/MMMWE_CustomClasses.lua:732
@@ -541,6 +552,9 @@ unknown kit:
 
 # General/MMMWE_CustomClasses.lua:1091
 custom class	
+
+# General/MMMWE_CustomClasses.lua:1103, General/MMMWE_CustomClasses.lua:1105
+step 	
 
 # General/MMMWE_CustomClasses.lua:1103
  is missing	
@@ -662,6 +676,9 @@ no energy shield worn
 # General/MMMWE_EnergyShield.lua:346
 %s: charge %.1f / %.1f, Nova %d Rate %d Delay %d Capacity %d, delay %.2f min%s, recharge %.1f/min	
 
+# General/MMMWE_ExtraSkills.lua:50
+Robe	
+
 # General/MMMWE_ExtraSkills.lua:53
 Fighting with a weapon in each hand. Any weapon in the off hand needs this skill (the Blaster skill still rules a second blaster pistol). With a weapon in each hand the skill adds to Attack: -10 plus 1 per point of skill. Below Master the off hand hits weaker and the attacks are slower; a Master wields two weapons as one would a single weapon; a Grand Master can hold a two-handed weapon in each hand.	
 
@@ -732,6 +749,9 @@ will be deleted
 if the entire party is killed.\n\n	
 
 # General/MMMWE_HardcoreSettings.lua:293
+after 	
+
+# General/MMMWE_HardcoreSettings.lua:293
  party deaths.\n	
 
 # General/MMMWE_HardcoreSettings.lua:294
@@ -770,6 +790,12 @@ Confirm
 # General/MMMWE_HardcoreSettings.lua:339
 Cancel	
 
+# General/MMMWE_InventorySort.lua:486 plural, English plural: Party gathered: %d items moved
+Party gathered: %d item moved	
+
+# General/MMMWE_InventorySort.lua:666 plural, English plural: %d items
+%d item	
+
 # General/MMMWE_InventorySort.lua:108
 potions, reagents, apothecary satchels and bottle boxes	
 
@@ -788,9 +814,6 @@ Backpack sorted
 # General/MMMWE_InventorySort.lua:474
 The backpack is too full to rearrange	
 
-# General/MMMWE_InventorySort.lua:486
-Party gathered: %d item%s moved	
-
 # General/MMMWE_InventorySort.lua:488, General/MMMWE_InventorySort.lua:673
 , %d didn't fit	
 
@@ -805,9 +828,6 @@ There is no gold here
 
 # General/MMMWE_InventorySort.lua:660
 Nothing to take	
-
-# General/MMMWE_InventorySort.lua:666
-%d item%s	
 
 # General/MMMWE_InventorySort.lua:669
 %d gold	
@@ -879,19 +899,37 @@ not a Grand Master of
 level %d of %d	
 
 # General/MMMWE_LegendaryPassives.lua:105
+Spellstaff	
+
+# General/MMMWE_LegendaryPassives.lua:105
 wielding a staff, spells cost 15% less SP and blows get a second stun roll	
 
 # General/MMMWE_LegendaryPassives.lua:106
+Riposte	
+
+# General/MMMWE_LegendaryPassives.lua:106
 10% chance to parry a monster's melee blow completely and strike back (sword in hand)	
+
+# General/MMMWE_LegendaryPassives.lua:107, General/MMMWE_Resources.lua:249
+Assassin	
 
 # General/MMMWE_LegendaryPassives.lua:107
 with a dagger in hand, double critical chance; critical hits ignore physical resistance	
 
 # General/MMMWE_LegendaryPassives.lua:108
+Cleave	
+
+# General/MMMWE_LegendaryPassives.lua:108
 each axe blow also hits a foe next to the target for 50% damage	
 
 # General/MMMWE_LegendaryPassives.lua:109
+Impale	
+
+# General/MMMWE_LegendaryPassives.lua:109
 with a spear in hand, blows hit as if the target had half its AC, and +AC equal to the Spear skill	
+
+# General/MMMWE_LegendaryPassives.lua:110, General/MMMWE_Resources.lua:301
+Volley	
 
 # General/MMMWE_LegendaryPassives.lua:110
 three arrows a shot	
@@ -903,7 +941,13 @@ Crushing Blows
 a second stun and paralyze roll, and the target gets no resistance roll against them	
 
 # General/MMMWE_LegendaryPassives.lua:112
+Overcharge	
+
+# General/MMMWE_LegendaryPassives.lua:112
 shots use half the cell charge and deal 20% more damage	
+
+# General/MMMWE_LegendaryPassives.lua:113
+Bulwark	
 
 # General/MMMWE_LegendaryPassives.lua:113
 with a shield in hand, 20% chance to block a missile or a spell bolt completely	
@@ -915,7 +959,13 @@ Light Step
 in leather armor, 10% chance to evade a monster's blow or missile	
 
 # General/MMMWE_LegendaryPassives.lua:115
+Interlinked	
+
+# General/MMMWE_LegendaryPassives.lua:115
 in chain armor, 20% less Fire, Air, Water and Earth damage	
+
+# General/MMMWE_LegendaryPassives.lua:116
+Unbreakable	
 
 # General/MMMWE_LegendaryPassives.lua:116
 worn plate armor takes no wear; Paralysis and Stone don't hold	
@@ -996,6 +1046,9 @@ Ancient Wyrm
 the Dragon abilities and the breath are 50% stronger	
 
 # General/MMMWE_LegendaryPassives.lua:130
+Appraiser	
+
+# General/MMMWE_LegendaryPassives.lua:130
 every item the party carries is identified, and this character sells 10% dearer	
 
 # General/MMMWE_LegendaryPassives.lua:131
@@ -1011,7 +1064,13 @@ Master Smith
 the party's equipment wears at half the rate, and broken items are mended while resting	
 
 # General/MMMWE_LegendaryPassives.lua:133
+Titan	
+
+# General/MMMWE_LegendaryPassives.lua:133
 HP from Bodybuilding doubled, and Weakness doesn't hold	
+
+# General/MMMWE_LegendaryPassives.lua:134
+Clarity	
 
 # General/MMMWE_LegendaryPassives.lua:134
 SP from Meditation doubled, and 1% of SP comes back every 5 minutes	
@@ -1023,10 +1082,19 @@ Sixth Sense
 chest and map traps do the party no harm, and 20% more gold is found	
 
 # General/MMMWE_LegendaryPassives.lua:136
+Undying	
+
+# General/MMMWE_LegendaryPassives.lua:136
 once a day, a fatal blow leaves 1 HP instead	
 
 # General/MMMWE_LegendaryPassives.lua:137
+Lockbreaker	
+
+# General/MMMWE_LegendaryPassives.lua:137
 chests always open with their traps disarmed	
+
+# General/MMMWE_LegendaryPassives.lua:138
+Shadow	
 
 # General/MMMWE_LegendaryPassives.lua:138
 15% chance to evade any attack, spells included	
@@ -1056,7 +1124,13 @@ Twin Titans
 a two-handed weapon in each hand without penalties	
 
 # General/MMMWE_LegendaryPassives.lua:144
+Unseen	
+
+# General/MMMWE_LegendaryPassives.lua:144
 without body armor, monsters pick this character as a target half as often (threat halved)	
+
+# General/MMMWE_LegendaryPassives.lua:154
+Phantom	
 
 # General/MMMWE_LegendaryPassives.lua:154
 stealing from shops costs no reputation, and corpses give double gold	
@@ -1068,10 +1142,16 @@ Philosopher's Stone
 potions brewed from reagents are 50% stronger	
 
 # General/MMMWE_LegendaryPassives.lua:156
+Sage	
+
+# General/MMMWE_LegendaryPassives.lua:156
 the whole party gains 10% more experience	
 
 # General/MMMWE_LegendaryPassives.lua:546
-%s %s the trap	
+%s disarms the trap	
+
+# General/MMMWE_LegendaryPassives.lua:546
+%s sidesteps the trap	
 
 # General/MMMWE_LegendaryPassives.lua:580
 %s evades the attack	
@@ -1277,6 +1357,12 @@ Font sizes at 1920x1200; they scale with the window.
 # General/MMMWE_OverlaySettings.lua:126
 Reset to the defaults	
 
+# General/MMMWE_PaperdollTuner.lua:276 plural, English plural: %d armor positions
+%d armor position	
+
+# General/MMMWE_PaperdollTuner.lua:292 plural, English plural: %d weapon positions
+%d weapon position	
+
 # General/MMMWE_PaperdollTuner.lua:47
 Right gauntlet	
 
@@ -1316,14 +1402,8 @@ Paperdoll: can't write
 # General/MMMWE_PaperdollTuner.lua:269
 Paperdoll: nothing to save	
 
-# General/MMMWE_PaperdollTuner.lua:276
-%d armor position%s	
-
 # General/MMMWE_PaperdollTuner.lua:284
 gauntlet positions	
-
-# General/MMMWE_PaperdollTuner.lua:292
-%d weapon position%s	
 
 # General/MMMWE_PaperdollTuner.lua:294
 Paperdoll: saved 	
@@ -1635,9 +1715,6 @@ The assassin coats the blade with poison: the next 5 melee hits deal extra damag
 Next 5 melee hits: +25% damage (poison)	
 
 # General/MMMWE_Resources.lua:249
-Assassin	
-
-# General/MMMWE_Resources.lua:249
 Finishers: +10% critical damage per combo point	
 
 # General/MMMWE_Resources.lua:252
@@ -1789,9 +1866,6 @@ Archer, Ranger, Deerslayer
 
 # General/MMMWE_Resources.lua:298
 Needs a bow; stays ready until the next shot	
-
-# General/MMMWE_Resources.lua:301
-Volley	
 
 # General/MMMWE_Resources.lua:302
 A quick series of shots: the next 3 bow attacks recover much faster.	

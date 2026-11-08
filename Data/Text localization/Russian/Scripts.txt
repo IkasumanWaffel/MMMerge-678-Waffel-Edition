@@ -1,0 +1,2600 @@
+# Waffel Edition script texts. One text per line: English<TAB>translation.
+# Escapes: \n new line, \t tab, \\ backslash. Keep %s, %d, %.1f, %% etc. in the same order.
+# Texts marked "plural" take their forms divided by |: for Russian three forms, for 1 / 2-4 / 5+
+# (like "1 item|2 items|5 items"); for languages with two forms "singular|plural".
+# Lines starting with # are comments: each text's comment says where the scripts use it.
+# An empty translation leaves the English text. Save the file in the game's code page
+# (e.g. Windows-1251 for Russian) as Data\Text localization\<Language>\Scripts.txt and put
+# the language's name into MMMWE_Language.txt in the game folder.
+
+# General/MMMWE_AncientArtifacts.lua:148
+The blow passes through %s's phase field!	Удар проходит сквозь фазовое поле: %s!
+
+# General/MMMWE_AncientArtifacts.lua:166
+The Plasma Edge flickers: its cell is nearly empty.	Плазменный клинок мерцает: его ячейка почти пуста.
+
+# General/MMMWE_AncientArtifacts.lua:203
+%s's Power Core hums: every device is charged.	Энергоядро %s гудит: все устройства заряжены.
+
+# General/MMMWE_AncientArtifacts.lua:283
+Plasma Edge: %d%%	Плазменный клинок: %d%%
+
+# General/MMMWE_ArcomageBets.lua:95
+Stake	Ставка
+
+# General/MMMWE_ArcomageBets.lua:103
+Stake: %d	Ставка: %d
+
+# General/MMMWE_ArcomageBets.lua:103
+Not enough gold	Не хватает золота
+
+# General/MMMWE_ArcomageBets.lua:119
+Play for a bet	Играть на ставку
+
+# General/MMMWE_ArcomageBets.lua:146
+Not enough gold for the stake	Не хватает золота на ставку
+
+# General/MMMWE_ArcomageBets.lua:151
+You bet %d gold	Ваша ставка: %d золота
+
+# General/MMMWE_ArcomageBets.lua:163
+You win the bet: +%d gold!	Ставка выиграна: +%d золота!
+
+# General/MMMWE_ArcomageBets.lua:166
+The stake of %d gold is returned	Ставка в %d золота возвращена
+
+# General/MMMWE_ArcomageBets.lua:168
+You lose the bet of %d gold	Ставка в %d золота проиграна
+
+# General/MMMWE_ArmorEffects.lua:105
+%s's chain mail turns the blow aside	Кольчуга (%s) отводит удар
+
+# General/MMMWE_ArmorEffects.lua:132
+dodge %+.1f%%, recovery %+d, shrug off %.1f%%, plate reduction %.1f	уклонение %+.1f%%, восстановление %+d, стойкость %.1f%%, снижение латами %.1f
+
+# General/MMMWE_Blasters.lua:76
+Emitter	Излучатель
+
+# General/MMMWE_Blasters.lua:76
+Capacitor	Конденсатор
+
+# General/MMMWE_Blasters.lua:76
+Disruptor	Разрядник
+
+# General/MMMWE_Blasters.lua:76, General/MMMWE_Blasters.lua:1092
+Power cell	Энергоячейка
+
+# General/MMMWE_Blasters.lua:79
+Nova	Нова
+
+# General/MMMWE_Blasters.lua:79
+Recharge rate	Скорость подзарядки
+
+# General/MMMWE_Blasters.lua:79
+Recharge delay	Задержка подзарядки
+
+# General/MMMWE_Blasters.lua:79
+Capacity	Ёмкость
+
+# General/MMMWE_Blasters.lua:253
+energy shield	энергощит
+
+# General/MMMWE_Blasters.lua:350
+%s %s  %s %s\n%s %s  %s %s\nUpgrades: %d/%d   Work: %d%%%%\nCharge: %d%%%%	%s %s  %s %s\n%s %s  %s %s\nУлучшения: %d/%d   Работа: %d%%%%\nЗаряд: %d%%%%
+
+# General/MMMWE_Blasters.lua:370
+%s %s  %s %s\n%s %s  %s %s\nUpgrades: %d/%d   Work: %d%%%%\nCharge: %d%%%%%s	%s %s  %s %s\n%s %s  %s %s\nУлучшения: %d/%d   Работа: %d%%%%\nЗаряд: %d%%%%%s
+
+# General/MMMWE_Blasters.lua:377
+Board: empty	Плата: пусто
+
+# General/MMMWE_Blasters.lua:379
+Board: %s %d, %s %d, %s %d, %s %d   Work: %d%%%%	Плата: %s %d, %s %d, %s %d, %s %d   Работа: %d%%%%
+
+# General/MMMWE_Blasters.lua:423
+Stalt can't be refined any further.	Стальт нельзя очистить ещё сильнее.
+
+# General/MMMWE_Blasters.lua:427
+Smelting %s needs Repair %d (%s), %s has %d (%s).	Плавка (%s) требует Ремонта %d (%s), у %s — %d (%s).
+
+# General/MMMWE_Blasters.lua:428, General/MMMWE_Blasters.lua:429, General/MMMWE_Blasters.lua:465, General/MMMWE_Blasters.lua:508, General/MMMWE_Blasters.lua:541, General/MMMWE_Blasters.lua:598, General/MMMWE_CustomClasses.lua:137, General/MMMWE_CustomClasses.lua:354, Global/MMMWE_ExtraSkillTeachers.lua:38
+Novice	Новичок
+
+# General/MMMWE_Blasters.lua:428, General/MMMWE_Blasters.lua:429, General/MMMWE_Blasters.lua:465, General/MMMWE_Blasters.lua:508, General/MMMWE_Blasters.lua:541, General/MMMWE_Blasters.lua:598, General/MMMWE_CustomClasses.lua:137, General/MMMWE_CustomClasses.lua:354, Global/MMMWE_ExtraSkillTeachers.lua:38, Global/MMMWE_ExtraSkillTeachers.lua:39
+Expert	Эксперт
+
+# General/MMMWE_Blasters.lua:428, General/MMMWE_Blasters.lua:429, General/MMMWE_Blasters.lua:465, General/MMMWE_Blasters.lua:508, General/MMMWE_Blasters.lua:541, General/MMMWE_Blasters.lua:598, General/MMMWE_CustomClasses.lua:137, General/MMMWE_CustomClasses.lua:354, Global/MMMWE_ExtraSkillTeachers.lua:38, Global/MMMWE_ExtraSkillTeachers.lua:39
+Master	Мастер
+
+# General/MMMWE_Blasters.lua:428, General/MMMWE_Blasters.lua:429, General/MMMWE_Blasters.lua:465, General/MMMWE_Blasters.lua:508, General/MMMWE_Blasters.lua:541, General/MMMWE_Blasters.lua:598, General/MMMWE_CustomClasses.lua:137, General/MMMWE_CustomClasses.lua:354, Global/MMMWE_ExtraSkillTeachers.lua:38, Global/MMMWE_ExtraSkillTeachers.lua:39
+Grand Master	Грандмастер
+
+# General/MMMWE_Blasters.lua:429, General/MMMWE_CustomClassEditor.lua:589
+none	нет
+
+# General/MMMWE_Blasters.lua:434
+Smelting needs a second piece of %s ore in %s's backpack.	Для плавки нужен второй кусок руды (%s) в рюкзаке: %s.
+
+# General/MMMWE_Blasters.lua:438
+%s smelts two pieces into %s ore.	%s сплавляет два куска в руду: %s.
+
+# General/MMMWE_Blasters.lua:447, General/MMMWE_Blasters.lua:485
+Its board was sealed by the Heavenly Forge: it can't be upgraded.	Её плата запечатана Небесной кузней: улучшить нельзя.
+
+# General/MMMWE_Blasters.lua:448, General/MMMWE_Blasters.lua:487
+The blaster is broken.	Бластер сломан.
+
+# General/MMMWE_Blasters.lua:453
+This blaster is fully upgraded.	Этот бластер улучшен полностью.
+
+# General/MMMWE_Blasters.lua:455
+%s's Blaster mastery allows %d upgrades on a gun.	Владение бластером (%s) позволяет %d улучшений на оружии.
+
+# General/MMMWE_Blasters.lua:457
+The work is done. Install a gem to finish the upgrade.	Работа закончена. Вставьте самоцвет, чтобы завершить улучшение.
+
+# General/MMMWE_Blasters.lua:460
+This upgrade needs %s ore or better.	Для этого улучшения нужна руда не хуже: %s.
+
+# General/MMMWE_Blasters.lua:464
+Working %s ore needs Repair %d (%s).	Обработка руды (%s) требует Ремонта %d (%s).
+
+# General/MMMWE_Blasters.lua:471
+Work on the %s: %d%%	Работа над: %s — %d%%
+
+# General/MMMWE_Blasters.lua:486
+Hold a blaster in the main hand or wear an energy shield to install a gem.	Возьмите бластер в правую руку или наденьте энергощит, чтобы вставить самоцвет.
+
+# General/MMMWE_Blasters.lua:491
+This %s is fully upgraded.	Это устройство (%s) улучшено полностью.
+
+# General/MMMWE_Blasters.lua:493
+%s's Blaster mastery allows %d upgrades on a %s.	Владение бластером (%s) позволяет %d улучшений: %s.
+
+# General/MMMWE_Blasters.lua:497
+%s is already at tier 4.	%s уже на 4-м уровне.
+
+# General/MMMWE_Blasters.lua:499
+Work on the %s first: %d/100 (use ore).	Сначала работа над: %s — %d/100 (используйте руду).
+
+# General/MMMWE_Blasters.lua:503
+%s tier %d needs a gem worth %d or more.	%s уровня %d требует самоцвета ценой от %d.
+
+# General/MMMWE_Blasters.lua:507
+%s tier %d needs Repair at %s.	%s уровня %d требует Ремонта: %s.
+
+# General/MMMWE_Blasters.lua:517
+%s tier %d installed%s	%s уровня %d установлен%s
+
+# General/MMMWE_Blasters.lua:517
+ - Fine work!	 — Отличная работа!
+
+# General/MMMWE_Blasters.lua:531
+Hold a blaster in the main hand (or wear an energy shield) to use the toolkit.	Возьмите бластер в правую руку (или наденьте энергощит), чтобы пользоваться набором инструментов.
+
+# General/MMMWE_Blasters.lua:532
+Its board was sealed by the Heavenly Forge: the toolkit can't open it.	Её плата запечатана Небесной кузней: набор инструментов её не откроет.
+
+# General/MMMWE_Blasters.lua:536
+There is no upgrade to remove.	Снимать нечего: улучшений нет.
+
+# General/MMMWE_Blasters.lua:540
+Removing %s tier %d needs Repair at %s.	Снятие (%s, уровень %d) требует Ремонта: %s.
+
+# General/MMMWE_Blasters.lua:547
+%s tier %d removed. The gem is lost.	%s уровня %d снят. Самоцвет утрачен.
+
+# General/MMMWE_Blasters.lua:551
+The toolkit moves boards between blasters only (Ctrl: remove the shield's last upgrade).	Набор инструментов переносит платы только между бластерами (Ctrl: снять последнее улучшение щита).
+
+# General/MMMWE_Blasters.lua:554
+The toolkit already holds a board.	В наборе инструментов уже есть плата.
+
+# General/MMMWE_Blasters.lua:559
+The upgrades are dismounted into the toolkit.	Улучшения сняты в набор инструментов.
+
+# General/MMMWE_Blasters.lua:568
+The upgrades are mounted onto the blaster.	Улучшения установлены на бластер.
+
+# General/MMMWE_Blasters.lua:571
+Neither the blaster nor the toolkit holds any upgrades.	Ни на бластере, ни в наборе нет улучшений.
+
+# General/MMMWE_Blasters.lua:589
+\n\nBlaster or shield upgrade: any spec up to tier %d (no key Emitter / Nova, Shift Capacitor / Recharge rate, Ctrl Disruptor / Recharge delay, Ctrl+Shift Power cell / Capacity).	\n\nУлучшение бластера или щита: любой параметр до уровня %d (без клавиши — Излучатель / Нова, Shift — Конденсатор / Скорость подзарядки, Ctrl — Разрядник / Задержка подзарядки, Ctrl+Shift — Энергоячейка / Ёмкость).
+
+# General/MMMWE_Blasters.lua:592
+\n\nUpgrade up to tier %d: %s on a blaster, %s on an energy shield.	\n\nУлучшение до уровня %d: %s на бластере, %s на энергощите.
+
+# General/MMMWE_Blasters.lua:597
+\n\nBlaster and shield upgrade work (needs Repair %d, %s).	\n\nРабота над улучшением бластера или щита (нужен Ремонт %d, %s).
+
+# General/MMMWE_Blasters.lua:599
+ Two pieces can be smelted into %s ore.	 Два куска можно сплавить в руду: %s.
+
+# General/MMMWE_Blasters.lua:675
+%s's %s: power cell low (%d%%)	%s, %s: энергоячейка почти пуста (%d%%)
+
+# General/MMMWE_Blasters.lua:677
+%s's %s: power cell empty	%s, %s: энергоячейка пуста
+
+# General/MMMWE_Blasters.lua:835
+%s puts the left-hand blaster into the backpack	%s убирает бластер из левой руки в рюкзак
+
+# General/MMMWE_Blasters.lua:838
+%s has no room in the backpack for the left-hand blaster	У %s нет места в рюкзаке для бластера из левой руки
+
+# General/MMMWE_Blasters.lua:993
+%s's blaster is out of power - %s bashes with it	Бластер (%s) разряжен — %s бьёт им
+
+# General/MMMWE_Blasters.lua:995
+%s's blaster is out of power	Бластер (%s) разряжен
+
+# General/MMMWE_Blasters.lua:1011
+right-hand blaster	бластер в правой руке
+
+# General/MMMWE_Blasters.lua:1019
+left-hand blaster	бластер в левой руке
+
+# General/MMMWE_Blasters.lua:1092
+Shield charge	Заряд щита
+
+# General/MMMWE_Blasters.lua:1202
+%s put in stock (place %d of %d)	%s — в продаже (место %d из %d)
+
+# General/MMMWE_Blasters.lua:1229
+Shop refilled: house %s, type %s	Лавка пополнена: дом %s, тип %s
+
+# General/MMMWE_Blasters.lua:1244
+Weapon shop refilled: house %d, stock %s (%d changed)	Оружейная лавка пополнена: дом %d, товар %s (изменено %d)
+
+# General/MMMWE_Blasters.lua:1267
+shop ore test off	проверка руды в лавках выключена
+
+# General/MMMWE_Blasters.lua:1272
+shop ore test on: enter a blacksmith	проверка руды в лавках включена: зайдите к кузнецу
+
+# General/MMMWE_Blasters.lua:1279
+no blaster in the main hand	в правой руке нет бластера
+
+# General/MMMWE_Blasters.lua:1283
+%s: E%d C%d D%d P%d (levels %.1f/%.1f/%.1f/%.1f), order %s, work %d, cell %.1f%%, recovery %d, shots per cell %d	%s: E%d C%d D%d P%d (уровни %.1f/%.1f/%.1f/%.1f), порядок %s, работа %d, ячейка %.1f%%, восстановление %d, выстрелов на ячейку %d
+
+# General/MMMWE_Chests.lua:113 plural, English plural: %s spots %d hidden items!
+%s spots %d hidden item!	%s замечает %d спрятанный предмет!|%s замечает %d спрятанных предмета!|%s замечает %d спрятанных предметов!
+
+# General/MMMWE_ConcurrentEnchantments.lua:695
+Enchantment	Чары
+
+# General/MMMWE_ConcurrentEnchantments.lua:702
+Temp. %s:	Врем. %s:
+
+# General/MMMWE_CustomClassEditor.lua:197
+Choose %d starting skills (Shift+click)	Выберите %d начальных навыка (Shift+щелчок)
+
+# General/MMMWE_CustomClassEditor.lua:202
+The base class needs at least %d skills	Базовому классу нужно не меньше %d навыков
+
+# General/MMMWE_CustomClassEditor.lua:240, General/MMMWE_CustomClasses.lua:990
+%s is now a %s%s	%s теперь — %s%s
+
+# General/MMMWE_CustomClassEditor.lua:241, General/MMMWE_CustomClasses.lua:991
+ (%d skill points refunded)	 (возвращено очков навыков: %d)
+
+# General/MMMWE_CustomClassEditor.lua:278, General/MMMWE_CustomClassEditor.lua:284, General/MMMWE_CustomClassEditor.lua:290, General/MMMWE_CustomClassEditor.lua:301, General/MMMWE_CustomClassEditor.lua:350, General/MMMWE_CustomClassEditor.lua:365, General/MMMWE_CustomClassEditor.lua:567
+This class is taken by a character in the game	Этот класс занят персонажем в игре
+
+# General/MMMWE_CustomClassEditor.lua:291
+The kit is chosen on the base class tab	Набор выбирается на вкладке базового класса
+
+# General/MMMWE_CustomClassEditor.lua:305
+Starting skills are chosen on the base class tab	Начальные навыки выбираются на вкладке базового класса
+
+# General/MMMWE_CustomClassEditor.lua:310
+Only a skill the class can learn can be a starting skill	Начальным может быть только навык, доступный классу
+
+# General/MMMWE_CustomClassEditor.lua:311
+Dual-Wield and Robe are learned in houses, not at the start	Парное оружие и Мантии изучаются в домах, а не в начале игры
+
+# General/MMMWE_CustomClassEditor.lua:312
+Two starting skills are chosen already	Два начальных навыка уже выбраны
+
+# General/MMMWE_CustomClassEditor.lua:340
+Buy a magic school first	Сначала купите школу магии
+
+# General/MMMWE_CustomClassEditor.lua:361
+Saved to 	Сохранено в 
+
+# General/MMMWE_CustomClassEditor.lua:367
+No builds in the CustomClasses folder	В папке CustomClasses нет сборок
+
+# General/MMMWE_CustomClassEditor.lua:375
+Loaded %s (%d/%d)	Загружено: %s (%d/%d)
+
+# General/MMMWE_CustomClassEditor.lua:496
+ (taken, read-only)	 (занят, только чтение)
+
+# General/MMMWE_CustomClassEditor.lua:497
+Class %d/%d: %s	Класс %d/%d: %s
+
+# General/MMMWE_CustomClassEditor.lua:501
+There is only this custom class so far	Пока есть только этот особый класс
+
+# General/MMMWE_CustomClassEditor.lua:512
+Points: %g / %d	Очки: %g / %d
+
+# General/MMMWE_CustomClassEditor.lua:575
+%s: tier %d  (%d + %d per level)	%s: уровень %d  (%d + %d за уровень)
+
+# General/MMMWE_CustomClassEditor.lua:582
+Hit points	Здоровье
+
+# General/MMMWE_CustomClassEditor.lua:583, General/MMMWE_CustomClassEditor.lua:596
+Spell points	Мана
+
+# General/MMMWE_CustomClassEditor.lua:589
+Kit: 	Набор: 
+
+# General/MMMWE_CustomClassEditor.lua:595
+click to buy one	щёлкните, чтобы купить
+
+# General/MMMWE_CustomClassEditor.lua:596
+%s, %d pts	%s, %d оч.
+
+# General/MMMWE_CustomClassEditor.lua:602, General/MMMWE_CustomClasses.lua:362, General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3451
+Intellect	Интеллект
+
+# General/MMMWE_CustomClassEditor.lua:602, General/MMMWE_CustomClasses.lua:362, General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3451
+Personality	Сила духа
+
+# General/MMMWE_CustomClassEditor.lua:602
+Int. and Pers.	Инт. и Дух
+
+# General/MMMWE_CustomClassEditor.lua:625
+Ident. Item	Опознание пр.
+
+# General/MMMWE_CustomClassEditor.lua:625
+Disarm Traps	Обезвреживание
+
+# General/MMMWE_CustomClassEditor.lua:625
+Ident. Monster	Опознание мон.
+
+# General/MMMWE_CustomClassEditor.lua:626
+Bodybuilding	Телосложение
+
+# General/MMMWE_CustomClassEditor.lua:626, General/MMMWE_CustomClasses.lua:517
+Repair Item	Ремонт
+
+# General/MMMWE_CustomClassEditor.lua:626, General/MMMWE_CustomClasses.lua:337, General/MMMWE_ExtraSkills.lua:49
+Dual-Wield	Парное оружие
+
+# General/MMMWE_CustomClassEditor.lua:645
+Prot. from Magic	Защ. от магии
+
+# General/MMMWE_CustomClassEditor.lua:663
+%s Magic: %s	Магия %s: %s
+
+# General/MMMWE_CustomClassEditor.lua:681
+Type the name; Enter keeps it, Esc drops it	Введите имя; Enter — оставить, Esc — отменить
+
+# General/MMMWE_CustomClassEditor.lua:685
+Spells %d/%d: click to pick; the price by rank and impact	Заклинания %d/%d: щёлкните, чтобы выбрать; цена по кругу и силе
+
+# General/MMMWE_CustomClassEditor.lua:687
+Click +, Ctrl+click -, Shift+click: start skill 	Щелчок +, Ctrl+щелчок -, Shift+щелчок: начальный навык 
+
+# General/MMMWE_CustomClassEditor.lua:691
+Ctrl+S: save the build, Ctrl+L: load one	Ctrl+S: сохранить сборку, Ctrl+L: загрузить
+
+# General/MMMWE_CustomClassEditor.lua:730
+Become a custom class	Стать особым классом
+
+# General/MMMWE_CustomClasses.lua:64
+base	базовый
+
+# General/MMMWE_CustomClasses.lua:64
+first promotion	первое повышение
+
+# General/MMMWE_CustomClasses.lua:64
+neutral	нейтральный
+
+# General/MMMWE_CustomClasses.lua:64
+light	светлый
+
+# General/MMMWE_CustomClasses.lua:64
+dark	тёмный
+
+# General/MMMWE_CustomClasses.lua:82, General/MMMWE_Resources.lua:445
+Rage	Ярость
+
+# General/MMMWE_CustomClasses.lua:83, General/MMMWE_Resources.lua:447
+Resolve	Решимость
+
+# General/MMMWE_CustomClasses.lua:85, General/MMMWE_Resources.lua:455
+Energy	Энергия
+
+# General/MMMWE_CustomClasses.lua:91, General/MMMWE_Resources.lua:459
+Dark Elf	Тёмный эльф
+
+# General/MMMWE_CustomClasses.lua:93, General/MMMWE_Resources.lua:453
+Construction	Детали
+
+# General/MMMWE_CustomClasses.lua:197, General/MMMWE_CustomClasses.lua:1139
+Custom class	Особый класс
+
+# General/MMMWE_CustomClasses.lua:198
+An unused custom class.	Неиспользуемый особый класс.
+
+# General/MMMWE_CustomClasses.lua:362
+Intellect and Personality	Интеллект и Сила духа
+
+# General/MMMWE_CustomClasses.lua:401
+%s kit: %g	Набор %s: %g
+
+# General/MMMWE_CustomClasses.lua:405
+HP tier %d (%d/%d per level): %g	Здоровье, уровень %d (%d/%d за уровень): %g
+
+# General/MMMWE_CustomClasses.lua:407
+SP tier %d (%d/%d per level, %s): %g	Мана, уровень %d (%d/%d за уровень, %s): %g
+
+# General/MMMWE_CustomClasses.lua:420
+fighter-mage x%g	воин-маг x%g
+
+# General/MMMWE_CustomClasses.lua:421
+school discount	скидка школы
+
+# General/MMMWE_CustomClasses.lua:462
+%d spells: %g (by rank and impact)	заклинаний %d: %g (по кругу и силе)
+
+# General/MMMWE_CustomClasses.lua:477, General/MMMWE_CustomClasses.lua:870
+%s needs %s Magic	%s требует магии %s
+
+# General/MMMWE_CustomClasses.lua:483
+ Magic: no spell picked	 — магия: не выбрано ни одного заклинания
+
+# General/MMMWE_CustomClasses.lua:490
+ is lost from the previous step	 утрачено с предыдущей ступени
+
+# General/MMMWE_CustomClasses.lua:503
+%g points of %d	%g очков из %d
+
+# General/MMMWE_CustomClasses.lua:505
+HP tier above 	уровень здоровья выше 
+
+# General/MMMWE_CustomClasses.lua:506
+SP tier above 	уровень маны выше 
+
+# General/MMMWE_CustomClasses.lua:510
+the %s kit uses the %s page: no %s Magic	набор «%s» занимает страницу %s: без магии %s
+
+# General/MMMWE_CustomClasses.lua:513
+%s replaces spell points: SP tier 0	%s заменяет ману: уровень маны 0
+
+# General/MMMWE_CustomClasses.lua:517
+the %s kit needs %s	набору «%s» нужен навык %s
+
+# General/MMMWE_CustomClasses.lua:523
+lower HP/SP tier than the previous step	уровень здоровья/маны ниже, чем на предыдущей ступени
+
+# General/MMMWE_CustomClasses.lua:524
+loses the second SP stat	теряет вторую характеристику маны
+
+# General/MMMWE_CustomClasses.lua:527
+ cap lower than the previous step	 : предел ниже, чем на предыдущей ступени
+
+# General/MMMWE_CustomClasses.lua:553
+A custom class. Hit points: tier %d. Spell points: tier %d%s.	Особый класс. Здоровье: уровень %d. Мана: уровень %d%s.
+
+# General/MMMWE_CustomClasses.lua:554
+, from 	, от: 
+
+# General/MMMWE_CustomClasses.lua:557
+%s kit: %s and the %s abilities (%s page of the spellbook).	Набор «%s»: %s и способности «%s» (страница книги заклинаний: %s).
+
+# General/MMMWE_CustomClasses.lua:558, General/MMMWE_Resources.lua:1567, General/MMMWE_Resources.lua:2537
+spell points	мана
+
+# General/MMMWE_CustomClasses.lua:569
+Spells: %d.	Заклинаний: %d.
+
+# General/MMMWE_CustomClasses.lua:731
+all 	все 
+
+# General/MMMWE_CustomClasses.lua:731
+ custom classes are in use	 особых классов уже заняты
+
+# General/MMMWE_CustomClasses.lua:732
+Custom Class 	Особый класс 
+
+# General/MMMWE_CustomClasses.lua:787
+%s tier must be 0..%d for the %s	%s: уровень должен быть 0..%d для ступени «%s»
+
+# General/MMMWE_CustomClasses.lua:791
+%s tier can't be lower than the previous step's (%d)	%s: уровень не может быть ниже, чем на предыдущей ступени (%d)
+
+# General/MMMWE_CustomClasses.lua:805
+the previous step already uses both stats	предыдущая ступень уже использует обе характеристики
+
+# General/MMMWE_CustomClasses.lua:816
+this skill can't be bought	этот навык нельзя купить
+
+# General/MMMWE_CustomClasses.lua:820
+%s can't be lower than the previous step's %s	%s не может быть ниже, чем на предыдущей ступени (%s)
+
+# General/MMMWE_CustomClasses.lua:866
+no such spell	нет такого заклинания
+
+# General/MMMWE_CustomClasses.lua:874
+ is a spell of the previous step	 — заклинание предыдущей ступени
+
+# General/MMMWE_CustomClasses.lua:933
+%d. %s (%s, class %d): %g / %d points%s	%d. %s (%s, класс %d): %g / %d очков%s
+
+# General/MMMWE_CustomClasses.lua:953
+%d: %s (%g points)%s	%d: %s (%g очков)%s
+
+# General/MMMWE_CustomClasses.lua:957
+no custom classes	особых классов нет
+
+# General/MMMWE_CustomClasses.lua:980
+%s already is a %s	%s уже — %s
+
+# General/MMMWE_CustomClasses.lua:998
+not a custom class	это не особый класс
+
+# General/MMMWE_CustomClasses.lua:1000
+the class has no build	у класса нет сборки
+
+# General/MMMWE_CustomClasses.lua:1032
+the %s kit is for %ss only	набор «%s» только для класса «%s»
+
+# General/MMMWE_CustomClasses.lua:1037, General/MMMWE_CustomClasses.lua:1098
+unknown kit: 	неизвестный набор: 
+
+# General/MMMWE_CustomClasses.lua:1091
+custom class	особый класс
+
+# General/MMMWE_CustomClasses.lua:1103, General/MMMWE_CustomClasses.lua:1105
+step 	ступень 
+
+# General/MMMWE_CustomClasses.lua:1103
+ is missing	 отсутствует
+
+# General/MMMWE_CustomClasses.lua:1105
+ has no name	 без имени
+
+# General/MMMWE_CustomClasses.lua:1112
+unknown skill: 	неизвестный навык: 
+
+# General/MMMWE_CustomClasses.lua:1113
+unknown cap: 	неизвестный предел: 
+
+# General/MMMWE_CustomClasses.lua:1121
+unknown spell: 	неизвестное заклинание: 
+
+# General/MMMWE_CustomClasses.lua:1147
+can't write 	не удаётся записать 
+
+# General/MMMWE_CustomClasses.lua:1164
+can't read 	не удаётся прочитать 
+
+# General/MMMWE_DamageKinds.lua:209
+Sla %d%%\nPie %d%%\nBlu %d%%	Руб %d%%\nКол %d%%\nДроб %d%%
+
+# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3451
+Might	Сила
+
+# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3451
+Endurance	Выносливость
+
+# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3451
+Accuracy	Меткость
+
+# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3451
+Speed	Скорость
+
+# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3451
+Luck	Удача
+
+# General/MMMWE_Drains.lua:168
+armor is corroded	броня разъедена
+
+# General/MMMWE_Drains.lua:168
+Fire resistance is drained	сопротивление огню ослаблено
+
+# General/MMMWE_Drains.lua:169
+Air resistance is drained	сопротивление воздуху ослаблено
+
+# General/MMMWE_Drains.lua:169
+Water resistance is drained	сопротивление воде ослаблено
+
+# General/MMMWE_Drains.lua:170
+Earth resistance is drained	сопротивление земле ослаблено
+
+# General/MMMWE_Drains.lua:170
+Light resistance is drained	сопротивление свету ослаблено
+
+# General/MMMWE_Drains.lua:227
+%s's %s!	%s: %s!
+
+# General/MMMWE_Drains.lua:228
+%s is drained	%s: ослаблено
+
+# General/MMMWE_EnchantScaling.lua:129
+ Scales with weapon skill.	 Растёт с навыком оружия.
+
+# General/MMMWE_EnchantScaling.lua:130
+ Scales with magic skill.	 Растёт с навыком магии.
+
+# General/MMMWE_EnchantScaling.lua:131
+ Scales with weapon and magic skill.	 Растёт с навыками оружия и магии.
+
+# General/MMMWE_EnchantScaling.lua:197
+Weapon skill	Навык оружия
+
+# General/MMMWE_EnchantScaling.lua:198
+Magic skill	Навык магии
+
+# General/MMMWE_EnchantScaling.lua:199
+Weapon + magic	Оружие + магия
+
+# General/MMMWE_EnchantScaling.lua:270
+Scale with	Рост от
+
+# General/MMMWE_EnchantScaling.lua:279
+Per weapon point	За очко оружия
+
+# General/MMMWE_EnchantScaling.lua:284
+Per magic point	За очко магии
+
+# General/MMMWE_EnchantScaling.lua:294
+Damage scale = (100 + X) percent x skill x mastery.	Рост урона = (100 + X) процентов x навык x мастерство.
+
+# General/MMMWE_EnergyShield.lua:151
+%s's shield bursts in a nova!	Щит (%s) взрывается новой!
+
+# General/MMMWE_EnergyShield.lua:173
+%s's barrier collapses (%d absorbed)	Барьер (%s) рушится (поглощено %d)
+
+# General/MMMWE_EnergyShield.lua:175
+%s's barrier absorbs %d	Барьер (%s) поглощает %d
+
+# General/MMMWE_EnergyShield.lua:204
+%s's shield breaks! (%d absorbed)	Щит (%s) пробит! (поглощено %d)
+
+# General/MMMWE_EnergyShield.lua:207
+%s's shield absorbs %d (%d%%)	Щит (%s) поглощает %d (%d%%)
+
+# General/MMMWE_EnergyShield.lua:301
+%s projects energy: %d shield(s) recharged, %d barrier(s)	%s излучает энергию: щитов заряжено — %d, барьеров — %d
+
+# General/MMMWE_EnergyShield.lua:327
+\nCapacity %d  Delay %.1f min  Recharge %d/min	\nЁмкость %d  Задержка %.1f мин  Подзарядка %d/мин
+
+# General/MMMWE_EnergyShield.lua:342
+no energy shield worn	энергощит не надет
+
+# General/MMMWE_EnergyShield.lua:346
+%s: charge %.1f / %.1f, Nova %d Rate %d Delay %d Capacity %d, delay %.2f min%s, recharge %.1f/min	%s: заряд %.1f / %.1f, Нова %d Скорость %d Задержка %d Ёмкость %d, задержка %.2f мин%s, подзарядка %.1f/мин
+
+# General/MMMWE_ExtraSkills.lua:50
+Robe	Мантия
+
+# General/MMMWE_ExtraSkills.lua:53
+Fighting with a weapon in each hand. Any weapon in the off hand needs this skill (the Blaster skill still rules a second blaster pistol). With a weapon in each hand the skill adds to Attack: -10 plus 1 per point of skill. Below Master the off hand hits weaker and the attacks are slower; a Master wields two weapons as one would a single weapon; a Grand Master can hold a two-handed weapon in each hand.	Бой с оружием в каждой руке. Любое оружие в левой руке требует этого навыка (второй бластерный пистолет по-прежнему зависит от навыка Бластер). С оружием в каждой руке навык прибавляет к Атаке: -10 плюс 1 за очко навыка. Ниже Мастера левая рука бьёт слабее, а атаки медленнее; Мастер владеет двумя клинками так же, как одним; Грандмастер может держать двуручное оружие в каждой руке.
+
+# General/MMMWE_ExtraSkills.lua:54
+The art of fighting and casting in robes and plain clothes instead of armor. Works while no body armor is worn (and in robes, when there are robes).	Искусство сражаться и колдовать в мантии и простой одежде вместо доспехов. Действует, пока не надета броня (и в мантиях, если они есть).
+
+# General/MMMWE_ExtraSkills.lua:57
+Weapons of any kind in the off hand. Off-hand damage halved, recovery +20%	Любое оружие в левой руке. Урон левой рукой вдвое меньше, восстановление +20%
+
+# General/MMMWE_ExtraSkills.lua:58
++1 AC per 2 skill points	+1 КБ за 2 очка навыка
+
+# General/MMMWE_ExtraSkills.lua:61
+Off-hand damage 75%, recovery +10%	Урон левой рукой 75%, восстановление +10%
+
+# General/MMMWE_ExtraSkills.lua:62
+Spell recovery 1% faster per skill point	Восстановление после заклинаний на 1% быстрее за очко навыка
+
+# General/MMMWE_ExtraSkills.lua:65
+No penalties	Без штрафов
+
+# General/MMMWE_ExtraSkills.lua:66
+Spells cost 10% less SP	Заклинания стоят на 10% меньше маны
+
+# General/MMMWE_ExtraSkills.lua:69
+A two-handed weapon may be held in each hand; two of them: off-hand damage 75%, recovery +20%	Двуручное оружие можно держать в каждой руке; с двумя такими: урон левой рукой 75%, восстановление +20%
+
+# General/MMMWE_ExtraSkills.lua:70
++1 to all magic resistances per skill point	+1 ко всем сопротивлениям магии за очко навыка
+
+# General/MMMWE_HardcoreSettings.lua:187
+(Hardcore mode is locked for this party)	(режим «Хардкор» закреплён за этим отрядом)
+
+# General/MMMWE_HardcoreSettings.lua:188
+(locked while Hardcore mode is on)	(недоступно, пока включён режим «Хардкор»)
+
+# General/MMMWE_HardcoreSettings.lua:189
+(the first party death deletes all saves)	(первая гибель отряда удаляет все сохранения)
+
+# General/MMMWE_HardcoreSettings.lua:192
+Each party death before the last removes all items	Каждая гибель отряда, кроме последней, отнимает все предметы,
+
+# General/MMMWE_HardcoreSettings.lua:193
+except special items, artifacts, relics and ancient items.	кроме особых предметов, артефактов, реликвий и древних предметов.
+
+# General/MMMWE_HardcoreSettings.lua:197
+Level 50: %s exp, level 100: %s (game: %s, %s)	Уровень 50: %s опыта, уровень 100: %s (игра: %s, %s)
+
+# General/MMMWE_HardcoreSettings.lua:211
+Hardcore mode can't be turned off for this party	Режим «Хардкор» нельзя выключить для этого отряда
+
+# General/MMMWE_HardcoreSettings.lua:232
+Party deaths allowed	Допустимо гибелей отряда
+
+# General/MMMWE_HardcoreSettings.lua:253
+Party deaths so far	Гибелей отряда сейчас
+
+# General/MMMWE_HardcoreSettings.lua:263
+Experience curve	Кривая опыта
+
+# General/MMMWE_HardcoreSettings.lua:290, General/MMMWE_HardcoreSettings.lua:292
+All save files 	Все файлы сохранений 
+
+# General/MMMWE_HardcoreSettings.lua:290, General/MMMWE_HardcoreSettings.lua:292
+will be deleted 	будут удалены, 
+
+# General/MMMWE_HardcoreSettings.lua:291
+if the entire party is killed.\n\n	если погибнет весь отряд.\n\n
+
+# General/MMMWE_HardcoreSettings.lua:293
+after 	после 
+
+# General/MMMWE_HardcoreSettings.lua:293
+ party deaths.\n	 гибелей отряда.\n
+
+# General/MMMWE_HardcoreSettings.lua:294
+Every party death before that 	Каждая гибель отряда до этого 
+
+# General/MMMWE_HardcoreSettings.lua:295
+removes all items 	отнимает все предметы, 
+
+# General/MMMWE_HardcoreSettings.lua:296
+except artifacts, relics, quest, special and ancient items.\n\n	кроме артефактов, реликвий, квестовых, особых и древних предметов.\n\n
+
+# General/MMMWE_HardcoreSettings.lua:297
+HARDCORE MODE\n\n	РЕЖИМ «ХАРДКОР»\n\n
+
+# General/MMMWE_HardcoreSettings.lua:298
+Saving, loading and quitting to main menu 	Сохранение, загрузка и выход в главное меню 
+
+# General/MMMWE_HardcoreSettings.lua:299
+are blocked 	запрещены, 
+
+# General/MMMWE_HardcoreSettings.lua:299
+while enemies are nearby.\n	пока рядом враги.\n
+
+# General/MMMWE_HardcoreSettings.lua:301
+It can't be turned off 	Его нельзя выключить 
+
+# General/MMMWE_HardcoreSettings.lua:301
+for this party once enabled.\n	для этого отряда после включения.\n
+
+# General/MMMWE_HardcoreSettings.lua:302
+\nEnable Hardcore Mode?	\nВключить режим «Хардкор»?
+
+# General/MMMWE_HardcoreSettings.lua:319
+Confirm	Подтвердить
+
+# General/MMMWE_HardcoreSettings.lua:339
+Cancel	Отмена
+
+# General/MMMWE_InventorySort.lua:486 plural, English plural: Party gathered: %d items moved
+Party gathered: %d item moved	Отряд собран: перемещён %d предмет|Отряд собран: перемещено %d предмета|Отряд собран: перемещено %d предметов
+
+# General/MMMWE_InventorySort.lua:666 plural, English plural: %d items
+%d item	%d предмет|%d предмета|%d предметов
+
+# General/MMMWE_InventorySort.lua:108
+potions, reagents, apothecary satchels and bottle boxes	зелья, реагенты, аптекарские сумки и ящики для бутылок
+
+# General/MMMWE_InventorySort.lua:113
+unidentified items	неопознанные предметы
+
+# General/MMMWE_InventorySort.lua:115
+broken items	сломанные предметы
+
+# General/MMMWE_InventorySort.lua:465, General/MMMWE_InventorySort.lua:481, General/MMMWE_InventorySort.lua:651
+Put down the item you are holding first	Сначала положите предмет, который держите
+
+# General/MMMWE_InventorySort.lua:472
+Backpack sorted	Рюкзак разобран
+
+# General/MMMWE_InventorySort.lua:474
+The backpack is too full to rearrange	Рюкзак слишком полон, чтобы его разобрать
+
+# General/MMMWE_InventorySort.lua:488, General/MMMWE_InventorySort.lua:673
+, %d didn't fit	, не поместилось: %d
+
+# General/MMMWE_InventorySort.lua:491
+, some backpacks too full to sort	, некоторые рюкзаки слишком полны
+
+# General/MMMWE_InventorySort.lua:656
+Can't tell which chest is open	Не удаётся понять, какой сундук открыт
+
+# General/MMMWE_InventorySort.lua:660
+There is no gold here	Здесь нет золота
+
+# General/MMMWE_InventorySort.lua:660
+Nothing to take	Брать нечего
+
+# General/MMMWE_InventorySort.lua:669
+%d gold	%d золота
+
+# General/MMMWE_InventorySort.lua:671
+Took 	Взято: 
+
+# General/MMMWE_InventorySort.lua:671
+ and 	 и 
+
+# General/MMMWE_InventorySort.lua:671
+Took nothing	Ничего не взято
+
+# General/MMMWE_InventorySort.lua:710
+Take all	Взять всё
+
+# General/MMMWE_InventorySort.lua:711
+Take gold	Взять золото
+
+# General/MMMWE_InventorySort.lua:712
+Take valued	Взять ценное
+
+# General/MMMWE_ItemDurability.lua:335
+%s's %s has broken!	%s: %s — сломано!
+
+# General/MMMWE_ItemDurability.lua:337
+%s's %s is badly damaged!	%s: %s — сильно повреждено!
+
+# General/MMMWE_ItemDurability.lua:339
+%s's %s is showing wear.	%s: %s — изнашивается.
+
+# General/MMMWE_ItemDurability.lua:610
+No Repair skill	Нет навыка Ремонт
+
+# General/MMMWE_ItemDurability.lua:620
+Nothing to repair	Чинить нечего
+
+# General/MMMWE_ItemDurability.lua:623
+Not enough gold (%d needed)	Не хватает золота (нужно %d)
+
+# General/MMMWE_ItemDurability.lua:626
+Repaired %d of %d items for %d gold - out of gold	Починено %d из %d предметов за %d золота — золото кончилось
+
+# General/MMMWE_ItemDurability.lua:630
+Repaired %d item(s) for free	Починено бесплатно: %d
+
+# General/MMMWE_ItemDurability.lua:632
+Repaired %d item(s) for %d gold	Починено предметов: %d за %d золота
+
+# General/MMMWE_LegendaryMastery.lua:39
+Legend	Легенда
+
+# General/MMMWE_LegendaryMastery.lua:40
+Legendary	Легендарный
+
+# General/MMMWE_LegendaryMastery.lua:97
+already %s in %s, and only one skill can be	уже %s в навыке %s, а так можно лишь в одном навыке
+
+# General/MMMWE_LegendaryMastery.lua:101
+not of a second promotion class	класс не второго повышения
+
+# General/MMMWE_LegendaryMastery.lua:105
+not a Grand Master of 	не Грандмастер в навыке 
+
+# General/MMMWE_LegendaryMastery.lua:107
+%s at %d of %d	%s: %d из %d
+
+# General/MMMWE_LegendaryMastery.lua:110
+level %d of %d	уровень %d из %d
+
+# General/MMMWE_LegendaryPassives.lua:105
+Spellstaff	Посох чародея
+
+# General/MMMWE_LegendaryPassives.lua:105
+wielding a staff, spells cost 15% less SP and blows get a second stun roll	с посохом в руках заклинания стоят на 15% меньше маны, а удары дают второй бросок на оглушение
+
+# General/MMMWE_LegendaryPassives.lua:106
+Riposte	Ответный удар
+
+# General/MMMWE_LegendaryPassives.lua:106
+10% chance to parry a monster's melee blow completely and strike back (sword in hand)	10% шанс полностью парировать удар монстра в ближнем бою и ответить ударом (с мечом в руке)
+
+# General/MMMWE_LegendaryPassives.lua:107, General/MMMWE_Resources.lua:249
+Assassin	Убийца
+
+# General/MMMWE_LegendaryPassives.lua:107
+with a dagger in hand, double critical chance; critical hits ignore physical resistance	с кинжалом в руке шанс критического удара удвоен; критические удары игнорируют физическое сопротивление
+
+# General/MMMWE_LegendaryPassives.lua:108
+Cleave	Рассечение
+
+# General/MMMWE_LegendaryPassives.lua:108
+each axe blow also hits a foe next to the target for 50% damage	каждый удар топора задевает и врага рядом с целью на 50% урона
+
+# General/MMMWE_LegendaryPassives.lua:109
+Impale	Пронзание
+
+# General/MMMWE_LegendaryPassives.lua:109
+with a spear in hand, blows hit as if the target had half its AC, and +AC equal to the Spear skill	с копьём в руке удары попадают так, будто у цели вдвое меньше КБ, и +КБ, равный навыку Копьё
+
+# General/MMMWE_LegendaryPassives.lua:110, General/MMMWE_Resources.lua:301
+Volley	Залп
+
+# General/MMMWE_LegendaryPassives.lua:110
+three arrows a shot	три стрелы за выстрел
+
+# General/MMMWE_LegendaryPassives.lua:111
+Crushing Blows	Сокрушающие удары
+
+# General/MMMWE_LegendaryPassives.lua:111
+a second stun and paralyze roll, and the target gets no resistance roll against them	второй бросок на оглушение и паралич, и цель не получает броска сопротивления против них
+
+# General/MMMWE_LegendaryPassives.lua:112
+Overcharge	Перегрузка
+
+# General/MMMWE_LegendaryPassives.lua:112
+shots use half the cell charge and deal 20% more damage	выстрелы тратят вдвое меньше заряда ячейки и наносят на 20% больше урона
+
+# General/MMMWE_LegendaryPassives.lua:113
+Bulwark	Оплот
+
+# General/MMMWE_LegendaryPassives.lua:113
+with a shield in hand, 20% chance to block a missile or a spell bolt completely	со щитом в руке 20% шанс полностью отразить снаряд или заряд заклинания
+
+# General/MMMWE_LegendaryPassives.lua:114
+Light Step	Лёгкий шаг
+
+# General/MMMWE_LegendaryPassives.lua:114
+in leather armor, 10% chance to evade a monster's blow or missile	в кожаной броне 10% шанс уклониться от удара или снаряда монстра
+
+# General/MMMWE_LegendaryPassives.lua:115
+Interlinked	Сплетение
+
+# General/MMMWE_LegendaryPassives.lua:115
+in chain armor, 20% less Fire, Air, Water and Earth damage	в кольчуге на 20% меньше урона от Огня, Воздуха, Воды и Земли
+
+# General/MMMWE_LegendaryPassives.lua:116
+Unbreakable	Несокрушимость
+
+# General/MMMWE_LegendaryPassives.lua:116
+worn plate armor takes no wear; Paralysis and Stone don't hold	надетые латы не изнашиваются; Паралич и Окаменение не действуют
+
+# General/MMMWE_LegendaryPassives.lua:117
+the school's spells cost 25% less SP and are 25% stronger (damage, duration, power, healing)	заклинания школы стоят на 25% меньше маны и на 25% сильнее (урон, длительность, сила, лечение)
+
+# General/MMMWE_LegendaryPassives.lua:118
+Archmage of Fire	Архимаг Огня
+
+# General/MMMWE_LegendaryPassives.lua:118
+; half the target's fire resistance is ignored	; половина сопротивления цели огню игнорируется
+
+# General/MMMWE_LegendaryPassives.lua:119
+Archmage of Air	Архимаг Воздуха
+
+# General/MMMWE_LegendaryPassives.lua:119
+; they recover 25% faster	; восстановление после них на 25% быстрее
+
+# General/MMMWE_LegendaryPassives.lua:120
+Archmage of Water	Архимаг Воды
+
+# General/MMMWE_LegendaryPassives.lua:120
+; Town Portal and Lloyd's Beacon cost no SP	; Городской портал и Маяк Ллойда не тратят ману
+
+# General/MMMWE_LegendaryPassives.lua:121
+Archmage of Earth	Архимаг Земли
+
+# General/MMMWE_LegendaryPassives.lua:121
+; Stone Skin and Rock Blast are twice as strong instead	; вместо этого Каменная кожа и Каменный взрыв вдвое сильнее
+
+# General/MMMWE_LegendaryPassives.lua:122
+Archmage of Spirit	Архимаг Духа
+
+# General/MMMWE_LegendaryPassives.lua:122
+; Raise Dead and Resurrection leave no Weakness	; Оживление и Воскрешение не оставляют Слабости
+
+# General/MMMWE_LegendaryPassives.lua:123
+Archmage of Mind	Архимаг Разума
+
+# General/MMMWE_LegendaryPassives.lua:123
+; Charm, Berserk, Mass Fear and Enslave can't be resisted by monsters of the caster's level or lower	; Очарованию, Берсерку, Массовому страху и Порабощению не могут сопротивляться монстры уровня заклинателя и ниже
+
+# General/MMMWE_LegendaryPassives.lua:124
+Archmage of Body	Архимаг Тела
+
+# General/MMMWE_LegendaryPassives.lua:124
+; Heal and Power Cure cure Poison and Disease as well	; Лечение и Мощное исцеление излечивают также Яд и Болезнь
+
+# General/MMMWE_LegendaryPassives.lua:125
+Archmage of Light	Архимаг Света
+
+# General/MMMWE_LegendaryPassives.lua:125
+; the durations are doubled instead	; вместо этого длительность удвоена
+
+# General/MMMWE_LegendaryPassives.lua:126
+Archmage of Dark	Архимаг Тьмы
+
+# General/MMMWE_LegendaryPassives.lua:126
+; their damage heals the caster for 10% of it	; 10% их урона лечат заклинателя
+
+# General/MMMWE_LegendaryPassives.lua:127
+Heir of the Dark Elves	Наследник тёмных эльфов
+
+# General/MMMWE_LegendaryPassives.lua:127
+the Dark Elf abilities are 50% stronger	способности тёмного эльфа на 50% сильнее
+
+# General/MMMWE_LegendaryPassives.lua:128
+Elder Blood	Древняя кровь
+
+# General/MMMWE_LegendaryPassives.lua:128
+the Vampire abilities are 50% stronger	способности вампира на 50% сильнее
+
+# General/MMMWE_LegendaryPassives.lua:129
+Ancient Wyrm	Древний змей
+
+# General/MMMWE_LegendaryPassives.lua:129
+the Dragon abilities and the breath are 50% stronger	способности дракона и его дыхание на 50% сильнее
+
+# General/MMMWE_LegendaryPassives.lua:130
+Appraiser	Оценщик
+
+# General/MMMWE_LegendaryPassives.lua:130
+every item the party carries is identified, and this character sells 10% dearer	все предметы отряда опознаны, и этот персонаж продаёт на 10% дороже
+
+# General/MMMWE_LegendaryPassives.lua:131
+Trade Prince	Торговый князь
+
+# General/MMMWE_LegendaryPassives.lua:131
+this character buys at half price and sells at full value	этот персонаж покупает за полцены и продаёт по полной стоимости
+
+# General/MMMWE_LegendaryPassives.lua:132
+Master Smith	Мастер-кузнец
+
+# General/MMMWE_LegendaryPassives.lua:132
+the party's equipment wears at half the rate, and broken items are mended while resting	снаряжение отряда изнашивается вдвое медленнее, а сломанные предметы чинятся во время отдыха
+
+# General/MMMWE_LegendaryPassives.lua:133
+Titan	Титан
+
+# General/MMMWE_LegendaryPassives.lua:133
+HP from Bodybuilding doubled, and Weakness doesn't hold	здоровье от Телосложения удвоено, и Слабость не действует
+
+# General/MMMWE_LegendaryPassives.lua:134
+Clarity	Ясность
+
+# General/MMMWE_LegendaryPassives.lua:134
+SP from Meditation doubled, and 1% of SP comes back every 5 minutes	мана от Медитации удвоена, и 1% маны возвращается каждые 5 минут
+
+# General/MMMWE_LegendaryPassives.lua:135
+Sixth Sense	Шестое чувство
+
+# General/MMMWE_LegendaryPassives.lua:135
+chest and map traps do the party no harm, and 20% more gold is found	ловушки сундуков и карт не вредят отряду, и золота находится на 20% больше
+
+# General/MMMWE_LegendaryPassives.lua:136
+Undying	Неумирающий
+
+# General/MMMWE_LegendaryPassives.lua:136
+once a day, a fatal blow leaves 1 HP instead	раз в день смертельный удар вместо этого оставляет 1 очко здоровья
+
+# General/MMMWE_LegendaryPassives.lua:137
+Lockbreaker	Взломщик
+
+# General/MMMWE_LegendaryPassives.lua:137
+chests always open with their traps disarmed	сундуки всегда открываются с обезвреженными ловушками
+
+# General/MMMWE_LegendaryPassives.lua:138
+Shadow	Тень
+
+# General/MMMWE_LegendaryPassives.lua:138
+15% chance to evade any attack, spells included	15% шанс уклониться от любой атаки, включая заклинания
+
+# General/MMMWE_LegendaryPassives.lua:139
+Iron Fist	Железный кулак
+
+# General/MMMWE_LegendaryPassives.lua:139
+bare-handed blows always hit and strike twice	удары голыми руками всегда попадают и бьют дважды
+
+# General/MMMWE_LegendaryPassives.lua:140
+Know Thy Enemy	Знай врага
+
+# General/MMMWE_LegendaryPassives.lua:140
+the whole party deals 10% more damage	весь отряд наносит на 10% больше урона
+
+# General/MMMWE_LegendaryPassives.lua:141
+Weapon Master	Мастер оружия
+
+# General/MMMWE_LegendaryPassives.lua:141
+all weapon skills count 5 higher, and recovery is 10% faster	все навыки оружия считаются на 5 выше, и восстановление на 10% быстрее
+
+# General/MMMWE_LegendaryPassives.lua:143
+Twin Titans	Парные титаны
+
+# General/MMMWE_LegendaryPassives.lua:143
+a two-handed weapon in each hand without penalties	двуручное оружие в каждой руке без штрафов
+
+# General/MMMWE_LegendaryPassives.lua:144
+Unseen	Незримый
+
+# General/MMMWE_LegendaryPassives.lua:144
+without body armor, monsters pick this character as a target half as often (threat halved)	без брони монстры выбирают этого персонажа целью вдвое реже (угроза вдвое меньше)
+
+# General/MMMWE_LegendaryPassives.lua:154
+Phantom	Фантом
+
+# General/MMMWE_LegendaryPassives.lua:154
+stealing from shops costs no reputation, and corpses give double gold	кражи в лавках не портят репутацию, и с тел выпадает вдвое больше золота
+
+# General/MMMWE_LegendaryPassives.lua:155
+Philosopher's Stone	Философский камень
+
+# General/MMMWE_LegendaryPassives.lua:155
+potions brewed from reagents are 50% stronger	зелья, сваренные из реагентов, на 50% сильнее
+
+# General/MMMWE_LegendaryPassives.lua:156
+Sage	Мудрец
+
+# General/MMMWE_LegendaryPassives.lua:156
+the whole party gains 10% more experience	весь отряд получает на 10% больше опыта
+
+# General/MMMWE_LegendaryPassives.lua:546
+%s disarms the trap	%s обезвреживает ловушку
+
+# General/MMMWE_LegendaryPassives.lua:546
+%s sidesteps the trap	%s уходит от ловушки
+
+# General/MMMWE_LegendaryPassives.lua:580
+%s evades the attack	%s уклоняется от атаки
+
+# General/MMMWE_LegendaryPassives.lua:583
+%s blocks it with the shield	%s отражает щитом
+
+# General/MMMWE_LegendaryPassives.lua:587
+%s slips aside	%s ускользает в сторону
+
+# General/MMMWE_LegendaryPassives.lua:592
+%s parries and strikes back!	%s парирует и бьёт в ответ!
+
+# General/MMMWE_LegendaryPassives.lua:684
+%s cleaves through!	%s рассекает насквозь!
+
+# General/MMMWE_LegendaryPassives.lua:719
+%s refuses to fall!	%s не желает падать!
+
+# General/MMMWE_Main.lua:683
+melee %d, ranged %d, armor %+d%%	ближний бой %d, дальний %d, броня %+d%%
+
+# General/MMMWE_Main.lua:1057
+Eradicated	стёрт в прах
+
+# General/MMMWE_Main.lua:1059
+Dead	мёртв
+
+# General/MMMWE_Main.lua:1067
+%s loses %d %s from being %s	%s теряет %d (%s): %s
+
+# General/MMMWE_Main.lua:1875
+%s eradicates %s	%s стирает в прах: %s
+
+# General/MMMWE_Main.lua:2079
+%s dodges and strikes back!	%s уклоняется и бьёт в ответ!
+
+# General/MMMWE_Main.lua:2351
+%s's shadow clone takes the blow!	Теневой двойник (%s) принимает удар!
+
+# General/MMMWE_Main.lua:2353
+%s evades the attack!	%s уклоняется от атаки!
+
+# General/MMMWE_Main.lua:2534
+%s dodges the attack!	%s увёртывается от атаки!
+
+# General/MMMWE_Main.lua:2537
+%s takes %d %s damage (%d negated, %.1f%%)	%s получает %d урона (%s) (поглощено %d, %.1f%%)
+
+# General/MMMWE_Main.lua:2903, General/MMMWE_Main.lua:2906
+Type: %s \nDurability: %s	Тип: %s \nПрочность: %s
+
+# General/MMMWE_Main.lua:2908
+Type: %s	Тип: %s
+
+# General/MMMWE_Main.lua:2914, General/MMMWE_Main.lua:2920
+%s: +%lu	%s: +%lu
+
+# General/MMMWE_Main.lua:2929
+Armor: +%d   Block Power: %d%s (%s)	Броня: +%d   Сила блока: %d%s (%s)
+
+# General/MMMWE_Main.lua:2952
+\nParry Power: %d%s	\nСила парирования: %d%s
+
+# General/MMMWE_Main.lua:2955, General/MMMWE_Main.lua:3028, General/MMMWE_Main.lua:3030, General/MMMWE_Main.lua:3034
+%s: +%d   %s: %dd%d	%s: +%d   %s: %dd%d
+
+# General/MMMWE_Main.lua:2964, General/MMMWE_Main.lua:2989
+%s: %lu	%s: %lu
+
+# General/MMMWE_Main.lua:2969
+Steel: %d Siertal: %d Phylt: %d	Сталь: %d Сиертал: %d Филт: %d
+
+# General/MMMWE_Main.lua:2972
+Kergar: %d Erudine: %d Stalt: %d	Кергар: %d Эрудин: %d Стальт: %d
+
+# General/MMMWE_Main.lua:2975
+Bottles: %d	Бутылки: %d
+
+# General/MMMWE_Main.lua:2983
+Ant: %d Jad: %d	Ант: %d Джад: %d
+
+# General/MMMWE_Main.lua:2986
+Enr: %d Ant: %d Jad: %d	Энр: %d Ант: %d Джад: %d
+
+# General/MMMWE_Main.lua:3005
+Shoot: +%d    Damage: %d-%d	Стрельба: +%d    Урон: %d-%d
+
+# General/MMMWE_Main.lua:3211
+Armor Class	Класс брони
+
+# General/MMMWE_Main.lua:3212
+Condition (replaced by HR and Phys Res)	Состояние (заменено на HR и физ. сопр.)
+
+# General/MMMWE_Main.lua:3213
+Quick spell (replaced by resistances and chances; 4 px higher for the Sla/Pie/Blu line)	Быстрое заклинание (заменено сопротивлениями и шансами; на 4 пикс. выше для строки Руб/Кол/Дроб)
+
+# General/MMMWE_Main.lua:3215
+Melee damage	Урон в ближнем бою
+
+# General/MMMWE_Main.lua:3217
+Ranged damage	Урон в дальнем бою
+
+# General/MMMWE_Main.lua:3220
+Fire res	Сопр. огню
+
+# General/MMMWE_Main.lua:3221
+Air res	Сопр. воздуху
+
+# General/MMMWE_Main.lua:3222
+Water res	Сопр. воде
+
+# General/MMMWE_Main.lua:3223
+Earth res	Сопр. земле
+
+# General/MMMWE_Main.lua:3224
+Mind res	Сопр. разуму
+
+# General/MMMWE_Main.lua:3225
+Body res	Сопр. телу
+
+# General/MMMWE_Main.lua:3974
+Flight mode active. Remaining charge: %3.1f%%	Режим полёта включён. Остаток заряда: %3.1f%%
+
+# General/MMMWE_Main.lua:3978
+WARNING! Low charge: %3.1f%%	ВНИМАНИЕ! Низкий заряд: %3.1f%%
+
+# General/MMMWE_Main.lua:3981
+WARNING! Flight mode terminates in 5 minutes!	ВНИМАНИЕ! Режим полёта отключится через 5 минут!
+
+# General/MMMWE_Main.lua:3999
+Tech mastery (%d/2) is insufficient to use this function	Владение техникой (%d/2) недостаточно для этой функции
+
+# General/MMMWE_Main.lua:4009
+Remaining charge: %3.1f%%.	Остаток заряда: %3.1f%%.
+
+# General/MMMWE_Main.lua:4011, General/MMMWE_Main.lua:4035
+Device charge CRITICAL! Operation aborted	Заряд устройства КРИТИЧЕСКИЙ! Операция прервана
+
+# General/MMMWE_Main.lua:4029
+Tech mastery (%d/3) is insufficient to use this function	Владение техникой (%d/3) недостаточно для этой функции
+
+# General/MMMWE_Main.lua:4047
+Flight mode activated	Режим полёта включён
+
+# General/MMMWE_MonkBranches.lua:148
+%s seizes the opening!	%s пользуется брешью в защите!
+
+# General/MMMWE_Moon.lua:271
+new moon	новолуние
+
+# General/MMMWE_Moon.lua:271
+waxing crescent	растущий серп
+
+# General/MMMWE_Moon.lua:271
+first quarter	первая четверть
+
+# General/MMMWE_Moon.lua:271
+waxing gibbous	растущая луна
+
+# General/MMMWE_Moon.lua:271
+full moon	полнолуние
+
+# General/MMMWE_Moon.lua:272
+waning gibbous	убывающая луна
+
+# General/MMMWE_Moon.lua:272
+last quarter	последняя четверть
+
+# General/MMMWE_Moon.lua:272
+waning crescent	убывающий серп
+
+# General/MMMWE_Moon.lua:278
+day %.1f of the month: %s (picture %d); time %.2f h; moon %s; object %s; shown %s	день месяца %.1f: %s (картинка %d); время %.2f ч; луна %s; объект %s; видна %s
+
+# General/MMMWE_Moon.lua:280, General/MMMWE_Sun.lua:324
+azimuth %d, elevation %d degrees	азимут %d, высота %d градусов
+
+# General/MMMWE_Moon.lua:280, General/MMMWE_Sun.lua:324
+below the horizon	за горизонтом
+
+# General/MMMWE_Moon.lua:281
+%d at %d, %d, %d	%d в точке %d, %d, %d
+
+# General/MMMWE_Moon.lua:282
+; skyline %.1f degrees	; линия горизонта %.1f градусов
+
+# General/MMMWE_OverlaySettings.lua:42
+-- Waffel Edition overlay font sizes (the Extra Settings menu writes this file)\n	-- Waffel Edition overlay font sizes (the Extra Settings menu writes this file)\n
+
+# General/MMMWE_OverlaySettings.lua:121
+HP/SP display text	Текст HP/SP
+
+# General/MMMWE_OverlaySettings.lua:122
+HP/SP small text	Мелкий текст HP/SP
+
+# General/MMMWE_OverlaySettings.lua:123
+Combat log text	Текст журнала боя
+
+# General/MMMWE_OverlaySettings.lua:125
+Font sizes at 1920x1200; they scale with the window.	Размеры шрифтов для 1920x1200; они меняются вместе с окном.
+
+# General/MMMWE_OverlaySettings.lua:126
+Reset to the defaults	Вернуть по умолчанию
+
+# General/MMMWE_PaperdollTuner.lua:276 plural, English plural: %d armor positions
+%d armor position	%d позиция брони|%d позиции брони|%d позиций брони
+
+# General/MMMWE_PaperdollTuner.lua:292 plural, English plural: %d weapon positions
+%d weapon position	%d позиция оружия|%d позиции оружия|%d позиций оружия
+
+# General/MMMWE_PaperdollTuner.lua:47
+Right gauntlet	Правая перчатка
+
+# General/MMMWE_PaperdollTuner.lua:47
+Left gauntlet	Левая перчатка
+
+# General/MMMWE_PaperdollTuner.lua:48
+Right hand	Правая рука
+
+# General/MMMWE_PaperdollTuner.lua:48
+Left hand	Левая рука
+
+# General/MMMWE_PaperdollTuner.lua:151
+  (%d unsaved)	  (не сохранено: %d)
+
+# General/MMMWE_PaperdollTuner.lua:158
+: nothing worn	: ничего не надето
+
+# General/MMMWE_PaperdollTuner.lua:160
+%s: %s has no paperdoll position	%s: у предмета %s нет места на кукле
+
+# General/MMMWE_PaperdollTuner.lua:164
+, all doll types and both hands	, все типы куклы и обе руки
+
+# General/MMMWE_PaperdollTuner.lua:166
+, turned left-hand icon	, повёрнутый значок левой руки
+
+# General/MMMWE_PaperdollTuner.lua:168
+%s %d%s, doll type %d: X %d, Y %d%s%s	%s %d%s, тип куклы %d: X %d, Y %d%s%s
+
+# General/MMMWE_PaperdollTuner.lua:225
+Paperdoll: can't read 	Кукла: не удаётся прочитать 
+
+# General/MMMWE_PaperdollTuner.lua:260, General/MMMWE_PaperdollTuner.lua:289
+Paperdoll: can't write 	Кукла: не удаётся записать 
+
+# General/MMMWE_PaperdollTuner.lua:269
+Paperdoll: nothing to save	Кукла: нечего сохранять
+
+# General/MMMWE_PaperdollTuner.lua:284
+gauntlet positions	позиции перчаток
+
+# General/MMMWE_PaperdollTuner.lua:294
+Paperdoll: saved 	Кукла: сохранено 
+
+# General/MMMWE_PercentHPSP.lua:38
+ +1 to Seven Stats, Resistances, Armor; +1% HP and SP.	 +1 к семи характеристикам, сопротивлениям, броне; +1% здоровья и маны.
+
+# General/MMMWE_PercentHPSP.lua:40
+ +10 to Endurance and Armor Class, +10% Hit points.	 +10 к Выносливости и Классу брони, +10% здоровья.
+
+# General/MMMWE_PercentHPSP.lua:42
+ +10% Hit points and Regenerate Hit points over time.	 +10% здоровья и восстановление здоровья со временем.
+
+# General/MMMWE_PercentHPSP.lua:44
+ +10% Spell points and Regenerate Spell points over time.	 +10% маны и восстановление маны со временем.
+
+# General/MMMWE_PercentHPSP.lua:46
+ +10 Speed and Intellect, +10% Spell points.	 +10 к Скорости и Интеллекту, +10% маны.
+
+# General/MMMWE_PercentHPSP.lua:55
+Hit Points (%)	Здоровье (%)
+
+# General/MMMWE_PercentHPSP.lua:56
+Spell Points (%)	Мана (%)
+
+# General/MMMWE_Resources.lua:161, General/MMMWE_Resources.lua:1963
+Rage Strike	Яростный удар
+
+# General/MMMWE_Resources.lua:162
+A furious blow at the target in melee reach: +50% damage, and 10% more often a critical blow. Use it as the attack spell to strike with it whenever there is enough Rage; without enough Rage it is a normal attack.	Неистовый удар по цели в пределах досягаемости: +50% урона и на 10% чаще критический удар. Назначьте его заклинанием атаки, чтобы бить им всякий раз, когда хватает Ярости; без достаточной Ярости это обычная атака.
+
+# General/MMMWE_Resources.lua:163
+15 Rage	15 Ярости
+
+# General/MMMWE_Resources.lua:163
++50% damage, 10% more often a critical blow	+50% урона, на 10% чаще критический удар
+
+# General/MMMWE_Resources.lua:163, General/MMMWE_Resources.lua:445
+Barbarian	Варвар
+
+# General/MMMWE_Resources.lua:163
+Without enough Rage: a normal attack	Без достаточной Ярости: обычная атака
+
+# General/MMMWE_Resources.lua:166
+War Cry	Боевой клич
+
+# General/MMMWE_Resources.lua:167
+A terrifying roar. Monsters around may flee in fear (resisted by Mind resistance), and the party deals +10% melee damage for a while.	Устрашающий рёв. Монстры вокруг могут в страхе бежать (сопротивление Разуму защищает), а отряд какое-то время наносит +10% урона в ближнем бою.
+
+# General/MMMWE_Resources.lua:168, General/MMMWE_Resources.lua:173
+40 Rage	40 Ярости
+
+# General/MMMWE_Resources.lua:168
+Monsters around may flee (Mind resistance); party +10% melee damage	Монстры вокруг могут бежать (сопротивление Разуму); отряду +10% урона в ближнем бою
+
+# General/MMMWE_Resources.lua:168
+Berserker (not Trolls)	Берсерк (не тролли)
+
+# General/MMMWE_Resources.lua:168
+Fear lasts 2 minutes, the party bonus 5 minutes	Страх длится 2 минуты, бонус отряда 5 минут
+
+# General/MMMWE_Resources.lua:171
+Troll's Blood	Кровь тролля
+
+# General/MMMWE_Resources.lua:172
+The troll's blood boils and mends the wounds: heals 20% of maximum Hit Points over a short time.	Кровь тролля закипает и затягивает раны: лечит 20% максимального здоровья за короткое время.
+
+# General/MMMWE_Resources.lua:173
+Heals 20% of maximum Hit Points over 2 minutes	Лечит 20% максимального здоровья за 2 минуты
+
+# General/MMMWE_Resources.lua:173
+Troll Berserker	Тролль-берсерк
+
+# General/MMMWE_Resources.lua:173
+Trolls have it instead of War Cry	У троллей вместо Боевого клича
+
+# General/MMMWE_Resources.lua:176
+Berserk	Неистовство
+
+# General/MMMWE_Resources.lua:177
+A frenzy: 20% faster attacks and immunity to fear, sleep and paralysis for a while, but 15% more damage taken.	Безумие боя: на время атаки на 20% быстрее и иммунитет к страху, сну и параличу, но получаемый урон на 15% больше.
+
+# General/MMMWE_Resources.lua:178
+70 Rage	70 Ярости
+
+# General/MMMWE_Resources.lua:178
+-20% attack recovery; immune to fear, sleep and paralysis	-20% к восстановлению после атаки; иммунитет к страху, сну и параличу
+
+# General/MMMWE_Resources.lua:178
+Warmonger	Поджигатель войны
+
+# General/MMMWE_Resources.lua:178
+Takes 15% more damage; lasts 5 minutes	Получает на 15% больше урона; длится 5 минут
+
+# General/MMMWE_Resources.lua:182
+Power	Сила
+
+# General/MMMWE_Resources.lua:183
+Power Stance	Силовая стойка
+
+# General/MMMWE_Resources.lua:184
+A stance for crushing blows: more melee damage and harder critical hits, at the price of slower attacks. Use it again to leave the stance; only one stance is active at a time.	Стойка для сокрушительных ударов: больше урона в ближнем бою и сильнее критические удары ценой более медленных атак. Примените ещё раз, чтобы выйти из стойки; одновременно действует только одна стойка.
+
+# General/MMMWE_Resources.lua:185, General/MMMWE_Resources.lua:190, General/MMMWE_Resources.lua:195
+Free (a stance)	Бесплатно (стойка)
+
+# General/MMMWE_Resources.lua:185
++30% melee damage, +20% critical damage	+30% урона в ближнем бою, +20% критического урона
+
+# General/MMMWE_Resources.lua:185, General/MMMWE_Resources.lua:190, General/MMMWE_Resources.lua:447
+Knight	Рыцарь
+
+# General/MMMWE_Resources.lua:185
++20% attack recovery; Champion: +10% more damage	+20% к восстановлению после атаки; Чемпион: ещё +10% урона
+
+# General/MMMWE_Resources.lua:187
+Agile	Ловкость
+
+# General/MMMWE_Resources.lua:188
+Agile Stance	Ловкая стойка
+
+# General/MMMWE_Resources.lua:189
+A light-footed stance: quicker attacks and better dodging, but weaker blows. Use it again to leave the stance; only one stance is active at a time.	Подвижная стойка: атаки быстрее и уклонение лучше, но удары слабее. Примените ещё раз, чтобы выйти из стойки; одновременно действует только одна стойка.
+
+# General/MMMWE_Resources.lua:190
+-20% attack recovery, +5% dodge chance (with Dodging)	-20% к восстановлению после атаки, +5% к шансу уклонения (с навыком Уклонение)
+
+# General/MMMWE_Resources.lua:190
+-15% melee damage	-15% урона в ближнем бою
+
+# General/MMMWE_Resources.lua:192
+Defensive	Защита
+
+# General/MMMWE_Resources.lua:193
+Defensive Stance	Защитная стойка
+
+# General/MMMWE_Resources.lua:194
+A guarded stance: better blocks and parries, more Armor Class, and monsters turn on the defender more often, but blows are weaker. Use it again to leave the stance; only one stance is active at a time.	Оборонительная стойка: лучше блоки и парирование, выше Класс брони, и монстры чаще нападают на защитника, но удары слабее. Примените ещё раз, чтобы выйти из стойки; одновременно действует только одна стойка.
+
+# General/MMMWE_Resources.lua:195
++15% block and parry chance, +20% item Armor Class	+15% к шансу блока и парирования, +20% к Классу брони предметов
+
+# General/MMMWE_Resources.lua:195
+Knight, Paladin	Рыцарь, Паладин
+
+# General/MMMWE_Resources.lua:195
+Draws 50% more attacks; -25% melee damage	Привлекает на 50% больше атак; -25% урона в ближнем бою
+
+# General/MMMWE_Resources.lua:198
+Challenge	Вызов
+
+# General/MMMWE_Resources.lua:199
+The knight calls out a foe (the one under the cursor or the nearest), and it attacks no one else for a while.	Рыцарь вызывает врага (под курсором или ближайшего), и тот какое-то время не нападает ни на кого другого.
+
+# General/MMMWE_Resources.lua:200
+30 Resolve	30 Решимости
+
+# General/MMMWE_Resources.lua:200
+The target attacks only this knight	Цель атакует только этого рыцаря
+
+# General/MMMWE_Resources.lua:200
+Cavalier	Кавалер
+
+# General/MMMWE_Resources.lua:200
+4 minutes, +5% per Personality bonus point; ends if the knight falls	4 минуты, +5% за очко бонуса Силы духа; заканчивается, если рыцарь падёт
+
+# General/MMMWE_Resources.lua:203
+Rally	Сплочение
+
+# General/MMMWE_Resources.lua:204
+A rallying shout that steadies the party: fear is gone and every member's wounds close a little.	Ободряющий клич, сплачивающий отряд: страх уходит, а раны каждого немного затягиваются.
+
+# General/MMMWE_Resources.lua:205
+50 Resolve	50 Решимости
+
+# General/MMMWE_Resources.lua:205
+Removes fear from the party, heals 5% of maximum Hit Points	Снимает страх с отряда, лечит 5% максимального здоровья
+
+# General/MMMWE_Resources.lua:205
+Champion, Templar, Black Knight	Чемпион, Тамплиер, Чёрный рыцарь
+
+# General/MMMWE_Resources.lua:205
+Unconscious members are healed too	Лечит и тех, кто без сознания
+
+# General/MMMWE_Resources.lua:210, General/MMMWE_Resources.lua:1969
+Stunning Palm	Оглушающая ладонь
+
+# General/MMMWE_Resources.lua:211
+A blow at the target in melee reach that may stun it (paralysis for a short time; Physical resistance against the Unarmed skill). Use it as the attack spell to strike with it whenever there is Ki; without Ki it is a normal attack.	Удар по цели в пределах досягаемости, который может её оглушить (ненадолго парализовать; физическое сопротивление против навыка Рукопашный бой). Назначьте его заклинанием атаки, чтобы бить им всякий раз, когда есть Ци; без Ци это обычная атака.
+
+# General/MMMWE_Resources.lua:212
+1 Ki	1 Ци
+
+# General/MMMWE_Resources.lua:212
+A melee hit with a chance to stun the target	Удар в ближнем бою с шансом оглушить цель
+
+# General/MMMWE_Resources.lua:212, General/MMMWE_Resources.lua:217, General/MMMWE_Resources.lua:450
+Monk	Монах
+
+# General/MMMWE_Resources.lua:212
+Stun 1 minute; the chance grows with Unarmed	Оглушение на 1 минуту; шанс растёт с Рукопашным боем
+
+# General/MMMWE_Resources.lua:215
+Inner Peace	Внутренний покой
+
+# General/MMMWE_Resources.lua:216
+The monk calms body and mind, and poison, disease, fear and weakness leave him.	Монах успокаивает тело и разум, и яд, болезнь, страх и слабость покидают его.
+
+# General/MMMWE_Resources.lua:217, General/MMMWE_Resources.lua:227, General/MMMWE_Resources.lua:232
+3 Ki	3 Ци
+
+# General/MMMWE_Resources.lua:217
+Cures own poison, disease, fear and weakness	Излечивает свои яд, болезнь, страх и слабость
+
+# General/MMMWE_Resources.lua:217
+Only the monk himself	Только сам монах
+
+# General/MMMWE_Resources.lua:220
+Flurry	Шквал ударов
+
+# General/MMMWE_Resources.lua:221
+A melee hit followed by two quick extra strikes at the same target.	Удар в ближнем бою и следом два быстрых дополнительных удара по той же цели.
+
+# General/MMMWE_Resources.lua:222
+2 Ki	2 Ци
+
+# General/MMMWE_Resources.lua:222
+A hit and two extra strikes, 60% damage each	Удар и два дополнительных, по 60% урона каждый
+
+# General/MMMWE_Resources.lua:222
+Initiate Monk	Посвящённый
+
+# General/MMMWE_Resources.lua:222
+Recovery of one attack	Восстановление как после одной атаки
+
+# General/MMMWE_Resources.lua:225
+Iron Body	Железное тело
+
+# General/MMMWE_Resources.lua:226
+The monk hardens his body against blows: less physical damage taken for a while. Master Monk, always: Diamond Body (immune to the poison and disease of monsters' attacks, +1 to Fire, Air, Water, Earth, Mind, Body and Spirit resistance per 2 points of Meditation) and Ki strikes (bare-handed blows add 1% of their damage per point of Unarmed, at most 25%, as the element of Fire, Air, Water and Earth the target resists least).	Монах закаляет тело против ударов: на время получает меньше физического урона. Мастер-монах, всегда: Алмазное тело (иммунитет к яду и болезням от атак монстров, +1 к сопротивлению Огню, Воздуху, Воде, Земле, Разуму, Телу и Духу за 2 очка Медитации) и удары Ци (удары голыми руками добавляют 1% своего урона за очко Рукопашного боя, не больше 25%, стихией Огня, Воздуха, Воды или Земли — той, которой цель сопротивляется хуже всего).
+
+# General/MMMWE_Resources.lua:227
+-20% physical damage taken	-20% получаемого физического урона
+
+# General/MMMWE_Resources.lua:227
+Master Monk	Мастер-монах
+
+# General/MMMWE_Resources.lua:227, General/MMMWE_Resources.lua:323
+Lasts 5 minutes	Длится 5 минут
+
+# General/MMMWE_Resources.lua:230
+Vanish	Исчезновение
+
+# General/MMMWE_Resources.lua:231
+The ninja slips out of sight: monsters lose track of him and attack the others, until he strikes again. His first blow out of hiding tries to stun the target. Ninja, always: with Dodging he can dodge area spells (at half his dodge chance), and bare-handed he may follow up a party member's melee hit with a blow of his own (0.5% per point of Unarmed, at most 25%, 60% damage).	Ниндзя скрывается из виду: монстры теряют его и нападают на других, пока он снова не ударит. Его первый удар из укрытия пытается оглушить цель. Ниндзя, всегда: с Уклонением он может уклоняться от заклинаний по площади (с половиной своего шанса уклонения), а голыми руками может поддержать удар товарища в ближнем бою своим ударом (0,5% за очко Рукопашного боя, не больше 25%, 60% урона).
+
+# General/MMMWE_Resources.lua:232
+Monsters don't pick the ninja as their target	Монстры не выбирают ниндзя целью
+
+# General/MMMWE_Resources.lua:232, General/MMMWE_Resources.lua:237
+Ninja	Ниндзя
+
+# General/MMMWE_Resources.lua:232
+Lasts 2 minutes; ends when the ninja strikes, with a stunning blow	Длится 2 минуты; заканчивается, когда ниндзя бьёт, — оглушающим ударом
+
+# General/MMMWE_Resources.lua:235
+Shadow Clone	Теневой двойник
+
+# General/MMMWE_Resources.lua:236
+The ninja leaves shadow copies of himself around: melee blows and missiles aimed at him strike a clone instead. Area spells still reach him.	Ниндзя оставляет вокруг теневые копии себя: удары и снаряды, направленные в него, попадают в двойника. Заклинания по площади всё равно его достают.
+
+# General/MMMWE_Resources.lua:237
+4 Ki	4 Ци
+
+# General/MMMWE_Resources.lua:237
+The next 3 melee hits or missiles at the ninja hit a clone	Следующие 3 удара или снаряда в ниндзя попадают в двойника
+
+# General/MMMWE_Resources.lua:237
+Lasts 5 minutes or 3 hits	Длится 5 минут или 3 попадания
+
+# General/MMMWE_Resources.lua:242
+Finisher	Добивание
+
+# General/MMMWE_Resources.lua:243
+A blow that spends all combo points (gained by melee hits on the same target): +20% damage and +10% critical chance per point. With 5 points the thief also tries to steal from the target. Use it as the attack spell; without enough Energy it is a normal attack.	Удар, тратящий все очки комбо (их дают удары в ближнем бою по одной цели): +20% урона и +10% к шансу крита за очко. С 5 очками вор ещё и пытается обокрасть цель. Назначьте его заклинанием атаки; без достаточной Энергии это обычная атака.
+
+# General/MMMWE_Resources.lua:244
+25 Energy	25 Энергии
+
+# General/MMMWE_Resources.lua:244
++20% damage, +10% critical chance per combo point	+20% урона, +10% к шансу крита за очко комбо
+
+# General/MMMWE_Resources.lua:244, General/MMMWE_Resources.lua:455
+Thief	Вор
+
+# General/MMMWE_Resources.lua:244
+5 points: a steal attempt (Stealing skill)	5 очков: попытка кражи (навык Воровство)
+
+# General/MMMWE_Resources.lua:247
+Poisoned Blade	Отравленный клинок
+
+# General/MMMWE_Resources.lua:248
+The assassin coats the blade with poison: the next 5 melee hits deal extra damage, unless the target is immune to Body. The assassin's finishers also crit harder.	Убийца смазывает клинок ядом: следующие 5 ударов в ближнем бою наносят дополнительный урон, если у цели нет иммунитета к Телу. Добивания убийцы также сильнее бьют критом.
+
+# General/MMMWE_Resources.lua:249
+30 Energy	30 Энергии
+
+# General/MMMWE_Resources.lua:249
+Next 5 melee hits: +25% damage (poison)	Следующие 5 ударов: +25% урона (яд)
+
+# General/MMMWE_Resources.lua:249
+Finishers: +10% critical damage per combo point	Добивания: +10% критического урона за очко комбо
+
+# General/MMMWE_Resources.lua:252
+Shadow Veil	Покров тени
+
+# General/MMMWE_Resources.lua:253
+The spy hides the party in shadows and scouts ahead: Invisibility and Wizard Eye for the party.	Шпион прячет отряд в тенях и разведывает путь: Невидимость и Око чародея для отряда.
+
+# General/MMMWE_Resources.lua:254
+40 Energy	40 Энергии
+
+# General/MMMWE_Resources.lua:254
+Party Invisibility and Wizard Eye	Невидимость отряда и Око чародея
+
+# General/MMMWE_Resources.lua:254
+Spy	Шпион
+
+# General/MMMWE_Resources.lua:254
+Lasts 10 minutes; power by the Stealing skill	Длится 10 минут; сила от навыка Воровство
+
+# General/MMMWE_Resources.lua:259
+Scanner	Сканер
+
+# General/MMMWE_Resources.lua:260
+The technician scans a monster (the one under the cursor or the nearest in sight): its resistances are shown in the status line, and for a while it takes more damage from the whole party, as its weak spots are known.	Техник сканирует монстра (под курсором или ближайшего в поле зрения): его сопротивления видны в строке состояния, и какое-то время он получает больше урона от всего отряда, ведь его слабые места известны.
+
+# General/MMMWE_Resources.lua:261
+10 Construction	10 Деталей
+
+# General/MMMWE_Resources.lua:261
+Shows the target's resistances; it takes +15% damage from the party	Показывает сопротивления цели; она получает +15% урона от отряда
+
+# General/MMMWE_Resources.lua:261, General/MMMWE_Resources.lua:266, General/MMMWE_Resources.lua:453
+Technician	Техник
+
+# General/MMMWE_Resources.lua:261, General/MMMWE_Resources.lua:313
+Lasts 3 minutes	Длится 3 минуты
+
+# General/MMMWE_Resources.lua:264
+Field Repair	Полевой ремонт
+
+# General/MMMWE_Resources.lua:265
+A quick fix in the field: the technician tunes the blaster in hand and patches its power cell back up a little.	Быстрая починка в поле: техник настраивает бластер в руке и немного подзаряжает его энергоячейку.
+
+# General/MMMWE_Resources.lua:266
+30 Construction	30 Деталей
+
+# General/MMMWE_Resources.lua:266
+Power cell +5% +0.5% per point of Repair (at most +30%)	Энергоячейка +5% +0,5% за очко Ремонта (не больше +30%)
+
+# General/MMMWE_Resources.lua:266
+Needs a blaster in the main hand	Нужен бластер в правой руке
+
+# General/MMMWE_Resources.lua:269
+Plasma Grenade	Плазменная граната
+
+# General/MMMWE_Resources.lua:270
+A plasma charge thrown in an arc at a monster (the one under the cursor or the nearest in sight). It blows up where it hits - the monster, the ground or a wall - and the blast hits every monster close to it with energy that no resistance stops.	Плазменный заряд, брошенный по дуге в монстра (под курсором или ближайшего в поле зрения). Он взрывается там, куда попадёт, — в монстра, землю или стену, — и взрыв бьёт всех монстров рядом энергией, которую не останавливает никакое сопротивление.
+
+# General/MMMWE_Resources.lua:271
+25 Construction	25 Деталей
+
+# General/MMMWE_Resources.lua:271
+Energy damage 10 + 1.5 per level + Repair skill x mastery	Урон энергией 10 + 1,5 за уровень + навык Ремонт x мастерство
+
+# General/MMMWE_Resources.lua:271, General/MMMWE_Resources.lua:276, General/MMMWE_Resources.lua:291
+Engineer	Инженер
+
+# General/MMMWE_Resources.lua:271
+Hits every monster near the target	Бьёт всех монстров рядом с целью
+
+# General/MMMWE_Resources.lua:274
+Overclock	Разгон
+
+# General/MMMWE_Resources.lua:275
+The technician overrides the blaster's safety limits: the next shots come with almost no recovery (5), but each of them draws twice the power from the cell.	Техник снимает ограничители бластера: следующие выстрелы идут почти без восстановления (5), но каждый тянет из ячейки вдвое больше энергии.
+
+# General/MMMWE_Resources.lua:276
+20 Construction	20 Деталей
+
+# General/MMMWE_Resources.lua:276
+The next 5 blaster shots have a recovery of 5	Следующие 5 выстрелов бластера с восстановлением 5
+
+# General/MMMWE_Resources.lua:276
+Each of them drains the power cell twice	Каждый расходует энергоячейку вдвойне
+
+# General/MMMWE_Resources.lua:279
+Shield Projector	Проектор щитов
+
+# General/MMMWE_Resources.lua:280
+The technician projects energy onto the whole party: every Energy Shield worn gets half of its capacity back and starts recharging at once, and everyone without a shield gets a short-lived barrier.	Техник направляет энергию на весь отряд: каждый надетый энергощит получает половину ёмкости и сразу начинает подзаряжаться, а каждый без щита получает недолгий барьер.
+
+# General/MMMWE_Resources.lua:281
+35 Construction	35 Деталей
+
+# General/MMMWE_Resources.lua:281
+Shields +50% and recharging; barriers of 20 + 2 per level	Щиты +50% и подзарядка; барьеры по 20 + 2 за уровень
+
+# General/MMMWE_Resources.lua:281
+Ancient Researcher	Древний исследователь
+
+# General/MMMWE_Resources.lua:281
+Barriers last 3 minutes	Барьеры держатся 3 минуты
+
+# General/MMMWE_Resources.lua:284
+Sentry Turret	Сторожевая турель
+
+# General/MMMWE_Resources.lua:285
+The technician sets up an automatic gun in front of the party. It doesn't move, and shoots energy bolts at the monsters it sees until its time runs out or it is destroyed. One turret at a time: casting again repairs it and resets its time.	Техник ставит перед отрядом автоматическую пушку. Она не двигается и стреляет энергетическими зарядами по видимым монстрам, пока не выйдет её время или её не уничтожат. Одна турель за раз: повторное применение чинит её и обновляет время.
+
+# General/MMMWE_Resources.lua:286, General/MMMWE_Resources.lua:291
+40 Construction	40 Деталей
+
+# General/MMMWE_Resources.lua:286
+A stationary allied turret; grows with level and Repair	Неподвижная союзная турель; растёт с уровнем и Ремонтом
+
+# General/MMMWE_Resources.lua:286
+Scientist	Учёный
+
+# General/MMMWE_Resources.lua:286
+Lasts 5 minutes + half a minute per level	Длится 5 минут + полминуты за уровень
+
+# General/MMMWE_Resources.lua:289
+Deploy Droid	Боевой дроид
+
+# General/MMMWE_Resources.lua:290
+The technician assembles a combat droid that fights at the party's side in melee, drawing the attackers' attention and helping to bring single foes down. One droid at a time: casting again repairs it and resets its time. It keeps up with the party on the map, and shuts down when its time runs out or the party leaves the map.	Техник собирает боевого дроида, который сражается рядом с отрядом в ближнем бою, отвлекает нападающих и помогает добивать одиночных врагов. Один дроид за раз: повторное применение чинит его и обновляет время. Он следует за отрядом по карте и отключается, когда выходит время или отряд покидает карту.
+
+# General/MMMWE_Resources.lua:291
+An allied droid: melee first, an energy shot now and then; grows with level and Repair	Союзный дроид: в основном ближний бой, иногда энергетический выстрел; растёт с уровнем и Ремонтом
+
+# General/MMMWE_Resources.lua:291
+Lasts 20 minutes + 2 per level	Длится 20 минут + 2 за уровень
+
+# General/MMMWE_Resources.lua:296
+Aimed Shot	Прицельный выстрел
+
+# General/MMMWE_Resources.lua:297
+The next bow shot is carefully aimed: more damage and a better chance of a critical hit. As the attack spell it is used when the target is out of melee reach.	Следующий выстрел из лука тщательно прицелен: больше урона и выше шанс критического попадания. Как заклинание атаки применяется, когда цель вне досягаемости ближнего боя.
+
+# General/MMMWE_Resources.lua:298
+3 SP	3 маны
+
+# General/MMMWE_Resources.lua:298
+Next arrow: +25% damage, +15% critical chance	Следующая стрела: +25% урона, +15% к шансу крита
+
+# General/MMMWE_Resources.lua:298
+Archer, Ranger, Deerslayer	Лучник, Следопыт, Охотник на оленей
+
+# General/MMMWE_Resources.lua:298
+Needs a bow; stays ready until the next shot	Нужен лук; действует до следующего выстрела
+
+# General/MMMWE_Resources.lua:302
+A quick series of shots: the next 3 bow attacks recover much faster.	Быстрая серия выстрелов: после следующих 3 атак луком восстановление гораздо быстрее.
+
+# General/MMMWE_Resources.lua:303
+10 SP	10 маны
+
+# General/MMMWE_Resources.lua:303
+Next 3 bow attacks: -66% recovery	Следующие 3 атаки луком: -66% восстановления
+
+# General/MMMWE_Resources.lua:303
+Master Archer, Sniper	Мастер-лучник, Снайпер
+
+# General/MMMWE_Resources.lua:303
+Needs a bow	Нужен лук
+
+# General/MMMWE_Resources.lua:306
+Darkfire Arrows	Стрелы тёмного огня
+
+# General/MMMWE_Resources.lua:307
+The dark elf imbues the arrows with Darkfire, the blend of Fire and Dark of the Darkfire Bolt: the next 5 arrows deal extra damage that the target resists with its Fire or Dark resistance, whichever is lower.	Тёмный эльф наполняет стрелы тёмным огнём — смесью Огня и Тьмы, как у Стрелы тёмного огня: следующие 5 стрел наносят дополнительный урон, которому цель сопротивляется сопротивлением Огню или Тьме, тем, что ниже.
+
+# General/MMMWE_Resources.lua:308
+12 SP	12 маны
+
+# General/MMMWE_Resources.lua:308
+Next 5 arrows: +30% of the arrow's damage +2 per Dark Elf skill point	Следующие 5 стрел: +30% урона стрелы +2 за очко навыка Тёмный эльф
+
+# General/MMMWE_Resources.lua:308
+Pioneer	Первопроходец
+
+# General/MMMWE_Resources.lua:308
+Fire or Dark resistance, the lower one	Сопротивление Огню или Тьме, меньшее из них
+
+# General/MMMWE_Resources.lua:311
+Mark Prey	Метка добычи
+
+# General/MMMWE_Resources.lua:312
+The hunter marks a foe (the one under the cursor or the nearest), and the whole party hits it harder for a while.	Охотник помечает врага (под курсором или ближайшего), и весь отряд какое-то время бьёт его сильнее.
+
+# General/MMMWE_Resources.lua:313
+8 SP	8 маны
+
+# General/MMMWE_Resources.lua:313
+The target takes +15% damage from the party	Цель получает +15% урона от отряда
+
+# General/MMMWE_Resources.lua:313
+Hunter, Minotaur Lord	Охотник, Повелитель минотавров
+
+# General/MMMWE_Resources.lua:316
+Gore	Удар рогами
+
+# General/MMMWE_Resources.lua:317
+A charge with the horns at the target in melee reach: +40% damage and a chance to stagger it. Use it as the attack spell; without enough spell points it is a normal attack.	Бросок рогами на цель в пределах досягаемости: +40% урона и шанс её ошеломить. Назначьте его заклинанием атаки; без достаточной маны это обычная атака.
+
+# General/MMMWE_Resources.lua:318
+4 SP	4 маны
+
+# General/MMMWE_Resources.lua:318
++40% damage, 25% chance to stagger (30 seconds)	+40% урона, 25% шанс ошеломить (30 секунд)
+
+# General/MMMWE_Resources.lua:318, General/MMMWE_Resources.lua:462
+Minotaur	Минотавр
+
+# General/MMMWE_Resources.lua:318
+Melee reach	Досягаемость ближнего боя
+
+# General/MMMWE_Resources.lua:321
+Herd Fury	Ярость стада
+
+# General/MMMWE_Resources.lua:322
+The minotaur's battle fury: more melee damage and a tougher hide for a while.	Боевая ярость минотавра: на время больше урона в ближнем бою и шкура крепче.
+
+# General/MMMWE_Resources.lua:323
+15 SP	15 маны
+
+# General/MMMWE_Resources.lua:323
++15% melee damage, -10% physical damage taken	+15% урона в ближнем бою, -10% получаемого физического урона
+
+# General/MMMWE_Resources.lua:323
+Minotaur Headsman	Минотавр-палач
+
+# General/MMMWE_Resources.lua:449
+Paladin	Паладин
+
+# General/MMMWE_Resources.lua:452
+Dragon	Дракон
+
+# General/MMMWE_Resources.lua:452
+Breath	Дыхание
+
+# General/MMMWE_Resources.lua:458
+Archer	Лучник
+
+# General/MMMWE_Resources.lua:460
+Ranger	Следопыт
+
+# General/MMMWE_Resources.lua:479
+Rage fills when the barbarian takes hits (the heavier the blow, the more) and a little with every melee hit landed. After a while without being hit it slowly drains away, so resting empties it; potions and Meditation don't restore it. Every 5 Rage adds 1% melee damage. At 50 Rage and more the barbarian fights recklessly: -10% of the items' Armor Class (Trolls instead take 5% less physical damage). Rage pays for the barbarian's abilities on the Fire page of the spellbook. Its maximum is 100, +2 per point of Personality bonus.	Ярость копится, когда варвар получает удары (чем тяжелее удар, тем больше), и понемногу с каждым нанесённым ударом в ближнем бою. Если его какое-то время не бьют, она медленно уходит, так что отдых её опустошает; зелья и Медитация её не восстанавливают. Каждые 5 Ярости дают 1% урона в ближнем бою. При 50 Ярости и больше варвар бьётся безрассудно: -10% Класса брони предметов (тролли вместо этого получают на 5% меньше физического урона). Ярость оплачивает умения варвара на странице Огня в книге заклинаний. Максимум — 100, +2 за очко бонуса Силы духа.
+
+# General/MMMWE_Resources.lua:480
+Resolve grows as the knight holds the line: +5 for every block or parry and +2 for every hit taken, twice as much in the Defensive stance. After a while without being hit it slowly fades, so resting empties it; potions and temples don't restore it. Resolve pays for Challenge and Rally (Air page of the spellbook); the stances there are free. Its maximum is 100, +2 per point of Personality bonus.	Решимость растёт, пока рыцарь держит строй: +5 за каждый блок или парирование и +2 за каждый полученный удар, вдвое больше в Защитной стойке. Если его какое-то время не бьют, она медленно угасает, так что отдых её опустошает; зелья и храмы её не восстанавливают. Решимость оплачивает Вызов и Сплочение (страница Воздуха в книге заклинаний); стойки там бесплатны. Максимум — 100, +2 за очко бонуса Силы духа.
+
+# General/MMMWE_Resources.lua:481
+Ki is the monk's inner strength, counted in charges: 5, +2 for every promotion and +1 for every 2 points of Meditation (at most 15). It refills on its own, 1 charge every 5 minutes, sooner with Meditation (down to half the time) and 2% faster per point of Personality bonus. Ki pays for the monk's abilities on the Water page of the spellbook, and for his spells: a fifth of their spell point cost.	Ци — внутренняя сила монаха, считается зарядами: 5, +2 за каждое повышение и +1 за каждые 2 очка Медитации (не больше 15). Она восполняется сама, 1 заряд каждые 5 минут, быстрее с Медитацией (вплоть до половины времени) и на 2% быстрее за очко бонуса Силы духа. Ци оплачивает умения монаха на странице Воды в книге заклинаний и его заклинания: пятую часть их стоимости в мане.
+
+# General/MMMWE_Resources.lua:482
+Breath is the fire in the dragon's chest. It refills on its own, 10 every game minute. Every breath attack costs 25, so a dragon breathes every few attacks and fights with claws and teeth in between; without enough Breath it can't breathe at a far target. The Dragon abilities (Fear, Flame Blast, Flight, Wing Buffet) cost 2 Breath per spell point.	Дыхание — огонь в груди дракона. Оно восполняется само, 10 за игровую минуту. Каждая атака дыханием стоит 25, так что дракон дышит раз в несколько атак, а между ними бьётся когтями и зубами; без достаточного Дыхания он не может дохнуть по дальней цели. Умения дракона (Страх, Огненный взрыв, Полёт, Удар крыльями) стоят 2 Дыхания за очко маны.
+
+# General/MMMWE_Resources.lua:483
+Construction is the technician's stock of parts and power for building. Its maximum is 100, +2 per point of Intellect bonus. It refills on its own, 2 every game minute (2% faster per point of Intellect bonus), and +5 for every monster the party brings down (salvage). It pays for the technician's devices on the Earth page of the spellbook. The Energy Shield doesn't use it: the shield has its own charge.	Детали — запас частей и энергии техника для сборки. Максимум — 100, +2 за очко бонуса Интеллекта. Они восполняются сами, 2 за игровую минуту (на 2% быстрее за очко бонуса Интеллекта), и +5 за каждого монстра, поверженного отрядом (трофейные запчасти). Детали оплачивают устройства техника на странице Земли в книге заклинаний. Энергощит их не использует: у щита свой заряд.
+
+# General/MMMWE_Resources.lua:484
+Energy is the thief's quickness. It refills fast, 10 every game minute, and pays for the thief's tricks on the Mind page of the spellbook and for his spells (5 Energy per spell point). Melee hits on the same target build combo points (up to 5, shown in the status line); the Finisher spends them all. Its maximum is 100, +2 per point of Personality bonus.	Энергия — проворство вора. Она восполняется быстро, 10 за игровую минуту, и оплачивает уловки вора на странице Разума в книге заклинаний и его заклинания (5 Энергии за очко маны). Удары в ближнем бою по одной цели копят очки комбо (до 5, видны в строке состояния); Добивание тратит их все. Максимум — 100, +2 за очко бонуса Силы духа.
+
+# General/MMMWE_Resources.lua:488
+no regen	не восполняется
+
+# General/MMMWE_Resources.lua:859
+ (on)	 (вкл.)
+
+# General/MMMWE_Resources.lua:869
+%s cost	Цена (%s)
+
+# General/MMMWE_Resources.lua:874
+%s Ability	Умения: %s
+
+# General/MMMWE_Resources.lua:1034
+%s lifts something from the foe!	%s что-то крадёт у врага!
+
+# General/MMMWE_Resources.lua:1171
+%s takes aim	%s прицеливается
+
+# General/MMMWE_Resources.lua:1174
+%s readies a volley	%s готовит залп
+
+# General/MMMWE_Resources.lua:1244
+%s repairs the droid	%s чинит дроида
+
+# General/MMMWE_Resources.lua:1297
+%s deploys a droid	%s собирает дроида
+
+# General/MMMWE_Resources.lua:1311
+%s repairs the turret	%s чинит турель
+
+# General/MMMWE_Resources.lua:1352
+%s sets up a sentry turret	%s ставит сторожевую турель
+
+# General/MMMWE_Resources.lua:1371
+%s: weak %s %s, strong %s %s	%s: слабость %s %s, стойкость %s %s
+
+# General/MMMWE_Resources.lua:1467
+%s's plasma grenade hits %d monster(s)	Плазменная граната (%s) поражает монстров: %d
+
+# General/MMMWE_Resources.lua:1467
+The	?
+
+# General/MMMWE_Resources.lua:1567
+Not enough %s (%d needed)	Не хватает: %s (нужно %d)
+
+# General/MMMWE_Resources.lua:1574
+%s leaves the %s stance	%s выходит из стойки «%s»
+
+# General/MMMWE_Resources.lua:1577
+%s takes the %s stance	%s принимает стойку «%s»
+
+# General/MMMWE_Resources.lua:1586
+No enemy to challenge	Некого вызвать
+
+# General/MMMWE_Resources.lua:1592
+%s challenges %s!	%s бросает вызов: %s!
+
+# General/MMMWE_Resources.lua:1608
+%s rallies the party!	%s сплачивает отряд!
+
+# General/MMMWE_Resources.lua:1612
+%s needs bare hands	%s: нужны пустые руки
+
+# General/MMMWE_Resources.lua:1617, General/MMMWE_Resources.lua:1649, General/MMMWE_Resources.lua:1723, General/MMMWE_Resources.lua:1775
+No enemy in reach	Нет врага в пределах досягаемости
+
+# General/MMMWE_Resources.lua:1624, General/MMMWE_Resources.lua:1631
+%s needs a bow	%s: нужен лук
+
+# General/MMMWE_Resources.lua:1635
+%s's arrows smoulder with Darkfire	Стрелы (%s) тлеют тёмным огнём
+
+# General/MMMWE_Resources.lua:1640
+No prey in sight	Добычи не видно
+
+# General/MMMWE_Resources.lua:1644
+%s marks %s	%s помечает: %s
+
+# General/MMMWE_Resources.lua:1657
+Nothing to scan in sight	Сканировать нечего
+
+# General/MMMWE_Resources.lua:1666
+Hold a blaster to repair it in the field	Возьмите бластер, чтобы починить его в поле
+
+# General/MMMWE_Resources.lua:1673
+%s patches the blaster up: power cell %d%%	%s подлатывает бластер: энергоячейка %d%%
+
+# General/MMMWE_Resources.lua:1678
+No target for the grenade	Нет цели для гранаты
+
+# General/MMMWE_Resources.lua:1685
+The grenade can't be thrown here	Здесь гранату не бросить
+
+# General/MMMWE_Resources.lua:1688
+%s throws a plasma grenade	%s бросает плазменную гранату
+
+# General/MMMWE_Resources.lua:1693
+%s overclocks the blaster	%s разгоняет бластер
+
+# General/MMMWE_Resources.lua:1698
+The projector doesn't work	Проектор не работает
+
+# General/MMMWE_Resources.lua:1705
+The turret can't be set up here	Здесь турель не поставить
+
+# General/MMMWE_Resources.lua:1711
+The droid can't be deployed here	Здесь дроида не развернуть
+
+# General/MMMWE_Resources.lua:1718
+%s is seized by the herd's fury	%s: ярость стада!
+
+# General/MMMWE_Resources.lua:1728
+No combo points on this target	На этой цели нет очков комбо
+
+# General/MMMWE_Resources.lua:1738
+%s coats the blade with poison	%s смазывает клинок ядом
+
+# General/MMMWE_Resources.lua:1748
+%s veils the party in shadows	%s скрывает отряд в тенях
+
+# General/MMMWE_Resources.lua:1755
+%s finds inner peace	%s обретает внутренний покой
+
+# General/MMMWE_Resources.lua:1760
+%s's body turns to iron	Тело (%s) становится железным
+
+# General/MMMWE_Resources.lua:1765
+%s vanishes from sight	%s исчезает из виду
+
+# General/MMMWE_Resources.lua:1770
+%s splits into shadows	%s распадается на тени
+
+# General/MMMWE_Resources.lua:1786
+%s goes berserk!	%s впадает в неистовство!
+
+# General/MMMWE_Resources.lua:1792
+%s's troll blood boils	Кровь тролля (%s) закипает
+
+# General/MMMWE_Resources.lua:1820
+%s is out of breath	%s: дыхание иссякло
+
+# General/MMMWE_Resources.lua:1943
+%s's %s misses	%s: %s — промах
+
+# General/MMMWE_Resources.lua:1961
+%s: Rage Strike!	%s: Яростный удар!
+
+# General/MMMWE_Resources.lua:1976
+%s stuns %s!	%s оглушает: %s!
+
+# General/MMMWE_Resources.lua:1984
+%s: Flurry!	%s: Шквал ударов!
+
+# General/MMMWE_Resources.lua:1990
+%s: Gore!	%s: Удар рогами!
+
+# General/MMMWE_Resources.lua:1997
+%s staggers!	%s: ошеломление!
+
+# General/MMMWE_Resources.lua:2003
+%s: Finisher (%d)!	%s: Добивание (%d)!
+
+# General/MMMWE_Resources.lua:2024
+%s's war cry! %d monster(s) flee	Боевой клич (%s)! Бегут монстры: %d
+
+# General/MMMWE_Resources.lua:2212
+%s: magic and Meditation are gone, %d skill points refunded	%s: магия и Медитация утрачены, возвращено очков навыков: %d
+
+# General/MMMWE_Resources.lua:2379
+%s: Aimed Shot!	%s: Прицельный выстрел!
+
+# General/MMMWE_Resources.lua:2404
+%s reappears	%s снова на виду
+
+# General/MMMWE_Resources.lua:2433
+%s: combo %d	%s: комбо %d
+
+# General/MMMWE_Resources.lua:2533
+class %d: family kind %d, stage %d, spell points	класс %d: семейство %d, ступень %d, мана
+
+# General/MMMWE_Resources.lua:2538
+%s family, stage %d%s%s: %s%s	семейство %s, ступень %d%s%s: %s%s
+
+# General/MMMWE_Shields.lua:42
+Small	Малый
+
+# General/MMMWE_Shields.lua:43
+Medium	Средний
+
+# General/MMMWE_Shields.lua:44
+Large	Большой
+
+# General/MMMWE_Shields.lua:47
+Reflector	Отражатель
+
+# General/MMMWE_Shields.lua:222
+%s blocks the blow completely!	%s полностью блокирует удар!
+
+# General/MMMWE_Shields.lua:255
+%s blocks and strikes back!	%s блокирует и бьёт в ответ!
+
+# General/MMMWE_Shields.lua:262
+%s bashes the attacker with the shield!	%s бьёт нападающего щитом!
+
+# General/MMMWE_Shields.lua:272
+no shield	нет щита
+
+# General/MMMWE_Shields.lua:275
+%s shield: block %.1f%% (missiles %.1f%%), power %d%%, extra dodge/recovery penalty %d	Щит (%s): блок %.1f%% (снаряды %.1f%%), сила %d%%, доп. штраф уклонения/восстановления %d
+
+# General/MMMWE_StatsTooltips.lua:66
+Light and Dark Resistances	Сопротивление Свету и Тьме
+
+# General/MMMWE_StatsTooltips.lua:67
+Evasion, Parry and Block	Уклонение, парирование и блок
+
+# General/MMMWE_StatsTooltips.lua:68
+Physical Damage Kinds	Виды физического урона
+
+# General/MMMWE_StatsTooltips.lua:69, General/MMMWE_StatsTooltips.lua:70
+Critical Strikes	Критические удары
+
+# General/MMMWE_StatsTooltips.lua:71
+Fire Resistance	Сопротивление Огню
+
+# General/MMMWE_StatsTooltips.lua:72
+Air Resistance	Сопротивление Воздуху
+
+# General/MMMWE_StatsTooltips.lua:73
+Water Resistance	Сопротивление Воде
+
+# General/MMMWE_StatsTooltips.lua:74
+Earth Resistance	Сопротивление Земле
+
+# General/MMMWE_StatsTooltips.lua:75
+Mind Resistance	Сопротивление Разуму
+
+# General/MMMWE_StatsTooltips.lua:76
+Body Resistance	Сопротивление Телу
+
+# General/MMMWE_StatsTooltips.lua:77
+Spirit Resistance	Сопротивление Духу
+
+# General/MMMWE_StatsTooltips.lua:115
+game entry 	игровая запись 
+
+# General/MMMWE_Sun.lua:144
+objlist %d '%s' SFTIndex %d Bits %X	objlist %d '%s' SFTIndex %d Bits %X
+
+# General/MMMWE_Sun.lua:147
+group %s (picture %s)	группа %s (картинка %s)
+
+# General/MMMWE_Sun.lua:150
+frame '%s'/'%s' sprite %d loaded %s scale %d	кадр '%s'/'%s' спрайт %d загружен %s масштаб %d
+
+# General/MMMWE_Sun.lua:323
+time %.2f h; sun %s; object %s	время %.2f ч; солнце %s; объект %s
+
+# General/MMMWE_Sun.lua:325
+%d at %d, %d, %d, visible %s	%d в точке %d, %d, %d, видимо %s
+
+# General/MMMWE_Sun.lua:327
+%s, ends at %d; sky %s%s	%s, конец в %d; небо %s%s
+
+# General/MMMWE_Sun.lua:329
+\nshown %s (outdoor %s, too foggy %s; weather fog %s)	\nвидно %s (снаружи %s, слишком туманно %s; туман погоды %s)
+
+# General/MMMWE_Sun.lua:331
+\nskyline toward the sun %.1f degrees	\nлиния горизонта в сторону солнца %.1f градусов
+
+# General/MMMWE_Sun.lua:356
+laser %d at %d, %d, %d	луч %d в точке %d, %d, %d
+
+# General/MMMWE_Sun.lua:361
+no laser made	луч не создан
+
+# General/MMMWE_Threat.lua:148
+Monsters prefer characters in heavier armor. The percent is this character's share 	Монстры предпочитают персонажей в более тяжёлой броне. Процент — доля этого персонажа 
+
+# General/MMMWE_Threat.lua:149
+of attacks from a monster with no preferences of its own.\n \n	в атаках монстра, у которого нет своих предпочтений.\n \n
+
+# General/MMMWE_Threat.lua:150
+Armor pieces add threat by type (leather x1.2, chain x1.5, plate x2) and slot 	Части брони добавляют угрозу по типу (кожа x1.2, кольчуга x1.5, латы x2) и месту 
+
+# General/MMMWE_Threat.lua:151
+(body armor half, helm and boots 15%%, gauntlets and belt 10%%), +20%% per mastery 	(доспех — половина, шлем и сапоги — 15%%, перчатки и пояс — 10%%), +20%% за каждую 
+
+# General/MMMWE_Threat.lua:152
+rank in the armor skill; a shield adds 0.25. Dead, stoned, eradicated or 	ступень мастерства в навыке брони; щит добавляет 0.25. Мёртвые, окаменевшие, стёртые в прах и 
+
+# General/MMMWE_Threat.lua:153
+unconscious characters draw no attacks.\n \n	бессознательные персонажи атак не привлекают.\n \n
+
+# General/MMMWE_Threat.lua:154
+Threat factor: %.2f (a robed caster: 1.00)	Коэффициент угрозы: %.2f (заклинатель в мантии: 1.00)
+
+# General/MMMWE_Threat.lua:165
+Threat 100%	Угроза 100%
+
+# General/MMMWE_Threat.lua:179
+Threat %d%%	Угроза %d%%
+
+# General/MMMWE_UnarmedGM.lua:127
+%s strikes again!	%s бьёт ещё раз!
+
+# Global/MMMWE_CombatLog.lua:232
+%s hits %s for %s damage	%s бьёт %s: %s урона
+
+# Global/MMMWE_CombatLog.lua:234
+%s hits %s for %d damage (%s)	%s бьёт %s: %d урона (%s)
+
+# Global/MMMWE_CombatLog.lua:776
+Combat Log 	Журнал боя 
+
+# Global/MMMWE_CustomClassPromotions.lua:40
+you have brought me the witness from the Ironsand Desert	вы приведёте мне свидетеля из Пустыни Железных песков
+
+# Global/MMMWE_CustomClassPromotions.lua:43
+Castle Harmondale has been restored	замок Хармондейл будет восстановлен
+
+# Global/MMMWE_CustomClassPromotions.lua:46
+you have chosen the path of Light	вы выберете путь Света
+
+# Global/MMMWE_CustomClassPromotions.lua:49
+you have chosen the path of Dark	вы выберете путь Тьмы
+
+# Global/MMMWE_CustomClassPromotions.lua:52
+the council has allowed you in	совет допустит вас
+
+# Global/MMMWE_CustomClassPromotions.lua:54
+all four memory crystals are back in the Oracle	все четыре кристалла памяти вернутся в Оракул
+
+# Global/MMMWE_CustomClassPromotions.lua:58
+Promote custom classes	Повысить особые классы
+
+# Global/MMMWE_CustomClassPromotions.lua:105
+%s is now a %s.	%s теперь — %s.
+
+# Global/MMMWE_CustomClassPromotions.lua:107
+ %d skill points were refunded.	 Возвращено очков навыков: %d.
+
+# Global/MMMWE_CustomClassPromotions.lua:111
+%s can't be promoted: the %s build has a problem (%s).	%s не может получить повышение: в сборке «%s» ошибка (%s).
+
+# Global/MMMWE_CustomClassPromotions.lua:121
+You have earned it. 	Вы это заслужили. 
+
+# Global/MMMWE_CustomClassPromotions.lua:124
+%s will be promoted once %s.	%s получит повышение, когда %s.
+
+# Global/MMMWE_DodgingUnarmedTeachers.lua:32
+You may receive Expert Dodging instruction from Poundlin Deerhunter in the city of Ravenshore.	Обучиться Уклонению до Эксперта можно у Паундлина Оленебоя в городе Рейвеншор.
+
+# Global/MMMWE_DodgingUnarmedTeachers.lua:33
+You may receive Expert Unarmed instruction from Ethan Hillsman in the city of Ravenshore.	Обучиться Рукопашному бою до Эксперта можно у Итана Хиллсмана в городе Рейвеншор.
+
+# Global/MMMWE_DodgingUnarmedTeachers.lua:34
+Master Dodging is taught by Weldrik Falconeye, who lives in Garrote Gorge.	Мастерству Уклонения учит Велдрик Соколиный Глаз, живущий в Ущелье Гаррот.
+
+# Global/MMMWE_DodgingUnarmedTeachers.lua:35
+Master Unarmed is taught by Isram Delver, who lives in Garrote Gorge.	Мастерству Рукопашного боя учит Исрам Делвер, живущий в Ущелье Гаррот.
+
+# Global/MMMWE_DodgingUnarmedTeachers.lua:36
+The Grandmaster of the Dodging Skill, Ashen Fiddlebone, can be found in Shadowspire.	Грандмастера Уклонения, Эшена Фиддлбона, можно найти в Шэдоуспайре.
+
+# Global/MMMWE_DodgingUnarmedTeachers.lua:37
+The Grandmaster of Unarmed Combat, Sethrik Fist, can be found in Shadowspire.	Грандмастера Рукопашного боя, Сетрика Кулака, можно найти в Шэдоуспайре.
+
+# Global/MMMWE_DodgingUnarmedTeachers.lua:38
+You may receive Expert Dodging instruction from Nikobi in the town of Free Haven.	Обучиться Уклонению до Эксперта можно у Никоби в городе Фри-Хейвен.
+
+# Global/MMMWE_DodgingUnarmedTeachers.lua:39
+You may receive Expert Unarmed instruction from Nigan in the town of Silver Cove.	Обучиться Рукопашному бою до Эксперта можно у Нигана в городе Сильвер-Ков.
+
+# Global/MMMWE_DodgingUnarmedTeachers.lua:40
+Master Dodging is taught by Eunbo Kim in the town of Kriegspire.	Мастерству Уклонения учит Ынбо Ким в городе Кригспайр.
+
+# Global/MMMWE_DodgingUnarmedTeachers.lua:41
+Master Unarmed is taught by Vance Cornelius in the town of Kriegspire.	Мастерству Рукопашного боя учит Вэнс Корнелиус в городе Кригспайр.
+
+# Global/MMMWE_DodgingUnarmedTeachers.lua:42
+The Grandmaster of the Dodging Skill, Sila Daewon, can be found in the town of Kriegspire.	Грандмастера Уклонения, Силу Дэвон, можно найти в городе Кригспайр.
+
+# Global/MMMWE_DodgingUnarmedTeachers.lua:43
+The Grandmaster of Unarmed Combat, Ian Trom, can be found in Dragonsand.	Грандмастера Рукопашного боя, Иана Трома, можно найти в Драконьих песках.
+
+# Global/MMMWE_ExtraSkillTeachers.lua:34
+Training halls and the mercenary guilds teach it.	Ему учат в тренировочных залах и гильдиях наёмников.
+
+# Global/MMMWE_ExtraSkillTeachers.lua:35
+Temples and the guilds of magic teach it.	Ему учат в храмах и гильдиях магии.
+
+# Global/MMMWE_ExtraSkillTeachers.lua:44
+Aznog Black in the city of Ravenshore	Азног Блэк в городе Рейвеншор
+
+# Global/MMMWE_ExtraSkillTeachers.lua:45
+Brand Featherwind in Alvar	Бранд Фезервинд в Алваре
+
+# Global/MMMWE_ExtraSkillTeachers.lua:46
+Pirate Paul in Regna	Пират Пол в Регне
+
+# Global/MMMWE_ExtraSkillTeachers.lua:47
+Jillian Applebee in the city of Ravenshore	Джиллиан Эпплби в городе Рейвеншор
+
+# Global/MMMWE_ExtraSkillTeachers.lua:48
+Myles Greydawn in Alvar	Майлз Грейдон в Алваре
+
+# Global/MMMWE_ExtraSkillTeachers.lua:49
+Yoel Wargreen in Shadowspire	Йоэль Варгрин в Шэдоуспайре
+
+# Global/MMMWE_ExtraSkillTeachers.lua:51
+Brahein Kadarr in Harmondale	Брахейн Кадарр в Хармондейле
+
+# Global/MMMWE_ExtraSkillTeachers.lua:52
+Matthias Bearheart in Steadwick, Erathia	Маттиас Берхарт в Стедвике, Эрафия
+
+# Global/MMMWE_ExtraSkillTeachers.lua:53
+Claes Mogren in Deyja	Клас Могрен в Дейе
+
+# Global/MMMWE_ExtraSkillTeachers.lua:54
+Tanya Kirklynn in Harmondale	Таня Кирклинн в Хармондейле
+
+# Global/MMMWE_ExtraSkillTeachers.lua:55
+Mireille Warlin in the Tularean Forest	Мирей Уорлин в Тулерианском лесу
+
+# Global/MMMWE_ExtraSkillTeachers.lua:56
+Alashandra Reese in the Bracada Desert	Алашандра Риз в пустыне Бракада
+
+# Global/MMMWE_ExtraSkillTeachers.lua:58
+Miriam Boyer in the town of Free Haven	Мириам Бойер в городе Фри-Хейвен
+
+# Global/MMMWE_ExtraSkillTeachers.lua:59
+Selena Stipe on the Misty Islands	Селена Стайп на Туманных островах
+
+# Global/MMMWE_ExtraSkillTeachers.lua:60
+Darth Cartwright in Dragonsand	Дарт Картрайт в Драконьих песках
+
+# Global/MMMWE_ExtraSkillTeachers.lua:61
+Orville Corvair in New Sorpigal	Орвилл Корвэр в Новом Сорпигале
+
+# Global/MMMWE_ExtraSkillTeachers.lua:62
+Svetlanta Irktusk in Bootleg Bay	Светланта Ирктуск в Бухте Бутлег
+
+# Global/MMMWE_ExtraSkillTeachers.lua:63
+Jo Handlebaum in Dragonsand	Джо Хэндлбаум в Драконьих песках
+
+# Global/MMMWE_ExtraSkillTeachers.lua:83
+You must first learn %s, %s. %s	Сначала вам нужно изучить навык %s, %s. %s
+
+# Global/MMMWE_ExtraSkillTeachers.lua:87
+You already know all I can teach you of %s, %s.	Вы уже знаете всё, чему я могу научить в навыке %s, %s.
+
+# Global/MMMWE_ExtraSkillTeachers.lua:91
+You must be %s in %s before I can teach you more, %s.	Вы должны стать %s в навыке %s, прежде чем я научу вас большему, %s.
+
+# Global/MMMWE_ExtraSkillTeachers.lua:92
+an Expert	Экспертом
+
+# Global/MMMWE_ExtraSkillTeachers.lua:92
+a Master	Мастером
+
+# Global/MMMWE_ExtraSkillTeachers.lua:97
+%s is not for one of your calling, %s.	%s — не для людей вашего призвания, %s.
+
+# Global/MMMWE_ExtraSkillTeachers.lua:99
+Your calling takes %s no further than %s, %s.	Ваше призвание не ведёт в навыке %s дальше уровня «%s», %s.
+
+# Global/MMMWE_ExtraSkillTeachers.lua:104
+You need %s at %d to become %s %s, %s.	Нужен навык %s на уровне %d, чтобы получить звание «%s %s», %s.
+
+# Global/MMMWE_ExtraSkillTeachers.lua:105, Global/MMMWE_ExtraSkillTeachers.lua:116
+a Grand Master of	Грандмастер навыка
+
+# Global/MMMWE_ExtraSkillTeachers.lua:105, Global/MMMWE_ExtraSkillTeachers.lua:116
+a Master of	Мастер навыка
+
+# Global/MMMWE_ExtraSkillTeachers.lua:105, Global/MMMWE_ExtraSkillTeachers.lua:116
+an Expert in	Эксперт навыка
+
+# Global/MMMWE_ExtraSkillTeachers.lua:110
+%s %s costs %d gold, %s.	Обучение «%s %s» стоит %d золота, %s.
+
+# Global/MMMWE_ExtraSkillTeachers.lua:115
+%s is now %s %s.	%s теперь — %s %s.
+
+# Global/MMMWE_ExtraSkillTeachers.lua:128
+%s %s is taught by %s.	%s %s: учит %s.
+
+# Global/MMMWE_HPSPDisplay.lua:129
+Poisoning (light)	Отравление (слабое)
+
+# Global/MMMWE_HPSPDisplay.lua:130
+Disease (light)	Болезнь (слабая)
+
+# Global/MMMWE_HPSPDisplay.lua:131
+Poisoning (moderate)	Отравление (среднее)
+
+# Global/MMMWE_HPSPDisplay.lua:132
+Disease (moderate)	Болезнь (средняя)
+
+# Global/MMMWE_HPSPDisplay.lua:133
+Poisoning (severe)	Отравление (тяжёлое)
+
+# Global/MMMWE_HPSPDisplay.lua:134
+Disease (severe)	Болезнь (тяжёлая)
+
+# Global/MMMWE_HPSPDisplay.lua:137
+Death Decay	Тлен смерти
+
+# Global/MMMWE_HPSPDisplay.lua:145
+Morbid Transform	Мёртвое превращение
+
+# Global/MMMWE_HPSPDisplay.lua:149
+Might Drain	Истощ. Силы
+
+# Global/MMMWE_HPSPDisplay.lua:150
+Int. Drain	Истощ. Инт.
+
+# Global/MMMWE_HPSPDisplay.lua:151
+Pers. Drain	Истощ. Духа
+
+# Global/MMMWE_HPSPDisplay.lua:152
+End. Drain	Истощ. Вын.
+
+# Global/MMMWE_HPSPDisplay.lua:153
+Acc. Drain	Истощ. Метк.
+
+# Global/MMMWE_HPSPDisplay.lua:154
+Speed Drain	Истощ. Скор.
+
+# Global/MMMWE_HPSPDisplay.lua:155
+Luck Drain	Истощ. Удачи
+
+# Global/MMMWE_HPSPDisplay.lua:156
+Armor Corrosion	Коррозия брони
+
+# Global/MMMWE_HPSPDisplay.lua:157
+Fire Res Drain	Ослаб. сопр. огню
+
+# Global/MMMWE_HPSPDisplay.lua:158
+Air Res Drain	Ослаб. сопр. воздуху
+
+# Global/MMMWE_HPSPDisplay.lua:159
+Water Res Drain	Ослаб. сопр. воде
+
+# Global/MMMWE_HPSPDisplay.lua:160
+Earth Res Drain	Ослаб. сопр. земле
+
+# Global/MMMWE_HPSPDisplay.lua:161
+Light Res Drain	Ослаб. сопр. свету
+
+# Global/MMMWE_HPSPDisplay.lua:166
+Spirit Res	Сопр. духу
+
+# Global/MMMWE_HPSPDisplay.lua:167
+Light Res	Сопр. свету
+
+# Global/MMMWE_HPSPDisplay.lua:168
+Dark Res	Сопр. тьме
+
+# Global/MMMWE_HPSPDisplay.lua:170
+Restore HP	Восст. здоровья
+
+# Global/MMMWE_HPSPDisplay.lua:171
+Restore SP	Восст. маны
+
+# Global/MMMWE_HPSPDisplay.lua:248, Global/MMMWE_HPSPDisplay.lua:623
+Party Buff 	Бафф отряда 
+
+# Global/MMMWE_HPSPDisplay.lua:259, Global/MMMWE_HPSPDisplay.lua:683
+Party Debuff 	Дебафф отряда 
+
+# Global/MMMWE_HPSPDisplay.lua:1235
+Cell %d%% / %d%%	Ячейка %d%% / %d%%
+
+# Global/MMMWE_HPSPDisplay.lua:1236
+Cell %d%%	Ячейка %d%%
+
+# Global/MMMWE_HPSPDisplay.lua:1245
+Shield %d%%	Щит %d%%
+
+# Global/MMMWE_HPSPDisplay.lua:1475
+HP/SP overlay 	Индикатор HP/SP 
+
+# Global/MMMWE_HardcoreMode.lua:100
+Hardcore mode: the party has fallen (%d of %d deaths).\n	Режим «Хардкор»: отряд пал (гибелей %d из %d).\n
+
+# Global/MMMWE_HardcoreMode.lua:101
+%d items were lost. Special items, artifacts, relics and ancient items were kept.	Потеряно предметов: %d. Особые предметы, артефакты, реликвии и древние предметы сохранены.
+
+# Global/MMMWE_HardcoreMode.lua:112
+You can't save in Hardcore mode when enemies are nearby	В режиме «Хардкор» нельзя сохраняться, когда рядом враги
+
+# Global/MMMWE_HardcoreMode.lua:122
+You can't load in Hardcore mode when enemies are nearby	В режиме «Хардкор» нельзя загружаться, когда рядом враги
+
+# Global/MMMWE_HardcoreMode.lua:123
+You can't quit in Hardcore mode when enemies are nearby	В режиме «Хардкор» нельзя выйти, когда рядом враги
+
+# Global/MMMWE_LegendaryTeachers.lua:34
+%s, you have gone as far in %s as anyone can. There is nothing left for me to teach you.	%s, вы зашли в навыке %s так далеко, как только возможно. Мне больше нечему вас учить.
+
+# Global/MMMWE_LegendaryTeachers.lua:40
+Beyond Grand Master lies the %s path in %s, %s, but it is not open to you yet: %s.\n\n	За Грандмастером лежит путь «%s» в навыке %s, %s, но он вам пока закрыт: %s.\n\n
+
+# Global/MMMWE_LegendaryTeachers.lua:41
+It asks for the second promotion of your calling, %s at %d and the experience of level %d. 	Он требует второго повышения вашего призвания, навыка %s на уровне %d и опыта %d-го уровня. 
+
+# Global/MMMWE_LegendaryTeachers.lua:42
+And it can be walked in one skill only.	И пройти его можно лишь в одном навыке.
+
+# Global/MMMWE_LegendaryTeachers.lua:48
+The %s path in %s costs %d gold. Come back when you have it.	Путь «%s» в навыке %s стоит %d золота. Возвращайтесь, когда они у вас будут.
+
+# Global/MMMWE_LegendaryTeachers.lua:55
+%s is now %s in %s.%s	%s теперь — %s в навыке %s.%s

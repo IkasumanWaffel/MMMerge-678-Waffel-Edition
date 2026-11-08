@@ -46,8 +46,8 @@ local EXTRA = {
 		[42] = "ArmorSkills",
 	},
 	Names = {
-		[41] = "Dual-Wield",
-		[42] = "Robe",
+		[41] = Tx"Dual-Wield",
+		[42] = Tx"Robe",
 	},
 	Descriptions = {
 		[41] = Tx"Fighting with a weapon in each hand. Any weapon in the off hand needs this skill (the Blaster skill still rules a second blaster pistol). With a weapon in each hand the skill adds to Attack: -10 plus 1 per point of skill. Below Master the off hand hits weaker and the attacks are slower; a Master wields two weapons as one would a single weapon; a Grand Master can hold a two-handed weapon in each hand.",

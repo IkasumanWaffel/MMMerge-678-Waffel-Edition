@@ -17,6 +17,8 @@ end
 local function _RelocalizeTables(PathMask)
 
 	for FilePath in path.find(PathMask) do
+	-- Scripts.txt of a language folder holds the script texts (Structs/26_MMMWE_Texts.lua)
+	if not FilePath:lower():find("scripts%.txt$") then
 
 		local TxtTable = io.open(FilePath, "rb")
 
@@ -115,6 +117,7 @@ local function _RelocalizeTables(PathMask)
 			Log(Merge.Log.Error, "Could not reead localization file: %s.", FilePath, Count)
 		end
 	end
+	end
 
 	for i, v in Game.QuestsTxt do
 		if #v == 0 then
@@ -127,6 +130,11 @@ end
 function RelocalizeTables()
 	_RelocalizeTables("Data/*LocalizeTables.*txt")
 	_RelocalizeTables("Data/Text localization/*.txt")
+	-- the language chosen in MMMWE_Language.txt: its folder's table files (Waffel Edition)
+	local lang = Merge.Functions.TextLanguage
+	if lang and lang ~= "English" then
+		_RelocalizeTables("Data/Text localization/" .. lang .. "/*.txt")
+	end
 end
 
 function events.ScriptsLoaded() -- declare localization event last
