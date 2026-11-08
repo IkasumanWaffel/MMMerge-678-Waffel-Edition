@@ -220,8 +220,14 @@ local function shown()
 	return true
 end
 
+-- (08.11.26) the index of the object made, if it is still in the map's object list: a loaded
+-- game (the same map reloaded) can have fewer objects than the index
+local function objectAt(i)
+	if i and i >= 0 and i < Map.Objects.count then return Map.Objects[i] end
+end
+
 local function sunObject()
-	local o = sunIndex and Map.Objects[sunIndex]
+	local o = objectAt(sunIndex)
 	if o and (o.Type == SUN.Id or not SUN.Convert and o.Type == SUN.SummonId) and not o.Removed then return o end
 	sunIndex = nil
 end
@@ -261,13 +267,17 @@ end
 
 -- the sun's object, and any left from a saved game or an earlier visit
 local function removeStray()
-	local cur = sunIndex and Map.Objects[sunIndex]
+	local cur = objectAt(sunIndex)
 	if cur and not cur.Removed and (cur.Type == SUN.Id or OldIds[cur.Type]) then removeObject(cur) end
 	for i = 0, Map.Objects.count - 1 do
 		local o = Map.Objects[i]
 		if (o.Type == SUN.Id or OldIds[o.Type]) and not o.Removed then removeObject(o) end
 	end
 	sunIndex = nil
+end
+
+function events.LoadMap()
+	sunIndex = nil           -- the objects are the loaded game's now
 end
 
 function events.AfterLoadMap()

@@ -176,8 +176,14 @@ local function setStage(k)
 	stage = k
 end
 
+-- (08.11.26) the index of the object made, if it is still in the map's object list: a loaded
+-- game (the same map reloaded) can have fewer objects than the index
+local function objectAt(i)
+	if i and i >= 0 and i < Map.Objects.count then return Map.Objects[i] end
+end
+
 local function moonObject()
-	local o = moonIndex and Map.Objects[moonIndex]
+	local o = objectAt(moonIndex)
 	if o and o.Type == MOON.Id and not o.Removed then return o end
 	moonIndex = nil
 end
@@ -224,6 +230,10 @@ end
 function events.GameInitialized2()
 	typeIndex = findType(MOON.Id)
 	if not typeIndex then MF.LogWarning("Moon: ObjList.txt has no object %d, no moon", MOON.Id) end
+end
+
+function events.LoadMap()
+	moonIndex = nil           -- the objects are the loaded game's now
 end
 
 function events.AfterLoadMap()
