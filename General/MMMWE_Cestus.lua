@@ -9,9 +9,9 @@
 	  * the damage of an elemental enchantment on it ("of Fire", "of Frost", "of Mind Bite"...)
 	both scaled like weapon enchantments (MMMWE_EnchantScaling.lua; a cestus scales with the
 	Unarmed skill), then reduced by the monster's resistance to that element. The physical blow
-	stays the main source of damage. The elemental parts are dealt as separate hits of their
-	kind right after the blow (MF.QueueForcedHit, MMMWE_Blasters.lua), so monsters immune to
-	physical damage still take them.
+	stays the main source of damage. The elemental parts are dealt within the blow, each through
+	its own resistance (MF.DealElementalHit, 08.11.26; they were separate hits on the next
+	tick), so monsters immune to physical damage still take them and a killing blow shows them.
 
 	Found cestuses can carry an elemental enchantment like weapons do: Special % by the
 	treasure level (10 / 20 / 30 / 50% at levels 3-6), its rank by the level.
@@ -103,6 +103,29 @@ function MF.QueueElementalHit(pi, mi, dmg, kind)
 	if not mon then return 0 end
 	local final = floor(dmg * (1 - reduction(monRes(mon, kind))) + 0.5)
 	if final > 0 then MF.QueueForcedHit(pi, mi, final, kind) end
+	return final
+end
+
+-- (08.11.26) the same, dealt within the blow t (a CalcDamageToMonster call of it): the HP are
+-- taken off the monster at once and the part goes to the blow's line of the combat log (as
+-- MMMWE_ConcurrentEnchantments.lua does with a permanent enchantment of another element), so
+-- it counts even when the blow kills. A blow the monster takes no physical damage from can't
+-- kill it, so a hit that would is dealt on the next tick as before.
+function MF.DealElementalHit(t, dmg, kind)
+	if not dmg or dmg <= 0 then return 0 end
+	local mon = t.Monster
+	if not mon then return 0 end
+	local final = floor(dmg * (1 - reduction(monRes(mon, kind))) + 0.5)
+	if final <= 0 then return 0 end
+	if (t.Result or 0) <= 0 and final >= mon.HP then
+		return MF.QueueElementalHit(t.PlayerIndex, t.MonsterIndex, dmg, kind)
+	end
+	mon.HP = mon.HP - final
+	local slot = 0
+	pcall(function() slot = t.Player:GetSlot() end)
+	_G.CE_PermHitQueue = _G.CE_PermHitQueue or {}
+	table.insert(_G.CE_PermHitQueue, {monsterIndex = t.MonsterIndex, damageKind = kind,
+		damage = final, playerIndex = slot})
 	return final
 end
 
@@ -222,6 +245,6 @@ function events.CalcDamageToMonster(t)
 	local parts = MF.CestusDamage(pl, mon)
 	if not parts then return end
 	for kind, dmg in pairs(parts) do
-		MF.QueueElementalHit(t.PlayerIndex, t.MonsterIndex, dmg, kind)
+		MF.DealElementalHit(t, dmg, kind)
 	end
 end

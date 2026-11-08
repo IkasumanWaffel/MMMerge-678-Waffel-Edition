@@ -101,7 +101,11 @@ function events.CalcDamageToMonster(t)
 	local share = MF.KiStrikeShare(pl)
 	local dmg = math.floor((t.Damage or 0) * share + 0.5)
 	if dmg > 0 then
-		MF.QueueElementalHit(t.PlayerIndex, t.MonsterIndex, dmg, MF.LeastResistedElement(mon))
+		if MF.DealElementalHit then
+			MF.DealElementalHit(t, dmg, MF.LeastResistedElement(mon))   -- within the blow (08.11.26)
+		else
+			MF.QueueElementalHit(t.PlayerIndex, t.MonsterIndex, dmg, MF.LeastResistedElement(mon))
+		end
 	end
 end
 
