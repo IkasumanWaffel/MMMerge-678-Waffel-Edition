@@ -27,6 +27,7 @@
 --]]
 
 local MF = Merge.Functions
+local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 
 local COLS, ROWS = 14, 9
 local CELLS = COLS * ROWS
@@ -104,14 +105,14 @@ end
 -- skill (skill x mastery); ties keep the earlier party member. A rule is skipped when nobody
 -- has the skill. Rules are applied in order, an item is moved by the first rule it matches.
 local CONSOLIDATE = {
-	{name = "potions, reagents, apothecary satchels and bottle boxes", skill = const.Skills.Alchemy,
+	{name = Tx"potions, reagents, apothecary satchels and bottle boxes", skill = const.Skills.Alchemy,
 		match = function(it, txt)
 			return txt.EquipStat == 13 or txt.EquipStat == 14
 				or SatchelPos[it.Number] ~= nil or BOTTLE_BOXES[it.Number] == true
 		end},
-	{name = "unidentified items", skill = const.Skills.IdentifyItem,
+	{name = Tx"unidentified items", skill = const.Skills.IdentifyItem,
 		match = function(it, txt) return not it.Identified end},
-	{name = "broken items", skill = const.Skills.Repair,
+	{name = Tx"broken items", skill = const.Skills.Repair,
 		match = function(it, txt) return it.Broken end},
 }
 
@@ -461,33 +462,33 @@ end
 
 local function doSort()
 	if busy() then
-		Game.ShowStatusText("Put down the item you are holding first")
+		Game.ShowStatusText(Tx"Put down the item you are holding first")
 		return
 	end
 	local pl = Party:GetCurrentPlayer()
 	if not pl then return end
 	Game.PlaySound(23)
 	if sortPlayer(pl) then
-		Game.ShowStatusText("Backpack sorted")
+		Game.ShowStatusText(Tx"Backpack sorted")
 	else
-		Game.ShowStatusText("The backpack is too full to rearrange")
+		Game.ShowStatusText(Tx"The backpack is too full to rearrange")
 	end
 	Game.NeedRedraw = true
 end
 
 local function doGather()
 	if busy() then
-		Game.ShowStatusText("Put down the item you are holding first")
+		Game.ShowStatusText(Tx"Put down the item you are holding first")
 		return
 	end
 	Game.PlaySound(23)
 	local moved, stuck, unsorted = gatherParty()
-	local msg = string.format("Party gathered: %d item%s moved", moved, moved == 1 and "" or "s")
+	local msg = string.format(Tx"Party gathered: %d item%s moved", moved, moved == 1 and "" or "s")
 	if stuck > 0 then
-		msg = msg .. string.format(", %d didn't fit", stuck)
+		msg = msg .. string.format(Tx", %d didn't fit", stuck)
 	end
 	if unsorted > 0 then
-		msg = msg .. ", some backpacks too full to sort"
+		msg = msg .. Tx", some backpacks too full to sort"
 	end
 	Game.ShowStatusText(msg)
 	Game.NeedRedraw = true
@@ -647,29 +648,29 @@ end
 
 local function doTake(mode)
 	if busy() then
-		Game.ShowStatusText("Put down the item you are holding first")
+		Game.ShowStatusText(Tx"Put down the item you are holding first")
 		return
 	end
 	local gold, taken, left = takeFromChest(mode)
 	if not gold then
-		Game.ShowStatusText("Can't tell which chest is open")
+		Game.ShowStatusText(Tx"Can't tell which chest is open")
 		return
 	end
 	if gold == 0 and taken == 0 and left == 0 then
-		Game.ShowStatusText(mode == "gold" and "There is no gold here" or "Nothing to take")
+		Game.ShowStatusText(mode == "gold" and Tx"There is no gold here" or Tx"Nothing to take")
 		return
 	end
 	Game.PlaySound(23)
 	local parts = {}
 	if taken > 0 then
-		parts[#parts + 1] = string.format("%d item%s", taken, taken == 1 and "" or "s")
+		parts[#parts + 1] = string.format(Tx"%d item%s", taken, taken == 1 and "" or "s")
 	end
 	if gold > 0 then
-		parts[#parts + 1] = string.format("%d gold", gold)
+		parts[#parts + 1] = string.format(Tx"%d gold", gold)
 	end
-	local msg = #parts > 0 and ("Took " .. table.concat(parts, " and ")) or "Took nothing"
+	local msg = #parts > 0 and (Tx"Took " .. table.concat(parts, Tx" and ")) or Tx"Took nothing"
 	if left > 0 then
-		msg = msg .. string.format(", %d didn't fit", left)
+		msg = msg .. string.format(Tx", %d didn't fit", left)
 	end
 	Game.ShowStatusText(msg)
 	Game.NeedRedraw = true
@@ -706,9 +707,9 @@ function events.GameInitialized2()
 			Action         = action,
 		}
 	end
-	chestButton("Take all", TAKE_ALL_Y, function() doTake("all") end)
-	chestButton("Take gold", TAKE_GOLD_Y, function() doTake("gold") end)
-	chestButton("Take valued", TAKE_VALUED_Y, function() doTake("valued") end)
+	chestButton(Tx"Take all", TAKE_ALL_Y, function() doTake("all") end)
+	chestButton(Tx"Take gold", TAKE_GOLD_Y, function() doTake("gold") end)
+	chestButton(Tx"Take valued", TAKE_VALUED_Y, function() doTake("valued") end)
 end
 
 -- for the console / other scripts

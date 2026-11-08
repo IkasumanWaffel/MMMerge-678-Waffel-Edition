@@ -18,6 +18,7 @@
 -- (MF.ClassSkillCap). Each teacher's autonote is added when the party talks to them.
 
 local MF = Merge.Functions
+local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 local EXTRA = MF.ExtraSkills
 if not EXTRA then
 	return
@@ -30,36 +31,36 @@ local PRICES = {
 	[ROBE] = {[2] = 4000, [3] = 8000,  [4] = 12000},
 }
 local LEARN_WHERE = {
-	[DW]   = "Training halls and the mercenary guilds teach it.",
-	[ROBE] = "Temples and the guilds of magic teach it.",
+	[DW]   = Tx"Training halls and the mercenary guilds teach it.",
+	[ROBE] = Tx"Temples and the guilds of magic teach it.",
 }
 local LEVEL = {[2] = 5, [3] = 10, [4] = 15}
-local MASTERY_NAME = {"Novice", "Expert", "Master", "Grand Master"}
-local RANK_TITLE = {[2] = "Expert", [3] = "Master", [4] = "Grand Master"}
+local MASTERY_NAME = {Tx"Novice", Tx"Expert", Tx"Master", Tx"Grand Master"}
+local RANK_TITLE = {[2] = Tx"Expert", [3] = Tx"Master", [4] = Tx"Grand Master"}
 
 -- Rank: the mastery taught (2 Expert, 3 Master, 4 Grand Master); Slot: a free topic slot
 local TEACHERS = {
 	-- Jadame
-	{NPC = 221,  Skill = DW,   Rank = 2, Slot = 1, Where = "Aznog Black in the city of Ravenshore"},
-	{NPC = 234,  Skill = DW,   Rank = 3, Slot = 1, Where = "Brand Featherwind in Alvar"},
-	{NPC = 318,  Skill = DW,   Rank = 4, Slot = 1, Where = "Pirate Paul in Regna"},
-	{NPC = 218,  Skill = ROBE, Rank = 2, Slot = 1, Where = "Jillian Applebee in the city of Ravenshore"},
-	{NPC = 245,  Skill = ROBE, Rank = 3, Slot = 1, Where = "Myles Greydawn in Alvar"},
-	{NPC = 319,  Skill = ROBE, Rank = 4, Slot = 1, Where = "Yoel Wargreen in Shadowspire"},
+	{NPC = 221,  Skill = DW,   Rank = 2, Slot = 1, Where = Tx"Aznog Black in the city of Ravenshore"},
+	{NPC = 234,  Skill = DW,   Rank = 3, Slot = 1, Where = Tx"Brand Featherwind in Alvar"},
+	{NPC = 318,  Skill = DW,   Rank = 4, Slot = 1, Where = Tx"Pirate Paul in Regna"},
+	{NPC = 218,  Skill = ROBE, Rank = 2, Slot = 1, Where = Tx"Jillian Applebee in the city of Ravenshore"},
+	{NPC = 245,  Skill = ROBE, Rank = 3, Slot = 1, Where = Tx"Myles Greydawn in Alvar"},
+	{NPC = 319,  Skill = ROBE, Rank = 4, Slot = 1, Where = Tx"Yoel Wargreen in Shadowspire"},
 	-- Antagarich
-	{NPC = 730,  Skill = DW,   Rank = 2, Slot = 2, Where = "Brahein Kadarr in Harmondale"},
-	{NPC = 728,  Skill = DW,   Rank = 3, Slot = 2, Where = "Matthias Bearheart in Steadwick, Erathia"},
-	{NPC = 737,  Skill = DW,   Rank = 4, Slot = 2, Where = "Claes Mogren in Deyja"},
-	{NPC = 729,  Skill = ROBE, Rank = 2, Slot = 2, Where = "Tanya Kirklynn in Harmondale"},
-	{NPC = 764,  Skill = ROBE, Rank = 3, Slot = 2, Where = "Mireille Warlin in the Tularean Forest"},
-	{NPC = 760,  Skill = ROBE, Rank = 4, Slot = 2, Where = "Alashandra Reese in the Bracada Desert"},
+	{NPC = 730,  Skill = DW,   Rank = 2, Slot = 2, Where = Tx"Brahein Kadarr in Harmondale"},
+	{NPC = 728,  Skill = DW,   Rank = 3, Slot = 2, Where = Tx"Matthias Bearheart in Steadwick, Erathia"},
+	{NPC = 737,  Skill = DW,   Rank = 4, Slot = 2, Where = Tx"Claes Mogren in Deyja"},
+	{NPC = 729,  Skill = ROBE, Rank = 2, Slot = 2, Where = Tx"Tanya Kirklynn in Harmondale"},
+	{NPC = 764,  Skill = ROBE, Rank = 3, Slot = 2, Where = Tx"Mireille Warlin in the Tularean Forest"},
+	{NPC = 760,  Skill = ROBE, Rank = 4, Slot = 2, Where = Tx"Alashandra Reese in the Bracada Desert"},
 	-- Enroth
-	{NPC = 1050, Skill = DW,   Rank = 2, Slot = 0, Where = "Miriam Boyer in the town of Free Haven"},
-	{NPC = 960,  Skill = DW,   Rank = 3, Slot = 0, Where = "Selena Stipe on the Misty Islands"},
-	{NPC = 1162, Skill = DW,   Rank = 4, Slot = 0, Where = "Darth Cartwright in Dragonsand"},
-	{NPC = 843,  Skill = ROBE, Rank = 2, Slot = 0, Where = "Orville Corvair in New Sorpigal"},
-	{NPC = 1047, Skill = ROBE, Rank = 3, Slot = 0, Where = "Svetlanta Irktusk in Bootleg Bay"},
-	{NPC = 979,  Skill = ROBE, Rank = 4, Slot = 0, Where = "Jo Handlebaum in Dragonsand"},
+	{NPC = 1050, Skill = DW,   Rank = 2, Slot = 0, Where = Tx"Miriam Boyer in the town of Free Haven"},
+	{NPC = 960,  Skill = DW,   Rank = 3, Slot = 0, Where = Tx"Selena Stipe on the Misty Islands"},
+	{NPC = 1162, Skill = DW,   Rank = 4, Slot = 0, Where = Tx"Darth Cartwright in Dragonsand"},
+	{NPC = 843,  Skill = ROBE, Rank = 2, Slot = 0, Where = Tx"Orville Corvair in New Sorpigal"},
+	{NPC = 1047, Skill = ROBE, Rank = 3, Slot = 0, Where = Tx"Svetlanta Irktusk in Bootleg Bay"},
+	{NPC = 979,  Skill = ROBE, Rank = 4, Slot = 0, Where = Tx"Jo Handlebaum in Dragonsand"},
 }
 MF.ExtraSkillTeachers = TEACHERS
 
@@ -79,40 +80,40 @@ local function teach(t)
 	-- the skill itself is learned in houses only (MMMWE_ExtraSkills.lua: training halls and
 	-- mercenary guilds for Dual-Wield, temples and magic guilds for Robe)
 	if mas == 0 then
-		Message(string.format("You must first learn %s, %s. %s", name, pl.Name, LEARN_WHERE[skill]))
+		Message(string.format(Tx"You must first learn %s, %s. %s", name, pl.Name, LEARN_WHERE[skill]))
 		return
 	end
 	if mas >= rank then
-		Message(string.format("You already know all I can teach you of %s, %s.", name, pl.Name))
+		Message(string.format(Tx"You already know all I can teach you of %s, %s.", name, pl.Name))
 		return
 	end
 	if mas < rank - 1 then
-		Message(string.format("You must be %s in %s before I can teach you more, %s.",
-			rank - 1 == 2 and "an Expert" or "a Master", name, pl.Name))
+		Message(string.format(Tx"You must be %s in %s before I can teach you more, %s.",
+			rank - 1 == 2 and Tx"an Expert" or Tx"a Master", name, pl.Name))
 		return
 	end
 	if cap < rank then
 		if cap <= 0 then
-			Message(string.format("%s is not for one of your calling, %s.", name, pl.Name))
+			Message(string.format(Tx"%s is not for one of your calling, %s.", name, pl.Name))
 		else
-			Message(string.format("Your calling takes %s no further than %s, %s.", name, MASTERY_NAME[cap], pl.Name))
+			Message(string.format(Tx"Your calling takes %s no further than %s, %s.", name, MASTERY_NAME[cap], pl.Name))
 		end
 		return
 	end
 	if lvl < LEVEL[rank] then
-		Message(string.format("You need %s at %d to become %s %s, %s.", name, LEVEL[rank],
-			rank == 4 and "a Grand Master of" or (rank == 3 and "a Master of" or "an Expert in"), name, pl.Name))
+		Message(string.format(Tx"You need %s at %d to become %s %s, %s.", name, LEVEL[rank],
+			rank == 4 and Tx"a Grand Master of" or (rank == 3 and Tx"a Master of" or Tx"an Expert in"), name, pl.Name))
 		return
 	end
 	local gold = PRICES[skill][rank]
 	if Party.Gold < gold then
-		Message(string.format("%s %s costs %d gold, %s.", RANK_TITLE[rank], name, gold, pl.Name))
+		Message(string.format(Tx"%s %s costs %d gold, %s.", RANK_TITLE[rank], name, gold, pl.Name))
 		return
 	end
 	Party.Gold = Party.Gold - gold
 	MF.SetExtraSkill(pl, skill, JoinSkill(lvl, rank))
-	Message(string.format("%s is now %s %s.", pl.Name,
-		rank == 4 and "a Grand Master of" or (rank == 3 and "a Master of" or "an Expert in"), name))
+	Message(string.format(Tx"%s is now %s %s.", pl.Name,
+		rank == 4 and Tx"a Grand Master of" or (rank == 3 and Tx"a Master of" or Tx"an Expert in"), name))
 end
 
 -- the autonotes: the first empty entries of Autonote.txt from the end, one per teacher
@@ -124,7 +125,7 @@ local function assignNotes()
 		while id > 0 and (Game.AutonoteTxt[id] or "") ~= "" do id = id - 1 end
 		if id <= 0 then return end
 		t.Note = id
-		Game.AutonoteTxt[id] = string.format("%s %s is taught by %s.", RANK_TITLE[t.Rank], EXTRA.Names[t.Skill], t.Where)
+		Game.AutonoteTxt[id] = string.format(Tx"%s %s is taught by %s.", RANK_TITLE[t.Rank], EXTRA.Names[t.Skill], t.Where)
 		Game.AutonoteCategory[id] = Game.AutonoteCategory[TEACHER_NOTE]
 		id = id - 1
 	end

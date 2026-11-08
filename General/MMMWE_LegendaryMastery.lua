@@ -33,10 +33,11 @@
 --]]
 
 local MF = Merge.Functions
+local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 
 local LEGEND = {
-	Word        = "Legend",    -- in place of "Grand" on the Skills screen
-	Name        = "Legendary", -- the mastery's name in texts
+	Word        = Tx"Legend",    -- in place of "Grand" on the Skills screen
+	Name        = Tx"Legendary", -- the mastery's name in texts
 	SkillLevel  = 20,          -- the skill's base level needed
 	CharLevel   = 100,         -- the character's base level needed
 	PromoStep   = 2,           -- Game.ClassesExtra[class].Step: the second promotion
@@ -93,20 +94,20 @@ function MF.LegendaryProblems(pl, skill)
 	local out = {}
 	local cur = MF.LegendarySkill(pl)
 	if cur and cur ~= skill then
-		out[#out + 1] = string.format("already %s in %s, and only one skill can be", LEGEND.Name, skillName(cur))
+		out[#out + 1] = string.format(Tx"already %s in %s, and only one skill can be", LEGEND.Name, skillName(cur))
 	end
 	local ce = Game.ClassesExtra and Game.ClassesExtra[pl.Class]
 	if not ce or (ce.Step or 0) < LEGEND.PromoStep then
-		out[#out + 1] = "not of a second promotion class"
+		out[#out + 1] = Tx"not of a second promotion class"
 	end
 	local lvl, mas = baseSkill(pl, skill)
 	if mas < GM then
-		out[#out + 1] = "not a Grand Master of " .. skillName(skill)
+		out[#out + 1] = Tx"not a Grand Master of " .. skillName(skill)
 	elseif lvl < LEGEND.SkillLevel then
-		out[#out + 1] = string.format("%s at %d of %d", skillName(skill), lvl, LEGEND.SkillLevel)
+		out[#out + 1] = string.format(Tx"%s at %d of %d", skillName(skill), lvl, LEGEND.SkillLevel)
 	end
 	if (pl.LevelBase or 0) < LEGEND.CharLevel then
-		out[#out + 1] = string.format("level %d of %d", pl.LevelBase or 0, LEGEND.CharLevel)
+		out[#out + 1] = string.format(Tx"level %d of %d", pl.LevelBase or 0, LEGEND.CharLevel)
 	end
 	return out
 end

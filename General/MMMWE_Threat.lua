@@ -26,6 +26,7 @@
 --]]
 
 local MF = Merge.Functions
+local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 local SK = const.Skills
 
 ---------------------------------------------------------------------------
@@ -144,13 +145,13 @@ end
 local TIP_X, TIP_Y, TIP_W = 230, 60, 400
 local function tipText(pl, share)
 	return string.format(
-		"Monsters prefer characters in heavier armor. The percent is this character's share "
-		.. "of attacks from a monster with no preferences of its own.\n \n"
-		.. "Armor pieces add threat by type (leather x1.2, chain x1.5, plate x2) and slot "
-		.. "(body armor half, helm and boots 15%%, gauntlets and belt 10%%), +20%% per mastery "
-		.. "rank in the armor skill; a shield adds 0.25. Dead, stoned, eradicated or "
-		.. "unconscious characters draw no attacks.\n \n"
-		.. "Threat factor: %.2f (a robed caster: 1.00)", playerThreat(pl))
+		Tx"Monsters prefer characters in heavier armor. The percent is this character's share "
+		.. Tx"of attacks from a monster with no preferences of its own.\n \n"
+		.. Tx"Armor pieces add threat by type (leather x1.2, chain x1.5, plate x2) and slot "
+		.. Tx"(body armor half, helm and boots 15%%, gauntlets and belt 10%%), +20%% per mastery "
+		.. Tx"rank in the armor skill; a shield adds 0.25. Dead, stoned, eradicated or "
+		.. Tx"unconscious characters draw no attacks.\n \n"
+		.. Tx"Threat factor: %.2f (a robed caster: 1.00)", playerThreat(pl))
 end
 
 local function mouseOverHint()
@@ -161,7 +162,7 @@ end
 function events.GameInitialized2()
 	if not CustomUI or not ENABLED then return end
 	CustomUI.CreateText{
-		Text      = "Threat 100%",
+		Text      = Tx"Threat 100%",
 		Font      = Game.Smallnum_fnt,
 		X = HINT_X, Y = HINT_Y,
 		Width     = HINT_WIDTH,   -- wide enough to keep "Threat NN%" on one line
@@ -175,7 +176,7 @@ function events.GameInitialized2()
 			if not i then return false end
 			local ok, share = pcall(threatShare, i)
 			if not ok then return false end
-			self.Text = string.format("Threat %d%%", math.floor(share * 100 + 0.5))
+			self.Text = string.format(Tx"Threat %d%%", math.floor(share * 100 + 0.5))
 			if Keys.IsPressed(const.Keys.RBUTTON) and mouseOverHint() then
 				local ok2, txt = pcall(tipText, Party[i], share)
 				if ok2 then

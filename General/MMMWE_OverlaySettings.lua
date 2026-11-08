@@ -11,6 +11,7 @@
 --]]
 
 local MF = Merge.Functions
+local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 
 local FILE = AppPath .. "MMMWE_Overlays.txt"
 
@@ -38,7 +39,7 @@ end
 local function save()
 	local f = io.open(FILE, "w")
 	if not f then return end
-	f:write("-- Waffel Edition overlay font sizes (the Extra Settings menu writes this file)\n")
+	f:write(Tx"-- Waffel Edition overlay font sizes (the Extra Settings menu writes this file)\n")
 	for _, k in ipairs{"HPSPFont", "HPSPSmall", "CombatLog"} do
 		if O[k] then f:write(string.format("%s = %d\n", k, O[k])) end
 	end
@@ -117,12 +118,12 @@ function events.GameInitialized2()
 	end
 	local Screen = CustomUI.NewSettingsPage("MMMWEOverlayFonts", "Overlay fonts", "ExSetScr2")
 	local items = {
-		Selector(Screen, 190, "HP/SP display text", "HPSPFont"),
-		Selector(Screen, 220, "HP/SP small text", "HPSPSmall"),
-		Selector(Screen, 250, "Combat log text", "CombatLog"),
+		Selector(Screen, 190, Tx"HP/SP display text", "HPSPFont"),
+		Selector(Screen, 220, Tx"HP/SP small text", "HPSPSmall"),
+		Selector(Screen, 250, Tx"Combat log text", "CombatLog"),
 	}
-	MenuText(Screen, "Font sizes at 1920x1200; they scale with the window.", COL_LABEL, 290)
-	MenuText(Screen, "Reset to the defaults", COL_LABEL, 320, function()
+	MenuText(Screen, Tx"Font sizes at 1920x1200; they scale with the window.", COL_LABEL, 290)
+	MenuText(Screen, Tx"Reset to the defaults", COL_LABEL, 320, function()
 		Game.PlaySound(23)
 		O.HPSPFont, O.HPSPSmall, O.CombatLog = nil, nil, nil
 		save()

@@ -16,6 +16,7 @@
 -- (MF.ConvertCharacter), which can only happen when a neutral character goes light or dark.
 
 local MF = Merge.Functions
+local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 local CC = MF.CustomClasses
 if not CC then
 	return
@@ -36,25 +37,25 @@ end
 -- step numbers: 1 base, 2 first promotion, 3 neutral, 4 light, 5 dark
 local PROMOTERS = {
 	{NPC = 5, Slot = 1,      -- Bastian Loudrin
-		{From = {1}, To = 2, Gate = qbits(59), Need = "you have brought me the witness from the Ironsand Desert"},
+		{From = {1}, To = 2, Gate = qbits(59), Need = Tx"you have brought me the witness from the Ironsand Desert"},
 	},
 	{NPC = 408, Slot = 5,    -- Queen Catherine
-		{From = {1}, To = 2, Gate = qbits(610), Need = "Castle Harmondale has been restored"},
+		{From = {1}, To = 2, Gate = qbits(610), Need = Tx"Castle Harmondale has been restored"},
 	},
 	{NPC = 419, Slot = 2,    -- Resurectra
-		{From = {2, 3}, To = 4, Gate = qbits(611), Need = "you have chosen the path of Light"},
+		{From = {2, 3}, To = 4, Gate = qbits(611), Need = Tx"you have chosen the path of Light"},
 	},
 	{NPC = 423, Slot = 2,    -- Kastore
-		{From = {2, 3}, To = 5, Gate = qbits(612), Need = "you have chosen the path of Dark"},
+		{From = {2, 3}, To = 5, Gate = qbits(612), Need = Tx"you have chosen the path of Dark"},
 	},
 	{NPC = 798, Slot = 2,    -- King Nicolai Ironfist
-		{From = {1}, To = 2, Gate = qbits(1191), Need = "the council has allowed you in"},
+		{From = {1}, To = 2, Gate = qbits(1191), Need = Tx"the council has allowed you in"},
 		{From = {2}, To = 3, Gate = qbits(1124, 1125, 1126, 1127),
-			Need = "all four memory crystals are back in the Oracle"},
+			Need = Tx"all four memory crystals are back in the Oracle"},
 	},
 }
 
-local TOPIC = "Promote custom classes"
+local TOPIC = Tx"Promote custom classes"
 
 local function stepOf(pl)
 	local f, step = CC.FamilyOf(pl.Class)
@@ -101,13 +102,13 @@ local function promoteAll(promoter)
 		if rule.Gate() then
 			local refund, err = CC.Promote(pl, rule.To)
 			if refund then
-				local line = string.format("%s is now a %s.", pl.Name, stepName(f, rule.To))
+				local line = string.format(Tx"%s is now a %s.", pl.Name, stepName(f, rule.To))
 				if refund > 0 then
-					line = line .. string.format(" %d skill points were refunded.", refund)
+					line = line .. string.format(Tx" %d skill points were refunded.", refund)
 				end
 				done[#done + 1] = line
 			else
-				done[#done + 1] = string.format("%s can't be promoted: the %s build has a problem (%s).",
+				done[#done + 1] = string.format(Tx"%s can't be promoted: the %s build has a problem (%s).",
 					pl.Name, stepName(f, rule.To), err)
 			end
 		else
@@ -117,10 +118,10 @@ local function promoteAll(promoter)
 	end
 	local text = {}
 	if #done > 0 then
-		text[1] = "You have earned it. " .. table.concat(done, " ")
+		text[1] = Tx"You have earned it. " .. table.concat(done, " ")
 	end
 	for need, names in pairs(waiting) do
-		text[#text + 1] = string.format("%s will be promoted once %s.", table.concat(names, ", "), need)
+		text[#text + 1] = string.format(Tx"%s will be promoted once %s.", table.concat(names, ", "), need)
 	end
 	Message(table.concat(text, "\n\n"))
 end

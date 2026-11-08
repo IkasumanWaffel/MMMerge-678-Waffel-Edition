@@ -2,6 +2,7 @@
 -- Optional limit of party deaths (vars.HCMDeathLimit, set on the "Hardcore mode" page of the Extra
 -- Settings menu, MMMWE_HardcoreSettings.lua). Every party death before the last one removes all
 -- items of the party except special items, artifacts, relics and ancient items.
+local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 local MV = Merge.Vars
 
 -- Also keep quest items (misc. items and message scrolls), so quests can't be broken by a death
@@ -96,8 +97,8 @@ function events.DeathMap(t)
     -- revived, but the party's belongings are lost
     local removed = StripPartyItems()
     vars.HCMPendingMessage = string.format(
-      "Hardcore mode: the party has fallen (%d of %d deaths).\n" ..
-      "%d items were lost. Special items, artifacts, relics and ancient items were kept.",
+      Tx"Hardcore mode: the party has fallen (%d of %d deaths).\n" ..
+      Tx"%d items were lost. Special items, artifacts, relics and ancient items were kept.",
       vars.HCMDeaths, limit, removed)
   end
 end
@@ -108,7 +109,7 @@ function events.CanSaveGame(t)
   local HardcoreMode = vars.HardCoreMode
   if HardcoreMode == 1 and (Party.EnemyDetectorYellow == true or Party.EnemyDetectorRed == true) and t.SaveKind ~= 1 then
     t.Result = false
-    Game.ShowStatusText("You can't save in Hardcore mode when enemies are nearby")
+    Game.ShowStatusText(Tx"You can't save in Hardcore mode when enemies are nearby")
   end
 end
 
@@ -118,8 +119,8 @@ local function HCMEnemiesNearby()
 end
 
 local HCM_BLOCK_MSG = {
-  [125] = "You can't load in Hardcore mode when enemies are nearby",
-  [132] = "You can't quit in Hardcore mode when enemies are nearby",
+  [125] = Tx"You can't load in Hardcore mode when enemies are nearby",
+  [132] = Tx"You can't quit in Hardcore mode when enemies are nearby",
 }
 
 function events.Action(t)

@@ -1,5 +1,6 @@
 local LogId = "HPSPOverlay"
 local MF = Merge.Functions
+local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 MF.LogInit1(LogId)
 
 local MC = Merge.Consts
@@ -125,15 +126,15 @@ local debuffColors = {
     [3]  = {color = 0x0088AA, label = "Fear"            	},
     [4]  = {color = 0x00DD11, label = "Drunkedness"     	},
     [5]  = {color = 0x00FFFF, label = "Insanity"        	},
-    [6]  = {color = 0x22CC22, label = "Poisoning (light)" 	},
-    [7]  = {color = 0x2255AA, label = "Disease (light)"   	},
-    [8]  = {color = 0x22CC22, label = "Poisoning (moderate)"},
-    [9]  = {color = 0x2255AA, label = "Disease (moderate)"  },
-    [10] = {color = 0x22CC22, label = "Poisoning (severe)"  },
-    [11] = {color = 0x2255AA, label = "Disease (severe)"    },
+    [6]  = {color = 0x22CC22, label = Tx"Poisoning (light)" 	},
+    [7]  = {color = 0x2255AA, label = Tx"Disease (light)"   	},
+    [8]  = {color = 0x22CC22, label = Tx"Poisoning (moderate)"},
+    [9]  = {color = 0x2255AA, label = Tx"Disease (moderate)"  },
+    [10] = {color = 0x22CC22, label = Tx"Poisoning (severe)"  },
+    [11] = {color = 0x2255AA, label = Tx"Disease (severe)"    },
     [12] = {color = 0xFFCCAA, label = "Paralysis"       	},
     [13] = {color = 0xCCCCCC, label = "Faint"     			},
-    [14] = {color = 0x666666, label = "Death Decay"         },
+    [14] = {color = 0x666666, label = Tx"Death Decay"         },
     [15] = {color = 0x337799, label = "Stoned"          	},
     [16] = {color = 0x0000FF, label = "Desintegration"     	},
 	[17] = {color = 0x717919, label = "Zombie"          	},
@@ -141,33 +142,33 @@ local debuffColors = {
 
 -- Extra debuffs (indexes 17-19 + previous 0-16)
 local debuffExtraLabels = {
-    [17] = {label = "Morbid Transform", color = 0x717919},  -- Morbid Transformation
+    [17] = {label = Tx"Morbid Transform", color = 0x717919},  -- Morbid Transformation
     [18] = {label = "Feeblemind", color = 0x00DDFF},  -- Feebleminded
     [19] = {label = "Unarmed", color = 0xCCCCCC},  -- Unarmed
     -- drains by monsters (MMMWE_Drains.lua)
-    [20] = {label = "Might Drain", color = 0xCC3333},
-    [21] = {label = "Int. Drain", color = 0xFF8800},
-    [22] = {label = "Pers. Drain", color = 0x3366FF},
-    [23] = {label = "End. Drain", color = 0x00AA44},
-    [24] = {label = "Acc. Drain", color = 0xFFFF00},
-    [25] = {label = "Speed Drain", color = 0x9933CC},
-    [26] = {label = "Luck Drain", color = 0x22AAAA},
-    [27] = {label = "Armor Corrosion", color = 0x996633},
-    [28] = {label = "Fire Res Drain", color = 0xFF4400},
-    [29] = {label = "Air Res Drain", color = 0x66CCFF},
-    [30] = {label = "Water Res Drain", color = 0x2244CC},
-    [31] = {label = "Earth Res Drain", color = 0x887744},
-    [32] = {label = "Light Res Drain", color = 0xFAFAFA},
+    [20] = {label = Tx"Might Drain", color = 0xCC3333},
+    [21] = {label = Tx"Int. Drain", color = 0xFF8800},
+    [22] = {label = Tx"Pers. Drain", color = 0x3366FF},
+    [23] = {label = Tx"End. Drain", color = 0x00AA44},
+    [24] = {label = Tx"Acc. Drain", color = 0xFFFF00},
+    [25] = {label = Tx"Speed Drain", color = 0x9933CC},
+    [26] = {label = Tx"Luck Drain", color = 0x22AAAA},
+    [27] = {label = Tx"Armor Corrosion", color = 0x996633},
+    [28] = {label = Tx"Fire Res Drain", color = 0xFF4400},
+    [29] = {label = Tx"Air Res Drain", color = 0x66CCFF},
+    [30] = {label = Tx"Water Res Drain", color = 0x2244CC},
+    [31] = {label = Tx"Earth Res Drain", color = 0x887744},
+    [32] = {label = Tx"Light Res Drain", color = 0xFAFAFA},
 }
 
 -- Extra buffs2 colors
 local buff2Colors = {
-    [0] = {label = "Spirit Res", color = 0xD3D3D3},  -- Spirit Resistance
-    [1] = {label = "Light Res", color = 0xFAFAFA},  -- Light Resistance
-    [2] = {label = "Dark Res", color = 0x6A6A6A},  -- Dark Resistance
+    [0] = {label = Tx"Spirit Res", color = 0xD3D3D3},  -- Spirit Resistance
+    [1] = {label = Tx"Light Res", color = 0xFAFAFA},  -- Light Resistance
+    [2] = {label = Tx"Dark Res", color = 0x6A6A6A},  -- Dark Resistance
     [3] = {label = "Unk3", color = 0xCCCCCC},
-    [4] = {label = "Restore HP", color = 0x6666FF},  -- Restore Health
-    [5] = {label = "Restore SP", color = 0xFF6633},  -- Restore Mana
+    [4] = {label = Tx"Restore HP", color = 0x6666FF},  -- Restore Health
+    [5] = {label = Tx"Restore SP", color = 0xFF6633},  -- Restore Mana
     [6] = {label = "Unk6", color = 0xCCCCCC},
 }
 
@@ -244,7 +245,7 @@ local function buildAllTables()
             idx = idx,
             label = "PB" .. (PARTY_BUFFS2_START + idx),
             color = 0xCCCCCC,
-            name = "Party Buff " .. (PARTY_BUFFS2_START + idx),
+            name = Tx"Party Buff " .. (PARTY_BUFFS2_START + idx),
         }
     end
 
@@ -255,7 +256,7 @@ local function buildAllTables()
             idx = idx,
             label = idx == 0 and "Slow" or ("PD" .. idx),
             color = idx == 0 and 0x00AAFF or 0x6666FF,
-            name = "Party Debuff " .. idx,
+            name = Tx"Party Debuff " .. idx,
         }
     end
 
@@ -619,7 +620,7 @@ local function getPartyBuffs(currentTime)
                 local expireTime = buff.ExpireTime or 0
                 if expireTime and expireTime > currentTime then
                     local label = "PB" .. i
-                    local name = "Party Buff " .. i
+                    local name = Tx"Party Buff " .. i
                     if partyBuffNames[i + 1] then
                         label = partyBuffNames[i + 1]--:sub(1, 4)
                         name = partyBuffNames[i + 1]
@@ -679,7 +680,7 @@ local function getPartyDebuffs(currentTime)
                     end
                     active[#active + 1] = {
                         label = label,
-                        name = "Party Debuff " .. i,
+                        name = Tx"Party Debuff " .. i,
                         timeStr = formatTime(expireTime, currentTime),
                         expireTime = expireTime,
                         color = color,
@@ -1231,8 +1232,8 @@ local function drawOverlay()
                 local low = d.cell2 and math.min(d.cell, d.cell2) or d.cell
                 local c = 0x88FF88
                 if low < 10 then c = 0x4444FF elseif low < 50 then c = 0x00FFFF end
-                local text = d.cell2 and string.format("Cell %d%% / %d%%", d.cell, d.cell2)
-                    or string.format("Cell %d%%", d.cell)
+                local text = d.cell2 and string.format(Tx"Cell %d%% / %d%%", d.cell, d.cell2)
+                    or string.format(Tx"Cell %d%%", d.cell)
                 drawText(hdc, text, cx, cy, cw, cellH, c)
             end
             -- energy shield charge: light blue, yellow below 50%, red when broken
@@ -1241,7 +1242,7 @@ local function drawOverlay()
             if d and d.exists and d.shield then
                 local c = 0xFFD080
                 if d.shield <= 0 then c = 0x4444FF elseif d.shield < 50 then c = 0x00FFFF end
-                drawText(hdc, string.format("Shield %d%%", d.shield), sx, sy, cw, cellH, c)
+                drawText(hdc, string.format(Tx"Shield %d%%", d.shield), sx, sy, cw, cellH, c)
             end
         end
 
@@ -1471,7 +1472,7 @@ function events.KeyDown(t)
         needRedraw = true
         lastValues = {}
         simulateRightClick()
-        Game.ShowStatusText("HP/SP overlay " ..
+        Game.ShowStatusText(Tx"HP/SP overlay " ..
             (overlayActive and "ON" or "OFF"))
     end
 end

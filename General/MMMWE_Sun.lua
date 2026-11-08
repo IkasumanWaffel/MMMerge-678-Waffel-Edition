@@ -40,6 +40,7 @@
 --]]
 
 local MF = Merge.Functions
+local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 local floor, sin, cos, pi, max, min = math.floor, math.sin, math.cos, math.pi, math.max, math.min
 local atan2 = math.atan2
 
@@ -140,13 +141,13 @@ local function diag()
 	local t = {}
 	pcall(function()
 		local d = Game.ObjListBin[typeIndex]
-		t[#t + 1] = string.format("objlist %d '%s' SFTIndex %d Bits %X", typeIndex, d.Name, d.SFTIndex, d.Bits)
+		t[#t + 1] = string.format(Tx"objlist %d '%s' SFTIndex %d Bits %X", typeIndex, d.Name, d.SFTIndex, d.Bits)
 	end)
 	local g = group()
-	t[#t + 1] = string.format("group %s (picture %s)", tostring(g), tostring(stage))
+	t[#t + 1] = string.format(Tx"group %s (picture %s)", tostring(g), tostring(stage))
 	if g then pcall(function()
 		local f = Game.SFTBin.Frames[g]
-		t[#t + 1] = string.format("frame '%s'/'%s' sprite %d loaded %s scale %d", f.GroupName, f.SpriteName,
+		t[#t + 1] = string.format(Tx"frame '%s'/'%s' sprite %d loaded %s scale %d", f.GroupName, f.SpriteName,
 			f.SpriteIndex[0], tostring(f.Loaded), f.Scale)
 	end) end
 	return table.concat(t, "; ")
@@ -319,15 +320,15 @@ end
 function MF.SunInfo()
 	local az, el, h = sunAngles()
 	local o = sunObject()
-	local s = string.format("time %.2f h; sun %s; object %s", h,
-		az and string.format("azimuth %d, elevation %d degrees", floor(-az * 180 / pi), floor(el * 180 / pi)) or "below the horizon",
-		o and string.format("%d at %d, %d, %d, visible %s", sunIndex, o.X, o.Y, o.Z, tostring(o.Visible)) or "none")
+	local s = string.format(Tx"time %.2f h; sun %s; object %s", h,
+		az and string.format(Tx"azimuth %d, elevation %d degrees", floor(-az * 180 / pi), floor(el * 180 / pi)) or Tx"below the horizon",
+		o and string.format(Tx"%d at %d, %d, %d, visible %s", sunIndex, o.X, o.Y, o.Z, tostring(o.Visible)) or "none")
 	local fr = "?"
-	pcall(function() fr = string.format("%s, ends at %d; sky %s%s", tostring(Game.Weather.Fog), Game.Weather.FogRange2,
+	pcall(function() fr = string.format(Tx"%s, ends at %d; sky %s%s", tostring(Game.Weather.Fog), Game.Weather.FogRange2,
 		tostring(skyBitmapName()), MF.SkyCloudy() and " (cloudy)" or "") end)
-	s = s .. string.format("\nshown %s (outdoor %s, too foggy %s; weather fog %s)", tostring(shown()),
+	s = s .. string.format(Tx"\nshown %s (outdoor %s, too foggy %s; weather fog %s)", tostring(shown()),
 		tostring(Map.IsOutdoor()), tostring(foggy()), fr)
-	if az then s = s .. string.format("\nskyline toward the sun %.1f degrees", skyline(az) * 180 / pi) end
+	if az then s = s .. string.format(Tx"\nskyline toward the sun %.1f degrees", skyline(az) * 180 / pi) end
 	s = s .. "\n" .. diag()
 	print(s)
 	return s
@@ -352,10 +353,10 @@ function MF.SunTestLaser()
 			o.VelocityX, o.VelocityY, o.VelocityZ = 0, 0, 0
 			o.Age, o.MaxAge = 0, 2000
 			pcall(function() o.Visible = true; o.Missile = false end)
-			local s = string.format("laser %d at %d, %d, %d", i, o.X, o.Y, o.Z)
+			local s = string.format(Tx"laser %d at %d, %d, %d", i, o.X, o.Y, o.Z)
 			print(s)
 			return s
 		end
 	end
-	return "no laser made"
+	return Tx"no laser made"
 end

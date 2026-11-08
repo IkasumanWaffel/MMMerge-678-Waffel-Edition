@@ -21,6 +21,7 @@
 --]]
 
 PercentHPSP = PercentHPSP or {}
+local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 local P = PercentHPSP
 
 P.Enabled = (P.Enabled == nil) and true or P.Enabled
@@ -34,15 +35,15 @@ P.StdPercentPerPoint = P.StdPercentPerPoint or 1
 --   FlatHP / FlatSP = flat bonus the game gives (removed); must match the game's values
 P.Special = P.Special or {
 	["of Doom"]        = {HP = 1,  SP = 1,  FlatHP = 1,  FlatSP = 1,
-	                      Text = " +1 to Seven Stats, Resistances, Armor; +1% HP and SP."},
+	                      Text = Tx" +1 to Seven Stats, Resistances, Armor; +1% HP and SP."},
 	["of Earth"]       = {HP = 10, FlatHP = 10,
-	                      Text = " +10 to Endurance and Armor Class, +10% Hit points."},
+	                      Text = Tx" +10 to Endurance and Armor Class, +10% Hit points."},
 	["of Life"]        = {HP = 10, FlatHP = 10,
-	                      Text = " +10% Hit points and Regenerate Hit points over time."},
+	                      Text = Tx" +10% Hit points and Regenerate Hit points over time."},
 	["of The Eclipse"] = {SP = 10, FlatSP = 10,
-	                      Text = " +10% Spell points and Regenerate Spell points over time."},
+	                      Text = Tx" +10% Spell points and Regenerate Spell points over time."},
 	["of The Sky"]     = {SP = 10, FlatSP = 10,
-	                      Text = " +10 Speed and Intellect, +10% Spell points."},
+	                      Text = Tx" +10 Speed and Intellect, +10% Spell points."},
 }
 
 -- Optional cap on the total percentage from all items (nil = no cap)
@@ -51,8 +52,8 @@ P.MaxPercentSP = P.MaxPercentSP
 
 -- Names of the standard bonuses shown on items
 P.StdLabels = P.StdLabels or {
-	["of Health"] = "Hit Points (%)",
-	["of Magic"]  = "Spell Points (%)",
+	["of Health"] = Tx"Hit Points (%)",
+	["of Magic"]  = Tx"Spell Points (%)",
 }
 
 ---------------------------------------------------------------------------

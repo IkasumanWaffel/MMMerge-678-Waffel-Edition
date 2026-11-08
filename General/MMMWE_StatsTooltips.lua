@@ -28,6 +28,7 @@
 --]]
 
 local MF = Merge.Functions
+local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 
 local L, LW = 13, 236      -- left column
 local R, RW = 261, 192     -- right column
@@ -62,18 +63,18 @@ local ROW = {Defense = 10, Kinds = 11, Crit = 19, FireAir = 20, WaterBody = 21, 
 
 -- {x, y, w, h, title, row}
 local CUSTOM = {
-	{L, 268, LW, 29, "Light and Dark Resistances", ROW.LightDark},
-	{L, 297, LW, 14, "Evasion, Parry and Block",   ROW.Defense},
-	{L, 311, LW, 16, "Physical Damage Kinds",      ROW.Kinds},
-	{R, 148, RW, 13, "Critical Strikes",  ROW.Crit},
-	{R, 188, RW, 14, "Critical Strikes",  ROW.Crit},
-	{R, 229, RW, 13, "Fire Resistance",   ROW.FireAir},
-	{R, 242, RW, 14, "Air Resistance",    ROW.FireAir},
-	{R, 256, RW, 13, "Water Resistance",  ROW.WaterBody},
-	{R, 269, RW, 13, "Earth Resistance",  ROW.Earth},
-	{R, 282, RW, 13, "Mind Resistance",   ROW.MindSpirit},
-	{R, 295, RW, 14, "Body Resistance",   ROW.WaterBody},
-	{R, 309, RW, 14, "Spirit Resistance", ROW.MindSpirit},
+	{L, 268, LW, 29, Tx"Light and Dark Resistances", ROW.LightDark},
+	{L, 297, LW, 14, Tx"Evasion, Parry and Block",   ROW.Defense},
+	{L, 311, LW, 16, Tx"Physical Damage Kinds",      ROW.Kinds},
+	{R, 148, RW, 13, Tx"Critical Strikes",  ROW.Crit},
+	{R, 188, RW, 14, Tx"Critical Strikes",  ROW.Crit},
+	{R, 229, RW, 13, Tx"Fire Resistance",   ROW.FireAir},
+	{R, 242, RW, 14, Tx"Air Resistance",    ROW.FireAir},
+	{R, 256, RW, 13, Tx"Water Resistance",  ROW.WaterBody},
+	{R, 269, RW, 13, Tx"Earth Resistance",  ROW.Earth},
+	{R, 282, RW, 13, Tx"Mind Resistance",   ROW.MindSpirit},
+	{R, 295, RW, 14, Tx"Body Resistance",   ROW.WaterBody},
+	{R, 309, RW, 14, Tx"Spirit Resistance", ROW.MindSpirit},
 }
 
 ---------------------------------------------------------------------------
@@ -111,7 +112,7 @@ function MF.StatsTooltipAt(x, y)
 	local r = customAt(x, y)
 	if r then return r[5], "stats.txt row " .. r[6] end
 	for i, g in pairs(GAME_RECTS) do
-		if inRect(x, y, g) then return "game entry " .. i end
+		if inRect(x, y, g) then return Tx"game entry " .. i end
 	end
 end
 

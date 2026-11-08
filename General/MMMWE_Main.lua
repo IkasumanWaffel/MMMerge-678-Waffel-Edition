@@ -1,3 +1,4 @@
+local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 	local MF = Merge.Functions
 	local MM, MO, MS, MV = Merge.ModSettings, Merge.Offsets, Merge.Settings, Merge.Vars
 	local asmpatch, asmproc = mem.asmpatch, mem.asmproc
@@ -679,7 +680,7 @@
 	-- Character screen / console
 	function MF.RecoveryInfo(pl)
 		pl = pl or Party[math.max(Game.CurrentPlayer, 0)]
-		return string.format("melee %d, ranged %d, armor %+d%%", pl:GetAttackDelay(false), pl:GetAttackDelay(true), ArmorRecoveryPct(pl))
+		return string.format(Tx"melee %d, ranged %d, armor %+d%%", pl:GetAttackDelay(false), pl:GetAttackDelay(true), ArmorRecoveryPct(pl))
 	end
 
 	-- Immersive conditions module
@@ -1053,9 +1054,9 @@
 
 				local loss, condName
 				if eradExp > Game.Time then
-					loss, condName = 2, "Eradicated"
+					loss, condName = 2, Tx"Eradicated"
 				elseif deadExp > Game.Time then
-					loss, condName = 1, "Dead"
+					loss, condName = 1, Tx"Dead"
 				end
 
 				local current = 0
@@ -1063,7 +1064,7 @@
 				if loss and current > 0 then
 					pcall(function()
 						pl[statName] = math.max(0, current - loss)
-						Game.ShowStatusText(string.format("%s loses %d %s from being %s",
+						Game.ShowStatusText(string.format(Tx"%s loses %d %s from being %s",
 							pl.Name, loss, statName:sub(1, #statName - 4), condName))
 					end)
 				end
@@ -1871,7 +1872,7 @@
 					Mon:ChangeLook(241)
 					Mon:SetCustomFrames(nil, nil, nil, nil, nil, nil, 'm203x', 'm207d', nil)
 					mem.u4[CombatMsgAddr] = mem_cstring(string.format(
-						"%s eradicates %s", Pl.Name, Game.MonstersTxt[Mon.Id].Name))
+						Tx"%s eradicates %s", Pl.Name, Game.MonstersTxt[Mon.Id].Name))
 				end
 			end
 		end
@@ -2075,7 +2076,7 @@
 		for _, r in ipairs(q) do
 			local pl, mon = Party.PlayersArray[r.pi], Map.Monsters[r.mi]
 			if pl and mon and mon.HP > 0 and pl:IsConscious() then
-				Game.ShowStatusText(r.msg or string.format("%s dodges and strikes back!", pl.Name), 3)
+				Game.ShowStatusText(r.msg or string.format(Tx"%s dodges and strikes back!", pl.Name), 3)
 				RiposteActive = r.mult or DODGE.RiposteDamage
 				local ok, err = pcall(mem.call, 0x436E26, 2, r.pi * 8 + 4, r.mi, RiposteVec)  -- party hits monster
 				RiposteActive = false
@@ -2347,9 +2348,9 @@
 			and not DODGE.BoltSpells[hitBy.Spell]
 		local missText
 		if MF.ShadowCloneAbsorb and MF.ShadowCloneAbsorb(pl, hitBy, areaSpell) then
-			missText = "%s's shadow clone takes the blow!"
+			missText = Tx"%s's shadow clone takes the blow!"
 		elseif MF.UnarmedEvade and MF.UnarmedEvade(pl, t, hitBy, curseMult) then
-			missText = "%s evades the attack!"
+			missText = Tx"%s evades the attack!"
 		end
 		if missText then
 			t.Result = 0
@@ -2530,10 +2531,10 @@
 		end
 
 		if fullDodge then
-			Game.ShowStatusText(string.format("%s dodges the attack!", pl.Name), 5)
+			Game.ShowStatusText(string.format(Tx"%s dodges the attack!", pl.Name), 5)
 		else
 			Game.ShowStatusText(string.format(
-				"%s takes %d %s damage (%d negated, %.1f%%)",
+				Tx"%s takes %d %s damage (%d negated, %.1f%%)",
 				pl.Name, t.Result, dmgTypeName, negated, negPercent), 5)
 		end
 	end
@@ -2899,24 +2900,24 @@
 	function DefineDurabilityString(ItNumber)
 		local item = Game.ItemsTxt[ItNumber]
 		if WItemSkills[item.Skill] then
-			return cachedCstring(string.format("Type: %s \nDurability: %s", EqType, durLine(ItNumber)))
+			return cachedCstring(string.format(Tx"Type: %s \nDurability: %s", EqType, durLine(ItNumber)))
 		elseif AItemSkills[item.Skill] then
 			local divisor = item.EquipStat == 3 and 1 or 2
-			return cachedCstring(string.format("Type: %s \nDurability: %s", EqType, durLine(ItNumber, divisor)))
+			return cachedCstring(string.format(Tx"Type: %s \nDurability: %s", EqType, durLine(ItNumber, divisor)))
 		end
-		return cachedCstring("Type: %s")
+		return cachedCstring(Tx"Type: %s")
 	end
 
 	function DefineShieldString(ItNumber)
 		local item = Game.ItemsTxt[ItNumber]
 		if item.EquipStat ~= 4 then
-			return cachedCstring("%s: +%lu")
+			return cachedCstring(Tx"%s: +%lu")
 		end
 
 		local pl = Party:GetCurrentPlayer()
 		local itSlot = findItemSlot(pl, ItNumber)
 		if not itSlot then
-			return cachedCstring("%s: +%lu")
+			return cachedCstring(Tx"%s: +%lu")
 		end
 
 		local armor = MF.ItemArmorBase(item) + item.Mod2
@@ -2925,7 +2926,7 @@
 		local block = MF.ShieldBlockPower(ItNumber, plItem, shS, math.max(shM, 1))
 		local class = MF.ShieldClassInfo(ItNumber).Name
 
-		return cachedCstring(string.format("Armor: +%d   Block Power: %d%s (%s)", armor, block, "%%", class))
+		return cachedCstring(string.format(Tx"Armor: +%d   Block Power: %d%s (%s)", armor, block, "%%", class))
 	end
 
 	function DefineWeaponString(ItNumber)
@@ -2948,10 +2949,10 @@
 			parry = math.min(parry, MF.ParrySettings.PowerCap[item.EquipStat == 1 and "Two" or "One"])
 		end
 
-		local parryStr = string.format("\nParry Power: %d%s", parry,"%%")
+		local parryStr = string.format(Tx"\nParry Power: %d%s", parry,"%%")
 
 		if item.Mod2 == 0 then
-			return cachedCstring("%s: +%d   %s: %dd%d" .. parryStr)
+			return cachedCstring(Tx"%s: +%d   %s: %dd%d" .. parryStr)
 		else
 			return cachedCstring(" +%d" .. parryStr)
 		end
@@ -2960,18 +2961,18 @@
 	function DefineChargeString(ItNumber)
 		local group = SpecialItemGroups[ItNumber]
 		if not group then
-			return cachedCstring("%s: %lu")
+			return cachedCstring(Tx"%s: %lu")
 		end
 
 		local ch = DICharge
 		if group == 1 then
-			return cachedCstring(string.format("Steel: %d Siertal: %d Phylt: %d",
+			return cachedCstring(string.format(Tx"Steel: %d Siertal: %d Phylt: %d",
 				math.fmod(ch, 100), math.fmod(math.modf(ch / 100), 100), math.modf(ch / 10000)))
 		elseif group == 2 then
-			return cachedCstring(string.format("Kergar: %d Erudine: %d Stalt: %d",
+			return cachedCstring(string.format(Tx"Kergar: %d Erudine: %d Stalt: %d",
 				math.fmod(ch, 100), math.fmod(math.modf(ch / 100), 100), math.modf(ch / 10000)))
 		elseif group == 3 then
-			return cachedCstring(string.format("Bottles: %d", ch))
+			return cachedCstring(string.format(Tx"Bottles: %d", ch))
 		elseif group == 4 then
 			return cachedCstring(MF.BlasterCardText(ch, DICell))
 		elseif group == 7 then
@@ -2979,13 +2980,13 @@
 		elseif group == 8 then
 			return cachedCstring(MF.ShieldCardText(ch, DICell))
 		elseif group == 5 then
-			return cachedCstring(string.format("Ant: %d Jad: %d",
+			return cachedCstring(string.format(Tx"Ant: %d Jad: %d",
 				math.fmod(math.modf(ch / 100), 100), math.fmod(ch, 100)))
 		elseif group == 6 then
-			return cachedCstring(string.format("Enr: %d Ant: %d Jad: %d",
+			return cachedCstring(string.format(Tx"Enr: %d Ant: %d Jad: %d",
 				math.modf(ch / 10000), math.fmod(math.modf(ch / 100), 100), math.fmod(ch, 100)))
 		end
-		return cachedCstring("%s: %lu")
+		return cachedCstring(Tx"%s: %lu")
 	end
 
 	function DefineBlasterModString(ItNumber, BS)
@@ -3001,7 +3002,7 @@
 		dMax = round(dMax * scale)
 
 		return {
-			cachedCstring(string.format('Shoot: +%d    Damage: %d-%d', cBase, dMin, dMax)),
+			cachedCstring(string.format(Tx'Shoot: +%d    Damage: %d-%d', cBase, dMin, dMax)),
 			cachedCstring(' '),
 		}
 	end
@@ -3024,13 +3025,13 @@
 			and Game.CurrentScreen ~= 10 and Game.CurrentScreen ~= 13 and Game.CurrentScreen ~= 14 then
 			if Game.ItemsTxt[IN].Mod2 == 0 then
 				smartPatch(0x41d2d9, "push ", DefineWeaponString(IN))
-				smartPatch(0x41d2f8, "push ", cachedCstring("%s: +%d   %s: %dd%d"))
+				smartPatch(0x41d2f8, "push ", cachedCstring(Tx"%s: +%d   %s: %dd%d"))
 			else
-				smartPatch(0x41d2d9, "push ", cachedCstring("%s: +%d   %s: %dd%d"))
+				smartPatch(0x41d2d9, "push ", cachedCstring(Tx"%s: +%d   %s: %dd%d"))
 				smartPatch(0x41d2f8, "push ", DefineWeaponString(IN))
 			end
 		else
-			smartPatch(0x41d2d9, "push ", cachedCstring("%s: +%d   %s: %dd%d"))
+			smartPatch(0x41d2d9, "push ", cachedCstring(Tx"%s: +%d   %s: %dd%d"))
 			smartPatch(0x41d2f8, "push ", cachedCstring(" +%d"))
 		end
 
@@ -3207,21 +3208,21 @@
 		-- General widgets
 		{addr = 0x418037, asm = "lea ebp, [ebp+eax*2-" .. (1 + STATS_BOX_SHIFT) .. "]", desc = "HP"},
 		{addr = 0x4180af, asm = "lea eax, [eax+ebp-4]", desc = "SP"},
-		{addr = 0x418131, asm = "lea eax, [eax+ebp-4]", desc = "Armor Class"},
-		{addr = 0x41819f, asm = "lea eax, [eax+ebp-5]", desc = "Condition (replaced by HR and Phys Res)"},
-		{addr = 0x4181f0, asm = "lea ebp, [ebp+eax*2+5]", desc = "Quick spell (replaced by resistances and chances; 4 px higher for the Sla/Pie/Blu line)"},
+		{addr = 0x418131, asm = "lea eax, [eax+ebp-4]", desc = Tx"Armor Class"},
+		{addr = 0x41819f, asm = "lea eax, [eax+ebp-5]", desc = Tx"Condition (replaced by HR and Phys Res)"},
+		{addr = 0x4181f0, asm = "lea ebp, [ebp+eax*2+5]", desc = Tx"Quick spell (replaced by resistances and chances; 4 px higher for the Sla/Pie/Blu line)"},
 		{addr = 0x4183a4, asm = "lea eax, [ecx+eax*2]", desc = "Attack"},
-		{addr = 0x4183f0, asm = "lea eax, [ecx+eax-4]", desc = "Melee damage"},
+		{addr = 0x4183f0, asm = "lea eax, [ecx+eax-4]", desc = Tx"Melee damage"},
 		{addr = 0x41843c, asm = "lea eax, [ecx+eax+10]", desc = "Shoot"},
-		{addr = 0x418488, asm = "lea eax, [ecx+eax-4]", desc = "Ranged damage"},
+		{addr = 0x418488, asm = "lea eax, [ecx+eax-4]", desc = Tx"Ranged damage"},
 		
 		-- Resistance widgets
-		{addr = 0x4184D4, asm = "lea eax, [ecx+eax*2+4]", desc = "Fire res"},
-		{addr = 0x41859e, asm = "lea eax, [ecx+eax-4]", desc = "Air res"},
-		{addr = 0x418668, asm = "lea eax, [ecx+eax-4]", desc = "Water res"},
-		{addr = 0x418732, asm = "lea eax, [ecx+eax-4]", desc = "Earth res"},
-		{addr = 0x4187fc, asm = "lea eax, [ecx+eax-4]", desc = "Mind res"},
-		{addr = 0x4188c6, asm = "lea eax, [ecx+eax-4]", desc = "Body res"}
+		{addr = 0x4184D4, asm = "lea eax, [ecx+eax*2+4]", desc = Tx"Fire res"},
+		{addr = 0x41859e, asm = "lea eax, [ecx+eax-4]", desc = Tx"Air res"},
+		{addr = 0x418668, asm = "lea eax, [ecx+eax-4]", desc = Tx"Water res"},
+		{addr = 0x418732, asm = "lea eax, [ecx+eax-4]", desc = Tx"Earth res"},
+		{addr = 0x4187fc, asm = "lea eax, [ecx+eax-4]", desc = Tx"Mind res"},
+		{addr = 0x4188c6, asm = "lea eax, [ecx+eax-4]", desc = Tx"Body res"}
 	}
 
 	for _, patch in ipairs(WidgetVPatches) do
@@ -3447,7 +3448,7 @@
 
 	local ElementalDRAddrs = {0x418534, 0x4185fe, 0x4186c8, 0x418792, 0x41885c, 0x41891f}
 
-	local StatNames = {"Might", "Intellect", "Personality", "Endurance", "Accuracy", "Speed", "Luck"}
+	local StatNames = {Tx"Might", Tx"Intellect", Tx"Personality", Tx"Endurance", Tx"Accuracy", Tx"Speed", Tx"Luck"}
 	local StatBonusAddrs = {0x417d77, 0x417ddf, 0x417e4b, 0x417eb7, 0x417f23, 0x417f8f, 0x417ffb}
 
 	local DodgePenalties = {10, 0, 0, 0, 10, 0, 0, 0, 20, 10, 0, 0, 30, 15, 15, 0}
@@ -3970,14 +3971,14 @@
 		f.saved = MF.JetpackSaver and MF.JetpackSaver(Player) and not f.saved
 		if not f.saved then item.Charges = item.Charges - 1 end
 		Game.ShowStatusText(string.format(
-			"Flight mode active. Remaining charge: %3.1f%%", item.Charges / 10))
+			Tx"Flight mode active. Remaining charge: %3.1f%%", item.Charges / 10))
 
 		if item.Charges <= 20 and item.Charges > 0 then
 			Game.ShowStatusText(string.format(
-				"WARNING! Low charge: %3.1f%%", item.Charges / 10))
+				Tx"WARNING! Low charge: %3.1f%%", item.Charges / 10))
 			Game.PlaySound(360)
 		elseif item.Charges == 0 then
-			Game.ShowStatusText("WARNING! Flight mode terminates in 5 minutes!")
+			Game.ShowStatusText(Tx"WARNING! Flight mode terminates in 5 minutes!")
 			Game.PlaySound(360)
 			Game.PlaySound(360)
 			Game.PlaySound(360)
@@ -3995,7 +3996,7 @@
 		local _, BM = SplitSkill(Player:GetSkill(7))
 		if BM < 2 then
 			Game.ShowStatusText(string.format(
-				"Tech mastery (%d/2) is insufficient to use this function", BM))
+				Tx"Tech mastery (%d/2) is insufficient to use this function", BM))
 			Game.PlaySound(358)
 			return
 		end
@@ -4005,9 +4006,9 @@
 			CastSpellDirect(16, 15, 4)
 			item.Charges = item.Charges - ((MF.JetpackSaver and MF.JetpackSaver(Player)) and math.ceil(JUMP_COST / 2) or JUMP_COST)
 			Game.ShowStatusText(string.format(
-				"Remaining charge: %3.1f%%.", item.Charges / 10))
+				Tx"Remaining charge: %3.1f%%.", item.Charges / 10))
 		else
-			Game.ShowStatusText("Device charge CRITICAL! Operation aborted")
+			Game.ShowStatusText(Tx"Device charge CRITICAL! Operation aborted")
 			Game.PlaySound(358)
 		end
 	end
@@ -4025,13 +4026,13 @@
 		local _, BM = SplitSkill(Player:GetSkill(7))
 		if BM < 3 then
 			Game.ShowStatusText(string.format(
-				"Tech mastery (%d/3) is insufficient to use this function", BM))
+				Tx"Tech mastery (%d/3) is insufficient to use this function", BM))
 			Game.PlaySound(358)
 			return
 		end
 
 		if item.Charges <= 20 then
-			Game.ShowStatusText("Device charge CRITICAL! Operation aborted")
+			Game.ShowStatusText(Tx"Device charge CRITICAL! Operation aborted")
 			Game.PlaySound(358)
 			return
 		end
@@ -4043,7 +4044,7 @@
 		end
 
 		evt.PlaySound{42440}
-		Game.ShowStatusText("Flight mode activated")
+		Game.ShowStatusText(Tx"Flight mode activated")
 		CastSpellDirect(21, 288, 1)
 
 		flightState = {

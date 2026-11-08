@@ -45,6 +45,7 @@ E.MinDamage       = E.MinDamage or 1            -- scaled damage is never below 
 E.DescriptionNote = (E.DescriptionNote == nil) and true or E.DescriptionNote  -- note on item texts
 
 local MF = Merge.Functions
+local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 local floor, max = math.floor, math.max
 
 -- Damage element -> magic school
@@ -125,9 +126,9 @@ end
 
 -- Item descriptions: add a note to every damaging enchantment
 local Notes = {
-	Weapon = " Scales with weapon skill.",
-	Magic  = " Scales with magic skill.",
-	Both   = " Scales with weapon and magic skill.",
+	Weapon = Tx" Scales with weapon skill.",
+	Magic  = Tx" Scales with magic skill.",
+	Both   = Tx" Scales with weapon and magic skill.",
 }
 
 local function updateTexts()
@@ -193,9 +194,9 @@ end
 
 local ModeOrder = {"Weapon", "Magic", "Both", "None"}
 local ModeNames = {
-	Weapon = "Weapon skill",
-	Magic  = "Magic skill",
-	Both   = "Weapon + magic",
+	Weapon = Tx"Weapon skill",
+	Magic  = Tx"Magic skill",
+	Both   = Tx"Weapon + magic",
 	None   = "Off",
 }
 
@@ -266,7 +267,7 @@ function events.GameInitialized2()
 	local Screen = CustomUI.NewSettingsPage("EnchantScaling", "Enchantment scaling", "ExSetScr2")
 	local items = {}
 
-	items[#items + 1] = Selector(Screen, 190, "Scale with",
+	items[#items + 1] = Selector(Screen, 190, Tx"Scale with",
 		function() return E.Mode end,
 		function(side)
 			local i = table.find(ModeOrder, E.Mode) or 1
@@ -275,12 +276,12 @@ function events.GameInitialized2()
 		end,
 		function(v) return ModeNames[v] or v end)
 
-	items[#items + 1] = Selector(Screen, 220, "Per weapon point",
+	items[#items + 1] = Selector(Screen, 220, Tx"Per weapon point",
 		function() return E.PerSkillMastery end,
 		stepNumber("PerSkillMastery", 0.0025, 0, 0.1),
 		percent)
 
-	items[#items + 1] = Selector(Screen, 250, "Per magic point",
+	items[#items + 1] = Selector(Screen, 250, Tx"Per magic point",
 		function() return E.PerMagicSkillMastery end,
 		stepNumber("PerMagicSkillMastery", 0.0025, 0, 0.1),
 		percent)
@@ -290,7 +291,7 @@ function events.GameInitialized2()
 		stepNumber("TwoHandedMul", 0.05, 1, 3),
 		function(v) return string.format("x%g", v) end)
 
-	MenuText(Screen, "Damage scale = (100 + X) percent x skill x mastery.", COL_LABEL, 320)
+	MenuText(Screen, Tx"Damage scale = (100 + X) percent x skill x mastery.", COL_LABEL, 320)
 
 	function events.OpenExtraSettingsMenu()
 		for _, o in ipairs(items) do

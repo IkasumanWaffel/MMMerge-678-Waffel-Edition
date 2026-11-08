@@ -6,6 +6,7 @@
 -- and the teacher tells what is still missing or makes the skill Legendary.
 
 local MF = Merge.Functions
+local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 local LEGEND = MF.LegendarySettings
 if not LEGEND then
 	return
@@ -30,28 +31,28 @@ local function teach(skill)
 	if not pl then return end
 	local name = MF.LegendarySkillName and MF.LegendarySkillName(skill) or Game.SkillNames[skill]
 	if MF.IsLegendary(pl, skill) then
-		Message(string.format("%s, you have gone as far in %s as anyone can. There is nothing left for me to teach you.",
+		Message(string.format(Tx"%s, you have gone as far in %s as anyone can. There is nothing left for me to teach you.",
 			pl.Name, name))
 		return
 	end
 	local bad = MF.LegendaryProblems(pl, skill)
 	if #bad > 0 then
-		Message(string.format("Beyond Grand Master lies the %s path in %s, %s, but it is not open to you yet: %s.\n\n"
-			.. "It asks for the second promotion of your calling, %s at %d and the experience of level %d. "
-			.. "And it can be walked in one skill only.",
+		Message(string.format(Tx"Beyond Grand Master lies the %s path in %s, %s, but it is not open to you yet: %s.\n\n"
+			.. Tx"It asks for the second promotion of your calling, %s at %d and the experience of level %d. "
+			.. Tx"And it can be walked in one skill only.",
 			LEGEND.Name, name, pl.Name, table.concat(bad, "; "), name, LEGEND.SkillLevel, LEGEND.CharLevel))
 		return
 	end
 	if LEGEND.Gold > 0 then
 		if Party.Gold < LEGEND.Gold then
-			Message(string.format("The %s path in %s costs %d gold. Come back when you have it.", LEGEND.Name, name, LEGEND.Gold))
+			Message(string.format(Tx"The %s path in %s costs %d gold. Come back when you have it.", LEGEND.Name, name, LEGEND.Gold))
 			return
 		end
 		Party.Gold = Party.Gold - LEGEND.Gold
 	end
 	MF.MakeLegendary(pl, skill)
 	local p = LEGEND.Passives[skill]
-	Message(string.format("%s is now %s in %s.%s", pl.Name, LEGEND.Name, name,
+	Message(string.format(Tx"%s is now %s in %s.%s", pl.Name, LEGEND.Name, name,
 		p and string.format("\n\n%s: %s.", p.Name, p.Text) or ""))
 end
 

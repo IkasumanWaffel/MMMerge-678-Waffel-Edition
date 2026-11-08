@@ -31,6 +31,7 @@
 --]]
 
 local MF = Merge.Functions
+local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 local SK = const.Skills
 
 ---------------------------------------------------------------------------
@@ -38,12 +39,12 @@ local SK = const.Skills
 ---------------------------------------------------------------------------
 
 local CLASSES = {
-	small  = {Name = "Small",  Base = 15, PerSM = 0.5,  Cap = 55, MissileBonus = 10, Penalty = {0, 0, 0, 0}},
-	medium = {Name = "Medium", Base = 20, PerSM = 0.55, Cap = 62, MissileBonus = 10, Penalty = {8, 8, 5, 0}},
-	large  = {Name = "Large",  Base = 25, PerSM = 0.6,  Cap = 70, MissileBonus = 20, Penalty = {15, 15, 10, 0}},
+	small  = {Name = Tx"Small",  Base = 15, PerSM = 0.5,  Cap = 55, MissileBonus = 10, Penalty = {0, 0, 0, 0}},
+	medium = {Name = Tx"Medium", Base = 20, PerSM = 0.55, Cap = 62, MissileBonus = 10, Penalty = {8, 8, 5, 0}},
+	large  = {Name = Tx"Large",  Base = 25, PerSM = 0.6,  Cap = 70, MissileBonus = 20, Penalty = {15, 15, 10, 0}},
 	-- the Reflector Shield folds like an umbrella: a large shield's cover (area spells and
 	-- breath too) without its weight (no extra penalty) and without a bash
-	reflector = {Name = "Reflector", Base = 25, PerSM = 0.6, Cap = 70, MissileBonus = 20, Penalty = {0, 0, 0, 0},
+	reflector = {Name = Tx"Reflector", Base = 25, PerSM = 0.6, Cap = 70, MissileBonus = 20, Penalty = {0, 0, 0, 0},
 		Area = true, NoBash = true},
 }
 CLASSES.large.Area = true
@@ -218,7 +219,7 @@ function MF.ShieldBlock(pl, t, curseMult)
 	local power = MF.ShieldBlockPower(num, item, shS, shM) * share
 	if shM >= 4 and math.random() * 100 < S.PerfectBlockGM then
 		power = 100 * share
-		Game.ShowStatusText(string.format("%s blocks the blow completely!", pl.Name), 2)
+		Game.ShowStatusText(string.format(Tx"%s blocks the blow completely!", pl.Name), 2)
 	end
 
 	local physDR, magicDR, energyDR = 1, 1, 1
@@ -251,14 +252,14 @@ function events.Tick()
 		if pl and mon and mon.HP > 0 and pl:IsConscious() then
 			if r.Kind == "counter" then
 				if MF.QueueCounterAttack then
-					MF.QueueCounterAttack(r.pi, r.mi, string.format("%s blocks and strikes back!", pl.Name))
+					MF.QueueCounterAttack(r.pi, r.mi, string.format(Tx"%s blocks and strikes back!", pl.Name))
 				end
 			else
 				local res = mon.Resistances[const.Damage.Earth]
 				if res ~= const.MonsterImmune and math.random(5, 100) + r.S + r.M * 2.5 > res then
 					local buff = mon.SpellBuffs[const.MonsterBuff.Paralyze]
 					buff.ExpireTime = math.max(Game.Time + S.BashStun, buff.ExpireTime)
-					Game.ShowStatusText(string.format("%s bashes the attacker with the shield!", pl.Name), 2)
+					Game.ShowStatusText(string.format(Tx"%s bashes the attacker with the shield!", pl.Name), 2)
 				end
 			end
 		end
@@ -268,10 +269,10 @@ end
 function MF.ShieldInfo(pl)
 	pl = pl or Party[math.max(Game.CurrentPlayer, 0)]
 	local item, num, info = shieldOf(pl)
-	if not item then return "no shield" end
+	if not item then return Tx"no shield" end
 	local shS, shM = SplitSkill(pl:GetSkill(SK.Shield))
 	shM = math.max(shM, 1)
-	return string.format("%s shield: block %.1f%% (missiles %.1f%%), power %d%%, extra dodge/recovery penalty %d",
+	return string.format(Tx"%s shield: block %.1f%% (missiles %.1f%%), power %d%%, extra dodge/recovery penalty %d",
 		info.Name, MF.ShieldBlockChance(num, shS, shM), MF.ShieldBlockChance(num, shS, shM, true),
 		MF.ShieldBlockPower(num, item, shS, shM), info.Penalty[shM])
 end

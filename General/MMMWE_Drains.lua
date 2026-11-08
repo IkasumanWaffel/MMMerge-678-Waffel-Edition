@@ -31,6 +31,7 @@
 --]]
 
 local MF = Merge.Functions
+local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 local ST = const.Stats
 
 ---------------------------------------------------------------------------
@@ -45,7 +46,7 @@ local AC_STEP       = 0.05    -- share of the uncorroded physical resistance per
 local AC_SAVE       = 0.5     -- share of the Armor Class that counts as the save against corrosion
 local DURATION      = 7 * const.Day   -- "until rest": long, renewed with every drain
 
-local STATS = {"Might", "Intellect", "Personality", "Endurance", "Accuracy", "Speed", "Luck"}
+local STATS = {Tn"Might", Tn"Intellect", Tn"Personality", Tn"Endurance", Tn"Accuracy", Tn"Speed", Tn"Luck"}
 
 -- debuff slot of each drain
 local SLOT = {
@@ -164,9 +165,9 @@ local function applyDrain(pl, what)
 	return true, amount - cur
 end
 
-local LABEL = {ArmorClass = "armor is corroded", Fire = "Fire resistance is drained",
-	Air = "Air resistance is drained", Water = "Water resistance is drained",
-	Earth = "Earth resistance is drained", Light = "Light resistance is drained"}
+local LABEL = {ArmorClass = Tx"armor is corroded", Fire = Tx"Fire resistance is drained",
+	Air = Tx"Air resistance is drained", Water = Tx"Water resistance is drained",
+	Earth = Tx"Earth resistance is drained", Light = Tx"Light resistance is drained"}
 
 -- the monster behind the hit the party is taking right now
 local function attackingMonster()
@@ -223,8 +224,8 @@ local function onHit(t)
 	end
 	local ok, amount = applyDrain(pl, what)
 	if ok then
-		Game.ShowStatusText(string.format("%s's %s!", pl.Name,
-			LABEL[what] or (what .. " is drained")))
+		Game.ShowStatusText(string.format(Tx"%s's %s!", pl.Name,
+			LABEL[what] or string.format(Tx"%s is drained", Tx(what))))
 		MF.LogInfo("[Drain] %s: %s -%d (monster %d, chance %.1f%%)", pl.Name, what, amount, mon.Id, chance)
 	elseif TEST then
 		report("%s: %s roll succeeded but the drain amount is 0", pl.Name, what)

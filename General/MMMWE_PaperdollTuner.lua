@@ -28,6 +28,7 @@
 --]]
 
 local MF = Merge.Functions
+local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 local K = const.Keys
 
 ---------------------------------------------------------------------------
@@ -43,8 +44,8 @@ local BIG_STEP = 5
 local SLOTS = {
 	{"ItemArmor", "Armor"}, {"ItemHelm", "Helm"}, {"ItemBelt", "Belt"},
 	{"ItemBoots", "Boots"}, {"ItemCloak", "Cloak"},
-	{"ItemGountlets", "Right gauntlet", "R"}, {"ItemGountlets", "Left gauntlet", "L"},
-	{"ItemMainHand", "Right hand", nil, "R"}, {"ItemExtraHand", "Left hand", nil, "L"},
+	{"ItemGountlets", Tx"Right gauntlet", "R"}, {"ItemGountlets", Tx"Left gauntlet", "L"},
+	{"ItemMainHand", Tx"Right hand", nil, "R"}, {"ItemExtraHand", Tx"Left hand", nil, "L"},
 	{"ItemBow", "Bow", nil, "R"},
 }
 
@@ -147,24 +148,24 @@ end
 
 local function unsaved()
 	local n = ChangedCount + GauntletsChanged + WeaponsChanged
-	return n > 0 and string.format("  (%d unsaved)", n) or ""
+	return n > 0 and string.format(Tx"  (%d unsaved)", n) or ""
 end
 
 local function show()
 	local id, c, dt, pose = selected()
 	local what = SLOTS[slot][2]
 	if not id then
-		Game.ShowStatusText(what .. ": nothing worn")
+		Game.ShowStatusText(what .. Tx": nothing worn")
 	elseif not c then
-		Game.ShowStatusText(string.format("%s: %s has no paperdoll position", what, Game.ItemsTxt[id].Name))
+		Game.ShowStatusText(string.format(Tx"%s: %s has no paperdoll position", what, Game.ItemsTxt[id].Name))
 	else
 		local note = ""
 		if c.Kind == "equip" then
-			note = ", all doll types and both hands"
+			note = Tx", all doll types and both hands"
 		elseif c.Kind == "offset" then
-			note = ", turned left-hand icon"
+			note = Tx", turned left-hand icon"
 		end
-		Game.ShowStatusText(string.format("%s %d%s, doll type %d: X %d, Y %d%s%s", Game.ItemsTxt[id].Name, id,
+		Game.ShowStatusText(string.format(Tx"%s %d%s, doll type %d: X %d, Y %d%s%s", Game.ItemsTxt[id].Name, id,
 			pose and (" " .. pose) or "", dt, c.X, c.Y, note, unsaved()))
 	end
 end
@@ -221,7 +222,7 @@ end
 local function saveArmor()
 	local text = readAll(FILE)
 	if not text then
-		Game.ShowStatusText("Paperdoll: can't read " .. FILE)
+		Game.ShowStatusText(Tx"Paperdoll: can't read " .. FILE)
 		return
 	end
 	if not BackupDone then
@@ -256,7 +257,7 @@ local function saveArmor()
 	end
 
 	if not writeAll(FILE, table.concat(lines, nl) .. (endsWithNl and nl or "")) then
-		Game.ShowStatusText("Paperdoll: can't write " .. FILE)
+		Game.ShowStatusText(Tx"Paperdoll: can't write " .. FILE)
 		return
 	end
 	Changed, ChangedCount = {}, 0
@@ -265,14 +266,14 @@ end
 
 local function save()
 	if ChangedCount + GauntletsChanged + WeaponsChanged == 0 then
-		Game.ShowStatusText("Paperdoll: nothing to save")
+		Game.ShowStatusText(Tx"Paperdoll: nothing to save")
 		return
 	end
 	local parts = {}
 	if ChangedCount > 0 then
 		local n = saveArmor()
 		if not n then return end
-		parts[#parts + 1] = string.format("%d armor position%s", n, n == 1 and "" or "s")
+		parts[#parts + 1] = string.format(Tx"%d armor position%s", n, n == 1 and "" or "s")
 	end
 	if GauntletsChanged > 0 then
 		if not MF.VisibleGauntlets.Save() then
@@ -280,17 +281,17 @@ local function save()
 			return
 		end
 		GauntletsChanged = 0
-		parts[#parts + 1] = "gauntlet positions"
+		parts[#parts + 1] = Tx"gauntlet positions"
 	end
 	if WeaponsChanged > 0 then
 		local n = saveWeapons()
 		if not n then
-			Game.ShowStatusText("Paperdoll: can't write " .. WEAPON_FILE)
+			Game.ShowStatusText(Tx"Paperdoll: can't write " .. WEAPON_FILE)
 			return
 		end
-		parts[#parts + 1] = string.format("%d weapon position%s", n, n == 1 and "" or "s")
+		parts[#parts + 1] = string.format(Tx"%d weapon position%s", n, n == 1 and "" or "s")
 	end
-	Game.ShowStatusText("Paperdoll: saved " .. table.concat(parts, " and "))
+	Game.ShowStatusText(Tx"Paperdoll: saved " .. table.concat(parts, " and "))
 end
 
 ---------------------------------------------------------------------------

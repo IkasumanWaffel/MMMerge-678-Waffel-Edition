@@ -53,6 +53,7 @@
 --]]
 
 local MF = Merge.Functions
+local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 local LEGEND = MF.LegendarySettings
 if not LEGEND then
 	return
@@ -101,46 +102,46 @@ LEGEND.Effects = P
 local function passive(skill, name, text)
 	LEGEND.Passives[skill] = {Name = name, Text = text}
 end
-passive(SK.Staff, "Spellstaff", "wielding a staff, spells cost 15% less SP and blows get a second stun roll")
-passive(SK.Sword, "Riposte", "10% chance to parry a monster's melee blow completely and strike back (sword in hand)")
-passive(SK.Dagger, "Assassin", "with a dagger in hand, double critical chance; critical hits ignore physical resistance")
-passive(SK.Axe, "Cleave", "each axe blow also hits a foe next to the target for 50% damage")
-passive(SK.Spear, "Impale", "with a spear in hand, blows hit as if the target had half its AC, and +AC equal to the Spear skill")
-passive(SK.Bow, "Volley", "three arrows a shot")
-passive(SK.Mace, "Crushing Blows", "a second stun and paralyze roll, and the target gets no resistance roll against them")
-passive(SK.Blaster, "Overcharge", "shots use half the cell charge and deal 20% more damage")
-passive(SK.Shield, "Bulwark", "with a shield in hand, 20% chance to block a missile or a spell bolt completely")
-passive(SK.Leather, "Light Step", "in leather armor, 10% chance to evade a monster's blow or missile")
-passive(SK.Chain, "Interlinked", "in chain armor, 20% less Fire, Air, Water and Earth damage")
-passive(SK.Plate, "Unbreakable", "worn plate armor takes no wear; Paralysis and Stone don't hold")
-local SCHOOL_TEXT = "the school's spells cost 25% less SP and are 25% stronger (damage, duration, power, healing)"
-passive(SK.Fire, "Archmage of Fire", SCHOOL_TEXT .. "; half the target's fire resistance is ignored")
-passive(SK.Air, "Archmage of Air", SCHOOL_TEXT .. "; they recover 25% faster")
-passive(SK.Water, "Archmage of Water", SCHOOL_TEXT .. "; Town Portal and Lloyd's Beacon cost no SP")
-passive(SK.Earth, "Archmage of Earth", SCHOOL_TEXT .. "; Stone Skin and Rock Blast are twice as strong instead")
-passive(SK.Spirit, "Archmage of Spirit", SCHOOL_TEXT .. "; Raise Dead and Resurrection leave no Weakness")
-passive(SK.Mind, "Archmage of Mind", SCHOOL_TEXT .. "; Charm, Berserk, Mass Fear and Enslave can't be resisted by monsters of the caster's level or lower")
-passive(SK.Body, "Archmage of Body", SCHOOL_TEXT .. "; Heal and Power Cure cure Poison and Disease as well")
-passive(SK.Light, "Archmage of Light", SCHOOL_TEXT .. "; the durations are doubled instead")
-passive(SK.Dark, "Archmage of Dark", SCHOOL_TEXT .. "; their damage heals the caster for 10% of it")
-passive(SK.DarkElfAbility, "Heir of the Dark Elves", "the Dark Elf abilities are 50% stronger")
-passive(SK.VampireAbility, "Elder Blood", "the Vampire abilities are 50% stronger")
-passive(SK.DragonAbility, "Ancient Wyrm", "the Dragon abilities and the breath are 50% stronger")
-passive(SK.IdentifyItem, "Appraiser", "every item the party carries is identified, and this character sells 10% dearer")
-passive(SK.Merchant, "Trade Prince", "this character buys at half price and sells at full value")
-passive(SK.Repair, "Master Smith", "the party's equipment wears at half the rate, and broken items are mended while resting")
-passive(SK.Bodybuilding, "Titan", "HP from Bodybuilding doubled, and Weakness doesn't hold")
-passive(SK.Meditation, "Clarity", "SP from Meditation doubled, and 1% of SP comes back every 5 minutes")
-passive(SK.Perception, "Sixth Sense", "chest and map traps do the party no harm, and 20% more gold is found")
-passive(SK.Regeneration, "Undying", "once a day, a fatal blow leaves 1 HP instead")
-passive(SK.DisarmTraps, "Lockbreaker", "chests always open with their traps disarmed")
-passive(SK.Dodging, "Shadow", "15% chance to evade any attack, spells included")
-passive(SK.Unarmed, "Iron Fist", "bare-handed blows always hit and strike twice")
-passive(SK.IdentifyMonster, "Know Thy Enemy", "the whole party deals 10% more damage")
-passive(SK.Armsmaster, "Weapon Master", "all weapon skills count 5 higher, and recovery is 10% faster")
+passive(SK.Staff, "Spellstaff", Tx"wielding a staff, spells cost 15% less SP and blows get a second stun roll")
+passive(SK.Sword, "Riposte", Tx"10% chance to parry a monster's melee blow completely and strike back (sword in hand)")
+passive(SK.Dagger, "Assassin", Tx"with a dagger in hand, double critical chance; critical hits ignore physical resistance")
+passive(SK.Axe, "Cleave", Tx"each axe blow also hits a foe next to the target for 50% damage")
+passive(SK.Spear, "Impale", Tx"with a spear in hand, blows hit as if the target had half its AC, and +AC equal to the Spear skill")
+passive(SK.Bow, "Volley", Tx"three arrows a shot")
+passive(SK.Mace, Tx"Crushing Blows", Tx"a second stun and paralyze roll, and the target gets no resistance roll against them")
+passive(SK.Blaster, "Overcharge", Tx"shots use half the cell charge and deal 20% more damage")
+passive(SK.Shield, "Bulwark", Tx"with a shield in hand, 20% chance to block a missile or a spell bolt completely")
+passive(SK.Leather, Tx"Light Step", Tx"in leather armor, 10% chance to evade a monster's blow or missile")
+passive(SK.Chain, "Interlinked", Tx"in chain armor, 20% less Fire, Air, Water and Earth damage")
+passive(SK.Plate, "Unbreakable", Tx"worn plate armor takes no wear; Paralysis and Stone don't hold")
+local SCHOOL_TEXT = Tx"the school's spells cost 25% less SP and are 25% stronger (damage, duration, power, healing)"
+passive(SK.Fire, Tx"Archmage of Fire", SCHOOL_TEXT .. Tx"; half the target's fire resistance is ignored")
+passive(SK.Air, Tx"Archmage of Air", SCHOOL_TEXT .. Tx"; they recover 25% faster")
+passive(SK.Water, Tx"Archmage of Water", SCHOOL_TEXT .. Tx"; Town Portal and Lloyd's Beacon cost no SP")
+passive(SK.Earth, Tx"Archmage of Earth", SCHOOL_TEXT .. Tx"; Stone Skin and Rock Blast are twice as strong instead")
+passive(SK.Spirit, Tx"Archmage of Spirit", SCHOOL_TEXT .. Tx"; Raise Dead and Resurrection leave no Weakness")
+passive(SK.Mind, Tx"Archmage of Mind", SCHOOL_TEXT .. Tx"; Charm, Berserk, Mass Fear and Enslave can't be resisted by monsters of the caster's level or lower")
+passive(SK.Body, Tx"Archmage of Body", SCHOOL_TEXT .. Tx"; Heal and Power Cure cure Poison and Disease as well")
+passive(SK.Light, Tx"Archmage of Light", SCHOOL_TEXT .. Tx"; the durations are doubled instead")
+passive(SK.Dark, Tx"Archmage of Dark", SCHOOL_TEXT .. Tx"; their damage heals the caster for 10% of it")
+passive(SK.DarkElfAbility, Tx"Heir of the Dark Elves", Tx"the Dark Elf abilities are 50% stronger")
+passive(SK.VampireAbility, Tx"Elder Blood", Tx"the Vampire abilities are 50% stronger")
+passive(SK.DragonAbility, Tx"Ancient Wyrm", Tx"the Dragon abilities and the breath are 50% stronger")
+passive(SK.IdentifyItem, "Appraiser", Tx"every item the party carries is identified, and this character sells 10% dearer")
+passive(SK.Merchant, Tx"Trade Prince", Tx"this character buys at half price and sells at full value")
+passive(SK.Repair, Tx"Master Smith", Tx"the party's equipment wears at half the rate, and broken items are mended while resting")
+passive(SK.Bodybuilding, "Titan", Tx"HP from Bodybuilding doubled, and Weakness doesn't hold")
+passive(SK.Meditation, "Clarity", Tx"SP from Meditation doubled, and 1% of SP comes back every 5 minutes")
+passive(SK.Perception, Tx"Sixth Sense", Tx"chest and map traps do the party no harm, and 20% more gold is found")
+passive(SK.Regeneration, "Undying", Tx"once a day, a fatal blow leaves 1 HP instead")
+passive(SK.DisarmTraps, "Lockbreaker", Tx"chests always open with their traps disarmed")
+passive(SK.Dodging, "Shadow", Tx"15% chance to evade any attack, spells included")
+passive(SK.Unarmed, Tx"Iron Fist", Tx"bare-handed blows always hit and strike twice")
+passive(SK.IdentifyMonster, Tx"Know Thy Enemy", Tx"the whole party deals 10% more damage")
+passive(SK.Armsmaster, Tx"Weapon Master", Tx"all weapon skills count 5 higher, and recovery is 10% faster")
 -- (08.11.26) the new skill of MMMWE_ExtraSkills.lua (its effect: MMMWE_ExtraSkillsEffects.lua)
-passive(41, "Twin Titans", "a two-handed weapon in each hand without penalties")
-passive(42, "Unseen", "without body armor, monsters pick this character as a target half as often (threat halved)")
+passive(41, Tx"Twin Titans", Tx"a two-handed weapon in each hand without penalties")
+passive(42, "Unseen", Tx"without body armor, monsters pick this character as a target half as often (threat halved)")
 
 -- Robe: the threat of MMMWE_Threat.lua halved while no body armor is worn (as Robe's own effects)
 P.RobeThreatMul = 0.5
@@ -150,9 +151,9 @@ function MF.LegendaryThreatMult(pl)
 	if slot > 0 and not pl.Items[slot].Broken and pl.Items[slot].Number > 0 then return 1 end
 	return P.RobeThreatMul
 end
-passive(SK.Stealing, "Phantom", "stealing from shops costs no reputation, and corpses give double gold")
-passive(SK.Alchemy, "Philosopher's Stone", "potions brewed from reagents are 50% stronger")
-passive(SK.Learning, "Sage", "the whole party gains 10% more experience")
+passive(SK.Stealing, "Phantom", Tx"stealing from shops costs no reputation, and corpses give double gold")
+passive(SK.Alchemy, Tx"Philosopher's Stone", Tx"potions brewed from reagents are 50% stronger")
+passive(SK.Learning, "Sage", Tx"the whole party gains 10% more experience")
 
 ---------------------------------------------------------------------------
 -- helpers
@@ -542,7 +543,7 @@ function events.BeforeChestTrapTriggered(t)
 	if pl then
 		t.Handled = true
 		t.CanOpenChest = true
-		status(string.format("%s %s the trap", pl.Name, L(pl, SK.DisarmTraps) and "disarms" or "sidesteps"))
+		status(string.format(Tx"%s %s the trap", pl.Name, L(pl, SK.DisarmTraps) and "disarms" or "sidesteps"))
 	end
 end
 
@@ -576,19 +577,19 @@ function events.PlayerAttacked(t, attacker)
 	local bolt = attacker.Object ~= nil or spellBolt
 	if L(pl, SK.Dodging) and random() < P.DodgeChance then
 		t.Handled = true
-		status(string.format("%s evades the attack", pl.Name))
+		status(string.format(Tx"%s evades the attack", pl.Name))
 	elseif bolt and L(pl, SK.Shield) and extraSkill(pl) == SK.Shield and random() < P.ShieldBlock then
 		t.Handled = true
-		status(string.format("%s blocks it with the shield", pl.Name))
+		status(string.format(Tx"%s blocks it with the shield", pl.Name))
 	elseif (melee or (bolt and not spellBolt)) and L(pl, SK.Leather) and armorSkill(pl) == SK.Leather
 			and random() < P.LeatherEvade then
 		t.Handled = true
-		status(string.format("%s slips aside", pl.Name))
+		status(string.format(Tx"%s slips aside", pl.Name))
 	elseif melee and L(pl, SK.Sword) and mainSkill(pl) == SK.Sword and random() < P.RiposteChance then
 		t.Handled = true
 		if MF.QueueCounterAttack and attacker.MonsterIndex then
 			MF.QueueCounterAttack(rosterOf(pl), attacker.MonsterIndex,
-				string.format("%s parries and strikes back!", pl.Name), 1)
+				string.format(Tx"%s parries and strikes back!", pl.Name), 1)
 		end
 	end
 end
@@ -680,7 +681,7 @@ local function finalMonsterDamage(t)
 			and MF.QueueCounterAttack and not (MF.CounterAttackActive and MF.CounterAttackActive()) then
 		local mi = nearFoe(t.Monster, P.CleaveRange)
 		if mi then
-			MF.QueueCounterAttack(rosterOf(pl), mi, string.format("%s cleaves through!", pl.Name), P.CleaveShare)
+			MF.QueueCounterAttack(rosterOf(pl), mi, string.format(Tx"%s cleaves through!", pl.Name), P.CleaveShare)
 		end
 	end
 end
@@ -715,7 +716,7 @@ local function finalPlayerDamage(t)
 		if vars.MMMWE_LegendUndying[idx] ~= undyingDay() then
 			vars.MMMWE_LegendUndying[idx] = undyingDay()
 			t.Result = pl.HP - 1
-			status(string.format("%s refuses to fall!", pl.Name))
+			status(string.format(Tx"%s refuses to fall!", pl.Name))
 		end
 	end
 end

@@ -29,6 +29,7 @@
 -- ========================================================================
 
 local MF = Merge.Functions
+local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 local LogId = MF.LogInit1 and MF.LogInit1("ItemDurability")
 local function log(fmt, ...)
 	if MF.LogInfo then MF.LogInfo("[DUR] " .. fmt, ...) end
@@ -331,11 +332,11 @@ end
 local function say(it, stage, pl)
 	if not CONFIG.showMessages then return end
 	if stage == "broken" then
-		Game.ShowStatusText(string.format("%s's %s has broken!", pl.Name, itemName(it)))
+		Game.ShowStatusText(string.format(Tx"%s's %s has broken!", pl.Name, itemName(it)))
 	elseif stage == "damaged" then
-		Game.ShowStatusText(string.format("%s's %s is badly damaged!", pl.Name, itemName(it)))
+		Game.ShowStatusText(string.format(Tx"%s's %s is badly damaged!", pl.Name, itemName(it)))
 	elseif stage == "worn" then
-		Game.ShowStatusText(string.format("%s's %s is showing wear.", pl.Name, itemName(it)))
+		Game.ShowStatusText(string.format(Tx"%s's %s is showing wear.", pl.Name, itemName(it)))
 	end
 end
 
@@ -606,7 +607,7 @@ if CONFIG.repairHotkey then
 
 		local s, m = SplitSkill(pl:GetSkill(const.Skills.Repair))
 		if s <= 0 or m <= 0 then
-			Game.ShowStatusText("No Repair skill")
+			Game.ShowStatusText(Tx"No Repair skill")
 			return
 		end
 
@@ -616,19 +617,19 @@ if CONFIG.repairHotkey then
 
 		if total == 0 then
 			Game.PlaySound(27,-1,0)
-			Game.ShowStatusText("Nothing to repair")
+			Game.ShowStatusText(Tx"Nothing to repair")
 		elseif done == 0 then
 			Game.PlaySound(27,-1,0)
-			Game.ShowStatusText(string.format("Not enough gold (%d needed)", blocked))
+			Game.ShowStatusText(string.format(Tx"Not enough gold (%d needed)", blocked))
 		elseif done < total then
 			Game.PlaySound(146,-1,0)
-			Game.ShowStatusText(string.format("Repaired %d of %d items for %d gold - out of gold", done, total, spent))
+			Game.ShowStatusText(string.format(Tx"Repaired %d of %d items for %d gold - out of gold", done, total, spent))
 		else
 			Game.PlaySound(146,-1,0)
 			if spent == 0 then
-				Game.ShowStatusText(string.format("Repaired %d item(s) for free", done))
+				Game.ShowStatusText(string.format(Tx"Repaired %d item(s) for free", done))
 			else
-				Game.ShowStatusText(string.format("Repaired %d item(s) for %d gold", done, spent))
+				Game.ShowStatusText(string.format(Tx"Repaired %d item(s) for %d gold", done, spent))
 			end
 		end
 		log("Field repair: %d/%d items, %d gold (mastery=%d)", done, total, spent, m)

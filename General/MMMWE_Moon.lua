@@ -26,6 +26,7 @@
 --]]
 
 local MF = Merge.Functions
+local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 local floor, sin, cos, pi, max, min = math.floor, math.sin, math.cos, math.pi, math.max, math.min
 local atan2 = math.atan2
 
@@ -267,18 +268,18 @@ function events.Tick()
 	o.Visible = true
 end
 
-local PHASE_NAMES = {[0] = "new moon", "waxing crescent", "first quarter", "waxing gibbous", "full moon",
-	"waning gibbous", "last quarter", "waning crescent"}
+local PHASE_NAMES = {[0] = Tx"new moon", Tx"waxing crescent", Tx"first quarter", Tx"waxing gibbous", Tx"full moon",
+	Tx"waning gibbous", Tx"last quarter", Tx"waning crescent"}
 
 function MF.MoonInfo()
 	local f, k = phase()
 	local az, el, h = moonAngles()
 	local o = moonObject()
-	local s = string.format("day %.1f of the month: %s (picture %d); time %.2f h; moon %s; object %s; shown %s",
+	local s = string.format(Tx"day %.1f of the month: %s (picture %d); time %.2f h; moon %s; object %s; shown %s",
 		f * MOON.MonthDays + 1, PHASE_NAMES[k], k, h,
-		az and string.format("azimuth %d, elevation %d degrees", floor(-az * 180 / pi), floor(el * 180 / pi)) or "below the horizon",
-		o and string.format("%d at %d, %d, %d", moonIndex, o.X, o.Y, o.Z) or "none", tostring(shown()))
-	if az then s = s .. string.format("; skyline %.1f degrees", skyline(az) * 180 / pi) end
+		az and string.format(Tx"azimuth %d, elevation %d degrees", floor(-az * 180 / pi), floor(el * 180 / pi)) or Tx"below the horizon",
+		o and string.format(Tx"%d at %d, %d, %d", moonIndex, o.X, o.Y, o.Z) or "none", tostring(shown()))
+	if az then s = s .. string.format(Tx"; skyline %.1f degrees", skyline(az) * 180 / pi) end
 	print(s)
 	return s
 end

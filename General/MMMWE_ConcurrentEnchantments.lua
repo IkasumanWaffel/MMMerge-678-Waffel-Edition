@@ -37,6 +37,7 @@
 -- ========================================
 
 local MF = Merge.Functions
+local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 local LogId = MF.LogInit1("ConcurrentEnchants")
 local function log(fmt, ...) MF.LogInfo("[CE] " .. fmt, ...) end
 local mmver = Game.Version
@@ -691,14 +692,14 @@ function MF.GetTempEnchant(item)
     if expire <= 0 then return nil end
     local rec = recordOf(ptr)
     local b2 = (rec and rec.Mode == "inv") and rec.TempBonus2 or mem.u4[ptr + 0xC]
-    return enchantName(b2) or "Enchantment", expire, b2
+    return enchantName(b2) or Tx"Enchantment", expire, b2
 end
 
 -- Item tooltip (item_rmb_window): the line "Duration: 2:hr 14:mn" is built at 0x41D677 -
 -- strcpy(sz, "Duration:") - and the time units are appended after it. Right after the
 -- strcpy the label is replaced with the name of the temporary enchantment. The item is
 -- [ebp-4], the buffer is esi.
-local TOOLTIP_LABEL = "Temp. %s:"
+local TOOLTIP_LABEL = Tx"Temp. %s:"
 mem.autohook(0x41D682, function(d)
     local ok, name = pcall(MF.GetTempEnchant, mem.u4[d.ebp - 4])
     if ok and name then

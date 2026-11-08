@@ -41,6 +41,7 @@
 --]]
 
 local MF, MT = Merge.Functions, Merge.Tables
+local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 
 ---------------------------------------------------------------------------
 -- Settings
@@ -60,7 +61,7 @@ local MAX_TIER = {5, 6, 7, 7, 7}
 local PARENT   = {nil, 1, 2, 2, 2}
 local STEP_OF  = {0, 1, 2, 2, 2}                 -- Class Extra Step
 local ALIGN_OF = {5, 5, 5, 0, 10}                -- Class Extra Alignment (const.Alignment)
-local STEP_NAMES = {"base", "first promotion", "neutral", "light", "dark"}
+local STEP_NAMES = {Tx"base", Tx"first promotion", Tx"neutral", Tx"light", Tx"dark"}
 
 -- {base, per level}
 local HP_TIERS = {[0] = {20, 3}, {25, 4}, {30, 5}, {35, 6}, {35, 7}, {40, 8}, {40, 9}, {40, 10}}
@@ -78,18 +79,18 @@ local CAP_COST  = {[0] = 0, 2, 4, 7, 10}         -- total cost of a mastery cap
 local KITS = {
 	{Key = "Monk",       Name = "Monk",       Kind = 8,  Price = 35, Page = "Water", Resource = "Ki",
 		Branches = {[4] = "MasterMonk", [5] = "Ninja"}},
-	{Key = "Barbarian",  Name = "Barbarian",  Kind = 12, Price = 30, Page = "Fire",  Resource = "Rage"},
-	{Key = "Knight",     Name = "Knight",     Kind = 6,  Price = 25, Page = "Air",   Resource = "Resolve",
+	{Key = "Barbarian",  Name = "Barbarian",  Kind = 12, Price = 30, Page = "Fire",  Resource = Tn"Rage"},
+	{Key = "Knight",     Name = "Knight",     Kind = 6,  Price = 25, Page = "Air",   Resource = Tn"Resolve",
 		Branches = {[3] = "Champion", [4] = "Templar", [5] = "BlackKnight"}},
-	{Key = "Thief",      Name = "Thief",      Kind = 11, Price = 20, Page = "Mind",  Resource = "Energy",
+	{Key = "Thief",      Name = "Thief",      Kind = 11, Price = 20, Page = "Mind",  Resource = Tn"Energy",
 		Branches = {[4] = "Spy", [5] = "Assassin"}},
 	{Key = "Archer",     Name = "Archer",     Kind = 1,  Price = 15, Page = "Body",
 		Branches = {[4] = "MasterArcher", [5] = "Sniper"}},
 	{Key = "Ranger",     Name = "Ranger",     Kind = 10, Price = 15, Page = "Light"},
 	{Key = "Paladin",    Name = "Paladin",    Kind = 9,  Price = 15, Page = "Air"},
-	{Key = "DarkElf",    Name = "Dark Elf",   Kind = 3,  Price = 15, Page = "Body"},
+	{Key = "DarkElf",    Name = Tn"Dark Elf",   Kind = 3,  Price = 15, Page = "Body"},
 	{Key = "Minotaur",   Name = "Minotaur",   Kind = 7,  Price = 15, Page = "Fire",  Race = 10},   -- BaseRace Minotaur
-	{Key = "Technician", Name = "Technician", Kind = 15, Price = 15, Page = "Earth", Resource = "Construction",
+	{Key = "Technician", Name = "Technician", Kind = 15, Price = 15, Page = "Earth", Resource = Tn"Construction",
 		Needs = {"Blaster", "Repair"}, Branches = {[4] = "AncientResearcher", [5] = "Scientist"}},
 }
 -- spells (picked one by one; a spell needs its school's skill): cost by the spell's rank in
@@ -133,7 +134,7 @@ end
 -- the school discount). A master of Armsmaster is a fighter, no longer a hybrid.
 local FIGHTER_MAGE_MUL = {[3] = 1.5, [4] = 2}
 local FIGHTER_MAGE_FROM = 3                      -- Armsmaster cap that starts it
-local SPELL_RANK_NAMES = {"Novice", "Expert", "Master", "Grand Master"}
+local SPELL_RANK_NAMES = {Tx"Novice", Tx"Expert", Tx"Master", Tx"Grand Master"}
 local MAGIC_SCHOOLS = {"Fire", "Air", "Water", "Earth", "Spirit", "Mind", "Body", "Light", "Dark"}
 local function spellRank(spell)
 	local i = (spell - 1) % 11
@@ -193,8 +194,8 @@ for f = 1, FAMILIES do
 	end
 end
 
-local PLACEHOLDER_NAME = "Custom class"
-local PLACEHOLDER_DESC = "An unused custom class."
+local PLACEHOLDER_NAME = Tx"Custom class"
+local PLACEHOLDER_DESC = Tx"An unused custom class."
 
 ---------------------------------------------------------------------------
 -- making room: class.txt and the class tables
@@ -350,7 +351,7 @@ local function skillId(skill)
 end
 
 local CAP_LETTERS = {["-"] = 0, ["0"] = 0, N = 1, B = 1, E = 2, M = 3, G = 4, GM = 4}
-local CAP_NAMES = {[0] = "-", "Novice", "Expert", "Master", "Grand Master"}
+local CAP_NAMES = {[0] = "-", Tx"Novice", Tx"Expert", Tx"Master", Tx"Grand Master"}
 
 local function capValue(cap)
 	if type(cap) == "number" then return math.max(0, math.min(4, math.floor(cap))) end
@@ -358,7 +359,7 @@ local function capValue(cap)
 end
 
 local STATS_CODE = {I = 1, P = 2, IP = 3, PI = 3}
-local STATS_NAME = {[1] = "Intellect", [2] = "Personality", [3] = "Intellect and Personality"}
+local STATS_NAME = {[1] = Tx"Intellect", [2] = Tx"Personality", [3] = Tx"Intellect and Personality"}
 
 -- the builds in use: the save's, or the ones made on the party creation screen (Pending,
 -- moved into the new game's vars when it starts)
@@ -397,13 +398,13 @@ local function cost(spec, kitKey)
 	local kit = kitKey and KIT_BY_KEY[kitKey]
 	if kit then
 		total = total + kit.Price
-		lines[#lines + 1] = string.format("%s kit: %g", kit.Name, kit.Price)
+		lines[#lines + 1] = string.format(Tx"%s kit: %g", Tx(kit.Name), kit.Price)
 	end
 	local hp, sp = tierCost(spec.HP), tierCost(spec.SP)
 	total = total + hp + sp
-	lines[#lines + 1] = string.format("HP tier %d (%d/%d per level): %g", spec.HP, HP_TIERS[spec.HP][1], HP_TIERS[spec.HP][2], hp)
+	lines[#lines + 1] = string.format(Tx"HP tier %d (%d/%d per level): %g", spec.HP, HP_TIERS[spec.HP][1], HP_TIERS[spec.HP][2], hp)
 	local stats = spec.Stats == 3 and BOTH_STATS_COST or 0
-	lines[#lines + 1] = string.format("SP tier %d (%d/%d per level, %s): %g", spec.SP, SP_TIERS[spec.SP][1], SP_TIERS[spec.SP][2],
+	lines[#lines + 1] = string.format(Tx"SP tier %d (%d/%d per level, %s): %g", spec.SP, SP_TIERS[spec.SP][1], SP_TIERS[spec.SP][2],
 		STATS_NAME[spec.Stats] or "?", sp + stats)
 	total = total + stats
 	-- fighter-mage surcharge on the magic schools (FIGHTER_MAGE_MUL)
@@ -416,8 +417,8 @@ local function cost(spec, kitKey)
 	end
 	local function note(fm, discount)
 		local t = {}
-		if fm then t[1] = string.format("fighter-mage x%g", fm) end
-		if discount then t[#t + 1] = "school discount" end
+		if fm then t[1] = string.format(Tx"fighter-mage x%g", fm) end
+		if discount then t[#t + 1] = Tx"school discount" end
 		return #t > 0 and " (" .. table.concat(t, ", ") .. ")" or ""
 	end
 	local grouped = {}
@@ -458,7 +459,7 @@ local function cost(spec, kitKey)
 		end
 		if n > 0 then
 			total = total + v
-			lines[#lines + 1] = string.format("%d spells: %g (by rank and impact)", n, v)
+			lines[#lines + 1] = string.format(Tx"%d spells: %g (by rank and impact)", n, v)
 		end
 	end
 	return total, lines
@@ -473,20 +474,20 @@ local function spellProblems(fam, step)
 		local school = spellSchool(spell)
 		has[school] = true
 		if (spec.Skills[school] or 0) == 0 then
-			out[#out + 1] = string.format("%s needs %s Magic", spellName(spell), MAGIC_SCHOOLS[math.floor((spell - 1) / 11) + 1])
+			out[#out + 1] = string.format(Tx"%s needs %s Magic", spellName(spell), MAGIC_SCHOOLS[math.floor((spell - 1) / 11) + 1])
 		end
 	end
 	for i, name in ipairs(MAGIC_SCHOOLS) do
 		local school = const.Skills[name]
 		if (spec.Skills[school] or 0) > 0 and not has[school] then
-			out[#out + 1] = name .. " Magic: no spell picked"
+			out[#out + 1] = name .. Tx" Magic: no spell picked"
 		end
 	end
 	local p = PARENT[step] and fam.Steps[PARENT[step]]
 	if p and p.Spells then
 		for spell in pairs(p.Spells) do
 			if not spec.Spells[spell] then
-				out[#out + 1] = spellName(spell) .. " is lost from the previous step"
+				out[#out + 1] = spellName(spell) .. Tx" is lost from the previous step"
 				break
 			end
 		end
@@ -499,31 +500,31 @@ local function problems(fam, step)
 	local spec, out = fam.Steps[step], {}
 	local total = cost(spec, fam.Kit)
 	if total > BUDGET[step] then
-		out[#out + 1] = string.format("%g points of %d", total, BUDGET[step])
+		out[#out + 1] = string.format(Tx"%g points of %d", total, BUDGET[step])
 	end
-	if spec.HP > MAX_TIER[step] then out[#out + 1] = "HP tier above " .. MAX_TIER[step] end
-	if spec.SP > MAX_TIER[step] then out[#out + 1] = "SP tier above " .. MAX_TIER[step] end
+	if spec.HP > MAX_TIER[step] then out[#out + 1] = Tx"HP tier above " .. MAX_TIER[step] end
+	if spec.SP > MAX_TIER[step] then out[#out + 1] = Tx"SP tier above " .. MAX_TIER[step] end
 	local kit = fam.Kit and KIT_BY_KEY[fam.Kit]
 	if kit then
 		if (spec.Skills[const.Skills[kit.Page]] or 0) > 0 then
-			out[#out + 1] = string.format("the %s kit uses the %s page: no %s Magic", kit.Name, kit.Page, kit.Page)
+			out[#out + 1] = string.format(Tx"the %s kit uses the %s page: no %s Magic", Tx(kit.Name), kit.Page, kit.Page)
 		end
 		if kit.Resource and spec.SP > 0 then
-			out[#out + 1] = string.format("%s replaces spell points: SP tier 0", kit.Resource)
+			out[#out + 1] = string.format(Tx"%s replaces spell points: SP tier 0", Tx(kit.Resource))
 		end
 		for _, need in ipairs(kit.Needs or {}) do
 			if (spec.Skills[const.Skills[need]] or 0) == 0 then
-				out[#out + 1] = string.format("the %s kit needs %s", kit.Name, need == "Repair" and "Repair Item" or need)
+				out[#out + 1] = string.format(Tx"the %s kit needs %s", Tx(kit.Name), need == "Repair" and Tx"Repair Item" or need)
 			end
 		end
 	end
 	local p = PARENT[step] and fam.Steps[PARENT[step]]
 	if p then
-		if spec.HP < p.HP or spec.SP < p.SP then out[#out + 1] = "lower HP/SP tier than the previous step" end
-		if p.Stats == 3 and spec.Stats ~= 3 then out[#out + 1] = "loses the second SP stat" end
+		if spec.HP < p.HP or spec.SP < p.SP then out[#out + 1] = Tx"lower HP/SP tier than the previous step" end
+		if p.Stats == 3 and spec.Stats ~= 3 then out[#out + 1] = Tx"loses the second SP stat" end
 		for id, m in pairs(p.Skills) do
 			if (spec.Skills[id] or 0) < m then
-				out[#out + 1] = SKILL_IDS[id] .. " cap lower than the previous step"
+				out[#out + 1] = SKILL_IDS[id] .. Tx" cap lower than the previous step"
 			end
 		end
 	end
@@ -549,12 +550,12 @@ local function describe(fam, step)
 			table.insert(bySkillCap[m], skillLabel(id))
 		end
 	end
-	local parts = {string.format("A custom class. Hit points: tier %d. Spell points: tier %d%s.",
-		spec.HP, spec.SP, spec.SP > 0 and (", from " .. (STATS_NAME[spec.Stats] or "?")) or "")}
+	local parts = {string.format(Tx"A custom class. Hit points: tier %d. Spell points: tier %d%s.",
+		spec.HP, spec.SP, spec.SP > 0 and (Tx", from " .. (STATS_NAME[spec.Stats] or "?")) or "")}
 	local kit = fam.Kit and KIT_BY_KEY[fam.Kit]
 	if kit then
-		parts[#parts + 1] = string.format("%s kit: %s and the %s abilities (%s page of the spellbook).",
-			kit.Name, kit.Resource or "spell points", kit.Name, kit.Page)
+		parts[#parts + 1] = string.format(Tx"%s kit: %s and the %s abilities (%s page of the spellbook).",
+			Tx(kit.Name), kit.Resource and Tx(kit.Resource) or Tx"spell points", Tx(kit.Name), kit.Page)
 	end
 	for m = 4, 1, -1 do
 		if bySkillCap[m] then
@@ -565,7 +566,7 @@ local function describe(fam, step)
 	if spec.Spells then
 		local n = 0
 		for _ in pairs(spec.Spells) do n = n + 1 end
-		parts[#parts + 1] = string.format("Spells: %d.", n)
+		parts[#parts + 1] = string.format(Tx"Spells: %d.", n)
 	end
 	return table.concat(parts, " ")
 end
@@ -727,8 +728,8 @@ local function newFamily(name)
 	for i = 1, FAMILIES do
 		if not all[i] then f = i break end
 	end
-	if not f then return nil, "all " .. FAMILIES .. " custom classes are in use" end
-	name = name or ("Custom Class " .. f)
+	if not f then return nil, "all " .. FAMILIES .. Tx" custom classes are in use" end
+	name = name or (Tx"Custom Class " .. f)
 	local base = {Name = name, HP = 0, SP = 0, Stats = 1, Skills = {}, Spells = {}}
 	local fam = {Steps = {base}}
 	local names = {name, name .. " Adept", name .. " Master", "Light " .. name, "Dark " .. name}
@@ -783,11 +784,11 @@ end
 local function famSetTier(fam, step, field, tier)
 	tier = math.floor(tonumber(tier) or -1)
 	if tier < 0 or tier > MAX_TIER[step] then
-		return nil, string.format("%s tier must be 0..%d for the %s", field, MAX_TIER[step], STEP_NAMES[step])
+		return nil, string.format(Tx"%s tier must be 0..%d for the %s", field, MAX_TIER[step], STEP_NAMES[step])
 	end
 	local p = PARENT[step] and fam.Steps[PARENT[step]]
 	if p and tier < p[field] then
-		return nil, string.format("%s tier can't be lower than the previous step's (%d)", field, p[field])
+		return nil, string.format(Tx"%s tier can't be lower than the previous step's (%d)", field, p[field])
 	end
 	local old = fam.Steps[step][field]
 	fam.Steps[step][field] = tier
@@ -801,7 +802,7 @@ end
 local function famSetStats(fam, step, code)
 	local p = PARENT[step] and fam.Steps[PARENT[step]]
 	if p and p.Stats == 3 and code ~= 3 then
-		return nil, "the previous step already uses both stats"
+		return nil, Tx"the previous step already uses both stats"
 	end
 	local old = fam.Steps[step].Stats
 	fam.Steps[step].Stats = code
@@ -812,11 +813,11 @@ local function famSetStats(fam, step, code)
 end
 
 local function famSetSkill(fam, step, id, m)
-	if not SKILL_IDS[id] then return nil, "this skill can't be bought" end
+	if not SKILL_IDS[id] then return nil, Tx"this skill can't be bought" end
 	m = math.max(0, math.min(4, m))
 	local p = PARENT[step] and fam.Steps[PARENT[step]]
 	if p and m < (p.Skills[id] or 0) then
-		return nil, string.format("%s can't be lower than the previous step's %s", SKILL_IDS[id], CAP_NAMES[p.Skills[id]])
+		return nil, string.format(Tx"%s can't be lower than the previous step's %s", SKILL_IDS[id], CAP_NAMES[p.Skills[id]])
 	end
 	local old = fam.Steps[step].Skills[id] or 0
 	fam.Steps[step].Skills[id] = m > 0 and m or nil
@@ -862,15 +863,15 @@ end
 -- the ones that had it). A promotion step can't drop a spell of its previous step.
 local function famSetSpell(fam, step, spell, on)
 	spell = tonumber(spell)
-	if not spell or spell < 1 or spell > 99 then return nil, "no such spell" end
+	if not spell or spell < 1 or spell > 99 then return nil, Tx"no such spell" end
 	local spec = fam.Steps[step]
 	local school = spellSchool(spell)
 	if on and (spec.Skills[school] or 0) == 0 then
-		return nil, string.format("%s needs %s Magic", spellName(spell), MAGIC_SCHOOLS[math.floor((spell - 1) / 11) + 1])
+		return nil, string.format(Tx"%s needs %s Magic", spellName(spell), MAGIC_SCHOOLS[math.floor((spell - 1) / 11) + 1])
 	end
 	local p = PARENT[step] and fam.Steps[PARENT[step]]
 	if not on and p and (not p.Spells or p.Spells[spell]) and (p.Skills[school] or 0) > 0 then
-		return nil, spellName(spell) .. " is a spell of the previous step"
+		return nil, spellName(spell) .. Tx" is a spell of the previous step"
 	end
 	materializeSpells(fam)
 	spec.Spells[spell] = on or nil
@@ -929,7 +930,7 @@ function CustomClass.Show(f)
 		local spec = fam.Steps[step]
 		local total, lines = cost(spec, fam.Kit)
 		local bad = problems(fam, step)
-		out[#out + 1] = string.format("%d. %s (%s, class %d): %g / %d points%s", step, spec.Name, STEP_NAMES[step],
+		out[#out + 1] = string.format(Tx"%d. %s (%s, class %d): %g / %d points%s", step, spec.Name, STEP_NAMES[step],
 			classId(f, step), total, BUDGET[step], #bad > 0 and ("  !! " .. table.concat(bad, "; ")) or "")
 		for _, l in ipairs(lines) do out[#out + 1] = "     " .. l end
 	end
@@ -949,11 +950,11 @@ function CustomClass.List()
 				local pl = Party.PlayersArray[i]
 				if familyOf(pl.Class) == f and pl.Name ~= "" then users[#users + 1] = pl.Name end
 			end
-			out[#out + 1] = string.format("%d: %s (%g points)%s", f, fam.Steps[1].Name, (cost(fam.Steps[1], fam.Kit)),
+			out[#out + 1] = string.format(Tx"%d: %s (%g points)%s", f, fam.Steps[1].Name, (cost(fam.Steps[1], fam.Kit)),
 				#users > 0 and (" - " .. table.concat(users, ", ")) or "")
 		end
 	end
-	local s = #out > 0 and table.concat(out, "\n") or "no custom classes"
+	local s = #out > 0 and table.concat(out, "\n") or Tx"no custom classes"
 	print(s)
 	return s
 end
@@ -976,7 +977,7 @@ function CustomClass.Give(player, f, step)
 	applyAll()
 	local id = classId(f, step)
 	if pl.Class == id then
-		return string.format("%s already is a %s", pl.Name, fam.Steps[step].Name)
+		return string.format(Tx"%s already is a %s", pl.Name, fam.Steps[step].Name)
 	end
 	-- the Merge's class conversion: skills the new class can't learn are removed and
 	-- skills above its caps are lowered; the skill points spent raising them come back
@@ -986,17 +987,17 @@ function CustomClass.Give(player, f, step)
 	end
 	pl.Class = id
 	local refund = pl.SkillPoints - before
-	return string.format("%s is now a %s%s", pl.Name, fam.Steps[step].Name,
-		refund > 0 and string.format(" (%d skill points refunded)", refund) or "")
+	return string.format(Tx"%s is now a %s%s", pl.Name, fam.Steps[step].Name,
+		refund > 0 and string.format(Tx" (%d skill points refunded)", refund) or "")
 end
 
 -- promotes a party member of a custom class to 'step' of the same family (stage 3, ruler NPCs).
 -- Returns the refunded skill points, or nil and the reason.
 local function promote(pl, step)
 	local f = familyOf(pl.Class)
-	if not f then return nil, "not a custom class" end
+	if not f then return nil, Tx"not a custom class" end
 	local fam = builds()[f]
-	if not fam or not fam.Steps[step] then return nil, "the class has no build" end
+	if not fam or not fam.Steps[step] then return nil, Tx"the class has no build" end
 	local bad = problems(fam, step)
 	if #bad > 0 then return nil, table.concat(bad, "; ") end
 	applyAll()
@@ -1028,12 +1029,12 @@ local function kitAllowed(pl, key)
 	local r = GetCharRace and GetCharRace(pl)
 	local race = r and Game.Races and Game.Races[r]
 	if race and race.BaseRace == kit.Race then return true end
-	return false, string.format("the %s kit is for %ss only", kit.Name, kit.Name)
+	return false, string.format(Tx"the %s kit is for %ss only", Tx(kit.Name), Tx(kit.Name))
 end
 MF.CustomClassKitAllowed = kitAllowed
 
 local function famSetKit(fam, key)
-	if key ~= nil and not KIT_BY_KEY[key] then return nil, "unknown kit: " .. tostring(key) end
+	if key ~= nil and not KIT_BY_KEY[key] then return nil, Tx"unknown kit: " .. tostring(key) end
 	fam.Kit = key
 	return true
 end
@@ -1087,29 +1088,29 @@ end
 
 -- a build from an exported text, checked field by field; nil and the reason when it can't be read
 local function importText(text)
-	local chunk, err = loadstring(text, "custom class")
+	local chunk, err = loadstring(text, Tx"custom class")
 	if not chunk then return nil, "not a custom class file (" .. tostring(err) .. ")" end
 	setfenv(chunk, {})
 	local ok, t = pcall(chunk)
 	if not ok or type(t) ~= "table" or type(t.Steps) ~= "table" then return nil, "not a custom class file" end
 	local fam = {Steps = {}, StartSkills = {}}
 	if t.Kit ~= nil then
-		if not KIT_BY_KEY[t.Kit] then return nil, "unknown kit: " .. tostring(t.Kit) end
+		if not KIT_BY_KEY[t.Kit] then return nil, Tx"unknown kit: " .. tostring(t.Kit) end
 		fam.Kit = t.Kit
 	end
 	for step = 1, STEPS do
 		local src = t.Steps[step]
-		if type(src) ~= "table" then return nil, "step " .. step .. " is missing" end
+		if type(src) ~= "table" then return nil, "step " .. step .. Tx" is missing" end
 		local name = tostring(src.Name or ""):gsub("[%c]", ""):sub(1, 24)
-		if name == "" then return nil, "step " .. step .. " has no name" end
+		if name == "" then return nil, "step " .. step .. Tx" has no name" end
 		local spec = {Name = name, Skills = {},
 			HP = math.max(0, math.min(MAX_TIER[step], math.floor(tonumber(src.HP) or 0))),
 			SP = math.max(0, math.min(MAX_TIER[step], math.floor(tonumber(src.SP) or 0))),
 			Stats = STATS_NAME[tonumber(src.Stats)] and tonumber(src.Stats) or 1}
 		for k, v in pairs(type(src.Skills) == "table" and src.Skills or {}) do
 			local id, m = skillId(k), capValue(v)
-			if not id then return nil, "unknown skill: " .. tostring(k) end
-			if not m then return nil, "unknown cap: " .. tostring(v) end
+			if not id then return nil, Tx"unknown skill: " .. tostring(k) end
+			if not m then return nil, Tx"unknown cap: " .. tostring(v) end
 			spec.Skills[id] = m > 0 and m or nil
 		end
 		if type(src.Spells) == "table" then
@@ -1117,7 +1118,7 @@ local function importText(text)
 			for _, v in ipairs(src.Spells) do
 				local spell = tonumber(v)
 				if not spell or spell < 1 or spell > 99 or spell ~= math.floor(spell) then
-					return nil, "unknown spell: " .. tostring(v)
+					return nil, Tx"unknown spell: " .. tostring(v)
 				end
 				spec.Spells[spell] = true
 			end
@@ -1135,7 +1136,7 @@ end
 
 local function fileName(name)
 	local s = tostring(name):gsub("[^%w%-' ]", "_"):match("^%s*(.-)%s*$")
-	return EXPORT_DIR .. "/" .. (s ~= "" and s or "Custom class") .. ".txt"
+	return EXPORT_DIR .. "/" .. (s ~= "" and s or Tx"Custom class") .. ".txt"
 end
 
 -- writes the build into CustomClasses/<base name>.txt; returns the path
@@ -1143,7 +1144,7 @@ local function exportBuild(fam)
 	if os.mkdir then pcall(os.mkdir, EXPORT_DIR) end
 	local path = fileName(fam.Steps[1].Name)
 	local f, err = io.open(path, "wb")
-	if not f then return nil, "can't write " .. path .. ": " .. tostring(err) end
+	if not f then return nil, Tx"can't write " .. path .. ": " .. tostring(err) end
 	f:write(exportText(fam))
 	f:close()
 	return path
@@ -1160,7 +1161,7 @@ end
 
 local function importFile(p)
 	local f, err = io.open(p, "rb")
-	if not f then return nil, "can't read " .. tostring(p) .. ": " .. tostring(err) end
+	if not f then return nil, Tx"can't read " .. tostring(p) .. ": " .. tostring(err) end
 	local text = f:read("*a")
 	f:close()
 	return importText(text)

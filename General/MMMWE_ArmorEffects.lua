@@ -25,6 +25,7 @@
 --]]
 
 local MF = Merge.Functions
+local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 local SK = const.Skills
 
 ---------------------------------------------------------------------------
@@ -101,7 +102,7 @@ end
 function MF.ChainShrugsOff(pl)
 	local c = MF.ChainShrugChance(pl)
 	if c > 0 and math.random() * 100 < c then
-		Game.ShowStatusText(string.format("%s's chain mail turns the blow aside", pl.Name))
+		Game.ShowStatusText(string.format(Tx"%s's chain mail turns the blow aside", pl.Name))
 		return true
 	end
 	return false
@@ -128,7 +129,7 @@ end
 
 function MF.ArmorEffectsInfo(pl)
 	pl = pl or Party[math.max(Game.CurrentPlayer, 0)]
-	return string.format("dodge %+.1f%%, recovery %+d, shrug off %.1f%%, plate reduction %.1f",
+	return string.format(Tx"dodge %+.1f%%, recovery %+d, shrug off %.1f%%, plate reduction %.1f",
 		MF.ArmorDodgeMod(pl), MF.ArmorRecoveryMod(pl), MF.ChainShrugChance(pl), MF.PlateFlatReduction(pl))
 end
 

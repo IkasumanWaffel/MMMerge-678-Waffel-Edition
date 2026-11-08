@@ -24,6 +24,7 @@
 --]]
 
 local MF = Merge.Functions
+local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 local SK = const.Skills
 
 ---------------------------------------------------------------------------
@@ -109,7 +110,7 @@ local function addExtraLoot(id)
 		end
 	end
 	if found > 0 then
-		Game.ShowStatusText(string.format("%s spots %d hidden item%s!", pl.Name, found,
+		Game.ShowStatusText(string.format(Tx"%s spots %d hidden item%s!", pl.Name, found,
 			found == 1 and "" or "s"))
 		log("chest %d: %d extra item(s), level %d", id, found, level)
 	end

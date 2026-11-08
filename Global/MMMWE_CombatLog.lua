@@ -2,6 +2,7 @@
 -- v2: Added permanent enchantment damage from Concurrent Enchantments
 local LogId = "CombatLog"
 local MF = Merge.Functions
+local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 MF.LogInit1(LogId)
 
 local user32 = mem.dll.user32
@@ -228,9 +229,9 @@ local function postAttack(a)
     if total <= 0 then return end
     local msg
     if #parts == 1 then
-        msg = string.format("%s hits %s for %s damage", a.playerName, a.monsterName, parts[1])
+        msg = string.format(Tx"%s hits %s for %s damage", a.playerName, a.monsterName, parts[1])
     else
-        msg = string.format("%s hits %s for %d damage (%s)", a.playerName, a.monsterName,
+        msg = string.format(Tx"%s hits %s for %d damage (%s)", a.playerName, a.monsterName,
             total, table.concat(parts, ", "))
     end
     pushMessage(msg, biggest)
@@ -772,7 +773,7 @@ function events.KeyDown(t)
             clearOverlay()
         end
         simulateRightClick()
-        Game.ShowStatusText("Combat Log " ..
+        Game.ShowStatusText(Tx"Combat Log " ..
             (overlayActive and "ON" or "OFF"))
     end
 end

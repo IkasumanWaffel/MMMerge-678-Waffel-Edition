@@ -79,6 +79,7 @@
 --]]
 
 local MF, MT = Merge.Functions, Merge.Tables
+local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 local u1, u2, u4, i4 = mem.u1, mem.u2, mem.u4, mem.i4
 
 ---------------------------------------------------------------------------
@@ -157,169 +158,169 @@ local RAGE = {
 -- spell spots the abilities use, the page they are on (0 = Fire), and when they unlock
 local ABILITIES = {
 	RageStrike = {Spell = 2, Stage = 0, Cost = 15, NotTroll = false,
-		Name = "Rage Strike",
-		Desc = "A furious blow at the target in melee reach: +50% damage, and 10% more often a critical blow. Use it as the attack spell to strike with it whenever there is enough Rage; without enough Rage it is a normal attack.",
-		Lines = {"15 Rage", "+50% damage, 10% more often a critical blow", "Barbarian", "Without enough Rage: a normal attack"},
+		Name = Tx"Rage Strike",
+		Desc = Tx"A furious blow at the target in melee reach: +50% damage, and 10% more often a critical blow. Use it as the attack spell to strike with it whenever there is enough Rage; without enough Rage it is a normal attack.",
+		Lines = {Tx"15 Rage", Tx"+50% damage, 10% more often a critical blow", Tx"Barbarian", Tx"Without enough Rage: a normal attack"},
 		Icon = {"sbrg01a", "sbrg01b"},},
 	WarCry = {Spell = 5, Stage = 1, Cost = 40, NotTroll = true,
-		Name = "War Cry",
-		Desc = "A terrifying roar. Monsters around may flee in fear (resisted by Mind resistance), and the party deals +10% melee damage for a while.",
-		Lines = {"40 Rage", "Monsters around may flee (Mind resistance); party +10% melee damage", "Berserker (not Trolls)", "Fear lasts 2 minutes, the party bonus 5 minutes"},
+		Name = Tx"War Cry",
+		Desc = Tx"A terrifying roar. Monsters around may flee in fear (resisted by Mind resistance), and the party deals +10% melee damage for a while.",
+		Lines = {Tx"40 Rage", Tx"Monsters around may flee (Mind resistance); party +10% melee damage", Tx"Berserker (not Trolls)", Tx"Fear lasts 2 minutes, the party bonus 5 minutes"},
 		Icon = {"sbrg02a", "sbrg02b"},},
 	TrollsBlood = {Spell = 3, Stage = 1, Cost = 40, TrollOnly = true,
-		Name = "Troll's Blood",
-		Desc = "The troll's blood boils and mends the wounds: heals 20% of maximum Hit Points over a short time.",
-		Lines = {"40 Rage", "Heals 20% of maximum Hit Points over 2 minutes", "Troll Berserker", "Trolls have it instead of War Cry"},
+		Name = Tx"Troll's Blood",
+		Desc = Tx"The troll's blood boils and mends the wounds: heals 20% of maximum Hit Points over a short time.",
+		Lines = {Tx"40 Rage", Tx"Heals 20% of maximum Hit Points over 2 minutes", Tx"Troll Berserker", Tx"Trolls have it instead of War Cry"},
 		Icon = {"sbrg03a", "sbrg03b"},},
 	Berserk = {Spell = 8, Stage = 2, Cost = 70,
-		Name = "Berserk",
-		Desc = "A frenzy: 20% faster attacks and immunity to fear, sleep and paralysis for a while, but 15% more damage taken.",
-		Lines = {"70 Rage", "-20% attack recovery; immune to fear, sleep and paralysis", "Warmonger", "Takes 15% more damage; lasts 5 minutes"},
+		Name = Tx"Berserk",
+		Desc = Tx"A frenzy: 20% faster attacks and immunity to fear, sleep and paralysis for a while, but 15% more damage taken.",
+		Lines = {Tx"70 Rage", Tx"-20% attack recovery; immune to fear, sleep and paralysis", Tx"Warmonger", Tx"Takes 15% more damage; lasts 5 minutes"},
 		Icon = {"sbrg04a", "sbrg04b"},},
 
 	-- Knights (Air page); the Defensive stance also for Paladins
-	PowerStance = {Spell = 12, Stage = 0, Cost = 0, Stance = "Power",
-		Name = "Power Stance",
-		Desc = "A stance for crushing blows: more melee damage and harder critical hits, at the price of slower attacks. Use it again to leave the stance; only one stance is active at a time.",
-		Lines = {"Free (a stance)", "+30% melee damage, +20% critical damage", "Knight", "+20% attack recovery; Champion: +10% more damage"},
+	PowerStance = {Spell = 12, Stage = 0, Cost = 0, Stance = Tn"Power",
+		Name = Tx"Power Stance",
+		Desc = Tx"A stance for crushing blows: more melee damage and harder critical hits, at the price of slower attacks. Use it again to leave the stance; only one stance is active at a time.",
+		Lines = {Tx"Free (a stance)", Tx"+30% melee damage, +20% critical damage", Tx"Knight", Tx"+20% attack recovery; Champion: +10% more damage"},
 		Icon = {"sbkn01a", "sbkn01b"},},
-	AgileStance = {Spell = 13, Stage = 0, Cost = 0, Stance = "Agile",
-		Name = "Agile Stance",
-		Desc = "A light-footed stance: quicker attacks and better dodging, but weaker blows. Use it again to leave the stance; only one stance is active at a time.",
-		Lines = {"Free (a stance)", "-20% attack recovery, +5% dodge chance (with Dodging)", "Knight", "-15% melee damage"},
+	AgileStance = {Spell = 13, Stage = 0, Cost = 0, Stance = Tn"Agile",
+		Name = Tx"Agile Stance",
+		Desc = Tx"A light-footed stance: quicker attacks and better dodging, but weaker blows. Use it again to leave the stance; only one stance is active at a time.",
+		Lines = {Tx"Free (a stance)", Tx"-20% attack recovery, +5% dodge chance (with Dodging)", Tx"Knight", Tx"-15% melee damage"},
 		Icon = {"sbkn02a", "sbkn02b"},},
-	DefensiveStance = {Spell = 14, Stage = 0, Cost = 0, Stance = "Defensive",
-		Name = "Defensive Stance",
-		Desc = "A guarded stance: better blocks and parries, more Armor Class, and monsters turn on the defender more often, but blows are weaker. Use it again to leave the stance; only one stance is active at a time.",
-		Lines = {"Free (a stance)", "+15% block and parry chance, +20% item Armor Class", "Knight, Paladin", "Draws 50% more attacks; -25% melee damage"},
+	DefensiveStance = {Spell = 14, Stage = 0, Cost = 0, Stance = Tn"Defensive",
+		Name = Tx"Defensive Stance",
+		Desc = Tx"A guarded stance: better blocks and parries, more Armor Class, and monsters turn on the defender more often, but blows are weaker. Use it again to leave the stance; only one stance is active at a time.",
+		Lines = {Tx"Free (a stance)", Tx"+15% block and parry chance, +20% item Armor Class", Tx"Knight, Paladin", Tx"Draws 50% more attacks; -25% melee damage"},
 		Icon = {"sbkn03a", "sbkn03b"},},
 	Challenge = {Spell = 18, Stage = 1, Cost = 30,
-		Name = "Challenge",
-		Desc = "The knight calls out a foe (the one under the cursor or the nearest), and it attacks no one else for a while.",
-		Lines = {"30 Resolve", "The target attacks only this knight", "Cavalier", "4 minutes, +5% per Personality bonus point; ends if the knight falls"},
+		Name = Tx"Challenge",
+		Desc = Tx"The knight calls out a foe (the one under the cursor or the nearest), and it attacks no one else for a while.",
+		Lines = {Tx"30 Resolve", Tx"The target attacks only this knight", Tx"Cavalier", Tx"4 minutes, +5% per Personality bonus point; ends if the knight falls"},
 		Icon = {"sbkn04a", "sbkn04b"},},
 	Rally = {Spell = 19, Stage = 2, Cost = 50,
-		Name = "Rally",
-		Desc = "A rallying shout that steadies the party: fear is gone and every member's wounds close a little.",
-		Lines = {"50 Resolve", "Removes fear from the party, heals 5% of maximum Hit Points", "Champion, Templar, Black Knight", "Unconscious members are healed too"},
+		Name = Tx"Rally",
+		Desc = Tx"A rallying shout that steadies the party: fear is gone and every member's wounds close a little.",
+		Lines = {Tx"50 Resolve", Tx"Removes fear from the party, heals 5% of maximum Hit Points", Tx"Champion, Templar, Black Knight", Tx"Unconscious members are healed too"},
 		Icon = {"sbkn05a", "sbkn05b"},},
 
 	-- Monks (Water page)
 	StunningPalm = {Spell = 26, Stage = 0, Cost = 1, Attack = true,
-		Name = "Stunning Palm",
-		Desc = "A blow at the target in melee reach that may stun it (paralysis for a short time; Physical resistance against the Unarmed skill). Use it as the attack spell to strike with it whenever there is Ki; without Ki it is a normal attack.",
-		Lines = {"1 Ki", "A melee hit with a chance to stun the target", "Monk", "Stun 1 minute; the chance grows with Unarmed"},
+		Name = Tx"Stunning Palm",
+		Desc = Tx"A blow at the target in melee reach that may stun it (paralysis for a short time; Physical resistance against the Unarmed skill). Use it as the attack spell to strike with it whenever there is Ki; without Ki it is a normal attack.",
+		Lines = {Tx"1 Ki", Tx"A melee hit with a chance to stun the target", Tx"Monk", Tx"Stun 1 minute; the chance grows with Unarmed"},
 		Icon = {"sbmk01a", "sbmk01b"},},
 	InnerPeace = {Spell = 23, Stage = 0, Cost = 3,
-		Name = "Inner Peace",
-		Desc = "The monk calms body and mind, and poison, disease, fear and weakness leave him.",
-		Lines = {"3 Ki", "Cures own poison, disease, fear and weakness", "Monk", "Only the monk himself"},
+		Name = Tx"Inner Peace",
+		Desc = Tx"The monk calms body and mind, and poison, disease, fear and weakness leave him.",
+		Lines = {Tx"3 Ki", Tx"Cures own poison, disease, fear and weakness", Tx"Monk", Tx"Only the monk himself"},
 		Icon = {"sbmk03a", "sbmk03b"},},
 	Flurry = {Spell = 29, Stage = 1, Cost = 2,
-		Name = "Flurry",
-		Desc = "A melee hit followed by two quick extra strikes at the same target.",
-		Lines = {"2 Ki", "A hit and two extra strikes, 60% damage each", "Initiate Monk", "Recovery of one attack"},
+		Name = Tx"Flurry",
+		Desc = Tx"A melee hit followed by two quick extra strikes at the same target.",
+		Lines = {Tx"2 Ki", Tx"A hit and two extra strikes, 60% damage each", Tx"Initiate Monk", Tx"Recovery of one attack"},
 		Icon = {"sbmk02a", "sbmk02b"},},
 	IronBody = {Spell = 25, Stage = 2, Cost = 3, Branch = "MasterMonk",
-		Name = "Iron Body",
-		Desc = "The monk hardens his body against blows: less physical damage taken for a while. Master Monk, always: Diamond Body (immune to the poison and disease of monsters' attacks, +1 to Fire, Air, Water, Earth, Mind, Body and Spirit resistance per 2 points of Meditation) and Ki strikes (bare-handed blows add 1% of their damage per point of Unarmed, at most 25%, as the element of Fire, Air, Water and Earth the target resists least).",
-		Lines = {"3 Ki", "-20% physical damage taken", "Master Monk", "Lasts 5 minutes"},
+		Name = Tx"Iron Body",
+		Desc = Tx"The monk hardens his body against blows: less physical damage taken for a while. Master Monk, always: Diamond Body (immune to the poison and disease of monsters' attacks, +1 to Fire, Air, Water, Earth, Mind, Body and Spirit resistance per 2 points of Meditation) and Ki strikes (bare-handed blows add 1% of their damage per point of Unarmed, at most 25%, as the element of Fire, Air, Water and Earth the target resists least).",
+		Lines = {Tx"3 Ki", Tx"-20% physical damage taken", Tx"Master Monk", Tx"Lasts 5 minutes"},
 		Icon = {"sbmk04a", "sbmk04b"},},
 	Vanish = {Spell = 27, Stage = 2, Cost = 3, Branch = "Ninja",
-		Name = "Vanish",
-		Desc = "The ninja slips out of sight: monsters lose track of him and attack the others, until he strikes again. His first blow out of hiding tries to stun the target. Ninja, always: with Dodging he can dodge area spells (at half his dodge chance), and bare-handed he may follow up a party member's melee hit with a blow of his own (0.5% per point of Unarmed, at most 25%, 60% damage).",
-		Lines = {"3 Ki", "Monsters don't pick the ninja as their target", "Ninja", "Lasts 2 minutes; ends when the ninja strikes, with a stunning blow"},
+		Name = Tx"Vanish",
+		Desc = Tx"The ninja slips out of sight: monsters lose track of him and attack the others, until he strikes again. His first blow out of hiding tries to stun the target. Ninja, always: with Dodging he can dodge area spells (at half his dodge chance), and bare-handed he may follow up a party member's melee hit with a blow of his own (0.5% per point of Unarmed, at most 25%, 60% damage).",
+		Lines = {Tx"3 Ki", Tx"Monsters don't pick the ninja as their target", Tx"Ninja", Tx"Lasts 2 minutes; ends when the ninja strikes, with a stunning blow"},
 		Icon = {"sbmk05a", "sbmk05b"},},
 	ShadowClone = {Spell = 28, Stage = 2, Cost = 4, Branch = "Ninja",
-		Name = "Shadow Clone",
-		Desc = "The ninja leaves shadow copies of himself around: melee blows and missiles aimed at him strike a clone instead. Area spells still reach him.",
-		Lines = {"4 Ki", "The next 3 melee hits or missiles at the ninja hit a clone", "Ninja", "Lasts 5 minutes or 3 hits"},
+		Name = Tx"Shadow Clone",
+		Desc = Tx"The ninja leaves shadow copies of himself around: melee blows and missiles aimed at him strike a clone instead. Area spells still reach him.",
+		Lines = {Tx"4 Ki", Tx"The next 3 melee hits or missiles at the ninja hit a clone", Tx"Ninja", Tx"Lasts 5 minutes or 3 hits"},
 		Icon = {"sbmk05a", "sbmk05b"},},   -- placeholder pictures until sbmk06a/b are drawn
 
 	-- Thieves (Mind page)
 	Finisher = {Spell = 59, Stage = 0, Cost = 25, Attack = true,
-		Name = "Finisher",
-		Desc = "A blow that spends all combo points (gained by melee hits on the same target): +20% damage and +10% critical chance per point. With 5 points the thief also tries to steal from the target. Use it as the attack spell; without enough Energy it is a normal attack.",
-		Lines = {"25 Energy", "+20% damage, +10% critical chance per combo point", "Thief", "5 points: a steal attempt (Stealing skill)"},
+		Name = Tx"Finisher",
+		Desc = Tx"A blow that spends all combo points (gained by melee hits on the same target): +20% damage and +10% critical chance per point. With 5 points the thief also tries to steal from the target. Use it as the attack spell; without enough Energy it is a normal attack.",
+		Lines = {Tx"25 Energy", Tx"+20% damage, +10% critical chance per combo point", Tx"Thief", Tx"5 points: a steal attempt (Stealing skill)"},
 		Icon = {"sbth01a", "sbth01b"},},
 	PoisonedBlade = {Spell = 58, Stage = 2, Cost = 30, Branch = "Assassin",
-		Name = "Poisoned Blade",
-		Desc = "The assassin coats the blade with poison: the next 5 melee hits deal extra damage, unless the target is immune to Body. The assassin's finishers also crit harder.",
-		Lines = {"30 Energy", "Next 5 melee hits: +25% damage (poison)", "Assassin", "Finishers: +10% critical damage per combo point"},
+		Name = Tx"Poisoned Blade",
+		Desc = Tx"The assassin coats the blade with poison: the next 5 melee hits deal extra damage, unless the target is immune to Body. The assassin's finishers also crit harder.",
+		Lines = {Tx"30 Energy", Tx"Next 5 melee hits: +25% damage (poison)", Tx"Assassin", Tx"Finishers: +10% critical damage per combo point"},
 		Icon = {"sbth02a", "sbth02b"},},
 	ShadowVeil = {Spell = 63, Stage = 2, Cost = 40, Branch = "Spy",
-		Name = "Shadow Veil",
-		Desc = "The spy hides the party in shadows and scouts ahead: Invisibility and Wizard Eye for the party.",
-		Lines = {"40 Energy", "Party Invisibility and Wizard Eye", "Spy", "Lasts 10 minutes; power by the Stealing skill"},
+		Name = Tx"Shadow Veil",
+		Desc = Tx"The spy hides the party in shadows and scouts ahead: Invisibility and Wizard Eye for the party.",
+		Lines = {Tx"40 Energy", Tx"Party Invisibility and Wizard Eye", Tx"Spy", Tx"Lasts 10 minutes; power by the Stealing skill"},
 		Icon = {"sbth03a", "sbth03b"},},
 
 	-- Technicians (Earth page). Icons sbtc01..07 (waffel.icons.lod)
 	Scanner = {Spell = 34, Stage = 0, Cost = 10,
-		Name = "Scanner",
-		Desc = "The technician scans a monster (the one under the cursor or the nearest in sight): its resistances are shown in the status line, and for a while it takes more damage from the whole party, as its weak spots are known.",
-		Lines = {"10 Construction", "Shows the target's resistances; it takes +15% damage from the party", "Technician", "Lasts 3 minutes"},
+		Name = Tx"Scanner",
+		Desc = Tx"The technician scans a monster (the one under the cursor or the nearest in sight): its resistances are shown in the status line, and for a while it takes more damage from the whole party, as its weak spots are known.",
+		Lines = {Tx"10 Construction", Tx"Shows the target's resistances; it takes +15% damage from the party", Tx"Technician", Tx"Lasts 3 minutes"},
 		Icon = {"sbtc07a", "sbtc07b"},},
 	FieldRepair = {Spell = 35, Stage = 0, Cost = 30,
-		Name = "Field Repair",
-		Desc = "A quick fix in the field: the technician tunes the blaster in hand and patches its power cell back up a little.",
-		Lines = {"30 Construction", "Power cell +5% +0.5% per point of Repair (at most +30%)", "Technician", "Needs a blaster in the main hand"},
+		Name = Tx"Field Repair",
+		Desc = Tx"A quick fix in the field: the technician tunes the blaster in hand and patches its power cell back up a little.",
+		Lines = {Tx"30 Construction", Tx"Power cell +5% +0.5% per point of Repair (at most +30%)", Tx"Technician", Tx"Needs a blaster in the main hand"},
 		Icon = {"sbtc06a", "sbtc06b"},},
 	PlasmaGrenade = {Spell = 37, Stage = 1, Cost = 25,
-		Name = "Plasma Grenade",
-		Desc = "A plasma charge thrown in an arc at a monster (the one under the cursor or the nearest in sight). It blows up where it hits - the monster, the ground or a wall - and the blast hits every monster close to it with energy that no resistance stops.",
-		Lines = {"25 Construction", "Energy damage 10 + 1.5 per level + Repair skill x mastery", "Engineer", "Hits every monster near the target"},
+		Name = Tx"Plasma Grenade",
+		Desc = Tx"A plasma charge thrown in an arc at a monster (the one under the cursor or the nearest in sight). It blows up where it hits - the monster, the ground or a wall - and the blast hits every monster close to it with energy that no resistance stops.",
+		Lines = {Tx"25 Construction", Tx"Energy damage 10 + 1.5 per level + Repair skill x mastery", Tx"Engineer", Tx"Hits every monster near the target"},
 		Icon = {"sbtc02a", "sbtc02b"},},
 	Overclock = {Spell = 38, Stage = 1, Cost = 20,
-		Name = "Overclock",
-		Desc = "The technician overrides the blaster's safety limits: the next shots come with almost no recovery (5), but each of them draws twice the power from the cell.",
-		Lines = {"20 Construction", "The next 5 blaster shots have a recovery of 5", "Engineer", "Each of them drains the power cell twice"},
+		Name = Tx"Overclock",
+		Desc = Tx"The technician overrides the blaster's safety limits: the next shots come with almost no recovery (5), but each of them draws twice the power from the cell.",
+		Lines = {Tx"20 Construction", Tx"The next 5 blaster shots have a recovery of 5", Tx"Engineer", Tx"Each of them drains the power cell twice"},
 		Icon = {"sbtc03a", "sbtc03b"},},
 	ShieldProjector = {Spell = 40, Stage = 2, Cost = 35, Branch = "AncientResearcher",
-		Name = "Shield Projector",
-		Desc = "The technician projects energy onto the whole party: every Energy Shield worn gets half of its capacity back and starts recharging at once, and everyone without a shield gets a short-lived barrier.",
-		Lines = {"35 Construction", "Shields +50% and recharging; barriers of 20 + 2 per level", "Ancient Researcher", "Barriers last 3 minutes"},
+		Name = Tx"Shield Projector",
+		Desc = Tx"The technician projects energy onto the whole party: every Energy Shield worn gets half of its capacity back and starts recharging at once, and everyone without a shield gets a short-lived barrier.",
+		Lines = {Tx"35 Construction", Tx"Shields +50% and recharging; barriers of 20 + 2 per level", Tx"Ancient Researcher", Tx"Barriers last 3 minutes"},
 		Icon = {"sbtc04a", "sbtc04b"},},
 	SentryTurret = {Spell = 39, Stage = 2, Cost = 40, Branch = "Scientist",
-		Name = "Sentry Turret",
-		Desc = "The technician sets up an automatic gun in front of the party. It doesn't move, and shoots energy bolts at the monsters it sees until its time runs out or it is destroyed. One turret at a time: casting again repairs it and resets its time.",
-		Lines = {"40 Construction", "A stationary allied turret; grows with level and Repair", "Scientist", "Lasts 5 minutes + half a minute per level"},
+		Name = Tx"Sentry Turret",
+		Desc = Tx"The technician sets up an automatic gun in front of the party. It doesn't move, and shoots energy bolts at the monsters it sees until its time runs out or it is destroyed. One turret at a time: casting again repairs it and resets its time.",
+		Lines = {Tx"40 Construction", Tx"A stationary allied turret; grows with level and Repair", Tx"Scientist", Tx"Lasts 5 minutes + half a minute per level"},
 		Icon = {"sbtc05a", "sbtc05b"},},
 	DeployDroid = {Spell = 36, Stage = 1, Cost = 40,
-		Name = "Deploy Droid",
-		Desc = "The technician assembles a combat droid that fights at the party's side in melee, drawing the attackers' attention and helping to bring single foes down. One droid at a time: casting again repairs it and resets its time. It keeps up with the party on the map, and shuts down when its time runs out or the party leaves the map.",
-		Lines = {"40 Construction", "An allied droid: melee first, an energy shot now and then; grows with level and Repair", "Engineer", "Lasts 20 minutes + 2 per level"},
+		Name = Tx"Deploy Droid",
+		Desc = Tx"The technician assembles a combat droid that fights at the party's side in melee, drawing the attackers' attention and helping to bring single foes down. One droid at a time: casting again repairs it and resets its time. It keeps up with the party on the map, and shuts down when its time runs out or the party leaves the map.",
+		Lines = {Tx"40 Construction", Tx"An allied droid: melee first, an energy shot now and then; grows with level and Repair", Tx"Engineer", Tx"Lasts 20 minutes + 2 per level"},
 		Icon = {"sbtc01a", "sbtc01b"},},
 
 	-- Hybrids (spell points). The spot is the family's (FAMILIES[].Spots) when it differs.
 	AimedShot = {Spell = 70, Stage = 0, Cost = 3, Shot = true,
-		Name = "Aimed Shot",
-		Desc = "The next bow shot is carefully aimed: more damage and a better chance of a critical hit. As the attack spell it is used when the target is out of melee reach.",
-		Lines = {"3 SP", "Next arrow: +25% damage, +15% critical chance", "Archer, Ranger, Deerslayer", "Needs a bow; stays ready until the next shot"},
+		Name = Tx"Aimed Shot",
+		Desc = Tx"The next bow shot is carefully aimed: more damage and a better chance of a critical hit. As the attack spell it is used when the target is out of melee reach.",
+		Lines = {Tx"3 SP", Tx"Next arrow: +25% damage, +15% critical chance", Tx"Archer, Ranger, Deerslayer", Tx"Needs a bow; stays ready until the next shot"},
 		Icon = {"sbhy01a", "sbhy01b"},},
 	Volley = {Spell = 69, Stage = 2, Cost = 10, Shot = true, Branches = {MasterArcher = true, Sniper = true},
-		Name = "Volley",
-		Desc = "A quick series of shots: the next 3 bow attacks recover much faster.",
-		Lines = {"10 SP", "Next 3 bow attacks: -66% recovery", "Master Archer, Sniper", "Needs a bow"},
+		Name = Tx"Volley",
+		Desc = Tx"A quick series of shots: the next 3 bow attacks recover much faster.",
+		Lines = {Tx"10 SP", Tx"Next 3 bow attacks: -66% recovery", Tx"Master Archer, Sniper", Tx"Needs a bow"},
 		Icon = {"sbhy02a", "sbhy02b"},},
 	DarkfireArrows = {Spell = 69, Stage = 1, Cost = 12, Imbue = true,
-		Name = "Darkfire Arrows",
-		Desc = "The dark elf imbues the arrows with Darkfire, the blend of Fire and Dark of the Darkfire Bolt: the next 5 arrows deal extra damage that the target resists with its Fire or Dark resistance, whichever is lower.",
-		Lines = {"12 SP", "Next 5 arrows: +30% of the arrow's damage +2 per Dark Elf skill point", "Pioneer", "Fire or Dark resistance, the lower one"},
+		Name = Tx"Darkfire Arrows",
+		Desc = Tx"The dark elf imbues the arrows with Darkfire, the blend of Fire and Dark of the Darkfire Bolt: the next 5 arrows deal extra damage that the target resists with its Fire or Dark resistance, whichever is lower.",
+		Lines = {Tx"12 SP", Tx"Next 5 arrows: +30% of the arrow's damage +2 per Dark Elf skill point", Tx"Pioneer", Tx"Fire or Dark resistance, the lower one"},
 		Icon = {"sbde04a", "sbde04b"},},
 	MarkPrey = {Spell = 81, Stage = 1, Cost = 8,
-		Name = "Mark Prey",
-		Desc = "The hunter marks a foe (the one under the cursor or the nearest), and the whole party hits it harder for a while.",
-		Lines = {"8 SP", "The target takes +15% damage from the party", "Hunter, Minotaur Lord", "Lasts 3 minutes"},
+		Name = Tx"Mark Prey",
+		Desc = Tx"The hunter marks a foe (the one under the cursor or the nearest), and the whole party hits it harder for a while.",
+		Lines = {Tx"8 SP", Tx"The target takes +15% damage from the party", Tx"Hunter, Minotaur Lord", Tx"Lasts 3 minutes"},
 		Icon = {"sbhy03a", "sbhy03b"},},
 	Gore = {Spell = 2, Stage = 0, Cost = 4, Attack = true,
-		Name = "Gore",
-		Desc = "A charge with the horns at the target in melee reach: +40% damage and a chance to stagger it. Use it as the attack spell; without enough spell points it is a normal attack.",
-		Lines = {"4 SP", "+40% damage, 25% chance to stagger (30 seconds)", "Minotaur", "Melee reach"},
+		Name = Tx"Gore",
+		Desc = Tx"A charge with the horns at the target in melee reach: +40% damage and a chance to stagger it. Use it as the attack spell; without enough spell points it is a normal attack.",
+		Lines = {Tx"4 SP", Tx"+40% damage, 25% chance to stagger (30 seconds)", Tx"Minotaur", Tx"Melee reach"},
 		Icon = {"sbhy04a", "sbhy04b"},},
 	HerdFury = {Spell = 5, Stage = 1, Cost = 15,
-		Name = "Herd Fury",
-		Desc = "The minotaur's battle fury: more melee damage and a tougher hide for a while.",
-		Lines = {"15 SP", "+15% melee damage, -10% physical damage taken", "Minotaur Headsman", "Lasts 5 minutes"},
+		Name = Tx"Herd Fury",
+		Desc = Tx"The minotaur's battle fury: more melee damage and a tougher hide for a while.",
+		Lines = {Tx"15 SP", Tx"+15% melee damage, -10% physical damage taken", Tx"Minotaur Headsman", Tx"Lasts 5 minutes"},
 		Icon = {"sbhy05a", "sbhy05b"},},
 }
 
@@ -441,24 +442,24 @@ local TROLLS_BLOOD   = 0.20
 
 -- class families: Class Extra.txt "Kind" of the family's first class
 local FAMILIES = {
-	[12] = {Name = "Barbarian", Resource = "Rage", Page = 0,
+	[12] = {Name = Tn"Barbarian", Resource = Tn"Rage", Page = 0,
 		Abilities = {"RageStrike", "WarCry", "TrollsBlood", "Berserk"}},
-	[6]  = {Name = "Knight", Resource = "Resolve", Page = 1,
+	[6]  = {Name = Tn"Knight", Resource = Tn"Resolve", Page = 1,
 		Abilities = {"PowerStance", "AgileStance", "DefensiveStance", "Challenge", "Rally"}},
-	[9]  = {Name = "Paladin", Page = 1, Hybrid = true, Abilities = {"DefensiveStance"}},   -- spell points
-	[8]  = {Name = "Monk", Resource = "Ki", Page = 2,
+	[9]  = {Name = Tn"Paladin", Page = 1, Hybrid = true, Abilities = {"DefensiveStance"}},   -- spell points
+	[8]  = {Name = Tn"Monk", Resource = "Ki", Page = 2,
 		Abilities = {"StunningPalm", "InnerPeace", "Flurry", "IronBody", "Vanish", "ShadowClone"}},
-	[4]  = {Name = "Dragon", Resource = "Breath", Abilities = {}},   -- no ability page
-	[15] = {Name = "Technician", Resource = "Construction", Page = 3,
+	[4]  = {Name = Tn"Dragon", Resource = Tn"Breath", Abilities = {}},   -- no ability page
+	[15] = {Name = Tn"Technician", Resource = Tn"Construction", Page = 3,
 		Abilities = {"Scanner", "FieldRepair", "DeployDroid", "PlasmaGrenade", "Overclock", "ShieldProjector", "SentryTurret"}},
-	[11] = {Name = "Thief", Resource = "Energy", Page = 5,
+	[11] = {Name = Tn"Thief", Resource = Tn"Energy", Page = 5,
 		Abilities = {"Finisher", "PoisonedBlade", "ShadowVeil"}},
 	-- hybrids on spell points (Hybrid = combat refill)
-	[1]  = {Name = "Archer", Page = 6, Hybrid = true, Abilities = {"AimedShot", "Volley"}},
-	[3]  = {Name = "Dark Elf", Page = 6, Hybrid = true, Abilities = {"AimedShot", "DarkfireArrows"}},
-	[10] = {Name = "Ranger", Page = 7, Hybrid = true, Abilities = {"AimedShot", "MarkPrey"},
+	[1]  = {Name = Tn"Archer", Page = 6, Hybrid = true, Abilities = {"AimedShot", "Volley"}},
+	[3]  = {Name = Tn"Dark Elf", Page = 6, Hybrid = true, Abilities = {"AimedShot", "DarkfireArrows"}},
+	[10] = {Name = Tn"Ranger", Page = 7, Hybrid = true, Abilities = {"AimedShot", "MarkPrey"},
 		Spots = {AimedShot = 78, MarkPrey = 81}},
-	[7]  = {Name = "Minotaur", Page = 0, Hybrid = true, Abilities = {"Gore", "HerdFury", "MarkPrey"},
+	[7]  = {Name = Tn"Minotaur", Page = 0, Hybrid = true, Abilities = {"Gore", "HerdFury", "MarkPrey"},
 		Spots = {MarkPrey = 6}, Stages = {MarkPrey = 2}},
 }
 
@@ -475,16 +476,16 @@ for name, r in pairs(RESOURCES) do MF.ResourceColors[name] = r.Color end
 -- and the regeneration line (MMMWE_Main.lua) MF.ResourceRegenText
 local SP_LABEL_TXT = 212
 local RESOURCE_DESC = {
-	Rage = "Rage fills when the barbarian takes hits (the heavier the blow, the more) and a little with every melee hit landed. After a while without being hit it slowly drains away, so resting empties it; potions and Meditation don't restore it. Every 5 Rage adds 1% melee damage. At 50 Rage and more the barbarian fights recklessly: -10% of the items' Armor Class (Trolls instead take 5% less physical damage). Rage pays for the barbarian's abilities on the Fire page of the spellbook. Its maximum is 100, +2 per point of Personality bonus.",
-	Resolve = "Resolve grows as the knight holds the line: +5 for every block or parry and +2 for every hit taken, twice as much in the Defensive stance. After a while without being hit it slowly fades, so resting empties it; potions and temples don't restore it. Resolve pays for Challenge and Rally (Air page of the spellbook); the stances there are free. Its maximum is 100, +2 per point of Personality bonus.",
-	Ki = "Ki is the monk's inner strength, counted in charges: 5, +2 for every promotion and +1 for every 2 points of Meditation (at most 15). It refills on its own, 1 charge every 5 minutes, sooner with Meditation (down to half the time) and 2% faster per point of Personality bonus. Ki pays for the monk's abilities on the Water page of the spellbook, and for his spells: a fifth of their spell point cost.",
-	Breath = "Breath is the fire in the dragon's chest. It refills on its own, 10 every game minute. Every breath attack costs 25, so a dragon breathes every few attacks and fights with claws and teeth in between; without enough Breath it can't breathe at a far target. The Dragon abilities (Fear, Flame Blast, Flight, Wing Buffet) cost 2 Breath per spell point.",
-	Construction = "Construction is the technician's stock of parts and power for building. Its maximum is 100, +2 per point of Intellect bonus. It refills on its own, 2 every game minute (2% faster per point of Intellect bonus), and +5 for every monster the party brings down (salvage). It pays for the technician's devices on the Earth page of the spellbook. The Energy Shield doesn't use it: the shield has its own charge.",
-	Energy = "Energy is the thief's quickness. It refills fast, 10 every game minute, and pays for the thief's tricks on the Mind page of the spellbook and for his spells (5 Energy per spell point). Melee hits on the same target build combo points (up to 5, shown in the status line); the Finisher spends them all. Its maximum is 100, +2 per point of Personality bonus.",
+	Rage = Tx"Rage fills when the barbarian takes hits (the heavier the blow, the more) and a little with every melee hit landed. After a while without being hit it slowly drains away, so resting empties it; potions and Meditation don't restore it. Every 5 Rage adds 1% melee damage. At 50 Rage and more the barbarian fights recklessly: -10% of the items' Armor Class (Trolls instead take 5% less physical damage). Rage pays for the barbarian's abilities on the Fire page of the spellbook. Its maximum is 100, +2 per point of Personality bonus.",
+	Resolve = Tx"Resolve grows as the knight holds the line: +5 for every block or parry and +2 for every hit taken, twice as much in the Defensive stance. After a while without being hit it slowly fades, so resting empties it; potions and temples don't restore it. Resolve pays for Challenge and Rally (Air page of the spellbook); the stances there are free. Its maximum is 100, +2 per point of Personality bonus.",
+	Ki = Tx"Ki is the monk's inner strength, counted in charges: 5, +2 for every promotion and +1 for every 2 points of Meditation (at most 15). It refills on its own, 1 charge every 5 minutes, sooner with Meditation (down to half the time) and 2% faster per point of Personality bonus. Ki pays for the monk's abilities on the Water page of the spellbook, and for his spells: a fifth of their spell point cost.",
+	Breath = Tx"Breath is the fire in the dragon's chest. It refills on its own, 10 every game minute. Every breath attack costs 25, so a dragon breathes every few attacks and fights with claws and teeth in between; without enough Breath it can't breathe at a far target. The Dragon abilities (Fear, Flame Blast, Flight, Wing Buffet) cost 2 Breath per spell point.",
+	Construction = Tx"Construction is the technician's stock of parts and power for building. Its maximum is 100, +2 per point of Intellect bonus. It refills on its own, 2 every game minute (2% faster per point of Intellect bonus), and +5 for every monster the party brings down (salvage). It pays for the technician's devices on the Earth page of the spellbook. The Energy Shield doesn't use it: the shield has its own charge.",
+	Energy = Tx"Energy is the thief's quickness. It refills fast, 10 every game minute, and pays for the thief's tricks on the Mind page of the spellbook and for his spells (5 Energy per spell point). Melee hits on the same target build combo points (up to 5, shown in the status line); the Finisher spends them all. Its maximum is 100, +2 per point of Personality bonus.",
 }
 function MF.ResourceRegenText(res)
 	if RESOURCES[res] then return "" end
-	return "no regen"
+	return Tx"no regen"
 end
 
 ---------------------------------------------------------------------------
@@ -855,7 +856,7 @@ local function swapTexts(pl)
 			for i = 0, 6 do o[i + 1] = u4[p + i * 4] end
 			swapped[id] = o
 			local name = a.Name
-			if a.Stance and state(playerIndex(pl)).Stance == a.Stance then name = name .. " (on)" end
+			if a.Stance and state(playerIndex(pl)).Stance == a.Stance then name = name .. Tx" (on)" end
 			u4[p] = cstr(name)
 			u4[p + 4] = cstr(name)
 			u4[p + 8] = cstr(a.Desc)
@@ -865,12 +866,12 @@ local function swapTexts(pl)
 	local fam = familyOf(pl)
 	if fam.Resource then
 		costTxtSaved = u4[Game.GlobalTxt["?ptr"] + 522 * 4]
-		u4[Game.GlobalTxt["?ptr"] + 522 * 4] = cstr(fam.Resource .. " cost")
+		u4[Game.GlobalTxt["?ptr"] + 522 * 4] = cstr(string.format(Tx"%s cost", Tx(fam.Resource)))
 	end
 	-- the school name in the description: the family's abilities
 	local addr = SKILL_NAMES + page * 4
 	skillNameSaved = {addr, u4[addr]}
-	u4[addr] = cstr(fam.Name .. " Ability")
+	u4[addr] = cstr(string.format(Tx"%s Ability", Tx(fam.Name)))
 	swappedFor = pl["?ptr"]
 end
 
@@ -1030,7 +1031,7 @@ local function stealFrom(pl, mon)
 			mem.call(0x491A27, 1, 0xB20E90, it["?ptr"])
 			mem.call(0x403135, 1, it["?ptr"])
 			Mouse.Item.Stolen = 1
-			Game.ShowStatusText(string.format("%s lifts something from the foe!", pl.Name))
+			Game.ShowStatusText(string.format(Tx"%s lifts something from the foe!", pl.Name))
 			return
 		end
 	end
@@ -1167,10 +1168,10 @@ local function armShot(pl, key, a)
 	spendAbility(pl, a.Cost)
 	if key == "AimedShot" then
 		e.Aimed = true
-		Game.ShowStatusText(string.format("%s takes aim", pl.Name), 2)
+		Game.ShowStatusText(string.format(Tx"%s takes aim", pl.Name), 2)
 	else
 		e.Volley = VOLLEY_SHOTS
-		Game.ShowStatusText(string.format("%s readies a volley", pl.Name), 2)
+		Game.ShowStatusText(string.format(Tx"%s readies a volley", pl.Name), 2)
 	end
 end
 
@@ -1240,7 +1241,7 @@ local function deployDroid(pl, pi)
 		mon.HP = mon.FullHP
 		d.Until = untilT
 		mon.SpellBuffs[const.MonsterBuff.Summoned or 2].ExpireTime = untilT
-		Game.ShowStatusText(string.format("%s repairs the droid", pl.Name))
+		Game.ShowStatusText(string.format(Tx"%s repairs the droid", pl.Name))
 		return true
 	end
 	local id = DROID.Models[math.min(math.max(stage, 1), 2)]
@@ -1293,7 +1294,7 @@ local function deployDroid(pl, pi)
 	b.ExpireTime = untilT
 	b.Power, b.Skill = 1, 1
 	droids()[pi] = {Map = Map.Name, Index = mi or monIndex(m), Until = untilT}
-	Game.ShowStatusText(string.format("%s deploys a droid", pl.Name))
+	Game.ShowStatusText(string.format(Tx"%s deploys a droid", pl.Name))
 	return true
 end
 
@@ -1307,7 +1308,7 @@ local function deployTurret(pl, pi)
 		mon.HP = mon.FullHP
 		d.Until = untilT
 		mon.SpellBuffs[const.MonsterBuff.Summoned or 2].ExpireTime = untilT
-		Game.ShowStatusText(string.format("%s repairs the turret", pl.Name))
+		Game.ShowStatusText(string.format(Tx"%s repairs the turret", pl.Name))
 		return true
 	end
 	local x, y, z = partyPoint(DROID.SpawnDist)
@@ -1348,7 +1349,7 @@ local function deployTurret(pl, pi)
 	b.ExpireTime = untilT
 	b.Power, b.Skill = 1, 1
 	droids()[key] = {Map = Map.Name, Index = mi or monIndex(m), Until = untilT, Turret = true}
-	Game.ShowStatusText(string.format("%s sets up a sentry turret", pl.Name))
+	Game.ShowStatusText(string.format(Tx"%s sets up a sentry turret", pl.Name))
 	return true
 end
 
@@ -1367,7 +1368,7 @@ local function scanText(mon)
 	local name = Game.MonstersTxt[mon.Id].Name
 	if not lo then return name .. " scanned" end
 	local function val(v) return v >= const.MonsterImmune and "immune" or tostring(v) end
-	return string.format("%s: weak %s %s, strong %s %s", name, lo[1], val(lo[2]), hi[1], val(hi[2]))
+	return string.format(Tx"%s: weak %s %s, strong %s %s", name, lo[1], val(lo[2]), hi[1], val(hi[2]))
 end
 
 -- Plasma Grenade: a thrown plasma sphere (an object that falls) aimed at the monster; it blows
@@ -1463,7 +1464,7 @@ local function detonate(g, x, y, z, why)
 		end
 	end
 	local pl = Party.PlayersArray[g.pi]
-	Game.ShowStatusText(string.format("%s's plasma grenade hits %d monster(s)", pl and pl.Name or "The", n), 3)
+	Game.ShowStatusText(string.format(Tx"%s's plasma grenade hits %d monster(s)", pl and pl.Name or Tx"The", n), 3)
 end
 -- a grenade that touches a monster: the engine's hit is replaced by the blast
 function events.MonsterAttacked(t, attacker)
@@ -1563,17 +1564,17 @@ local function castAbility(pl, pi, spell, targetRef)
 		if key == "RageStrike" or a.Attack then
 			DoGameAction(23, 0, 0)        -- a normal attack, as with spell points
 		else
-			failCast(pl, string.format("Not enough %s (%d needed)", resName or "spell points", a.Cost))
+			failCast(pl, string.format(Tx"Not enough %s (%d needed)", resName and Tx(resName) or Tx"spell points", a.Cost))
 		end
 		return true
 	end
 	if a.Stance then
 		if e.Stance == a.Stance then
 			e.Stance = nil
-			Game.ShowStatusText(string.format("%s leaves the %s stance", pl.Name, a.Stance))
+			Game.ShowStatusText(string.format(Tx"%s leaves the %s stance", pl.Name, Tx(a.Stance)))
 		else
 			e.Stance = a.Stance
-			Game.ShowStatusText(string.format("%s takes the %s stance", pl.Name, a.Stance))
+			Game.ShowStatusText(string.format(Tx"%s takes the %s stance", pl.Name, Tx(a.Stance)))
 		end
 		Game.PlaySound(44587)
 		swappedFor = nil          -- the "(on)" mark in the book
@@ -1582,13 +1583,13 @@ local function castAbility(pl, pi, spell, targetRef)
 	elseif key == "Challenge" then
 		local mi = meleeTarget(targetRef, CHALLENGE_RANGE)
 		if not mi then
-			failCast(pl, "No enemy to challenge")
+			failCast(pl, Tx"No enemy to challenge")
 			return true
 		end
 		local persBonus = math.max(0, Game.GetStatisticEffect(pl:GetPersonality()))
 		Challenged[mi] = {pi = pi, Until = Game.Time + math.floor(CHALLENGE_TIME * (1 + CHALLENGE_PERS * persBonus))}
 		local mon = Map.Monsters[mi]
-		Game.ShowStatusText(string.format("%s challenges %s!", pl.Name, Game.MonstersTxt[mon.Id].Name))
+		Game.ShowStatusText(string.format(Tx"%s challenges %s!", pl.Name, Game.MonstersTxt[mon.Id].Name))
 		pl:SetRecoveryDelay(100)
 	elseif key == "Rally" then
 		local healed = 0
@@ -1604,48 +1605,48 @@ local function castAbility(pl, pi, spell, targetRef)
 				end
 			end
 		end
-		Game.ShowStatusText(string.format("%s rallies the party!", pl.Name))
+		Game.ShowStatusText(string.format(Tx"%s rallies the party!", pl.Name))
 		pl:SetRecoveryDelay(100)
 	elseif key == "StunningPalm" or key == "Flurry" then
 		if not bareHanded(pl) then
-			failCast(pl, string.format("%s needs bare hands", a.Name))
+			failCast(pl, string.format(Tx"%s needs bare hands", a.Name))
 			return true
 		end
 		local mi = meleeTarget(targetRef)
 		if not mi then
-			failCast(pl, "No enemy in reach")
+			failCast(pl, Tx"No enemy in reach")
 			return true
 		end
 		Pending[#Pending + 1] = {Kind = key, pi = pi, mi = mi}
 		pl:SetRecoveryDelay(pl:GetAttackDelay(false))
 	elseif a.Shot then
 		if not hasBow(pl) then
-			failCast(pl, string.format("%s needs a bow", a.Name))
+			failCast(pl, string.format(Tx"%s needs a bow", a.Name))
 			return true
 		end
 		armShot(pl, key, a)
 		return true
 	elseif a.Imbue then
 		if not hasBow(pl) then
-			failCast(pl, string.format("%s needs a bow", a.Name))
+			failCast(pl, string.format(Tx"%s needs a bow", a.Name))
 			return true
 		end
 		e.Darkfire = DARKFIRE_ARROWS
-		Game.ShowStatusText(string.format("%s's arrows smoulder with Darkfire", pl.Name))
+		Game.ShowStatusText(string.format(Tx"%s's arrows smoulder with Darkfire", pl.Name))
 		pl:SetRecoveryDelay(60)
 	elseif key == "MarkPrey" then
 		local mi = meleeTarget(targetRef, MARK_RANGE)
 		if not mi then
-			failCast(pl, "No prey in sight")
+			failCast(pl, Tx"No prey in sight")
 			return true
 		end
 		Marked[mi] = Game.Time + MARK_TIME
-		Game.ShowStatusText(string.format("%s marks %s", pl.Name, Game.MonstersTxt[Map.Monsters[mi].Id].Name))
+		Game.ShowStatusText(string.format(Tx"%s marks %s", pl.Name, Game.MonstersTxt[Map.Monsters[mi].Id].Name))
 		pl:SetRecoveryDelay(100)
 	elseif key == "Gore" then
 		local mi = meleeTarget(targetRef)
 		if not mi then
-			failCast(pl, "No enemy in reach")
+			failCast(pl, Tx"No enemy in reach")
 			return true
 		end
 		Pending[#Pending + 1] = {Kind = key, pi = pi, mi = mi}
@@ -1653,7 +1654,7 @@ local function castAbility(pl, pi, spell, targetRef)
 	elseif key == "Scanner" then
 		local mi = meleeTarget(targetRef, TECH.ScanRange)
 		if not mi then
-			failCast(pl, "Nothing to scan in sight")
+			failCast(pl, Tx"Nothing to scan in sight")
 			return true
 		end
 		Marked[mi] = Game.Time + TECH.ScanTime
@@ -1662,69 +1663,69 @@ local function castAbility(pl, pi, spell, targetRef)
 	elseif key == "FieldRepair" then
 		local gun = MF.BlasterOf and MF.BlasterOf(pl)
 		if not gun or not MF.BlasterRecharge then
-			failCast(pl, "Hold a blaster to repair it in the field")
+			failCast(pl, Tx"Hold a blaster to repair it in the field")
 			return true
 		end
 		local RS = SplitSkill(MF.TechRepairSkill and MF.TechRepairSkill(pl) or pl:GetSkill(const.Skills.Repair))
 		local pct = math.min(TECH.RepairCellMax, TECH.RepairCell + TECH.RepairCellPerSkill * RS)
 		MF.BlasterRecharge(gun, pct)
 		evt.PlaySound{12050}             -- the blaster upgrade's sound (MMMWE_Blasters.lua)
-		Game.ShowStatusText(string.format("%s patches the blaster up: power cell %d%%", pl.Name, math.floor(gun.MaxCharges / 2)))
+		Game.ShowStatusText(string.format(Tx"%s patches the blaster up: power cell %d%%", pl.Name, math.floor(gun.MaxCharges / 2)))
 		pl:SetRecoveryDelay(150)
 	elseif key == "PlasmaGrenade" then
 		local mi = meleeTarget(targetRef, TECH.GrenadeRange)
 		if not mi or not MF.QueueForcedHit then
-			failCast(pl, "No target for the grenade")
+			failCast(pl, Tx"No target for the grenade")
 			return true
 		end
 		local L = math.max(1, pl.LevelBase or 1)
 		local RS, RM = SplitSkill(MF.TechRepairSkill and MF.TechRepairSkill(pl) or pl:GetSkill(const.Skills.Repair))
 		local dmg = math.floor(TECH.GrenadeBase + TECH.GrenadePerLevel * L + RS * RM)
 		if not throwGrenade(pl, pi, mi, dmg) then
-			failCast(pl, "The grenade can't be thrown here")
+			failCast(pl, Tx"The grenade can't be thrown here")
 			return true
 		end
-		Game.ShowStatusText(string.format("%s throws a plasma grenade", pl.Name))
+		Game.ShowStatusText(string.format(Tx"%s throws a plasma grenade", pl.Name))
 		pl:SetRecoveryDelay(pl:GetAttackDelay(true))
 	elseif key == "Overclock" then
 		Effects[pi] = Effects[pi] or {}
 		Effects[pi].Overclock = TECH.OverclockShots
-		Game.ShowStatusText(string.format("%s overclocks the blaster", pl.Name))
+		Game.ShowStatusText(string.format(Tx"%s overclocks the blaster", pl.Name))
 		pcall(Game.PlaySound, TECH.OverclockSound, 0)
 		pl:SetRecoveryDelay(30)
 	elseif key == "ShieldProjector" then
 		if not MF.ShieldProjector then
-			failCast(pl, "The projector doesn't work")
+			failCast(pl, Tx"The projector doesn't work")
 			return true
 		end
 		MF.ShieldProjector(pl)
 		pl:SetRecoveryDelay(100)
 	elseif key == "SentryTurret" then
 		if not deployTurret(pl, pi) then
-			failCast(pl, "The turret can't be set up here")
+			failCast(pl, Tx"The turret can't be set up here")
 			return true
 		end
 		pl:SetRecoveryDelay(150)
 	elseif key == "DeployDroid" then
 		if not deployDroid(pl, pi) then
-			failCast(pl, "The droid can't be deployed here")
+			failCast(pl, Tx"The droid can't be deployed here")
 			return true
 		end
 		pl:SetRecoveryDelay(150)
 	elseif key == "HerdFury" then
 		Effects[pi] = Effects[pi] or {}
 		Effects[pi].HerdFury = Game.Time + HERD_TIME
-		Game.ShowStatusText(string.format("%s is seized by the herd's fury", pl.Name))
+		Game.ShowStatusText(string.format(Tx"%s is seized by the herd's fury", pl.Name))
 		pl:SetRecoveryDelay(60)
 	elseif key == "Finisher" then
 		local mi = (e.ComboMon and meleeTarget(e.ComboMon * 8 + 3)) or meleeTarget(targetRef)
 		if not mi then
-			failCast(pl, "No enemy in reach")
+			failCast(pl, Tx"No enemy in reach")
 			return true
 		end
 		local pts = (e.ComboMon == mi and e.Combo) or 0
 		if pts <= 0 then
-			failCast(pl, "No combo points on this target")
+			failCast(pl, Tx"No combo points on this target")
 			return true
 		end
 		e.Combo, e.ComboMon = nil, nil
@@ -1734,7 +1735,7 @@ local function castAbility(pl, pi, spell, targetRef)
 	elseif key == "PoisonedBlade" then
 		Effects[pi] = Effects[pi] or {}
 		Effects[pi].Poison = ENERGY.PoisonHits
-		Game.ShowStatusText(string.format("%s coats the blade with poison", pl.Name))
+		Game.ShowStatusText(string.format(Tx"%s coats the blade with poison", pl.Name))
 		pl:SetRecoveryDelay(100)
 	elseif key == "ShadowVeil" then
 		local S, M = SplitSkill(pl:GetSkill(const.Skills.Stealing))
@@ -1744,34 +1745,34 @@ local function castAbility(pl, pi, spell, targetRef)
 			b.Power = math.max(S, 1)
 			b.Skill = math.max(M, 1)
 		end
-		Game.ShowStatusText(string.format("%s veils the party in shadows", pl.Name))
+		Game.ShowStatusText(string.format(Tx"%s veils the party in shadows", pl.Name))
 		pl:SetRecoveryDelay(100)
 	elseif key == "InnerPeace" then
 		local C = const.Condition
 		for _, c in ipairs({C.Poison1, C.Poison2, C.Poison3, C.Disease1, C.Disease2, C.Disease3, C.Afraid, C.Weak}) do
 			pl.Conditions[c] = 0
 		end
-		Game.ShowStatusText(string.format("%s finds inner peace", pl.Name))
+		Game.ShowStatusText(string.format(Tx"%s finds inner peace", pl.Name))
 		pl:SetRecoveryDelay(100)
 	elseif key == "IronBody" then
 		Effects[pi] = Effects[pi] or {}
 		Effects[pi].IronBody = Game.Time + IRON_BODY_TIME
-		Game.ShowStatusText(string.format("%s's body turns to iron", pl.Name))
+		Game.ShowStatusText(string.format(Tx"%s's body turns to iron", pl.Name))
 		pl:SetRecoveryDelay(60)
 	elseif key == "Vanish" then
 		Effects[pi] = Effects[pi] or {}
 		Effects[pi].Vanish = Game.Time + VANISH_TIME
-		Game.ShowStatusText(string.format("%s vanishes from sight", pl.Name))
+		Game.ShowStatusText(string.format(Tx"%s vanishes from sight", pl.Name))
 		pl:SetRecoveryDelay(60)
 	elseif key == "ShadowClone" then
 		Effects[pi] = Effects[pi] or {}
 		Effects[pi].Clone = {Until = Game.Time + CLONE_TIME, Charges = CLONE_CHARGES}
-		Game.ShowStatusText(string.format("%s splits into shadows", pl.Name))
+		Game.ShowStatusText(string.format(Tx"%s splits into shadows", pl.Name))
 		pl:SetRecoveryDelay(60)
 	elseif key == "RageStrike" then
 		local mi = meleeTarget(targetRef)
 		if not mi then
-			failCast(pl, "No enemy in reach")
+			failCast(pl, Tx"No enemy in reach")
 			return true
 		end
 		Pending[#Pending + 1] = {Kind = key, pi = pi, mi = mi}
@@ -1782,13 +1783,13 @@ local function castAbility(pl, pi, spell, targetRef)
 	elseif key == "Berserk" then
 		Effects[pi] = Effects[pi] or {}
 		Effects[pi].Berserk = Game.Time + DUR.Berserk
-		Game.ShowStatusText(string.format("%s goes berserk!", pl.Name))
+		Game.ShowStatusText(string.format(Tx"%s goes berserk!", pl.Name))
 		pl:SetRecoveryDelay(60)
 	elseif key == "TrollsBlood" then
 		Effects[pi] = Effects[pi] or {}
 		Effects[pi].TrollsBlood = {Until = Game.Time + DUR.TrollsBlood,
 			PerTick = TROLLS_BLOOD * pl:GetFullHP() / DUR.TrollsBlood}
-		Game.ShowStatusText(string.format("%s's troll blood boils", pl.Name))
+		Game.ShowStatusText(string.format(Tx"%s's troll blood boils", pl.Name))
 		pl:SetRecoveryDelay(60)
 	end
 	spendAbility(pl, a.Cost)
@@ -1816,7 +1817,7 @@ mem.autohook(0x42609E, function(d)
 				addResource(pl, -BREATH.AttackCost)
 				return
 			end
-			Game.ShowStatusText(string.format("%s is out of breath", pl.Name), 2)
+			Game.ShowStatusText(string.format(Tx"%s is out of breath", pl.Name), 2)
 			pl:SetRecoveryDelay(BREATH.OutRecovery)
 			u2[slot] = 0
 			d:push(0x42D45D)
@@ -1921,7 +1922,7 @@ local function updateStatsLabel()
 	if want == spLabelNow then return end
 	local addr = Game.GlobalTxt["?ptr"] + SP_LABEL_TXT * 4
 	if not spLabelSaved then spLabelSaved = u4[addr] end
-	u4[addr] = want and cstr(want) or spLabelSaved
+	u4[addr] = want and cstr(Tx(want)) or spLabelSaved
 	-- description: the Spell Points entry of Stats.txt, kept by the game at 0x5E4D54
 	-- (the Spell Points tooltip at 0x4177C9 reads GlobalTxt 212 and this pointer)
 	spDescAddr = 0x5E4D54
@@ -1939,7 +1940,7 @@ local function abilityBlow(pl, pi, mi, what)
 	local ok, err = pcall(mem.call, 0x436E26, 2, pi * 8 + 4, mi, RiposteVec)
 	AbilityStrike = false
 	if not ok then log("%s failed: %s", what, tostring(err)) end
-	if not AbilityHit then Game.ShowStatusText(string.format("%s's %s misses", pl.Name, what), 2) end
+	if not AbilityHit then Game.ShowStatusText(string.format(Tx"%s's %s misses", pl.Name, what), 2) end
 	return AbilityHit
 end
 local nextSpellsUpdate = 0
@@ -1957,22 +1958,22 @@ function events.Tick()
 			if r.Kind == "RageStrike" then
 				local mon = Map.Monsters[r.mi]
 				if pl and mon and mon.HP > 0 then
-					Game.ShowStatusText(string.format("%s: Rage Strike!", pl.Name), 2)
+					Game.ShowStatusText(string.format(Tx"%s: Rage Strike!", pl.Name), 2)
 					RageStrikeActive = true
-					abilityBlow(pl, r.pi, r.mi, "Rage Strike")
+					abilityBlow(pl, r.pi, r.mi, Tx"Rage Strike")
 					RageStrikeActive = false
 				end
 			elseif (r.Kind == "StunningPalm" or r.Kind == "Flurry") and pl then
 				local mon = Map.Monsters[r.mi]
 				if mon and mon.HP > 0 then
-					local hit = abilityBlow(pl, r.pi, r.mi, r.Kind == "Flurry" and "Flurry" or "Stunning Palm")
+					local hit = abilityBlow(pl, r.pi, r.mi, r.Kind == "Flurry" and "Flurry" or Tx"Stunning Palm")
 					if r.Kind == "StunningPalm" and hit and mon.HP > 0 then
 						local S, M = SplitSkill(pl:GetSkill(const.Skills.Unarmed))
 						local res = mon.Resistances[const.Damage.Phys]
 						if res ~= const.MonsterImmune and math.random(5, 100) + S + M * 2.5 > res then
 							local b = mon.SpellBuffs[const.MonsterBuff.Paralyze]
 							b.ExpireTime = math.max(now + STUN_TIME, b.ExpireTime)
-							Game.ShowStatusText(string.format("%s stuns %s!", pl.Name, Game.MonstersTxt[mon.Id].Name), 2)
+							Game.ShowStatusText(string.format(Tx"%s stuns %s!", pl.Name, Game.MonstersTxt[mon.Id].Name), 2)
 						end
 					elseif r.Kind == "Flurry" then
 						FlurryActive = true
@@ -1980,26 +1981,26 @@ function events.Tick()
 							if mon.HP > 0 then abilityBlow(pl, r.pi, r.mi, "Flurry") end
 						end
 						FlurryActive = false
-						Game.ShowStatusText(string.format("%s: Flurry!", pl.Name), 2)
+						Game.ShowStatusText(string.format(Tx"%s: Flurry!", pl.Name), 2)
 					end
 				end
 			elseif r.Kind == "Gore" and pl then
 				local mon = Map.Monsters[r.mi]
 				if mon and mon.HP > 0 then
-					Game.ShowStatusText(string.format("%s: Gore!", pl.Name), 2)
+					Game.ShowStatusText(string.format(Tx"%s: Gore!", pl.Name), 2)
 					GoreActive = true
 					local hit = abilityBlow(pl, r.pi, r.mi, "Gore")
 					GoreActive = false
 					if hit and mon.HP > 0 and math.random(100) <= GORE_STAGGER then
 						local b = mon.SpellBuffs[const.MonsterBuff.Paralyze]
 						b.ExpireTime = math.max(now + GORE_STAGGER_TIME, b.ExpireTime)
-						Game.ShowStatusText(string.format("%s staggers!", Game.MonstersTxt[mon.Id].Name), 2)
+						Game.ShowStatusText(string.format(Tx"%s staggers!", Game.MonstersTxt[mon.Id].Name), 2)
 					end
 				end
 			elseif r.Kind == "Finisher" and pl then
 				local mon = Map.Monsters[r.mi]
 				if mon and mon.HP > 0 then
-					Game.ShowStatusText(string.format("%s: Finisher (%d)!", pl.Name, r.Points), 2)
+					Game.ShowStatusText(string.format(Tx"%s: Finisher (%d)!", pl.Name, r.Points), 2)
 					FinisherPoints = r.Points
 					local hit = abilityBlow(pl, r.pi, r.mi, "Finisher")
 					FinisherPoints = nil
@@ -2020,7 +2021,7 @@ function events.Tick()
 					end
 				end
 				PartyEffects.WarCry = now + DUR.WarCryParty
-				Game.ShowStatusText(string.format("%s's war cry! %d monster(s) flee", pl.Name, feared), 3)
+				Game.ShowStatusText(string.format(Tx"%s's war cry! %d monster(s) flee", pl.Name, feared), 3)
 			end
 		end
 	end
@@ -2208,7 +2209,7 @@ local function techCleanup(pl)
 		end
 	end
 	if refunded > 0 then
-		Game.ShowStatusText(string.format("%s: magic and Meditation are gone, %d skill points refunded", pl.Name, refunded), 5)
+		Game.ShowStatusText(string.format(Tx"%s: magic and Meditation are gone, %d skill points refunded", pl.Name, refunded), 5)
 		log("techCleanup %s: %d skill points refunded", pl.Name, refunded)
 	end
 end
@@ -2375,7 +2376,7 @@ function events.LoadMap()
 						m = m * math.max(1, d or 1.5)
 					end
 					t.Result = math.floor(t.Result * m + 0.5)
-					Game.ShowStatusText(string.format("%s: Aimed Shot!", pl.Name), 1)
+					Game.ShowStatusText(string.format(Tx"%s: Aimed Shot!", pl.Name), 1)
 				end
 				if (e.Volley or 0) > 0 then e.Volley = e.Volley - 1 end
 				-- Darkfire Arrows: extra damage through the lower of Fire and Dark resistance
@@ -2400,7 +2401,7 @@ function events.LoadMap()
 		local fx = Effects[playerIndex(pl)]
 		if fx and fx.Vanish then
 			fx.Vanish = nil
-			Game.ShowStatusText(string.format("%s reappears", pl.Name))
+			Game.ShowStatusText(string.format(Tx"%s reappears", pl.Name))
 		end
 		if t.DamageKind ~= const.Damage.Phys then return end
 		if FlurryActive then t.Result = math.floor(t.Result * FLURRY_DAMAGE + 0.5) end
@@ -2429,7 +2430,7 @@ function events.LoadMap()
 						e.Combo, e.ComboMon = 1, t.MonsterIndex
 					end
 					e.ComboTime = Game.Time
-					Game.ShowStatusText(string.format("%s: combo %d", pl.Name, e.Combo), 1)
+					Game.ShowStatusText(string.format(Tx"%s: combo %d", pl.Name, e.Combo), 1)
 				end
 				local fxp = Effects[playerIndex(pl)]
 				if fxp and fxp.Poison and fxp.Poison > 0 and t.Monster then
@@ -2529,12 +2530,12 @@ function MF.ResourceInfo(pl)
 	pl = pl or Party[math.max(Game.CurrentPlayer, 0)]
 	local kind, stage = classFamily(pl.Class)
 	local fam = FAMILIES[kind]
-	if not fam then return string.format("class %d: family kind %d, stage %d, spell points", pl.Class, kind, stage) end
+	if not fam then return string.format(Tx"class %d: family kind %d, stage %d, spell points", pl.Class, kind, stage) end
 	local e = state(playerIndex(pl))
 	local _, stance = stanceOf(pl)
 	local res = fam.Resource and string.format("%s %.1f / %d", fam.Resource, e.R,
-		resourceMax(pl, fam.Resource, RESOURCES[fam.Resource])) or "spell points"
-	return string.format("%s family, stage %d%s%s: %s%s", fam.Name, stage, isTroll(pl) and " (Troll)" or "",
+		resourceMax(pl, fam.Resource, RESOURCES[fam.Resource])) or Tx"spell points"
+	return string.format(Tx"%s family, stage %d%s%s: %s%s", fam.Name, stage, isTroll(pl) and " (Troll)" or "",
 		knightBranch(pl) and (" (" .. knightBranch(pl) .. ")") or "", res,
 		stance and (", " .. stance .. " stance") or "")
 end

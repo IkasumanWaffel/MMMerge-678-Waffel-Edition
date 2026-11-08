@@ -47,6 +47,7 @@
 --]]
 
 local MF = Merge.Functions
+local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 local function log(fmt, ...) MF.LogInfo("[PDK] " .. fmt, ...) end
 
 local TABLE_FILE = "Data/Tables/Physical Damage Kinds.txt"
@@ -205,7 +206,7 @@ end
 
 local function cardLine(mon)
 	if not Mods[mon.Id] or mon.PhysResistance >= 65000 then return nil end   -- keeps "Immune"
-	return string.format("Sla %d%%\nPie %d%%\nBlu %d%%",
+	return string.format(Tx"Sla %d%%\nPie %d%%\nBlu %d%%",
 		round(kindReduction(mon, "Slashing")), round(kindReduction(mon, "Piercing")),
 		round(kindReduction(mon, "Blunt")))
 end

@@ -25,6 +25,7 @@
 --]]
 
 local MF = Merge.Functions
+local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 
 local U = {
 	EvadePerSkill   = 1,      -- %
@@ -123,6 +124,6 @@ function events.CalcDamageToMonster(t)
 	local c = MF.UnarmedFlurryChance(pl)
 	if c > 0 and math.random() * 100 < c then
 		MF.QueueCounterAttack(t.PlayerIndex, t.MonsterIndex,
-			string.format("%s strikes again!", pl.Name), U.FlurryDamage)
+			string.format(Tx"%s strikes again!", pl.Name), U.FlurryDamage)
 	end
 end

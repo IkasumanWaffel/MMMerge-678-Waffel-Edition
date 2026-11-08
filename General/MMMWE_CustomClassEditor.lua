@@ -28,6 +28,7 @@
 --]]
 
 local MF = Merge.Functions
+local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 
 ---------------------------------------------------------------------------
 -- Settings
@@ -193,12 +194,12 @@ local function validate()
 	local need = math.min(START_SKILLS, purchasable(f.Steps[1]))
 	if #(f.StartSkills or {}) < need then
 		E.Step = 1
-		return nil, string.format("Choose %d starting skills (Shift+click)", need)
+		return nil, string.format(Tx"Choose %d starting skills (Shift+click)", need)
 	end
 	-- the creation screen asks for two more skills from the class's other skills
 	if E.Mode == "creation" and purchasable(f.Steps[1]) < START_SKILLS + EXTRA_SKILLS then
 		E.Step = 1
-		return nil, string.format("The base class needs at least %d skills", START_SKILLS + EXTRA_SKILLS)
+		return nil, string.format(Tx"The base class needs at least %d skills", START_SKILLS + EXTRA_SKILLS)
 	end
 	return true
 end
@@ -236,8 +237,8 @@ local function done()
 			end
 		end
 		local refund = pl.SkillPoints - before
-		Game.ShowStatusText(string.format("%s is now a %s%s", pl.Name, f.Steps[1].Name,
-			refund > 0 and string.format(" (%d skill points refunded)", refund) or ""))
+		Game.ShowStatusText(string.format(Tx"%s is now a %s%s", pl.Name, f.Steps[1].Name,
+			refund > 0 and string.format(Tx" (%d skill points refunded)", refund) or ""))
 		log("trainer: %s takes %s, refund %d", pl.Name, f.Steps[1].Name, refund)
 	end
 	close()
@@ -274,20 +275,20 @@ local function edit(ok, err)
 end
 
 local function changeTier(field, d)
-	if locked() then message("This class is taken by a character in the game") return end
+	if locked() then message(Tx"This class is taken by a character in the game") return end
 	local s = spec()
 	edit(CC.SetTier(fam(), E.Step, field, s[field] + d))
 end
 
 local function cycleStats()
-	if locked() then message("This class is taken by a character in the game") return end
+	if locked() then message(Tx"This class is taken by a character in the game") return end
 	local s = spec()
 	edit(CC.SetStats(fam(), E.Step, s.Stats % 3 + 1))
 end
 
 local function cycleKit()
-	if locked() then message("This class is taken by a character in the game") return end
-	if E.Step ~= 1 then message("The kit is chosen on the base class tab") return end
+	if locked() then message(Tx"This class is taken by a character in the game") return end
+	if E.Step ~= 1 then message(Tx"The kit is chosen on the base class tab") return end
 	local f = fam()
 	local list, idx = CC.Kits, 0
 	for i, k in ipairs(list) do if k.Key == f.Kit then idx = i end end
@@ -297,18 +298,18 @@ local function cycleKit()
 end
 
 local function clickSkill(id)
-	if locked() then message("This class is taken by a character in the game") return end
+	if locked() then message(Tx"This class is taken by a character in the game") return end
 	local f, s = fam(), spec()
 	local cap = s.Skills[id] or 0
 	if Keys.IsPressed(const.Keys.SHIFT) then
-		if E.Step ~= 1 then message("Starting skills are chosen on the base class tab") return end
+		if E.Step ~= 1 then message(Tx"Starting skills are chosen on the base class tab") return end
 		f.StartSkills = f.StartSkills or {}
 		for i, sk in ipairs(f.StartSkills) do
 			if sk == id then table.remove(f.StartSkills, i) return end
 		end
-		if cap == 0 then message("Only a skill the class can learn can be a starting skill") return end
-		if id >= 39 then message("Dual-Wield and Robe are learned in houses, not at the start") return end
-		if #f.StartSkills >= START_SKILLS then message("Two starting skills are chosen already") return end
+		if cap == 0 then message(Tx"Only a skill the class can learn can be a starting skill") return end
+		if id >= 39 then message(Tx"Dual-Wield and Robe are learned in houses, not at the start") return end
+		if #f.StartSkills >= START_SKILLS then message(Tx"Two starting skills are chosen already") return end
 		table.insert(f.StartSkills, id)
 		return
 	end
@@ -336,7 +337,7 @@ end
 -- the Spells button: skills -> spells page 1 -> 2 ... -> skills
 local function cycleView()
 	if E.View == "skills" then
-		if #spellSchools() == 0 then message("Buy a magic school first") return end
+		if #spellSchools() == 0 then message(Tx"Buy a magic school first") return end
 		E.View, E.SpellPage = "spells", 1
 	elseif E.SpellPage < spellPages() then
 		E.SpellPage = E.SpellPage + 1
@@ -346,7 +347,7 @@ local function cycleView()
 end
 
 local function clickSpell(spell)
-	if locked() then message("This class is taken by a character in the game") return end
+	if locked() then message(Tx"This class is taken by a character in the game") return end
 	local s = spec()
 	local picked = not s.Spells or s.Spells[spell]   -- older builds: every spell is picked
 	local on = not picked and not Keys.IsPressed(const.Keys.CTRL)
@@ -357,13 +358,13 @@ end
 -- into the class shown (each press loads the next one)
 local function saveBuild()
 	local p, err = CC.ExportBuild(fam())
-	message(p and ("Saved to " .. p) or err, p ~= nil)
+	message(p and (Tx"Saved to " .. p) or err, p ~= nil)
 end
 
 local function loadBuild()
-	if locked() then message("This class is taken by a character in the game") return end
+	if locked() then message(Tx"This class is taken by a character in the game") return end
 	local files = CC.BuildFiles()
-	if #files == 0 then message("No builds in the CustomClasses folder") return end
+	if #files == 0 then message(Tx"No builds in the CustomClasses folder") return end
 	E.LoadIdx = (E.LoadIdx or 0) % #files + 1
 	local p = files[E.LoadIdx]
 	local new, err = CC.ImportFile(p)
@@ -371,7 +372,7 @@ local function loadBuild()
 	CC.Builds()[E.F] = new
 	E.Step = 1
 	CC.Apply()
-	message(string.format("Loaded %s (%d/%d)", p:match("[^/\\]+$") or p, E.LoadIdx, #files), true)
+	message(string.format(Tx"Loaded %s (%d/%d)", p:match("[^/\\]+$") or p, E.LoadIdx, #files), true)
 end
 
 ---------------------------------------------------------------------------
@@ -492,12 +493,12 @@ local function build()
 			local list, idx = familyList(), 1
 			for i, f in ipairs(list) do if f == E.F then idx = i end end
 			local s = fam().Steps[1].Name
-			if E.F == E.NewF then s = s .. " (new)" elseif locked() then s = s .. " (taken, read-only)" end
-			return string.format("Class %d/%d: %s", idx, #list, s), GOLD
+			if E.F == E.NewF then s = s .. " (new)" elseif locked() then s = s .. Tx" (taken, read-only)" end
+			return string.format(Tx"Class %d/%d: %s", idx, #list, s), GOLD
 		end,
 		Click = function()
 			local list = familyList()
-			if #list < 2 then message("There is only this custom class so far") return end
+			if #list < 2 then message(Tx"There is only this custom class so far") return end
 			local idx = 1
 			for i, f in ipairs(list) do if f == E.F then idx = i end end
 			E.F = list[idx % #list + 1]
@@ -508,7 +509,7 @@ local function build()
 		Get = function()
 			local total = CC.Cost(spec(), fam().Kit)
 			local budget = CC.Budget[E.Step]
-			return string.format("Points: %g / %d", total, budget), total > budget and RED or GREEN
+			return string.format(Tx"Points: %g / %d", total, budget), total > budget and RED or GREEN
 		end}
 
 	-- step tabs and Spells: the one shown glows, one with problems flashes red
@@ -563,7 +564,7 @@ local function build()
 			return "Name: " .. spec().Name
 		end,
 		Click = function()
-			if locked() then message("This class is taken by a character in the game") return end
+			if locked() then message(Tx"This class is taken by a character in the game") return end
 			if not E.Typing then E.Typing, E.TypeBuf = true, "" end
 		end}
 	local function tierRow(y, field, label, tiers)
@@ -571,34 +572,34 @@ local function build()
 			Get = function()
 				local s = spec()
 				local v = tiers[s[field]]
-				return string.format("%s: tier %d  (%d + %d per level)", label, s[field], v[1], v[2])
+				return string.format(Tx"%s: tier %d  (%d + %d per level)", label, s[field], v[1], v[2])
 			end}
 		text{Font = Big, X = 390, Y = y, W = 26, H = 19,
 			Get = function() return "[-]" end, Click = function() changeTier(field, -1) end}
 		text{Font = Big, X = 420, Y = y, W = 26, H = 19,
 			Get = function() return "[+]" end, Click = function() changeTier(field, 1) end}
 	end
-	tierRow(106, "HP", "Hit points", CC.HPTiers)
-	tierRow(126, "SP", "Spell points", CC.SPTiers)
+	tierRow(106, "HP", Tx"Hit points", CC.HPTiers)
+	tierRow(126, "SP", Tx"Spell points", CC.SPTiers)
 
 	-- resource kit (chosen on the base tab, kept by the promotions) and the SP stats
 	text{Font = Big, X = 470, Y = 84, W = 156, H = 19,
 		Get = function()
 			local k = fam().Kit and CC.KitByKey[fam().Kit]
-			return "Kit: " .. (k and k.Name or "none"), k and GOLD or (E.Step == 1 and WHITE or GREY)
+			return Tx"Kit: " .. (k and Tx(k.Name) or Tx"none"), k and GOLD or (E.Step == 1 and WHITE or GREY)
 		end,
 		Click = cycleKit}
 	text{Font = Small, X = 470, Y = 105, W = 156, H = 17,
 		Get = function()
 			local k = fam().Kit and CC.KitByKey[fam().Kit]
-			if not k then return E.Step == 1 and "click to buy one" or " ", GREY end
-			return string.format("%s, %d pts", k.Resource or "Spell points", k.Price), GREY
+			if not k then return E.Step == 1 and Tx"click to buy one" or " ", GREY end
+			return string.format(Tx"%s, %d pts", k.Resource and Tx(k.Resource) or Tx"Spell points", k.Price), GREY
 		end,
 		Click = cycleKit}
 	text{Font = Big, X = 470, Y = 126, W = 156, H = 19,
 		Get = function()
 			local s = spec()
-			return "SP: " .. (({"Intellect", "Personality", "Int. and Pers."})[s.Stats] or "?"),
+			return "SP: " .. (({Tx"Intellect", Tx"Personality", Tx"Int. and Pers."})[s.Stats] or "?"),
 				s.SP == 0 and GREY or WHITE
 		end,
 		Click = cycleStats}
@@ -621,8 +622,8 @@ local function build()
 	-- the panel holds twelve rows 21 apart: more rows share the same height
 	local ROW_H = ROWS > 12 and math.floor(12 * 21 / ROWS) or 21
 	local SHORT = {[0] = "-", "Nov", "Exp", "Mas", "GM"}
-	local NICE = {IdentifyItem = "Ident. Item", DisarmTraps = "Disarm Traps", IdentifyMonster = "Ident. Monster",
-		Bodybuilding = "Bodybuilding", Repair = "Repair Item", DualWield = "Dual-Wield"}
+	local NICE = {IdentifyItem = Tx"Ident. Item", DisarmTraps = Tx"Disarm Traps", IdentifyMonster = Tx"Ident. Monster",
+		Bodybuilding = "Bodybuilding", Repair = Tx"Repair Item", DualWield = "Dual-Wield"}
 	for i, id in ipairs(SKILL_ORDER) do
 		local col, row = math.floor((i - 1) / ROWS), (i - 1) % ROWS
 		local name = CC.SkillNames[id]
@@ -641,7 +642,7 @@ local function build()
 	end
 
 	-- spells: three schools per page, a heading and the 11 spells each
-	local SHORTER = {["Protection from Magic"] = "Prot. from Magic"}
+	local SHORTER = {["Protection from Magic"] = Tx"Prot. from Magic"}
 	for col = 0, 2 do
 		for row = 0, 11 do
 			local function spellAt()
@@ -659,7 +660,7 @@ local function build()
 					local s = spec()
 					if not spell then
 						local cap = s.Skills[const.Skills[CC.MagicSchools[school]]] or 0
-						return string.format("%s Magic: %s", CC.MagicSchools[school], SHORT[cap]), GREEN
+						return string.format(Tx"%s Magic: %s", CC.MagicSchools[school], SHORT[cap]), GREEN
 					end
 					local name = Game.SpellsTxt[spell].Name
 					name = SHORTER[name] or name
@@ -677,17 +678,17 @@ local function build()
 	text{Font = Small, X = 14, Y = 435, W = 432, H = 17,
 		Get = function()
 			if E.Msg and os.clock() - E.MsgTime < MSG_TIME then return E.Msg, E.MsgOk and GREEN or RED end
-			if E.Typing then return "Type the name; Enter keeps it, Esc drops it" end
+			if E.Typing then return Tx"Type the name; Enter keeps it, Esc drops it" end
 			local bad = CC.Problems(fam(), E.Step)
 			if #bad > 0 then return bad[1], RED end
 			if E.View == "spells" then
-				return string.format("Spells %d/%d: click to pick; the price by rank and impact", E.SpellPage, spellPages())
+				return string.format(Tx"Spells %d/%d: click to pick; the price by rank and impact", E.SpellPage, spellPages())
 			end
-			return "Click +, Ctrl+click -, Shift+click: start skill " ..
+			return Tx"Click +, Ctrl+click -, Shift+click: start skill " ..
 				#(fam().StartSkills or {}) .. "/" .. START_SKILLS
 		end}
 	text{Font = Small, X = 14, Y = 453, W = 432, H = 17,
-		Get = function() return "Ctrl+S: save the build, Ctrl+L: load one", GREY end}
+		Get = function() return Tx"Ctrl+S: save the build, Ctrl+L: load one", GREY end}
 
 	button{Up = "c_cncl_up", Down = "c_cncl_dn", Over = "c_cncl_ht", X = 459, Y = 440,
 		Click = function() Game.PlaySound(24) close() end}
@@ -726,7 +727,7 @@ end
 local function buildTrainer()
 	local Big = Game.Arrus_fnt
 	local line = CustomUI.CreateText{
-		Text = "Become a custom class", Font = Big, Width = 180, Height = HOUSE_LINE_H,
+		Text = Tx"Become a custom class", Font = Big, Width = 180, Height = HOUSE_LINE_H,
 		ColorStd = WHITE, ColorMouseOver = HOVER, Layer = 0, Screen = const.Screens.House,
 		Condition = function(self)
 			if E.Open then return false end

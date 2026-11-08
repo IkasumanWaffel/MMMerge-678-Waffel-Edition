@@ -38,6 +38,7 @@
 --]]
 
 local MF = Merge.Functions
+local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 local u1, u2, u4, i4 = mem.u1, mem.u2, mem.u4, mem.i4
 local floor, min, max, random = math.floor, math.min, math.max, math.random
 
@@ -72,10 +73,10 @@ local B = {
 }
 MF.BlasterSpecs = B
 
-local SPECS = {"Emitter", "Capacitor", "Disruptor", "Power cell"}
+local SPECS = {Tx"Emitter", Tx"Capacitor", Tx"Disruptor", Tx"Power cell"}
 local SPEC_SHORT = {"Emitter", "Capacitor", "Disruptor", "Cell"}
 local SHIELD = 968
-local SHIELD_SPECS = {"Nova", "Recharge rate", "Recharge delay", "Capacity"}
+local SHIELD_SPECS = {Tx"Nova", Tx"Recharge rate", Tx"Recharge delay", Tx"Capacity"}
 local SHIELD_SHORT = {"Nova", "Rate", "Delay", "Capacity"}
 B.ShieldSpecNames, B.ShieldItem = SHIELD_SPECS, SHIELD
 B.SpecNames = SPECS
@@ -249,7 +250,7 @@ local function upgradeTarget(pl)
 	local gun = blasterOf(pl)
 	if gun then return gun, SPECS, "blaster" end
 	local sh = shieldOf(pl)
-	if sh then return sh, SHIELD_SPECS, "energy shield" end
+	if sh then return sh, SHIELD_SPECS, Tx"energy shield" end
 end
 
 ---------------------------------------------------------------------------
@@ -346,7 +347,7 @@ function MF.BlasterCardText(ch, cell)
 		local _, BM = SplitSkill(pl:GetSkill(const.Skills.Blaster))
 		lim = BM > 0 and B.Limit[min(4, BM)] or 0
 	end
-	return string.format("%s %s  %s %s\n%s %s  %s %s\nUpgrades: %d/%d   Work: %d%%%%\nCharge: %d%%%%",
+	return string.format(Tx"%s %s  %s %s\n%s %s  %s %s\nUpgrades: %d/%d   Work: %d%%%%\nCharge: %d%%%%",
 		SPEC_SHORT[1], pips(st, 1), SPEC_SHORT[2], pips(st, 2),
 		SPEC_SHORT[3], pips(st, 3), SPEC_SHORT[4], pips(st, 4),
 		st.Count, lim, st.Work, floor(st.Cell / 2))
@@ -366,16 +367,16 @@ function MF.ShieldCardText(ch, cell)
 		lim = BM > 0 and B.Limit[min(4, BM)] or 0
 	end
 	local info = MF.ShieldCardInfo and MF.ShieldCardInfo(st) or ""
-	return string.format("%s %s  %s %s\n%s %s  %s %s\nUpgrades: %d/%d   Work: %d%%%%\nCharge: %d%%%%%s",
+	return string.format(Tx"%s %s  %s %s\n%s %s  %s %s\nUpgrades: %d/%d   Work: %d%%%%\nCharge: %d%%%%%s",
 		SHIELD_SHORT[4], pips(st, 4), SHIELD_SHORT[2], pips(st, 2),
 		SHIELD_SHORT[3], pips(st, 3), SHIELD_SHORT[1], pips(st, 1),
 		st.Count, lim, st.Work, floor(st.Cell / 2), info)
 end
 
 function MF.ToolkitCardText(ch)
-	if ch <= 0 then return "Board: empty" end
+	if ch <= 0 then return Tx"Board: empty" end
 	local st = view(ch, 0)
-	return string.format("Board: %s %d, %s %d, %s %d, %s %d   Work: %d%%%%",
+	return string.format(Tx"Board: %s %d, %s %d, %s %d, %s %d   Work: %d%%%%",
 		SPEC_SHORT[1], st.Tiers[1], SPEC_SHORT[2], st.Tiers[2],
 		SPEC_SHORT[3], st.Tiers[3], SPEC_SHORT[4], st.Tiers[4], st.Work)
 end
@@ -419,22 +420,22 @@ end
 -- smelt: the ore on the cursor and another piece of the same grade -> next grade
 local function smelt(pl, item)
 	local grade = ORE[item.Number]
-	if grade >= 6 then return fail("Stalt can't be refined any further.") end
+	if grade >= 6 then return fail(Tx"Stalt can't be refined any further.") end
 	local RS, RM = repairSkill(pl)
 	local g = grade + 1
 	if RM < ORE_RM[g] or RS < ORE_RS[g] then
-		return fail(string.format("Smelting %s needs Repair %d (%s), %s has %d (%s).",
-			ORE_NAMES[g], ORE_RS[g], select(ORE_RM[g], "Novice", "Expert", "Master", "Grand Master"),
-			pl.Name, RS, RM > 0 and select(RM, "Novice", "Expert", "Master", "Grand Master") or "none"))
+		return fail(string.format(Tx"Smelting %s needs Repair %d (%s), %s has %d (%s).",
+			ORE_NAMES[g], ORE_RS[g], select(ORE_RM[g], Tx"Novice", Tx"Expert", Tx"Master", Tx"Grand Master"),
+			pl.Name, RS, RM > 0 and select(RM, Tx"Novice", Tx"Expert", Tx"Master", Tx"Grand Master") or Tx"none"))
 	end
 	local same = {}
 	for n, gr in pairs(ORE) do if gr == grade then same[n] = true end end
 	if not takeFromBackpack(pl, same) then
-		return fail(string.format("Smelting needs a second piece of %s ore in %s's backpack.", ORE_NAMES[grade], pl.Name))
+		return fail(string.format(Tx"Smelting needs a second piece of %s ore in %s's backpack.", ORE_NAMES[grade], pl.Name))
 	end
 	item.Number = item.Number + 1          -- the next ore of the same item set
 	evt.PlaySound{12050}
-	Game.ShowStatusText(string.format("%s smelts two pieces into %s ore.", pl.Name, ORE_NAMES[g]))
+	Game.ShowStatusText(string.format(Tx"%s smelts two pieces into %s ore.", pl.Name, ORE_NAMES[g]))
 	return 0
 end
 
@@ -443,31 +444,31 @@ local function useOre(pl, item)
 	if not grade then return end
 	local gun, _, what = upgradeTarget(pl)
 	if not gun then return smelt(pl, item) end
-	if FIXED[gun.Number] then return fail("Its board was sealed by the Heavenly Forge: it can't be upgraded.") end
-	if gun.Broken then return fail("The blaster is broken.") end
+	if FIXED[gun.Number] then return fail(Tx"Its board was sealed by the Heavenly Forge: it can't be upgraded.") end
+	if gun.Broken then return fail(Tx"The blaster is broken.") end
 	local st = state(gun)
 	local lim, BM = masteryLimit(pl)
 	-- a shield that can't take more work: the ore is smelted instead
 	if SHIELDS[gun.Number] and (st.Count >= 8 or st.Count >= lim) then return smelt(pl, item) end
-	if st.Count >= 8 then return fail("This blaster is fully upgraded.") end
+	if st.Count >= 8 then return fail(Tx"This blaster is fully upgraded.") end
 	if st.Count >= lim then
-		return fail(string.format("%s's Blaster mastery allows %d upgrades on a gun.", pl.Name, lim))
+		return fail(string.format(Tx"%s's Blaster mastery allows %d upgrades on a gun.", pl.Name, lim))
 	end
-	if st.Work >= 100 then return fail("The work is done. Install a gem to finish the upgrade.") end
+	if st.Work >= 100 then return fail(Tx"The work is done. Install a gem to finish the upgrade.") end
 	local need = ORE_MIN[st.Count]
 	if grade < need then
-		return fail(string.format("This upgrade needs %s ore or better.", ORE_NAMES[need]))
+		return fail(string.format(Tx"This upgrade needs %s ore or better.", ORE_NAMES[need]))
 	end
 	local RS, RM = repairSkill(pl)
 	if RM < ORE_RM[grade] or RS < ORE_RS[grade] then
-		return fail(string.format("Working %s ore needs Repair %d (%s).", ORE_NAMES[grade], ORE_RS[grade],
-			select(ORE_RM[grade], "Novice", "Expert", "Master", "Grand Master")))
+		return fail(string.format(Tx"Working %s ore needs Repair %d (%s).", ORE_NAMES[grade], ORE_RS[grade],
+			select(ORE_RM[grade], Tx"Novice", Tx"Expert", Tx"Master", Tx"Grand Master")))
 	end
 	local gain = B.WorkPerPiece[min(3, grade - need + 1)]
 	st.Work = min(100, st.Work + gain)
 	save(gun, st)
 	evt.PlaySound{12050}
-	Game.ShowStatusText(string.format("Work on the %s: %d%%", what, st.Work))
+	Game.ShowStatusText(string.format(Tx"Work on the %s: %d%%", what, st.Work))
 	return 2
 end
 
@@ -481,30 +482,30 @@ local function useGem(pl, item)
 	local spec = GEM[item.Number]
 	if not spec then return end
 	local gun, SPECS, what = upgradeTarget(pl)
-	if gun and FIXED[gun.Number] then return fail("Its board was sealed by the Heavenly Forge: it can't be upgraded.") end
-	if not gun then return fail("Hold a blaster in the main hand or wear an energy shield to install a gem.") end
-	if gun.Broken then return fail("The blaster is broken.") end
+	if gun and FIXED[gun.Number] then return fail(Tx"Its board was sealed by the Heavenly Forge: it can't be upgraded.") end
+	if not gun then return fail(Tx"Hold a blaster in the main hand or wear an energy shield to install a gem.") end
+	if gun.Broken then return fail(Tx"The blaster is broken.") end
 	if spec == 0 then spec = specFromKeys() end
 	local st = state(gun)
 	local lim = masteryLimit(pl)
-	if st.Count >= 8 then return fail(string.format("This %s is fully upgraded.", what)) end
+	if st.Count >= 8 then return fail(string.format(Tx"This %s is fully upgraded.", what)) end
 	if st.Count >= lim then
-		return fail(string.format("%s's Blaster mastery allows %d upgrades on a %s.", pl.Name, lim,
+		return fail(string.format(Tx"%s's Blaster mastery allows %d upgrades on a %s.", pl.Name, lim,
 			SHIELDS[gun.Number] and "shield" or "gun"))
 	end
 	local tier = st.Tiers[spec] + 1
-	if tier > 4 then return fail(string.format("%s is already at tier 4.", SPECS[spec])) end
+	if tier > 4 then return fail(string.format(Tx"%s is already at tier 4.", SPECS[spec])) end
 	if st.Work < 100 then
-		return fail(string.format("Work on the %s first: %d/100 (use ore).", what, st.Work))
+		return fail(string.format(Tx"Work on the %s first: %d/100 (use ore).", what, st.Work))
 	end
 	local value = Game.ItemsTxt[item.Number].Value
 	if value < B.GemValue[tier] then
-		return fail(string.format("%s tier %d needs a gem worth %d or more.", SPECS[spec], tier, B.GemValue[tier]))
+		return fail(string.format(Tx"%s tier %d needs a gem worth %d or more.", SPECS[spec], tier, B.GemValue[tier]))
 	end
 	local RS, RM = repairSkill(pl)
 	if RM < tier then
-		return fail(string.format("%s tier %d needs Repair at %s.", SPECS[spec], tier,
-			select(tier, "Novice", "Expert", "Master", "Grand Master")))
+		return fail(string.format(Tx"%s tier %d needs Repair at %s.", SPECS[spec], tier,
+			select(tier, Tx"Novice", Tx"Expert", Tx"Master", Tx"Grand Master")))
 	end
 	local luck = Game.GetStatisticEffect(pl:GetLuck())
 	local fineChance = B.FineBase + B.FinePerRepair * RS + B.FinePerLuck * luck
@@ -513,7 +514,7 @@ local function useGem(pl, item)
 	st.Work = 0
 	save(gun, st)
 	evt.PlaySound{12050}
-	Game.ShowStatusText(string.format("%s tier %d installed%s", SPECS[spec], tier, fine and " - Fine work!" or "."))
+	Game.ShowStatusText(string.format(Tx"%s tier %d installed%s", SPECS[spec], tier, fine and Tx" - Fine work!" or "."))
 	return 2
 end
 
@@ -527,35 +528,35 @@ local function useToolkit(pl, kit)
 		return 0
 	end
 	local gun, SPECS = upgradeTarget(pl)
-	if not gun then return fail("Hold a blaster in the main hand (or wear an energy shield) to use the toolkit.") end
-	if FIXED[gun.Number] then return fail("Its board was sealed by the Heavenly Forge: the toolkit can't open it.") end
+	if not gun then return fail(Tx"Hold a blaster in the main hand (or wear an energy shield) to use the toolkit.") end
+	if FIXED[gun.Number] then return fail(Tx"Its board was sealed by the Heavenly Forge: the toolkit can't open it.") end
 	local st = state(gun)
 	if Keys.IsPressed(const.Keys.CTRL) then
 		local last = st.Stack[#st.Stack]
-		if not last then return fail("There is no upgrade to remove.") end
+		if not last then return fail(Tx"There is no upgrade to remove.") end
 		local tier = st.Tiers[last.Spec]
 		local _, RM = repairSkill(pl)
 		if RM < tier then
-			return fail(string.format("Removing %s tier %d needs Repair at %s.", SPECS[last.Spec], tier,
-				select(tier, "Novice", "Expert", "Master", "Grand Master")))
+			return fail(string.format(Tx"Removing %s tier %d needs Repair at %s.", SPECS[last.Spec], tier,
+				select(tier, Tx"Novice", Tx"Expert", Tx"Master", Tx"Grand Master")))
 		end
 		st.Stack[#st.Stack] = nil
 		st.Work = 0
 		save(gun, st)
 		evt.PlaySound{17020}
-		Game.ShowStatusText(string.format("%s tier %d removed. The gem is lost.", SPECS[last.Spec], tier))
+		Game.ShowStatusText(string.format(Tx"%s tier %d removed. The gem is lost.", SPECS[last.Spec], tier))
 		return 0
 	end
 	if SHIELDS[gun.Number] then
-		return fail("The toolkit moves boards between blasters only (Ctrl: remove the shield's last upgrade).")
+		return fail(Tx"The toolkit moves boards between blasters only (Ctrl: remove the shield's last upgrade).")
 	end
 	if #st.Stack > 0 or st.Work > 0 then
-		if kit.Charges > 0 then return fail("The toolkit already holds a board.") end
+		if kit.Charges > 0 then return fail(Tx"The toolkit already holds a board.") end
 		kit.Charges = encodeBoard(st)
 		st.Stack, st.Work = {}, 0
 		save(gun, st)
 		evt.PlaySound{17020}
-		Game.ShowStatusText("The upgrades are dismounted into the toolkit.")
+		Game.ShowStatusText(Tx"The upgrades are dismounted into the toolkit.")
 		return 0
 	end
 	if kit.Charges > 0 then
@@ -564,10 +565,10 @@ local function useToolkit(pl, kit)
 		save(gun, st)
 		kit.Charges = 0
 		evt.PlaySound{12070}
-		Game.ShowStatusText("The upgrades are mounted onto the blaster.")
+		Game.ShowStatusText(Tx"The upgrades are mounted onto the blaster.")
 		return 0
 	end
-	return fail("Neither the blaster nor the toolkit holds any upgrades.")
+	return fail(Tx"Neither the blaster nor the toolkit holds any upgrades.")
 end
 
 for id in pairs(ORE) do evt.UseItemEffects[id] = useOre end
@@ -585,17 +586,17 @@ local function gemNote(id)
 	local top = 0
 	for t = 1, 4 do if value >= B.GemValue[t] then top = t end end
 	if spec == 0 then
-		return string.format("\n\nBlaster or shield upgrade: any spec up to tier %d (no key Emitter / Nova, Shift Capacitor / Recharge rate, Ctrl Disruptor / Recharge delay, Ctrl+Shift Power cell / Capacity).", top)
+		return string.format(Tx"\n\nBlaster or shield upgrade: any spec up to tier %d (no key Emitter / Nova, Shift Capacitor / Recharge rate, Ctrl Disruptor / Recharge delay, Ctrl+Shift Power cell / Capacity).", top)
 	end
 	if top == 0 then return "" end
-	return string.format("\n\nUpgrade up to tier %d: %s on a blaster, %s on an energy shield.", top, SPECS[spec], SHIELD_SPECS[spec])
+	return string.format(Tx"\n\nUpgrade up to tier %d: %s on a blaster, %s on an energy shield.", top, SPECS[spec], SHIELD_SPECS[spec])
 end
 
 local function oreNote(id)
 	local g = ORE[id]
-	local s = string.format("\n\nBlaster and shield upgrade work (needs Repair %d, %s).", ORE_RS[g],
-		select(ORE_RM[g], "Novice", "Expert", "Master", "Grand Master"))
-	if g < 6 then s = s .. string.format(" Two pieces can be smelted into %s ore.", ORE_NAMES[g + 1]) end
+	local s = string.format(Tx"\n\nBlaster and shield upgrade work (needs Repair %d, %s).", ORE_RS[g],
+		select(ORE_RM[g], Tx"Novice", Tx"Expert", Tx"Master", Tx"Grand Master"))
+	if g < 6 then s = s .. string.format(Tx" Two pieces can be smelted into %s ore.", ORE_NAMES[g + 1]) end
 	return s
 end
 
@@ -671,9 +672,9 @@ local function drainCell(pl, gun, st, itemSlot, use, which)
 	st.Cell = max(0, st.Cell - steps)
 	gun.MaxCharges = st.Cell
 	if before >= B.LowWarn and st.Cell < B.LowWarn then
-		Game.ShowStatusText(string.format("%s's %s: power cell low (%d%%)", pl.Name, which, floor(st.Cell / 2)), 3)
+		Game.ShowStatusText(string.format(Tx"%s's %s: power cell low (%d%%)", pl.Name, which, floor(st.Cell / 2)), 3)
 	elseif before > 0 and st.Cell <= 0 then
-		Game.ShowStatusText(string.format("%s's %s: power cell empty", pl.Name, which), 3)
+		Game.ShowStatusText(string.format(Tx"%s's %s: power cell empty", pl.Name, which), 3)
 	end
 end
 
@@ -831,10 +832,10 @@ local function checkLonePistols()
 			if alone then
 				if toBackpack(pl, slot) then
 					LoneWarned[i] = nil
-					Game.ShowStatusText(string.format("%s puts the left-hand blaster into the backpack", pl.Name), 2)
+					Game.ShowStatusText(string.format(Tx"%s puts the left-hand blaster into the backpack", pl.Name), 2)
 				elseif not LoneWarned[i] then
 					LoneWarned[i] = true
-					Game.ShowStatusText(string.format("%s has no room in the backpack for the left-hand blaster", pl.Name), 3)
+					Game.ShowStatusText(string.format(Tx"%s has no room in the backpack for the left-hand blaster", pl.Name), 3)
 				end
 			end
 		end
@@ -989,9 +990,9 @@ mem.autohook(0x42609E, function(d)
 		local mi = bashTarget(u2[slot + 0xC])
 		if mi then
 			Pending[#Pending + 1] = {Kind = "Bash", pi = pl:GetIndex(), mi = mi}
-			Game.ShowStatusText(string.format("%s's blaster is out of power - %s bashes with it", pl.Name, pl.Name), 2)
+			Game.ShowStatusText(string.format(Tx"%s's blaster is out of power - %s bashes with it", pl.Name, pl.Name), 2)
 		else
-			Game.ShowStatusText(string.format("%s's blaster is out of power", pl.Name), 2)
+			Game.ShowStatusText(string.format(Tx"%s's blaster is out of power", pl.Name), 2)
 			evt.PlaySound{358}
 		end
 		u2[slot] = 0
@@ -1007,7 +1008,7 @@ mem.autohook(0x42609E, function(d)
 		B.OverclockNow = pl:GetIndex()
 	end
 	local left, leftSlot = dualGun(pl)
-	drainCell(pl, gun, st, pl.ItemMainHand, use, left and "right-hand blaster" or "blaster")
+	drainCell(pl, gun, st, pl.ItemMainHand, use, left and Tx"right-hand blaster" or "blaster")
 	-- the left-hand pistol fires too while its cell lasts
 	if left then
 		local lst = state(left)
@@ -1015,7 +1016,7 @@ mem.autohook(0x42609E, function(d)
 			local luse = B.CellFull / capacity(left, lst)
 			if overclock then luse = luse * 2 end
 			if blasterMastery(pl) >= 4 then luse = luse * B.Dual.GMLeftCellUse end
-			drainCell(pl, left, lst, leftSlot, luse, "left-hand blaster")
+			drainCell(pl, left, lst, leftSlot, luse, Tx"left-hand blaster")
 			u4[Dual], u4[Dual + 4] = 1, left["?ptr"]
 		end
 	end
@@ -1088,7 +1089,7 @@ mem.autohook(0x428B9C, function(d)
 		for idx, it in pl.Items do
 			if it["?ptr"] == ptr then
 				MF.BlasterRecharge(it, pct)
-				Game.ShowStatusText(string.format("%s: %d%%", SHIELDS[it.Number] and "Shield charge" or "Power cell", floor(it.MaxCharges / 2)), 2)
+				Game.ShowStatusText(string.format("%s: %d%%", SHIELDS[it.Number] and Tx"Shield charge" or Tx"Power cell", floor(it.MaxCharges / 2)), 2)
 			end
 		end
 	end
@@ -1198,7 +1199,7 @@ local function stockOre(items, best, used)
 		it.Identified = true
 		it.Broken = false
 		if B.ShopDebug then
-			Game.ShowStatusText(string.format("%s put in stock (place %d of %d)", Game.ItemsTxt[it.Number].Name, slot, #used + n))
+			Game.ShowStatusText(string.format(Tx"%s put in stock (place %d of %d)", Game.ItemsTxt[it.Number].Name, slot, #used + n))
 		end
 	end
 end
@@ -1225,7 +1226,7 @@ mem.autohook(0x4BB005, function(d)
 	local ok, house = pcall(function() return u4[u4[0x519328] + 0x1C] end)
 	local htype = ok and Game.Houses[house] and Game.Houses[house].Type
 	if htype ~= 1 or not snap then
-		if B.ShopDebug then Game.ShowStatusText(string.format("Shop refilled: house %s, type %s", tostring(house), tostring(htype))) end
+		if B.ShopDebug then Game.ShowStatusText(string.format(Tx"Shop refilled: house %s, type %s", tostring(house), tostring(htype))) end
 		return
 	end
 	local found, changed = nil, 0
@@ -1240,7 +1241,7 @@ mem.autohook(0x4BB005, function(d)
 		end
 	end)
 	if B.ShopDebug then
-		Game.ShowStatusText(string.format("Weapon shop refilled: house %d, stock %s (%d changed)", house, tostring(found), changed))
+		Game.ShowStatusText(string.format(Tx"Weapon shop refilled: house %d, stock %s (%d changed)", house, tostring(found), changed))
 	end
 	if not found or changed ~= 1 then return end
 	if random() >= B.ShopOreChance then return end
@@ -1263,23 +1264,23 @@ end)
 function MF.TestShopOre(on)
 	if on == false then
 		B.ShopOreChance, B.ShopDebug = B.ShopOreChanceNormal or B.ShopOreChance, false
-		return "shop ore test off"
+		return Tx"shop ore test off"
 	end
 	B.ShopOreChanceNormal = B.ShopOreChanceNormal or B.ShopOreChance
 	B.ShopOreChance, B.ShopDebug = 1, true
 	for i in Game.ShopNextRefill do Game.ShopNextRefill[i] = 0 end
-	return "shop ore test on: enter a blacksmith"
+	return Tx"shop ore test on: enter a blacksmith"
 end
 
 -- console: Merge.Functions.BlasterInfo()
 function MF.BlasterInfo(pl)
 	pl = pl or Party:GetCurrentPlayer()
 	local gun = blasterOf(pl)
-	if not gun then return "no blaster in the main hand" end
+	if not gun then return Tx"no blaster in the main hand" end
 	local st = state(gun)
 	local s = {}
 	for i, e in ipairs(st.Stack) do s[#s + 1] = SPEC_SHORT[e.Spec] .. (e.Fine and "+" or "") end
-	return string.format("%s: E%d C%d D%d P%d (levels %.1f/%.1f/%.1f/%.1f), order %s, work %d, cell %.1f%%, recovery %d, shots per cell %d",
+	return string.format(Tx"%s: E%d C%d D%d P%d (levels %.1f/%.1f/%.1f/%.1f), order %s, work %d, cell %.1f%%, recovery %d, shots per cell %d",
 		pl.Name, st.Tiers[1], st.Tiers[2], st.Tiers[3], st.Tiers[4],
 		st.Levels[1], st.Levels[2], st.Levels[3], st.Levels[4], table.concat(s, " "),
 		st.Work, st.Cell / 2, MF.BlasterRecovery(gun), floor(capacity(gun, st)))

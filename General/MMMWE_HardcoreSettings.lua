@@ -1,4 +1,5 @@
 --[[
+local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 	MMMWE_HardcoreSettings.lua — "Hardcore mode" page of the Extra Settings menu
 
 	  * Hardcore mode button with the confirmation dialog (moved here from the
@@ -183,17 +184,17 @@ function events.GameInitialized2()
 	local function Refresh()
 		UI.Button.IUpSrc = IsOn() and "hcm_on" or "hcm_off"
 		UI.LimitValue.Text = LimitText()
-		UI.LimitNote.Text = IsLocked() and "(Hardcore mode is locked for this party)"
-			or IsOn() and "(locked while Hardcore mode is on)"
-			or (Limit() == 1 and "(the first party death deletes all saves)" or " ")
+		UI.LimitNote.Text = IsLocked() and Tx"(Hardcore mode is locked for this party)"
+			or IsOn() and Tx"(locked while Hardcore mode is on)"
+			or (Limit() == 1 and Tx"(the first party death deletes all saves)" or " ")
 		UI.DeathsValue.Text = tostring(Deaths()) .. (IsOn() and (" of " .. Limit()) or "")
 		local strip = Limit() > 1
-		UI.ItemsNote1.Text = strip and "Each party death before the last removes all items" or " "
-		UI.ItemsNote2.Text = strip and "except special items, artifacts, relics and ancient items." or " "
+		UI.ItemsNote1.Text = strip and Tx"Each party death before the last removes all items" or " "
+		UI.ItemsNote2.Text = strip and Tx"except special items, artifacts, relics and ancient items." or " "
 		local c = Curve()
 		local function M(v) return v >= 1e6 and string.format("%.1fM", v / 1e6) or string.format("%dk", math.floor(v / 1000 + 0.5)) end
 		UI.CurveValue.Text = string.format("%.2f", c) .. (math.abs(c - 1) < 1e-9 and " (game)" or "")
-		UI.CurveNote.Text = string.format("Level 50: %s exp, level 100: %s (game: %s, %s)",
+		UI.CurveNote.Text = string.format(Tx"Level 50: %s exp, level 100: %s (game: %s, %s)",
 			M(ExpForLevel(50, c)), M(ExpForLevel(100, c)), M(ExpForLevel(50, 1)), M(ExpForLevel(100, 1)))
 		Game.NeedRedraw = true
 	end
@@ -207,7 +208,7 @@ function events.GameInitialized2()
 			if not HasGame() then return end
 			if IsOn() and IsLocked() then
 				Game.PlaySound(27)
-				Game.ShowStatusText("Hardcore mode can't be turned off for this party")
+				Game.ShowStatusText(Tx"Hardcore mode can't be turned off for this party")
 				return
 			end
 			Game.PlaySound(23)
@@ -228,7 +229,7 @@ function events.GameInitialized2()
 	}
 
 	---- Party deaths allowed
-	Text{Text = Yellow("Party deaths allowed"), X = COL_LABEL, Y = 230, Condition = Hide}
+	Text{Text = Yellow(Tx"Party deaths allowed"), X = COL_LABEL, Y = 230, Condition = Hide}
 
 	local function ChangeLimit(side)
 		if IsOn() or not HasGame() then
@@ -249,7 +250,7 @@ function events.GameInitialized2()
 	UI.LimitNote = Text{Text = " ", X = COL_LABEL, Y = 250, Condition = Hide,
 		Width = NOTE_W, Height = LINE_H}
 
-	Text{Text = Yellow("Party deaths so far"), X = COL_LABEL, Y = 280, Condition = Hide}
+	Text{Text = Yellow(Tx"Party deaths so far"), X = COL_LABEL, Y = 280, Condition = Hide}
 	UI.DeathsValue = Text{Text = " ", X = COL_VALUE, Y = 280, Condition = Hide,
 		Width = VALUE_W, Height = LINE_H}
 
@@ -259,7 +260,7 @@ function events.GameInitialized2()
 		Width = NOTE_W, Height = LINE_H}
 
 	---- Experience curve
-	Text{Text = Yellow("Experience curve"), X = COL_LABEL, Y = 360, Condition = Hide}
+	Text{Text = Yellow(Tx"Experience curve"), X = COL_LABEL, Y = 360, Condition = Hide}
 
 	local function ChangeCurve(side)
 		if IsOn() or not HasGame() then
@@ -286,19 +287,19 @@ function events.GameInitialized2()
 	---- Confirmation dialog
 	local function DialogText()
 		local deaths = Limit() == 1
-			and ("All save files " .. StrColor(255, 180, 32, "will be deleted ")
-				.. "if the entire party is killed.\n\n")
-			or ("All save files " .. StrColor(255, 180, 32, "will be deleted ")
-				.. "after " .. Limit() .. " party deaths.\n"
-				.. "Every party death before that "
-				.. StrColor(255, 180, 32, "removes all items ")
-				.. "except artifacts, relics, quest, special and ancient items.\n\n")
-		return "HARDCORE MODE\n\n" ..
-			"Saving, loading and quitting to main menu " ..
-			StrColor(255, 180, 32, "are blocked ") .. "while enemies are nearby.\n" ..
+			and (Tx"All save files " .. StrColor(255, 180, 32, Tx"will be deleted ")
+				.. Tx"if the entire party is killed.\n\n")
+			or (Tx"All save files " .. StrColor(255, 180, 32, Tx"will be deleted ")
+				.. "after " .. Limit() .. Tx" party deaths.\n"
+				.. Tx"Every party death before that "
+				.. StrColor(255, 180, 32, Tx"removes all items ")
+				.. Tx"except artifacts, relics, quest, special and ancient items.\n\n")
+		return Tx"HARDCORE MODE\n\n" ..
+			Tx"Saving, loading and quitting to main menu " ..
+			StrColor(255, 180, 32, Tx"are blocked ") .. Tx"while enemies are nearby.\n" ..
 			deaths ..
-			StrColor(255, 180, 32, "It can't be turned off ") .. "for this party once enabled.\n" ..
-			"\nEnable Hardcore Mode?"
+			StrColor(255, 180, 32, Tx"It can't be turned off ") .. Tx"for this party once enabled.\n" ..
+			Tx"\nEnable Hardcore Mode?"
 	end
 
 	UI.DialogText = CustomUI.CreateText{
@@ -315,7 +316,7 @@ function events.GameInitialized2()
 	}
 
 	CustomUI.CreateText{
-		Text           = "Confirm",
+		Text           = Tx"Confirm",
 		ColorStd       = RGB(255, 200, 50),
 		ColorMouseOver = RGB(255, 255, 150),
 		Action = function(t)
@@ -335,7 +336,7 @@ function events.GameInitialized2()
 	}
 
 	CustomUI.CreateText{
-		Text           = "Cancel",
+		Text           = Tx"Cancel",
 		ColorStd       = RGB(180, 180, 180),
 		ColorMouseOver = RGB(255, 255, 150),
 		Action = function(t)

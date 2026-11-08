@@ -6,6 +6,7 @@
 --   396 Expert Dodging   397 Master Dodging   398 Grand Master Dodging
 --   399 Expert Unarmed   400 Master Unarmed   401 Grand Master Unarmed
 
+local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 local TEACHERS = {
 	-- Jadame: Expert in Ravenshore, Master in Garrote Gorge, Grand Master in Shadowspire
 	{NPC = 229,  Topic = 396, Slot = 1},   -- Poundlin Deerhunter, Deerhunter's House, Ravenshore
@@ -28,18 +29,18 @@ local TEACHERS = {
 -- their autonotes (Teacher autonotes.txt links topic, NPC and note): ids that are empty in
 -- Autonote.txt, given texts here, in the "teacher" category of the game's teacher notes
 local NOTES = {
-	[110] = "You may receive Expert Dodging instruction from Poundlin Deerhunter in the city of Ravenshore.",
-	[303] = "You may receive Expert Unarmed instruction from Ethan Hillsman in the city of Ravenshore.",
-	[112] = "Master Dodging is taught by Weldrik Falconeye, who lives in Garrote Gorge.",
-	[305] = "Master Unarmed is taught by Isram Delver, who lives in Garrote Gorge.",
-	[301] = "The Grandmaster of the Dodging Skill, Ashen Fiddlebone, can be found in Shadowspire.",
-	[308] = "The Grandmaster of Unarmed Combat, Sethrik Fist, can be found in Shadowspire.",
-	[111] = "You may receive Expert Dodging instruction from Nikobi in the town of Free Haven.",
-	[304] = "You may receive Expert Unarmed instruction from Nigan in the town of Silver Cove.",
-	[300] = "Master Dodging is taught by Eunbo Kim in the town of Kriegspire.",
-	[306] = "Master Unarmed is taught by Vance Cornelius in the town of Kriegspire.",
-	[302] = "The Grandmaster of the Dodging Skill, Sila Daewon, can be found in the town of Kriegspire.",
-	[726] = "The Grandmaster of Unarmed Combat, Ian Trom, can be found in Dragonsand.",
+	[110] = Tx"You may receive Expert Dodging instruction from Poundlin Deerhunter in the city of Ravenshore.",
+	[303] = Tx"You may receive Expert Unarmed instruction from Ethan Hillsman in the city of Ravenshore.",
+	[112] = Tx"Master Dodging is taught by Weldrik Falconeye, who lives in Garrote Gorge.",
+	[305] = Tx"Master Unarmed is taught by Isram Delver, who lives in Garrote Gorge.",
+	[301] = Tx"The Grandmaster of the Dodging Skill, Ashen Fiddlebone, can be found in Shadowspire.",
+	[308] = Tx"The Grandmaster of Unarmed Combat, Sethrik Fist, can be found in Shadowspire.",
+	[111] = Tx"You may receive Expert Dodging instruction from Nikobi in the town of Free Haven.",
+	[304] = Tx"You may receive Expert Unarmed instruction from Nigan in the town of Silver Cove.",
+	[300] = Tx"Master Dodging is taught by Eunbo Kim in the town of Kriegspire.",
+	[306] = Tx"Master Unarmed is taught by Vance Cornelius in the town of Kriegspire.",
+	[302] = Tx"The Grandmaster of the Dodging Skill, Sila Daewon, can be found in the town of Kriegspire.",
+	[726] = Tx"The Grandmaster of Unarmed Combat, Ian Trom, can be found in Dragonsand.",
 }
 local TEACHER_NOTE = 373   -- an existing teacher note, for its category
 for id, text in pairs(NOTES) do

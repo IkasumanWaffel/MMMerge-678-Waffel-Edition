@@ -20,6 +20,7 @@
 --]]
 
 local MF = Merge.Functions
+local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 
 ---------------------------------------------------------------------------
 -- Settings
@@ -91,7 +92,7 @@ function events.GameInitialized2()
 	end
 
 	CustomUI.CreateText{
-		Text = "Stake", Font = Game.Arrus_fnt,
+		Text = Tx"Stake", Font = Game.Arrus_fnt,
 		Width = 140, Height = LINE_HEIGHT,
 		ColorStd = RGB(255, 255, 255),
 		Layer = 0, Screen = const.Screens.House,
@@ -99,7 +100,7 @@ function events.GameInitialized2()
 			if not place(self, 1) then return false end
 			local house = Game.GetCurrentHouse()
 			local stake = currentStake(house)
-			self.Text = stake and string.format("Stake: %d", stake) or "Not enough gold"
+			self.Text = stake and string.format(Tx"Stake: %d", stake) or Tx"Not enough gold"
 			return true
 		end,
 		Action = function(self)
@@ -115,7 +116,7 @@ function events.GameInitialized2()
 	}
 
 	CustomUI.CreateText{
-		Text = "Play for a bet", Font = Game.Arrus_fnt,
+		Text = Tx"Play for a bet", Font = Game.Arrus_fnt,
 		Width = 140, Height = LINE_HEIGHT,
 		ColorStd = RGB(255, 255, 255),
 		Layer = 0, Screen = const.Screens.House,
@@ -142,12 +143,12 @@ function events.ArcomageSetup(t, house)
 	Active = nil
 	if not p or p.House ~= house or os.clock() - p.Clock > 5 then return end
 	if Party.Gold < p.Stake then
-		Game.ShowStatusText("Not enough gold for the stake")
+		Game.ShowStatusText(Tx"Not enough gold for the stake")
 		return
 	end
 	Party.Gold = Party.Gold - p.Stake
 	Active = {House = house, Stake = p.Stake}
-	Game.ShowStatusText(string.format("You bet %d gold", p.Stake))
+	Game.ShowStatusText(string.format(Tx"You bet %d gold", p.Stake))
 	log("house %d: stake %d", house, p.Stake)
 end
 
@@ -159,12 +160,12 @@ function events.ArcomageMatchEnd(t)
 	if t.result == 1 then
 		local pay = math.floor(a.Stake * PAYOUT + 0.5)
 		Party.Gold = Party.Gold + pay
-		Game.ShowStatusText(string.format("You win the bet: +%d gold!", pay - a.Stake))
+		Game.ShowStatusText(string.format(Tx"You win the bet: +%d gold!", pay - a.Stake))
 	elseif t.result == 0 or (t.result == -1 and not FORFEIT_ON_LEAVE) then
 		Party.Gold = Party.Gold + a.Stake
-		Game.ShowStatusText(string.format("The stake of %d gold is returned", a.Stake))
+		Game.ShowStatusText(string.format(Tx"The stake of %d gold is returned", a.Stake))
 	else
-		Game.ShowStatusText(string.format("You lose the bet of %d gold", a.Stake))
+		Game.ShowStatusText(string.format(Tx"You lose the bet of %d gold", a.Stake))
 	end
 	log("house %d: stake %d, result %s", a.House, a.Stake, tostring(t.result))
 end

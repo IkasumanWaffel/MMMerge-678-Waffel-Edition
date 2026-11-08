@@ -32,6 +32,7 @@
 --]]
 
 local MF = Merge.Functions
+local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 
 local B = {
 	DiamondResPer      = 2,      -- Meditation points per +1 resistance
@@ -144,7 +145,7 @@ function events.CalcDamageToMonster(t)
 			local c = MF.OpportunistChance(pl)
 			if c > 0 and math.random() * 100 < c then
 				MF.QueueCounterAttack(pi, t.MonsterIndex,
-					string.format("%s seizes the opening!", pl.Name), B.OpportunistDamage)
+					string.format(Tx"%s seizes the opening!", pl.Name), B.OpportunistDamage)
 				return
 			end
 		end

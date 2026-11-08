@@ -37,6 +37,7 @@
 --]]
 
 local MF = Merge.Functions
+local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 local floor, min, max = math.floor, math.min, math.max
 
 local S = {
@@ -147,7 +148,7 @@ local function nova(pl, pi, st, cap)
 		Game.SummonObjects(S.NovaExplosion, x, y, z, 0, 1)
 		Game.PlaySound(S.NovaSound)
 	end)
-	Game.ShowStatusText(string.format("%s's shield bursts in a nova!", pl.Name), 3)
+	Game.ShowStatusText(string.format(Tx"%s's shield bursts in a nova!", pl.Name), 3)
 end
 
 ---------------------------------------------------------------------------
@@ -169,9 +170,9 @@ local function onHit(t)
 			br.Value = br.Value - a
 			if br.Value < 1 then
 				Barrier[bpi] = nil
-				Game.ShowStatusText(string.format("%s's barrier collapses (%d absorbed)", pl.Name, a), 3)
+				Game.ShowStatusText(string.format(Tx"%s's barrier collapses (%d absorbed)", pl.Name, a), 3)
 			else
-				Game.ShowStatusText(string.format("%s's barrier absorbs %d", pl.Name, a), 3)
+				Game.ShowStatusText(string.format(Tx"%s's barrier absorbs %d", pl.Name, a), 3)
 			end
 			if t.Result <= 0 then return end
 		end
@@ -200,10 +201,10 @@ local function onHit(t)
 	if absorbed > 0 then playSound(math.random(S.HitSounds[1], S.HitSounds[2])) end
 	if pool <= 0 then
 		Broken[pi] = true
-		Game.ShowStatusText(string.format("%s's shield breaks! (%d absorbed)", pl.Name, absorbed), 3)
+		Game.ShowStatusText(string.format(Tx"%s's shield breaks! (%d absorbed)", pl.Name, absorbed), 3)
 		nova(pl, pi, st, cap)
 	else
-		Game.ShowStatusText(string.format("%s's shield absorbs %d (%d%%)", pl.Name, absorbed,
+		Game.ShowStatusText(string.format(Tx"%s's shield absorbs %d (%d%%)", pl.Name, absorbed,
 			floor(pool / cap * 100)), 3)
 	end
 	-- Spike: the melee attacker takes a share of what the shield took
@@ -297,7 +298,7 @@ function MF.ShieldProjector(caster)
 		end
 	end
 	if shields > 0 then playSound(S.ChargeSound) end
-	Game.ShowStatusText(string.format("%s projects energy: %d shield(s) recharged, %d barrier(s)", caster.Name, shields, barriers), 3)
+	Game.ShowStatusText(string.format(Tx"%s projects energy: %d shield(s) recharged, %d barrier(s)", caster.Name, shields, barriers), 3)
 end
 
 function events.MonsterKilled()
@@ -323,7 +324,7 @@ function MF.ShieldCardInfo(st)
 	local pl = Party:GetCurrentPlayer()
 	if not pl then return "" end
 	local cap = capacity(pl, st)
-	return string.format("\nCapacity %d  Delay %.1f min  Recharge %d/min",
+	return string.format(Tx"\nCapacity %d  Delay %.1f min  Recharge %d/min",
 		floor(cap + 0.5), delayOf(st, false) / const.Minute, floor(ratePerMinute(pl, st) + 0.5))
 end
 
@@ -338,11 +339,11 @@ end
 function MF.ShieldInfo(pl)
 	pl = pl or Party:GetCurrentPlayer()
 	local it = MF.ShieldOf and MF.ShieldOf(pl)
-	if not it then return "no energy shield worn" end
+	if not it then return Tx"no energy shield worn" end
 	local st = shieldState(it)
 	local pi = pl:GetIndex()
 	local pool, cap = charge(pl, pi, it, st)
-	return string.format("%s: charge %.1f / %.1f, Nova %d Rate %d Delay %d Capacity %d, delay %.2f min%s, recharge %.1f/min",
+	return string.format(Tx"%s: charge %.1f / %.1f, Nova %d Rate %d Delay %d Capacity %d, delay %.2f min%s, recharge %.1f/min",
 		pl.Name, pool, cap, st.Tiers[NOVA], st.Tiers[RATE], st.Tiers[DELAY], st.Tiers[CAP],
 		delayOf(st, Broken[pi]) / const.Minute, Broken[pi] and " (broken)" or "", ratePerMinute(pl, st))
 end

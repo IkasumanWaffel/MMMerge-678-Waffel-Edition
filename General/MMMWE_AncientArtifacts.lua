@@ -25,6 +25,7 @@
 --]]
 
 local MF = Merge.Functions
+local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 local floor, min, max, random = math.floor, math.min, math.max, math.random
 
 local A = {
@@ -144,7 +145,7 @@ local function onPlayerHit(t)
 	if worn(pl, PHASE, "ItemCloak") and random(100) <= A.PhaseChance then
 		t.Result = 0
 		MF.MissedPlayer = pl["?ptr"]           -- no special effect either (MMMWE_MonkBranches.lua)
-		Game.ShowStatusText(string.format("The blow passes through %s's phase field!", pl.Name), 2)
+		Game.ShowStatusText(string.format(Tx"The blow passes through %s's phase field!", pl.Name), 2)
 	end
 end
 
@@ -162,7 +163,7 @@ local function onMonsterHit(t)
 			edgeSet(it, cell - 1)
 			t.Result = (t.Damage or 0) + A.EdgeBonus
 			if cell - 1 == floor(A.EdgeCell / 10) then
-				Game.ShowStatusText("The Plasma Edge flickers: its cell is nearly empty.", 2)
+				Game.ShowStatusText(Tx"The Plasma Edge flickers: its cell is nearly empty.", 2)
 			end
 		else
 			t.Result = random(1, 3)
@@ -199,7 +200,7 @@ function events.NewDay(t)
 	for _, pl in Party do
 		if worn(pl, CORE, "ItemAmulet") then
 			rechargeAll(pl)
-			Game.ShowStatusText(string.format("%s's Power Core hums: every device is charged.", pl.Name), 3)
+			Game.ShowStatusText(string.format(Tx"%s's Power Core hums: every device is charged.", pl.Name), 3)
 		end
 	end
 end
@@ -279,7 +280,7 @@ function events.GameInitialized2()
 		evt.PotionEffects[13] = function(IsDrunk, Target, Power, ...)
 			if not IsDrunk and Target and Target.Number == EDGE then
 				edgeSet(Target, edgeCell(Target) + A.EdgeCell * (Power or 0) / 100)
-				Game.ShowStatusText(string.format("Plasma Edge: %d%%", floor(edgeCell(Target) * 100 / A.EdgeCell)))
+				Game.ShowStatusText(string.format(Tx"Plasma Edge: %d%%", floor(edgeCell(Target) * 100 / A.EdgeCell)))
 				return 3
 			end
 			return potion(IsDrunk, Target, Power, ...)
