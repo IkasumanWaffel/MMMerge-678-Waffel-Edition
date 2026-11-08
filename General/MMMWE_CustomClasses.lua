@@ -328,6 +328,16 @@ local SKILL_IDS = {}       -- skill id -> name, purchasable skills only
 for name, id in pairs(const.Skills) do
 	if not FORBIDDEN[name] then SKILL_IDS[id] = name end
 end
+-- (08.11.26) the new skills of MMMWE_ExtraSkills.lua (not in const.Skills): their caps go to
+-- MF.ExtraSkills.Caps[class] (MF.ClassSkillCap), not to the game's class table. They can't be
+-- starting skills: they are learned in houses.
+local EXTRA_SKILL_IDS = {[41] = "DualWield", [42] = "Robe"}
+for id, name in pairs(EXTRA_SKILL_IDS) do SKILL_IDS[id] = name end
+local SKILL_LABEL = {DualWield = "Dual-Wield"}
+local function skillLabel(id)
+	local name = SKILL_IDS[id]
+	return SKILL_LABEL[name] or name
+end
 
 local function skillId(skill)
 	if type(skill) == "number" then return SKILL_IDS[skill] and skill end
@@ -439,7 +449,7 @@ local function cost(spec, kitKey)
 		local mul, fm = capMul(name, m)
 		local v = CAP_COST[m] * mul
 		total = total + v
-		lines[#lines + 1] = string.format("%s %s: %g%s", name, CAP_NAMES[m], v, note(fm))
+		lines[#lines + 1] = string.format("%s %s: %g%s", skillLabel(id), CAP_NAMES[m], v, note(fm))
 	end
 	if spec.Spells then
 		local n, v = 0, 0
@@ -536,7 +546,7 @@ local function describe(fam, step)
 	for id, m in pairs(spec.Skills) do
 		if m > 0 then
 			bySkillCap[m] = bySkillCap[m] or {}
-			table.insert(bySkillCap[m], SKILL_IDS[id])
+			table.insert(bySkillCap[m], skillLabel(id))
 		end
 	end
 	local parts = {string.format("A custom class. Hit points: tier %d. Spell points: tier %d%s.",
@@ -588,6 +598,16 @@ local function applyClass(id, fam, f, step)
 	local skills = Game.Classes.Skills[id]
 	for sk = 0, skills.count - 1 do
 		skills[sk] = spec and spec.Skills[sk] or 0
+	end
+	local ex = MF.ExtraSkills
+	if ex and ex.Caps then
+		if spec then
+			local caps = {}
+			for sk in pairs(EXTRA_SKILL_IDS) do caps[sk] = spec.Skills[sk] or 0 end
+			ex.Caps[id] = caps
+		else
+			ex.Caps[id] = nil
+		end
 	end
 	local hp = HP_TIERS[spec and spec.HP or 0]
 	local sp = SP_TIERS[spec and spec.SP or 0]
@@ -1221,6 +1241,8 @@ MF.CustomClasses = {
 	Kits = KITS,
 	KitByKey = KIT_BY_KEY,
 	SkillNames = SKILL_IDS,
+	SkillLabel = skillLabel,
+	ExtraSkillIds = EXTRA_SKILL_IDS,
 	CapNames = CAP_NAMES,
 	StatsName = STATS_NAME,
 	StepNames = STEP_NAMES,

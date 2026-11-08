@@ -177,7 +177,7 @@ end
 
 local function purchasable(s)
 	local n = 0
-	for _, m in pairs(s.Skills) do if m > 0 then n = n + 1 end end
+	for id, m in pairs(s.Skills) do if m > 0 and id < 39 then n = n + 1 end end   -- not Dual-Wield, Robe
 	return n
 end
 
@@ -307,6 +307,7 @@ local function clickSkill(id)
 			if sk == id then table.remove(f.StartSkills, i) return end
 		end
 		if cap == 0 then message("Only a skill the class can learn can be a starting skill") return end
+		if id >= 39 then message("Dual-Wield and Robe are learned in houses, not at the start") return end
 		if #f.StartSkills >= START_SKILLS then message("Two starting skills are chosen already") return end
 		table.insert(f.StartSkills, id)
 		return
@@ -602,16 +603,20 @@ local function build()
 		end,
 		Click = cycleStats}
 
-	-- skills: three columns of twelve
+	-- skills: three columns of thirteen (the 36 skills of the game and Dual-Wield, Robe)
 	SKILL_ORDER = {}
 	for id = 0, 38 do
 		if CC.SkillNames[id] then SKILL_ORDER[#SKILL_ORDER + 1] = id end
 	end
+	for id = 39, 48 do
+		if CC.SkillNames[id] then SKILL_ORDER[#SKILL_ORDER + 1] = id end
+	end
+	local ROWS = math.ceil(#SKILL_ORDER / 3)
 	local SHORT = {[0] = "-", "Nov", "Exp", "Mas", "GM"}
 	local NICE = {IdentifyItem = "Ident. Item", DisarmTraps = "Disarm Traps", IdentifyMonster = "Ident. Monster",
-		Bodybuilding = "Bodybuilding", Repair = "Repair Item"}
+		Bodybuilding = "Bodybuilding", Repair = "Repair Item", DualWield = "Dual-Wield"}
 	for i, id in ipairs(SKILL_ORDER) do
-		local col, row = math.floor((i - 1) / 12), (i - 1) % 12
+		local col, row = math.floor((i - 1) / ROWS), (i - 1) % ROWS
 		local name = CC.SkillNames[id]
 		name = NICE[name] or name
 		text{Font = Skill, X = 18 + col * 206, Y = 163 + row * 21, W = 196, H = 18,
