@@ -501,7 +501,12 @@ local function SetSpellsExtraHooks()
 			local MS,MM = SplitSkill(Pl:GetSkill(math.floor(t.Spell/11 - 1/11) + 12))
 			local spdBonus = Game.GetStatisticEffect(Pl:GetSpeed())
 			d.esi = t.Cost + t.Cost*SpellCostFactor(t.Spell)*MS*MM
-			d.edi = math.max(30, t.Recovery - t.Recovery*0.01*MS + t.Recovery*0.01*CalcSpellDelay(Pl, t.Spell))
+			local rec = t.Recovery - t.Recovery*0.01*MS + t.Recovery*0.01*CalcSpellDelay(Pl, t.Spell)
+			-- (08.11.26) Haste shortens spell recovery as it does weapon recovery (MMMWE_Main.lua)
+			if Pl.SpellBuffs[const.PlayerBuff.Haste].ExpireTime > 0 or Party.SpellBuffs[const.PartyBuff.Haste].ExpireTime > 0 then
+				rec = rec * (1 - 0.01 * (MF.RecoverySettings and MF.RecoverySettings.HastePct or 25))
+			end
+			d.edi = math.max(30, rec)
 			if vars.ManaCost == nil then vars.ManaCost = 0 end
 			vars.ManaCost = d.esi
 			if vars.CastDelay == nil then vars.CastDelay = 0 end
