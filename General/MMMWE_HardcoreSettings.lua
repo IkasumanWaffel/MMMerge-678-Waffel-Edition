@@ -1,5 +1,4 @@
 --[[
-local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 	MMMWE_HardcoreSettings.lua — "Hardcore mode" page of the Extra Settings menu
 
 	  * Hardcore mode button with the confirmation dialog (moved here from the
@@ -22,6 +21,7 @@ local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 	Saved with the game: vars.HardCoreMode, vars.HCMDeathLimit, vars.HCMDeaths, vars.ExpCurve.
 	The death handling itself is in Global/MMMWE_HardcoreMode.lua.
 --]]
+local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 
 local MV = Merge.Vars
 
