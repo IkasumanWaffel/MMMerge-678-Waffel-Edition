@@ -98,6 +98,20 @@ function events.ItemEquipRequirement(t)
 	end
 end
 
+-- (08.11.26) the game puts a two-handed weapon (Equip Stat 1) only in the right hand; at Grand
+-- Master it goes the one-handed way instead (0x46770E): to the left hand when dropped on
+-- the left half of the doll, or in place of the right-hand weapon with the left one kept.
+-- At 0x4674F8 the item's Equip Stat ([ebp-8]) picks the way; ebx is the player.
+mem.autohook(0x4674F8, function(d)
+	if mem.i4[d.ebp - 8] ~= 1 then return end
+	local num = mem.i4[0xB7CA64]
+	if not isWeapon(num) or isBlaster(num) then return end
+	local pl = MF.GetPlayerFromPtr(d.ebx)
+	if pl and select(2, skill(pl, DW)) >= 4 then
+		mem.i4[d.ebp - 8] = 0
+	end
+end)
+
 ---------------------------------------------------------------------------
 -- fighting with two weapons
 ---------------------------------------------------------------------------
