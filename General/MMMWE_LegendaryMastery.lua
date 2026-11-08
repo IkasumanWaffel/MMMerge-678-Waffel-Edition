@@ -208,9 +208,23 @@ mem.autohook(0x417650, function(d)
 	end
 	local w = i4[d.ebp - 8]
 	local line = string.format("\f%05d%s\t%03d:\t%03d%s - %s\t000\n", color, LABEL, w + 3, w + 10, p.Name, p.Text)
+	-- right after the Grand Master line (the fourth "\t000\n"; the "Bonus" line comes after it)
 	local cur = mem.string(buf)
-	if #cur + #line < 8000 then
-		mem.copy(buf + #cur, line .. "\0", #line + 1)
+	local at, n, from = nil, 0, 1
+	while true do
+		local i, j = cur:find("\t000\n", from, true)
+		if not i then break end
+		n, from = n + 1, j + 1
+		if n == 4 then at = j break end
+	end
+	local out
+	if at then
+		out = cur:sub(1, at) .. line .. cur:sub(at + 1)
+	else
+		out = cur .. "\n" .. line
+	end
+	if #out < 8000 then
+		mem.copy(buf, out .. "\0", #out + 1)
 	end
 end)
 
