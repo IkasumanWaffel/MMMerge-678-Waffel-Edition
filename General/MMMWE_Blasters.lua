@@ -874,7 +874,7 @@ local GripFlags = mem.StaticAlloc(GRIP_MAX)   -- zeroed
 
 -- (08.11.26) other scripts add turned left-hand icons the same way (MMMWE_OffhandWeapons.lua):
 -- num: item id, name: the icon, dx, dy: its offset from the upright icon's place
--- w, h: the turned icon's size, to keep it inside the screen
+-- w, h: the turned icon's size
 B.OffhandIconSize = {}
 function MF.SetOffhandIcon(num, name, dx, dy, w, h)
 	OFFHAND_ICON[num] = name
@@ -894,14 +894,9 @@ mem.autohook(0x43B8A5, function(d)
 	local num = i4[u4[d.esp + 0x20]]
 	local off = OFFHAND_ICON[num] and B.OffhandIconOffset[num]
 	if off then
-		local x, y = i4[d.esp + 0x14] + off[1], i4[d.esp + 0x10] + off[2]
-		-- (08.11.26) a picture partly off the screen crashes the game: kept inside
-		local sz = B.OffhandIconSize[num]
-		if sz then
-			x = math.max(0, math.min(x, 640 - sz[1]))
-			y = math.max(0, math.min(y, 480 - sz[2]))
-		end
-		i4[d.esp + 0x14], i4[d.esp + 0x10] = x, y
+		-- (the drawing is clipped to the doll's panel, so the picture may reach past it)
+		i4[d.esp + 0x14] = i4[d.esp + 0x14] + off[1]
+		i4[d.esp + 0x10] = i4[d.esp + 0x10] + off[2]
 	end
 end)
 
