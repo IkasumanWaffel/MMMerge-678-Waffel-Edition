@@ -612,6 +612,8 @@ local function build()
 		if CC.SkillNames[id] then SKILL_ORDER[#SKILL_ORDER + 1] = id end
 	end
 	local ROWS = math.ceil(#SKILL_ORDER / 3)
+	-- the panel holds twelve rows 21 apart: more rows share the same height
+	local ROW_H = ROWS > 12 and math.floor(12 * 21 / ROWS) or 21
 	local SHORT = {[0] = "-", "Nov", "Exp", "Mas", "GM"}
 	local NICE = {IdentifyItem = "Ident. Item", DisarmTraps = "Disarm Traps", IdentifyMonster = "Ident. Monster",
 		Bodybuilding = "Bodybuilding", Repair = "Repair Item", DualWield = "Dual-Wield"}
@@ -619,7 +621,7 @@ local function build()
 		local col, row = math.floor((i - 1) / ROWS), (i - 1) % ROWS
 		local name = CC.SkillNames[id]
 		name = NICE[name] or name
-		text{Font = Skill, X = 18 + col * 206, Y = 163 + row * 21, W = 196, H = 18,
+		text{Font = Skill, X = 18 + col * 206, Y = 163 + row * ROW_H, W = 196, H = 18,
 			Get = function()
 				if E.View ~= "skills" then return end
 				local f, s = fam(), spec()
