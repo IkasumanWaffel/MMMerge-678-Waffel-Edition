@@ -140,22 +140,82 @@ for _, p in ipairs{0x418E5F, 0x41920C, 0x4195AC, 0x41994F} do
 	mem.autohook(p, skillLine)
 end
 
--- the skill popup: the passive ability after the Grand Master line
-local baseGM = {}
-local function describe()
-	for skill = 0, Game.SkillNames.high do
-		local p = LEGEND.Passives[skill]
-		if p then
-			baseGM[skill] = baseGM[skill] or Game.SkillDesGM[skill] or ""
-			Game.SkillDesGM[skill] = string.format("%s\n%s: %s - %s", baseGM[skill], LEGEND.Name, p.Name, p.Text)
-		end
-	end
-end
-MF.LegendaryDescribe = describe
+-- the skill popup: a "Legendary" line of its own after the Grand Master line (08.11.26), its
+-- label coloured as the game colours the others: red when the class can't reach Grand Master
+-- in the skill (no promotion can either), yellow while the requirements aren't met, white when
+-- they are (or the skill is Legendary already). The popup is built by 0x4171E0 (esi - the
+-- player's index, ebx - the skill; [ebp-8] - the widest mastery label, the columns are
+-- [ebp-8] + 3 and + 10) into a buffer returned at 0x417650 (esi).
+local LABEL = "Legendary"
+local LabelPtr = MF.cstring(LABEL)
+local u4, i4 = mem.u4, mem.i4
+local FONT = 0x5DB938
 
-function events.GameInitialized2()
-	describe()
+local function legendRow(skill)
+	return LEGEND.Passives[skill]
 end
+
+-- the label's width counts in the column of the labels
+mem.autohook(0x417249, function(d)
+	if not legendRow(d.ebx) then return end
+	local ok, w = pcall(mem.call, 0x449C7B, 2, u4[FONT], LabelPtr)
+	if ok and w > i4[d.ebp - 8] then i4[d.ebp - 8] = w end
+end)
+
+local function rgb(r, g, b)
+	return mem.call(0x40F247, 2, r, g, b)
+end
+
+-- the best mastery the class (or a promotion of it) can reach in the skill, as the popup's
+-- other lines are coloured (RemoveClassLimits.lua's CanLearnSkill)
+local function bestCap(pl, skill)
+	local function cap(class)
+		local t = {Skill = skill, Class = class, Player = pl,
+			MaxLevel = MF.ClassSkillCap and MF.ClassSkillCap(class, skill) or Game.Classes.Skills[class][skill],
+			Mastery = -1}
+		events.call("ShowSkillDescr", t)
+		return t.MaxLevel or 0
+	end
+	local best = cap(pl.Class)
+	if MF.GetAllPromos then
+		local promos = {}
+		pcall(MF.GetAllPromos, promos, pl.Class)
+		for _, c in pairs(promos) do best = math.max(best, cap(c)) end
+	end
+	return best
+end
+
+mem.autohook(0x417650, function(d)
+	local skill = d.ebx
+	local p = legendRow(skill)
+	local buf = d.esi
+	if not p or buf == 0 then return end
+	local pp = u4[d.ebp - 4]
+	local ok, pl = pcall(function()
+		local idx = (pp - Party.PlayersArray["?ptr"]) / Party.PlayersArray[0]["?size"]
+		return Party.PlayersArray[idx]
+	end)
+	if not ok or not pl then return end
+	local color
+	if MF.IsLegendary(pl, skill) then
+		color = rgb(255, 255, 255)
+	elseif bestCap(pl, skill) < GM then
+		color = rgb(255, 0, 0)
+	elseif #MF.LegendaryProblems(pl, skill) > 0 then
+		color = rgb(255, 255, 0)
+	else
+		color = rgb(255, 255, 255)
+	end
+	local w = i4[d.ebp - 8]
+	local line = string.format("\f%05d%s\t%03d:\t%03d%s - %s\t000\n", color, LABEL, w + 3, w + 10, p.Name, p.Text)
+	local cur = mem.string(buf)
+	if #cur + #line < 8000 then
+		mem.copy(buf + #cur, line .. "\0", #line + 1)
+	end
+end)
+
+-- (the Grand Master texts stay the game's; earlier versions added the ability to them)
+function MF.LegendaryDescribe() end
 
 -- console: who is Legendary in what
 function MF.LegendaryInfo()
