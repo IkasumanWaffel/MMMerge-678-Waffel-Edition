@@ -608,8 +608,14 @@ local function build()
 	for id = 0, 38 do
 		if CC.SkillNames[id] then SKILL_ORDER[#SKILL_ORDER + 1] = id end
 	end
+	-- Dual-Wield right after Mace, Robe before the magic schools
+	local AFTER = {[41] = const.Skills.Mace, [42] = const.Skills.Plate}
 	for id = 39, 48 do
-		if CC.SkillNames[id] then SKILL_ORDER[#SKILL_ORDER + 1] = id end
+		if CC.SkillNames[id] then
+			local pos = #SKILL_ORDER + 1
+			for i, sk in ipairs(SKILL_ORDER) do if sk == AFTER[id] then pos = i + 1 end end
+			table.insert(SKILL_ORDER, pos, id)
+		end
 	end
 	local ROWS = math.ceil(#SKILL_ORDER / 3)
 	-- the panel holds twelve rows 21 apart: more rows share the same height
