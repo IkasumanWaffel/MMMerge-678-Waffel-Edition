@@ -140,6 +140,16 @@ passive(SK.IdentifyMonster, "Know Thy Enemy", "the whole party deals 10% more da
 passive(SK.Armsmaster, "Weapon Master", "all weapon skills count 5 higher, and recovery is 10% faster")
 -- (08.11.26) the new skill of MMMWE_ExtraSkills.lua (its effect: MMMWE_ExtraSkillsEffects.lua)
 passive(41, "Twin Titans", "a two-handed weapon in each hand without penalties")
+passive(42, "Unseen", "without body armor, monsters pick this character as a target half as often (threat halved)")
+
+-- Robe: the threat of MMMWE_Threat.lua halved while no body armor is worn (as Robe's own effects)
+P.RobeThreatMul = 0.5
+function MF.LegendaryThreatMult(pl)
+	if not MF.IsLegendary(pl, 42) then return 1 end
+	local slot = pl.ItemArmor
+	if slot > 0 and not pl.Items[slot].Broken and pl.Items[slot].Number > 0 then return 1 end
+	return P.RobeThreatMul
+end
 passive(SK.Stealing, "Phantom", "stealing from shops costs no reputation, and corpses give double gold")
 passive(SK.Alchemy, "Philosopher's Stone", "potions brewed from reagents are 50% stronger")
 passive(SK.Learning, "Sage", "the whole party gains 10% more experience")

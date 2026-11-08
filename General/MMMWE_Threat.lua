@@ -85,6 +85,7 @@ local function playerThreat(pl)
 		threat = threat + SHIELD_BONUS * masteryMul(pl, SK.Shield)
 	end
 	if MF.StanceThreatMult then threat = threat * MF.StanceThreatMult(pl) end   -- MMMWE_Resources.lua
+	if MF.LegendaryThreatMult then threat = threat * MF.LegendaryThreatMult(pl) end   -- Legendary Robe (MMMWE_LegendaryPassives.lua)
 	return threat
 end
 MF.PlayerThreat = playerThreat
