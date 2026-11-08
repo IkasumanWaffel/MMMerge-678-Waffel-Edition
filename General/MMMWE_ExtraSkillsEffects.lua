@@ -81,13 +81,18 @@ function events.ItemEquipRequirement(t)
 	local pl = t.Player
 	local _, mas = skill(pl, DW)
 	if isTwoHanded(num) then
-		-- the other things in play: the hands and the mouse
+		-- the other things in play: the hands and the mouse, without the item itself (one
+		-- copy of it: an identical second copy counts as the other weapon, 08.11.26)
 		local other = {}
 		local mouse = mem.i4[0xB7CA64]
-		if mouse > 0 and mouse ~= num then other[#other + 1] = mouse end
-		local m, e = itemNum(pl, pl.ItemMainHand), itemNum(pl, pl.ItemExtraHand)
-		if m and m ~= num then other[#other + 1] = m end
-		if e and e ~= num then other[#other + 1] = e end
+		local inPlay = {mouse > 0 and mouse or nil, itemNum(pl, pl.ItemMainHand), itemNum(pl, pl.ItemExtraHand)}
+		local self = false
+		for i = 1, 3 do
+			local n = inPlay[i]
+			if n then
+				if n == num and not self then self = true else other[#other + 1] = n end
+			end
+		end
 		local weapon = false
 		for _, o in ipairs(other) do
 			if isWeapon(o) then weapon = true end
