@@ -29,6 +29,7 @@ local MAX_CHESTS = 20
 local CHEST_SCREEN = const.Screens.Chest
 local CHEST_INV_SCREEN = const.Screens.InventoryInChest or 15   -- a character's backpack beside the chest
 local ESC_WAIT = 30                    -- ticks to wait for the character screen to close
+local function log(fmt, ...) if MF.LogInfo then MF.LogInfo("[Boxes] " .. fmt, ...) end end
 local DLG_TOP = 0x518CE8               -- the index of the topmost dialog (0: just the adventure interface)
 
 -- the character screen is an "object-oriented" dialog in MM8 (not in Game.Dialogs); the Esc
@@ -94,8 +95,6 @@ local function store()
 	vars.MMMWE_Boxes = vars.MMMWE_Boxes or {Next = FIRST_ID}
 	return vars.MMMWE_Boxes
 end
-
-local function log(fmt, ...) if MF.LogInfo then MF.LogInfo("[Boxes] " .. fmt, ...) end end
 
 function MF.BoxCount(charges)
 	local b = vars and vars.MMMWE_Boxes and vars.MMMWE_Boxes[charges]
