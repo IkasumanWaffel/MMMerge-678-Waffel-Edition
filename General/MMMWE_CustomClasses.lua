@@ -269,6 +269,30 @@ local function dropBadItems(fam)
 	end
 end
 
+-- (09.11.26) the items the game hands out by the starting skills (weapons, armor, books,
+-- potions...: EquipStat 0..16) are taken from a custom class character at the start of the
+-- game, before its own starting items; gold, gems, quest items and letters stay
+local function clearStartItems(pl)
+	for k = 1, 138 do
+		local it = pl.Items[k]
+		local txt = it.Number > 0 and Game.ItemsTxt[it.Number]
+		if txt and txt.EquipStat <= 16 then
+			for c = 0, 125 do
+				if pl.Inventory[c] == k then
+					for c2 = 0, 125 do
+						if pl.Inventory[c2] == -(1 + c) then pl.Inventory[c2] = 0 end
+					end
+					pl.Inventory[c] = 0
+				end
+			end
+			for e = 0, 15 do
+				if pl.EquippedItems[e] == k then pl.EquippedItems[e] = 0 end
+			end
+			it.Number = 0
+		end
+	end
+end
+
 -- gives a family's starting items to a party member (party slot)
 local function giveItems(fam, slot)
 	for num, n in pairs(fam.Items or {}) do
@@ -826,7 +850,10 @@ function events.AfterLoadMap()
 	for i = 0, Party.count - 1 do
 		local f, step = familyOf(Party[i].Class)
 		local fam = f and builds()[f]
-		if fam and step == 1 then giveItems(fam, i) end
+		if fam and step == 1 then
+			clearStartItems(Party[i])
+			giveItems(fam, i)
+		end
 	end
 end
 
