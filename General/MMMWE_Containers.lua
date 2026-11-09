@@ -251,6 +251,7 @@ local function openNow(p)
 	Open = {Chest = index, Id = p.Id, Box = box, Added = added, Saved = saved}
 	log("box %d (%s) opened as chest %d", p.Id, p.Number, index)
 	evt.OpenChest(index)
+	log("chest %d picture %d after opening (box picture %d), screen %d", index, chest.ChestPicture, box.Picture, Game.CurrentScreen)
 	if Game.CurrentScreen ~= CHEST_SCREEN then
 		log("the chest screen didn't open (screen %d)", Game.CurrentScreen)
 		Game.ShowStatusText(Tx"The box can't be opened here")
@@ -296,9 +297,9 @@ local function checkOpenBox()
 			local it = chest.Items[k]
 			local ok, why = allowed(Open.Box, it.Number)
 			if not ok and Mouse.Item.Number == 0 then
-				-- back to the mouse as the game picks an item up (Mouse:AddItem crashes here)
-				mem.copy(Mouse.Item["?ptr"], it["?ptr"], ITEM_SIZE)
-				Mouse:SetIcon(Game.ItemsTxt[it.Number].Picture)
+				-- back to the mouse with the game's own "item to mouse" (0x491A27). Its "this" is
+				-- the party (the mouse item lies at +0x5BBD4); Mouse:AddItem passes 0 in MM8
+				mem.call(0x491A27, 1, Mouse.Item["?ptr"] - 0x5BBD4, it["?ptr"])
 				for c2 = 0, 139 do
 					if chest.Inventory[c2] == -(1 + c) then chest.Inventory[c2] = 0 end
 				end
@@ -372,6 +373,15 @@ function events.Tick()
 			log("closing on screen %d", scr)
 			close()
 		else
+			local pic = Map.Chests[Open.Chest].ChestPicture
+			if pic ~= Open.Box.Picture and not Open.PicLogged then
+				Open.PicLogged = true
+				log("the open chest's picture changed to %d", pic)
+			end
+			if pic ~= Open.Box.Picture then
+				Map.Chests[Open.Chest].ChestPicture = Open.Box.Picture
+				Game.NeedRedraw = true
+			end
 			local ok, err = pcall(checkOpenBox)
 			if not ok then MF.LogWarning("[Boxes] check: %s", tostring(err)) end
 		end
