@@ -496,7 +496,7 @@ local function build()
 
 	-- the background (CCEditor, waffel.icons.lod) has recessed boxes for the parts below:
 	-- title 8..632 x 8..34, info 8..454 x 78..150, kit / SP 462..632 x 78..150,
-	-- skills / spells 8..632 x 158..424, hint 8..450 x 432..472; step tabs and Spells at
+	-- skills / spells 8..632 x 158..424, hint 8..283 x 432..471; step tabs and Spells at
 	-- y 42 (x 54, 90 apart), Cancel / OK at y 440
 	local bg = CustomUI.CreateIcon{
 		Icon = BACKGROUND, X = 0, Y = 0, Layer = 0, Screen = SCREENS, BlockBG = true,
@@ -733,7 +733,7 @@ local function build()
 		end
 	end
 
-	-- hint box (272 px wide, left of the Starting Equipment button): a message or a problem
+	-- hint box (8..283 x 432..471 on CCEditor, left of the Starting Equipment button): a message or a problem
 	-- takes both lines; otherwise line 1 says how to use the view, line 2 the points of the
 	-- items or (by turns) the promoters and the save / load keys
 	local function hintMessage()
@@ -741,7 +741,7 @@ local function build()
 		local bad = CC.Problems(fam(), E.Step)
 		if #bad > 0 then return bad[1], RED end
 	end
-	text{Font = Small, X = 14, Y = 435, W = 272, H = 34,
+	text{Font = Small, X = 14, Y = 435, W = 266, H = 34,
 		Get = function()
 			local m, c = hintMessage()
 			if m then return m, c end
@@ -753,7 +753,7 @@ local function build()
 			return string.format(Tx"Click +, Ctrl -, Shift: start %d/%d",
 				#(fam().StartSkills or {}), START_SKILLS)
 		end}
-	text{Font = Small, X = 14, Y = 453, W = 272, H = 17,
+	text{Font = Small, X = 14, Y = 453, W = 266, H = 17,
 		Get = function()
 			if hintMessage() then return end
 			if E.View == "items" then
