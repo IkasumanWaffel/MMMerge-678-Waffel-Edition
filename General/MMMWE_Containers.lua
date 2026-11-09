@@ -29,6 +29,18 @@ local MAX_CHESTS = 20
 local CHEST_SCREEN = const.Screens.Chest
 local CHEST_INV_SCREEN = const.Screens.InventoryInChest or 15   -- a character's backpack beside the chest
 local ESC_WAIT = 30                    -- ticks to wait for the character screen to close
+local DLG_TOP = 0x518CE8               -- the index of the topmost dialog (0: just the adventure interface)
+
+-- dialogs open above the adventure interface, and their ids (for the log)
+local function dialogsAbove()
+	local n = i4[DLG_TOP]
+	if n <= 0 then return 0, "" end
+	local ids = {}
+	pcall(function()
+		for k = 1, n do ids[#ids + 1] = tostring(Game.Dialogs[k].DlgID) end
+	end)
+	return n, table.concat(ids, ",")
+end
 local EMPTY_BOTTLE = 220
 
 local BOTTLE = const.ItemType.Potion - 1
@@ -75,6 +87,7 @@ end
 local Open        -- {Chest = index, Id = box id, Box = BOXES entry}
 local Pending     -- {Player, Number, Charges} to open on the next tick
 local Repaint = 0 -- ticks left to redraw the whole interface after a box closes
+local Stray       -- after a box closes: ticks left to look for a dialog left behind
 
 local ITEM_SIZE = 0x24                  -- structs.Item (MM8)
 local function chestItemSize() return ITEM_SIZE end
@@ -165,6 +178,7 @@ local function close()
 	-- the chest was opened by a script, so the game doesn't repaint the panels it covered
 	-- (nor those of the character screen before it) on its own: a few full redraws
 	Repaint = 5
+	Stray = 10
 	Game.NeedRedraw = true
 end
 MF.CloseBox = close
@@ -262,7 +276,9 @@ local function checkOpenBox()
 			local it = chest.Items[k]
 			local ok, why = allowed(Open.Box, it.Number)
 			if not ok and Mouse.Item.Number == 0 then
-				Mouse:AddItem(it)
+				-- back to the mouse as the game picks an item up (Mouse:AddItem crashes here)
+				mem.copy(Mouse.Item["?ptr"], it["?ptr"], ITEM_SIZE)
+				Mouse:SetIcon(Game.ItemsTxt[it.Number].Picture)
 				for c2 = 0, 139 do
 					if chest.Inventory[c2] == -(1 + c) then chest.Inventory[c2] = 0 end
 				end
@@ -277,6 +293,18 @@ local function checkOpenBox()
 end
 
 function events.Tick()
+	if Stray and Game.CurrentScreen == 0 then
+		Stray = Stray - 1
+		local above, ids = dialogsAbove()
+		if above > 0 then
+			-- a dialog left behind by the chest or the character screen: Esc closes it
+			log("a dialog left after closing (dialogs %s): Esc", ids)
+			Game.Actions.Add(113, 0)
+			Stray = nil
+		elseif Stray <= 0 then
+			Stray = nil
+		end
+	end
 	if Repaint > 0 then
 		Repaint = Repaint - 1
 		if Game.CurrentScreen == 0 then Game.NeedRedraw = true end
@@ -287,10 +315,11 @@ function events.Tick()
 		-- out of the character screen first: one Esc, as if the key were pressed, and wait
 		-- (ExitScreen only handles houses in MM8; opening the chest over the character
 		-- screen leaves that screen half alive)
-		if Game.CurrentScreen ~= 0 then
+		local above, ids = dialogsAbove()
+		if Game.CurrentScreen ~= 0 or above > 0 then
 			p.Wait = (p.Wait or 0) + 1
-			if p.Wait == 1 or p.Wait == ESC_WAIT / 2 then
-				log("leaving screen %d", Game.CurrentScreen)
+			if p.Wait == 1 or p.Wait == 10 or p.Wait == 20 then
+				log("leaving screen %d (dialogs %s)", Game.CurrentScreen, ids)
 				Game.Actions.Add(113, 0)
 			elseif p.Wait > ESC_WAIT then
 				Pending = nil
@@ -299,6 +328,8 @@ function events.Tick()
 			end
 			return
 		end
+		-- one more tick at the adventure view, so the game finishes leaving the character screen
+		if not p.Settled then p.Settled = true; return end
 		Pending = nil
 		local ok, err = pcall(openNow, p)
 		if not ok then
