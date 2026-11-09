@@ -940,7 +940,7 @@ Assassin	Убийца
 # General/MMMWE_LegendaryPassives.lua:107
 with a dagger in hand, double critical chance; critical hits ignore physical resistance	с кинжалом в руке шанс критического удара удвоен; критические удары игнорируют физическое сопротивление
 
-# General/MMMWE_LegendaryPassives.lua:108, General/MMMWE_MonsterAbilities.lua:56
+# General/MMMWE_LegendaryPassives.lua:108, General/MMMWE_MonsterAbilities.lua:58
 Cleave	Рассечение
 
 # General/MMMWE_LegendaryPassives.lua:108
@@ -1324,59 +1324,65 @@ Flight mode activated	Режим полёта включён
 # General/MMMWE_MonkBranches.lua:148
 %s seizes the opening!	%s пользуется брешью в защите!
 
-# General/MMMWE_MonsterAbilities.lua:49
+# General/MMMWE_MonsterAbilities.lua:51
 Regeneration	Регенерация
 
-# General/MMMWE_MonsterAbilities.lua:50
+# General/MMMWE_MonsterAbilities.lua:52
 Adaptation	Приспособление
 
-# General/MMMWE_MonsterAbilities.lua:51
+# General/MMMWE_MonsterAbilities.lua:53
 Thorns	Шипы
 
-# General/MMMWE_MonsterAbilities.lua:52
+# General/MMMWE_MonsterAbilities.lua:54
 Last Stand	Последний рубеж
 
-# General/MMMWE_MonsterAbilities.lua:53
+# General/MMMWE_MonsterAbilities.lua:55
 Enrage	Бешенство
 
-# General/MMMWE_MonsterAbilities.lua:54
+# General/MMMWE_MonsterAbilities.lua:56
 Sundering	Раскалывание
 
-# General/MMMWE_MonsterAbilities.lua:55
+# General/MMMWE_MonsterAbilities.lua:57
 Twin Strike	Двойной удар
 
-# General/MMMWE_MonsterAbilities.lua:57
+# General/MMMWE_MonsterAbilities.lua:59
 Concussion	Оглушение
 
-# General/MMMWE_MonsterAbilities.lua:58
+# General/MMMWE_MonsterAbilities.lua:60
 Mana Burn	Сожжение маны
 
-# General/MMMWE_MonsterAbilities.lua:59
+# General/MMMWE_MonsterAbilities.lua:61
 Hamstring	Подсечка
 
-# General/MMMWE_MonsterAbilities.lua:60
+# General/MMMWE_MonsterAbilities.lua:62
 Terror	Ужас
 
-# General/MMMWE_MonsterAbilities.lua:61
+# General/MMMWE_MonsterAbilities.lua:63
 Warlord	Военачальник
 
-# General/MMMWE_MonsterAbilities.lua:62
+# General/MMMWE_MonsterAbilities.lua:64
 Call for Help	Зов на помощь
 
-# General/MMMWE_MonsterAbilities.lua:214
+# General/MMMWE_MonsterAbilities.lua:216
 %s makes a last stand!	%s стоит до последнего!
 
-# General/MMMWE_MonsterAbilities.lua:254
+# General/MMMWE_MonsterAbilities.lua:256
 %s strikes twice!	%s бьёт дважды!
 
-# General/MMMWE_MonsterAbilities.lua:272
+# General/MMMWE_MonsterAbilities.lua:274
 %s is knocked out!	%s теряет сознание от удара!
 
-# General/MMMWE_MonsterAbilities.lua:276
+# General/MMMWE_MonsterAbilities.lua:278
 %s is terrified!	%s в ужасе!
 
-# General/MMMWE_MonsterAbilities.lua:315
+# General/MMMWE_MonsterAbilities.lua:317
 %s calls for help!	%s зовёт на помощь!
+
+# General/MMMWE_MonsterAbilities.lua:415
+Abilities (pack leader):	Способности (вожак):
+
+# General/MMMWE_MonsterAbilities.lua:415
+Abilities:	Способности:
 
 # General/MMMWE_Moon.lua:271
 new moon	новолуние

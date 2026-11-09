@@ -31,6 +31,8 @@
 	index and monster id, so they stay with a monster over reloads. A Game.BolsterAmount of 0
 	or a map without bolster gives no abilities.
 	MF.MonsterAbilities(index) -> list of ability names (for other scripts).
+	The monster card (right click) lists a monster's abilities when the selected character
+	has Identify Monster at Master or above.
 --]]
 
 local MF = Merge.Functions
@@ -363,3 +365,55 @@ function MF.MonsterAbilities(i)
 	for _, k in ipairs(r and r.A or {}) do t[#t + 1] = A[k].Name end
 	return t, r and r.Leader
 end
+
+---------------------------------------------------------------------------
+-- (09.11.26) the monster card (right click): with Identify Monster at Master or above
+-- (the selected character's, as the game's own checks on the card), the abilities are
+-- listed in the card's left column, under the monster's spell effects. The effects list
+-- ends at 0x41E398 (edi - the next line's y, [ebp-8] the dialog, [ebp-20h] its font,
+-- [ebp-0Ch] its colour, [ebp-10h] the monster shown); the lines are drawn with the
+-- game's text function (0x44A50F: ecx dialog, edx font; x, y, colour, text, 0, 0, 0).
+---------------------------------------------------------------------------
+
+local CARD_MASTERY = const.Master or 3
+local CARD_X = 0x1C
+
+-- the map monster the card shows: the card may hold a copy (Game.DialogLogic.MonsterInfoMonster)
+local function cardMonster(ptr)
+	local size = Map.Monsters[0]["?size"]
+	local i = (ptr - Map.Monsters["?ptr"]) / size
+	if i >= 0 and i < Map.Monsters.count and i % 1 == 0 then return Map.Monsters[i], i end
+	local info = Game.DialogLogic.MonsterInfoMonster
+	if info["?ptr"] ~= ptr then return end
+	for j = 0, Map.Monsters.count - 1 do
+		local m = Map.Monsters[j]
+		if m.Id == info.Id and m.X == info.X and m.Y == info.Y and m.Z == info.Z then return m, j end
+	end
+end
+
+local function cardMastery()
+	local k = MF.GetCurrentPlayer and MF.GetCurrentPlayer() or Game.CurrentPlayer
+	local pl = Party[k and k >= 0 and k < Party.count and k or 0]
+	local _, m = SplitSkill(pl:GetSkill(const.Skills.IdentifyMonster))
+	return m
+end
+
+mem.autohook(0x41E398, function(d)
+	if not enabled() then return end
+	local ok, err = pcall(function()
+		local m, i = cardMonster(mem.u4[d.ebp - 0x10])
+		if not m then return end
+		local r = abilities(i, m)
+		if not r or #r.A == 0 or cardMastery() < CARD_MASTERY then return end
+		local dlg, font, color = mem.u4[d.ebp - 8], mem.u4[d.ebp - 0x20], mem.u4[d.ebp - 0xC]
+		local lineH = mem.u1[font + 5] - 3
+		local y = d.edi + 4
+		local function line(s)
+			mem.call(0x44A50F, 2, dlg, font, CARD_X, y, color, s, 0, 0, 0)
+			y = y + lineH
+		end
+		line(r.Leader and Tx"Abilities (pack leader):" or Tx"Abilities:")
+		for _, k in ipairs(r.A) do line("  " .. A[k].Name) end
+	end)
+	if not ok and MF.LogWarning then MF.LogWarning("MonsterAbilities card: %s", tostring(err)) end
+end)
