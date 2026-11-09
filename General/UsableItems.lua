@@ -264,9 +264,10 @@ local function Bottlebox(Target, Item, PlayerId)
 	return 0
 end
 
-for itemNumber in pairs(BottleBoxes) do
-	evt.UseItemEffects[itemNumber] = Bottlebox
-end
+-- MMMWE (09.11.26): the bottle box is a box that holds potions now (MMMWE_Containers.lua)
+--for itemNumber in pairs(BottleBoxes) do
+--	evt.UseItemEffects[itemNumber] = Bottlebox
+--end
 	
 -- Horseshoe
 

@@ -97,16 +97,16 @@ Stalt can't be refined any further.	Стальт нельзя очистить ещё сильнее.
 # General/MMMWE_Blasters.lua:427
 Smelting %s needs Repair %d (%s), %s has %d (%s).	Плавка (%s) требует Ремонта %d (%s), у %s — %d (%s).
 
-# General/MMMWE_Blasters.lua:428, General/MMMWE_Blasters.lua:429, General/MMMWE_Blasters.lua:465, General/MMMWE_Blasters.lua:508, General/MMMWE_Blasters.lua:541, General/MMMWE_Blasters.lua:598, General/MMMWE_CustomClasses.lua:137, General/MMMWE_CustomClasses.lua:490, General/MMMWE_SpellBookInfo.lua:19, Global/MMMWE_ExtraSkillTeachers.lua:38
+# General/MMMWE_Blasters.lua:428, General/MMMWE_Blasters.lua:429, General/MMMWE_Blasters.lua:465, General/MMMWE_Blasters.lua:508, General/MMMWE_Blasters.lua:541, General/MMMWE_Blasters.lua:598, General/MMMWE_CustomClasses.lua:137, General/MMMWE_CustomClasses.lua:514, General/MMMWE_SpellBookInfo.lua:19, Global/MMMWE_ExtraSkillTeachers.lua:38
 Novice	Новичок
 
-# General/MMMWE_Blasters.lua:428, General/MMMWE_Blasters.lua:429, General/MMMWE_Blasters.lua:465, General/MMMWE_Blasters.lua:508, General/MMMWE_Blasters.lua:541, General/MMMWE_Blasters.lua:598, General/MMMWE_CustomClasses.lua:137, General/MMMWE_CustomClasses.lua:490, General/MMMWE_SpellBookInfo.lua:19, Global/MMMWE_ExtraSkillTeachers.lua:38, Global/MMMWE_ExtraSkillTeachers.lua:39
+# General/MMMWE_Blasters.lua:428, General/MMMWE_Blasters.lua:429, General/MMMWE_Blasters.lua:465, General/MMMWE_Blasters.lua:508, General/MMMWE_Blasters.lua:541, General/MMMWE_Blasters.lua:598, General/MMMWE_CustomClasses.lua:137, General/MMMWE_CustomClasses.lua:514, General/MMMWE_SpellBookInfo.lua:19, Global/MMMWE_ExtraSkillTeachers.lua:38, Global/MMMWE_ExtraSkillTeachers.lua:39
 Expert	Эксперт
 
-# General/MMMWE_Blasters.lua:428, General/MMMWE_Blasters.lua:429, General/MMMWE_Blasters.lua:465, General/MMMWE_Blasters.lua:508, General/MMMWE_Blasters.lua:541, General/MMMWE_Blasters.lua:598, General/MMMWE_CustomClasses.lua:137, General/MMMWE_CustomClasses.lua:490, General/MMMWE_SpellBookInfo.lua:19, Global/MMMWE_ExtraSkillTeachers.lua:38, Global/MMMWE_ExtraSkillTeachers.lua:39
+# General/MMMWE_Blasters.lua:428, General/MMMWE_Blasters.lua:429, General/MMMWE_Blasters.lua:465, General/MMMWE_Blasters.lua:508, General/MMMWE_Blasters.lua:541, General/MMMWE_Blasters.lua:598, General/MMMWE_CustomClasses.lua:137, General/MMMWE_CustomClasses.lua:514, General/MMMWE_SpellBookInfo.lua:19, Global/MMMWE_ExtraSkillTeachers.lua:38, Global/MMMWE_ExtraSkillTeachers.lua:39
 Master	Мастер
 
-# General/MMMWE_Blasters.lua:428, General/MMMWE_Blasters.lua:429, General/MMMWE_Blasters.lua:465, General/MMMWE_Blasters.lua:508, General/MMMWE_Blasters.lua:541, General/MMMWE_Blasters.lua:598, General/MMMWE_CustomClasses.lua:137, General/MMMWE_CustomClasses.lua:490, General/MMMWE_SpellBookInfo.lua:19, Global/MMMWE_ExtraSkillTeachers.lua:38, Global/MMMWE_ExtraSkillTeachers.lua:39
+# General/MMMWE_Blasters.lua:428, General/MMMWE_Blasters.lua:429, General/MMMWE_Blasters.lua:465, General/MMMWE_Blasters.lua:508, General/MMMWE_Blasters.lua:541, General/MMMWE_Blasters.lua:598, General/MMMWE_CustomClasses.lua:137, General/MMMWE_CustomClasses.lua:514, General/MMMWE_SpellBookInfo.lua:19, Global/MMMWE_ExtraSkillTeachers.lua:38, Global/MMMWE_ExtraSkillTeachers.lua:39
 Grand Master	Грандмастер
 
 # General/MMMWE_Blasters.lua:429, General/MMMWE_CustomClassEditor.lua:623
@@ -268,6 +268,30 @@ Enchantment	Чары
 # General/MMMWE_ConcurrentEnchantments.lua:702
 Temp. %s:	Врем. %s:
 
+# General/MMMWE_Containers.lua:38
+Bottle Box	Ящик для бутылок
+
+# General/MMMWE_Containers.lua:39
+Only potions go into the bottle box	В ящик для бутылок кладут только зелья
+
+# General/MMMWE_Containers.lua:40
+Jewelry Box	Шкатулка
+
+# General/MMMWE_Containers.lua:42
+Only rings, amulets and gemstones go into the jewelry box	В шкатулку кладут только кольца, амулеты и самоцветы
+
+# General/MMMWE_Containers.lua:43
+Ancient Storage Box	Хранилище Древних
+
+# General/MMMWE_Containers.lua:183, General/MMMWE_Containers.lua:195
+The box can't be opened here	Здесь ящик не открыть
+
+# General/MMMWE_Containers.lua:187, General/MMMWE_Containers.lua:216
+The box locks up tight: there are enemies near	Ящик наглухо заперт: рядом враги
+
+# General/MMMWE_Containers.lua:233
+No box or bag goes into a box	Ящики и сумки в ящик не кладут
+
 # General/MMMWE_CustomClassEditor.lua:199
 Choose %d starting skills (Shift+click)	Выберите %d начальных навыка (Shift+щелчок)
 
@@ -277,10 +301,10 @@ The base class needs at least %d skills	Базовому классу нужно не меньше %d навык
 # General/MMMWE_CustomClassEditor.lua:211, General/MMMWE_CustomClasses.lua:257
 Starting items: %d points at most	Начальные предметы: не больше %d очков
 
-# General/MMMWE_CustomClassEditor.lua:249, General/MMMWE_CustomClasses.lua:1139
+# General/MMMWE_CustomClassEditor.lua:249, General/MMMWE_CustomClasses.lua:1166
 %s is now a %s%s	%s теперь — %s%s
 
-# General/MMMWE_CustomClassEditor.lua:250, General/MMMWE_CustomClasses.lua:1140
+# General/MMMWE_CustomClassEditor.lua:250, General/MMMWE_CustomClasses.lua:1167
  (%d skill points refunded)	 (возвращено очков навыков: %d)
 
 # General/MMMWE_CustomClassEditor.lua:288, General/MMMWE_CustomClassEditor.lua:294, General/MMMWE_CustomClassEditor.lua:300, General/MMMWE_CustomClassEditor.lua:311, General/MMMWE_CustomClassEditor.lua:360, General/MMMWE_CustomClassEditor.lua:385, General/MMMWE_CustomClassEditor.lua:399, General/MMMWE_CustomClassEditor.lua:601
@@ -343,10 +367,10 @@ click to buy one	щёлкните, чтобы купить
 # General/MMMWE_CustomClassEditor.lua:630
 %s, %d pts	%s, %d оч.
 
-# General/MMMWE_CustomClassEditor.lua:636, General/MMMWE_CustomClasses.lua:498, General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3452
+# General/MMMWE_CustomClassEditor.lua:636, General/MMMWE_CustomClasses.lua:522, General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3456
 Intellect	Интеллект
 
-# General/MMMWE_CustomClassEditor.lua:636, General/MMMWE_CustomClasses.lua:498, General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3452
+# General/MMMWE_CustomClassEditor.lua:636, General/MMMWE_CustomClasses.lua:522, General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3456
 Personality	Сила духа
 
 # General/MMMWE_CustomClassEditor.lua:636
@@ -364,10 +388,10 @@ Ident. Monster	Опознание мон.
 # General/MMMWE_CustomClassEditor.lua:660
 Bodybuilding	Телосложение
 
-# General/MMMWE_CustomClassEditor.lua:660, General/MMMWE_CustomClasses.lua:654
+# General/MMMWE_CustomClassEditor.lua:660, General/MMMWE_CustomClasses.lua:678
 Repair Item	Ремонт
 
-# General/MMMWE_CustomClassEditor.lua:660, General/MMMWE_CustomClasses.lua:473, General/MMMWE_ExtraSkills.lua:49
+# General/MMMWE_CustomClassEditor.lua:660, General/MMMWE_CustomClasses.lua:497, General/MMMWE_ExtraSkills.lua:49
 Dual-Wield	Парное оружие
 
 # General/MMMWE_CustomClassEditor.lua:679
@@ -442,181 +466,181 @@ Construction	Детали
 # General/MMMWE_CustomClasses.lua:254
 No more of %s	Больше нельзя: %s
 
-# General/MMMWE_CustomClasses.lua:333, General/MMMWE_CustomClasses.lua:1301
+# General/MMMWE_CustomClasses.lua:357, General/MMMWE_CustomClasses.lua:1328
 Custom class	Особый класс
 
-# General/MMMWE_CustomClasses.lua:334
+# General/MMMWE_CustomClasses.lua:358
 An unused custom class.	Неиспользуемый особый класс.
 
-# General/MMMWE_CustomClasses.lua:498
+# General/MMMWE_CustomClasses.lua:522
 Intellect and Personality	Интеллект и Сила духа
 
-# General/MMMWE_CustomClasses.lua:538
+# General/MMMWE_CustomClasses.lua:562
 %s kit: %g	Набор %s: %g
 
-# General/MMMWE_CustomClasses.lua:542
+# General/MMMWE_CustomClasses.lua:566
 HP tier %d (%d/%d per level): %g	Здоровье, уровень %d (%d/%d за уровень): %g
 
-# General/MMMWE_CustomClasses.lua:544
+# General/MMMWE_CustomClasses.lua:568
 SP tier %d (%d/%d per level, %s): %g	Мана, уровень %d (%d/%d за уровень, %s): %g
 
-# General/MMMWE_CustomClasses.lua:557
+# General/MMMWE_CustomClasses.lua:581
 fighter-mage x%g	воин-маг x%g
 
-# General/MMMWE_CustomClasses.lua:558
+# General/MMMWE_CustomClasses.lua:582
 school discount	скидка школы
 
-# General/MMMWE_CustomClasses.lua:599
+# General/MMMWE_CustomClasses.lua:623
 %d spells: %g (by rank and impact)	заклинаний %d: %g (по кругу и силе)
 
-# General/MMMWE_CustomClasses.lua:614, General/MMMWE_CustomClasses.lua:1019
+# General/MMMWE_CustomClasses.lua:638, General/MMMWE_CustomClasses.lua:1046
 %s needs %s Magic	%s требует магии %s
 
-# General/MMMWE_CustomClasses.lua:620
+# General/MMMWE_CustomClasses.lua:644
  Magic: no spell picked	 — магия: не выбрано ни одного заклинания
 
-# General/MMMWE_CustomClasses.lua:627
+# General/MMMWE_CustomClasses.lua:651
  is lost from the previous step	 утрачено с предыдущей ступени
 
-# General/MMMWE_CustomClasses.lua:640
+# General/MMMWE_CustomClasses.lua:664
 %g points of %d	%g очков из %d
 
-# General/MMMWE_CustomClasses.lua:642
+# General/MMMWE_CustomClasses.lua:666
 HP tier above 	уровень здоровья выше 
 
-# General/MMMWE_CustomClasses.lua:643
+# General/MMMWE_CustomClasses.lua:667
 SP tier above 	уровень маны выше 
 
-# General/MMMWE_CustomClasses.lua:647
+# General/MMMWE_CustomClasses.lua:671
 the %s kit uses the %s page: no %s Magic	набор «%s» занимает страницу %s: без магии %s
 
-# General/MMMWE_CustomClasses.lua:650
+# General/MMMWE_CustomClasses.lua:674
 %s replaces spell points: SP tier 0	%s заменяет ману: уровень маны 0
 
-# General/MMMWE_CustomClasses.lua:654
+# General/MMMWE_CustomClasses.lua:678
 the %s kit needs %s	набору «%s» нужен навык %s
 
-# General/MMMWE_CustomClasses.lua:660
+# General/MMMWE_CustomClasses.lua:684
 lower HP/SP tier than the previous step	уровень здоровья/маны ниже, чем на предыдущей ступени
 
-# General/MMMWE_CustomClasses.lua:661
+# General/MMMWE_CustomClasses.lua:685
 loses the second SP stat	теряет вторую характеристику маны
 
-# General/MMMWE_CustomClasses.lua:664
+# General/MMMWE_CustomClasses.lua:688
  cap lower than the previous step	 : предел ниже, чем на предыдущей ступени
 
-# General/MMMWE_CustomClasses.lua:690
+# General/MMMWE_CustomClasses.lua:714
 A custom class. Hit points: tier %d. Spell points: tier %d%s.	Особый класс. Здоровье: уровень %d. Мана: уровень %d%s.
 
-# General/MMMWE_CustomClasses.lua:691
+# General/MMMWE_CustomClasses.lua:715
 , from 	, от: 
 
-# General/MMMWE_CustomClasses.lua:694
+# General/MMMWE_CustomClasses.lua:718
 %s kit: %s and the %s abilities (%s page of the spellbook).	Набор «%s»: %s и способности «%s» (страница книги заклинаний: %s).
 
-# General/MMMWE_CustomClasses.lua:695, General/MMMWE_Resources.lua:1567, General/MMMWE_Resources.lua:2537
+# General/MMMWE_CustomClasses.lua:719, General/MMMWE_Resources.lua:1567, General/MMMWE_Resources.lua:2537
 spell points	мана
 
-# General/MMMWE_CustomClasses.lua:706
+# General/MMMWE_CustomClasses.lua:730
 Spells: %d.	Заклинаний: %d.
 
-# General/MMMWE_CustomClasses.lua:880
+# General/MMMWE_CustomClasses.lua:907
 all 	все 
 
-# General/MMMWE_CustomClasses.lua:880
+# General/MMMWE_CustomClasses.lua:907
  custom classes are in use	 особых классов уже заняты
 
-# General/MMMWE_CustomClasses.lua:881
+# General/MMMWE_CustomClasses.lua:908
 Custom Class 	Особый класс 
 
-# General/MMMWE_CustomClasses.lua:936
+# General/MMMWE_CustomClasses.lua:963
 %s tier must be 0..%d for the %s	%s: уровень должен быть 0..%d для ступени «%s»
 
-# General/MMMWE_CustomClasses.lua:940
+# General/MMMWE_CustomClasses.lua:967
 %s tier can't be lower than the previous step's (%d)	%s: уровень не может быть ниже, чем на предыдущей ступени (%d)
 
-# General/MMMWE_CustomClasses.lua:954
+# General/MMMWE_CustomClasses.lua:981
 the previous step already uses both stats	предыдущая ступень уже использует обе характеристики
 
-# General/MMMWE_CustomClasses.lua:965
+# General/MMMWE_CustomClasses.lua:992
 this skill can't be bought	этот навык нельзя купить
 
-# General/MMMWE_CustomClasses.lua:969
+# General/MMMWE_CustomClasses.lua:996
 %s can't be lower than the previous step's %s	%s не может быть ниже, чем на предыдущей ступени (%s)
 
-# General/MMMWE_CustomClasses.lua:1015
+# General/MMMWE_CustomClasses.lua:1042
 no such spell	нет такого заклинания
 
-# General/MMMWE_CustomClasses.lua:1023
+# General/MMMWE_CustomClasses.lua:1050
  is a spell of the previous step	 — заклинание предыдущей ступени
 
-# General/MMMWE_CustomClasses.lua:1082
+# General/MMMWE_CustomClasses.lua:1109
 %d. %s (%s, class %d): %g / %d points%s	%d. %s (%s, класс %d): %g / %d очков%s
 
-# General/MMMWE_CustomClasses.lua:1102
+# General/MMMWE_CustomClasses.lua:1129
 %d: %s (%g points)%s	%d: %s (%g очков)%s
 
-# General/MMMWE_CustomClasses.lua:1106
+# General/MMMWE_CustomClasses.lua:1133
 no custom classes	особых классов нет
 
-# General/MMMWE_CustomClasses.lua:1129
+# General/MMMWE_CustomClasses.lua:1156
 %s already is a %s	%s уже — %s
 
-# General/MMMWE_CustomClasses.lua:1147
+# General/MMMWE_CustomClasses.lua:1174
 not a custom class	это не особый класс
 
-# General/MMMWE_CustomClasses.lua:1149
+# General/MMMWE_CustomClasses.lua:1176
 the class has no build	у класса нет сборки
 
-# General/MMMWE_CustomClasses.lua:1181
+# General/MMMWE_CustomClasses.lua:1208
 the %s kit is for %ss only	набор «%s» только для класса «%s»
 
-# General/MMMWE_CustomClasses.lua:1186, General/MMMWE_CustomClasses.lua:1251
+# General/MMMWE_CustomClasses.lua:1213, General/MMMWE_CustomClasses.lua:1278
 unknown kit: 	неизвестный набор: 
 
-# General/MMMWE_CustomClasses.lua:1244
+# General/MMMWE_CustomClasses.lua:1271
 custom class	особый класс
 
-# General/MMMWE_CustomClasses.lua:1256, General/MMMWE_CustomClasses.lua:1258
+# General/MMMWE_CustomClasses.lua:1283, General/MMMWE_CustomClasses.lua:1285
 step 	ступень 
 
-# General/MMMWE_CustomClasses.lua:1256
+# General/MMMWE_CustomClasses.lua:1283
  is missing	 отсутствует
 
-# General/MMMWE_CustomClasses.lua:1258
+# General/MMMWE_CustomClasses.lua:1285
  has no name	 без имени
 
-# General/MMMWE_CustomClasses.lua:1265
+# General/MMMWE_CustomClasses.lua:1292
 unknown skill: 	неизвестный навык: 
 
-# General/MMMWE_CustomClasses.lua:1266
+# General/MMMWE_CustomClasses.lua:1293
 unknown cap: 	неизвестный предел: 
 
-# General/MMMWE_CustomClasses.lua:1274
+# General/MMMWE_CustomClasses.lua:1301
 unknown spell: 	неизвестное заклинание: 
 
-# General/MMMWE_CustomClasses.lua:1309
+# General/MMMWE_CustomClasses.lua:1336
 can't write 	не удаётся записать 
 
-# General/MMMWE_CustomClasses.lua:1326
+# General/MMMWE_CustomClasses.lua:1353
 can't read 	не удаётся прочитать 
 
 # General/MMMWE_DamageKinds.lua:209
 Sla %d%%\nPie %d%%\nBlu %d%%	Руб %d%%\nКол %d%%\nДроб %d%%
 
-# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3452
+# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3456
 Might	Сила
 
-# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3452
+# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3456
 Endurance	Выносливость
 
-# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3452
+# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3456
 Accuracy	Меткость
 
-# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3452
+# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3456
 Speed	Скорость
 
-# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3452
+# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3456
 Luck	Удача
 
 # General/MMMWE_Drains.lua:168
@@ -1195,6 +1219,9 @@ the whole party gains 10% more experience	весь отряд получает на 10% больше опыт
 # General/MMMWE_LegendaryPassives.lua:719
 %s refuses to fall!	%s не желает падать!
 
+# General/MMMWE_Main.lua:2979 plural, English plural: Holds %d items
+Holds %d item	Внутри %d предмет|Внутри %d предмета|Внутри %d предметов
+
 # General/MMMWE_Main.lua:683
 melee %d, ranged %d, armor %+d%%	ближний бой %d, дальний %d, броня %+d%%
 
@@ -1240,10 +1267,10 @@ Armor: +%d   Block Power: %d%s (%s)	Броня: +%d   Сила блока: %d%s (%s)
 # General/MMMWE_Main.lua:2952
 \nParry Power: %d%s	\nСила парирования: %d%s
 
-# General/MMMWE_Main.lua:2955, General/MMMWE_Main.lua:3029, General/MMMWE_Main.lua:3031, General/MMMWE_Main.lua:3035
+# General/MMMWE_Main.lua:2955, General/MMMWE_Main.lua:3033, General/MMMWE_Main.lua:3035, General/MMMWE_Main.lua:3039
 %s: +%d   %s: %dd%d	%s: +%d   %s: %dd%d
 
-# General/MMMWE_Main.lua:2964, General/MMMWE_Main.lua:2989
+# General/MMMWE_Main.lua:2964, General/MMMWE_Main.lua:2993
 %s: %lu	%s: %lu
 
 # General/MMMWE_Main.lua:2969
@@ -1252,73 +1279,73 @@ Steel: %d Siertal: %d Phylt: %d	Сталь: %d Сиертал: %d Филт: %d
 # General/MMMWE_Main.lua:2972
 Kergar: %d Erudine: %d Stalt: %d	Кергар: %d Эрудин: %d Стальт: %d
 
-# General/MMMWE_Main.lua:2975
+# General/MMMWE_Main.lua:2976
 Bottles: %d	Бутылки: %d
 
-# General/MMMWE_Main.lua:2983
+# General/MMMWE_Main.lua:2987
 Ant: %d Jad: %d	Ант: %d Джад: %d
 
-# General/MMMWE_Main.lua:2986
+# General/MMMWE_Main.lua:2990
 Enr: %d Ant: %d Jad: %d	Энр: %d Ант: %d Джад: %d
 
-# General/MMMWE_Main.lua:3005
+# General/MMMWE_Main.lua:3009
 Shoot: +%d    Damage: %d-%d	Стрельба: +%d    Урон: %d-%d
 
-# General/MMMWE_Main.lua:3212
+# General/MMMWE_Main.lua:3216
 Armor Class	Класс брони
 
-# General/MMMWE_Main.lua:3213
+# General/MMMWE_Main.lua:3217
 Condition (replaced by HR and Phys Res)	Состояние (заменено на HR и физ. сопр.)
 
-# General/MMMWE_Main.lua:3214
+# General/MMMWE_Main.lua:3218
 Quick spell (replaced by resistances and chances; 4 px higher for the Sla/Pie/Blu line)	Быстрое заклинание (заменено сопротивлениями и шансами; на 4 пикс. выше для строки Руб/Кол/Дроб)
 
-# General/MMMWE_Main.lua:3216
+# General/MMMWE_Main.lua:3220
 Melee damage	Урон в ближнем бою
 
-# General/MMMWE_Main.lua:3218
+# General/MMMWE_Main.lua:3222
 Ranged damage	Урон в дальнем бою
 
-# General/MMMWE_Main.lua:3221
+# General/MMMWE_Main.lua:3225
 Fire res	Сопр. огню
 
-# General/MMMWE_Main.lua:3222
+# General/MMMWE_Main.lua:3226
 Air res	Сопр. воздуху
 
-# General/MMMWE_Main.lua:3223
+# General/MMMWE_Main.lua:3227
 Water res	Сопр. воде
 
-# General/MMMWE_Main.lua:3224
+# General/MMMWE_Main.lua:3228
 Earth res	Сопр. земле
 
-# General/MMMWE_Main.lua:3225
+# General/MMMWE_Main.lua:3229
 Mind res	Сопр. разуму
 
-# General/MMMWE_Main.lua:3226
+# General/MMMWE_Main.lua:3230
 Body res	Сопр. телу
 
-# General/MMMWE_Main.lua:3975
+# General/MMMWE_Main.lua:3979
 Flight mode active. Remaining charge: %3.1f%%	Режим полёта включён. Остаток заряда: %3.1f%%
 
-# General/MMMWE_Main.lua:3979
+# General/MMMWE_Main.lua:3983
 WARNING! Low charge: %3.1f%%	ВНИМАНИЕ! Низкий заряд: %3.1f%%
 
-# General/MMMWE_Main.lua:3982
+# General/MMMWE_Main.lua:3986
 WARNING! Flight mode terminates in 5 minutes!	ВНИМАНИЕ! Режим полёта отключится через 5 минут!
 
-# General/MMMWE_Main.lua:4000
+# General/MMMWE_Main.lua:4004
 Tech mastery (%d/2) is insufficient to use this function	Владение техникой (%d/2) недостаточно для этой функции
 
-# General/MMMWE_Main.lua:4010
+# General/MMMWE_Main.lua:4014
 Remaining charge: %3.1f%%.	Остаток заряда: %3.1f%%.
 
-# General/MMMWE_Main.lua:4012, General/MMMWE_Main.lua:4036
+# General/MMMWE_Main.lua:4016, General/MMMWE_Main.lua:4040
 Device charge CRITICAL! Operation aborted	Заряд устройства КРИТИЧЕСКИЙ! Операция прервана
 
-# General/MMMWE_Main.lua:4030
+# General/MMMWE_Main.lua:4034
 Tech mastery (%d/3) is insufficient to use this function	Владение техникой (%d/3) недостаточно для этой функции
 
-# General/MMMWE_Main.lua:4048
+# General/MMMWE_Main.lua:4052
 Flight mode activated	Режим полёта включён
 
 # General/MMMWE_MonkBranches.lua:148

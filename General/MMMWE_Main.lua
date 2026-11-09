@@ -2832,7 +2832,7 @@ local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 
 	-- Special items
 	local SpecialItemGroups = {
-		[191] = 1, [192] = 2, [193] = 3,
+		[191] = 1, [192] = 2, [193] = 3, [2229] = 3, [2230] = 3,   -- 3: boxes (MMMWE_Containers.lua)
 		[866] = 4, [867] = 4, [1666] = 4, [1667] = 4, [962] = 7, [968] = 8,
 		[2219] = 4, [2218] = 8,   -- Padish's Sidearm, Officer's Shield Module (MMMWE_AncientArtifacts.lua)
 		[970] = 5, [971] = 5, [972] = 5, [973] = 5, [975] = 5, [976] = 5,
@@ -2972,7 +2972,11 @@ local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 			return cachedCstring(string.format(Tx"Kergar: %d Erudine: %d Stalt: %d",
 				math.fmod(ch, 100), math.fmod(math.modf(ch / 100), 100), math.modf(ch / 10000)))
 		elseif group == 3 then
-			return cachedCstring(string.format(Tx"Bottles: %d", ch))
+			if ch < 1000 then   -- a bottle box not opened since the boxes hold items
+				return cachedCstring(string.format(Tx"Bottles: %d", ch))
+			end
+			local n = MF.BoxCount and MF.BoxCount(ch) or 0
+			return cachedCstring(string.format(MF.TextN(n, "Holds %d item", "Holds %d items"), n))
 		elseif group == 4 then
 			return cachedCstring(MF.BlasterCardText(ch, DICell))
 		elseif group == 7 then

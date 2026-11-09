@@ -2230,6 +2230,8 @@ Item #	Pic File	1	2	3	4	5	6
 2226	mjolnir	0	0	0	0	0	1	Mjolnir
 2227	dawnbr	0	0	0	0	0	1	Dawnbringer
 2228	warscyth	0	0	0	0	0	1	Warscythe
+2229	jewelbox	5	10	10	5	0	0	Jewelry Box
+2230	ancbox	0	0	0	0	0	0	Ancient Storage Box
 								
 								
 								

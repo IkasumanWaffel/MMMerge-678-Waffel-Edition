@@ -16,7 +16,7 @@ OUT = os.path.join(ROOT, 'Data', 'Text localization', 'Template', 'Scripts.txt')
 
 CALL = re.compile(r'\b(Tx|Tn)\s*\(?\s*("|\')')
 # TxN(n, "one", "many"): the singular is the key, the translation holds the forms divided by |
-PLURAL = re.compile(r'\bTxN\s*\([^,"\']+,\s*(?:"((?:[^"\\]|\\.)*)"|\'((?:[^\'\\]|\\.)*)\')\s*,\s*(?:"((?:[^"\\]|\\.)*)"|\'((?:[^\'\\]|\\.)*)\')')
+PLURAL = re.compile(r'\b(?:TxN|TextN)\s*\([^,"\']+,\s*(?:"((?:[^"\\]|\\.)*)"|\'((?:[^\'\\]|\\.)*)\')\s*,\s*(?:"((?:[^"\\]|\\.)*)"|\'((?:[^\'\\]|\\.)*)\')')
 LUA_ESC = {'n': '\n', 't': '\t', 'r': '\r', '\\': '\\', '"': '"', "'": "'", 'a': '\a', 'b': '\b', 'f': '\f', 'v': '\v', '\n': '\n'}
 
 
