@@ -74,6 +74,7 @@ end
 
 local Open        -- {Chest = index, Id = box id, Box = BOXES entry}
 local Pending     -- {Player, Number, Charges} to open on the next tick
+local Repaint = 0 -- ticks left to redraw the whole interface after a box closes
 
 local ITEM_SIZE = 0x24                  -- structs.Item (MM8)
 local function chestItemSize() return ITEM_SIZE end
@@ -161,6 +162,10 @@ local function close()
 	if not ok then MF.LogWarning("[Boxes] closing: %s", tostring(err)) end
 	log("box %d closed (%d items)", Open.Id, MF.BoxCount(Open.Id))
 	Open = nil
+	-- the chest was opened by a script, so the game doesn't repaint the panels it covered
+	-- (nor those of the character screen before it) on its own: a few full redraws
+	Repaint = 5
+	Game.NeedRedraw = true
 end
 MF.CloseBox = close
 
@@ -272,6 +277,10 @@ local function checkOpenBox()
 end
 
 function events.Tick()
+	if Repaint > 0 then
+		Repaint = Repaint - 1
+		if Game.CurrentScreen == 0 then Game.NeedRedraw = true end
+	end
 	if Pending then
 		local p = Pending
 		if Mouse.Item.Number ~= 0 then Mouse:ReleaseItem() end
