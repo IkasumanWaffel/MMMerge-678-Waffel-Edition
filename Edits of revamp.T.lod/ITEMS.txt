@@ -192,7 +192,7 @@ Item #	Pic File	Name	Value	Equip Stat	Skill Group	Mod1	Mod2	material	ID/Rep/St	N
 190	item211	Dimension door	4000	Gem	Misc	0	1	2	20	Scroll	78	0	0	0	0	A spell scroll.  (To cast this spell, pick the scroll up and right-click over a character's portrait in the inventory screen.)
 191	pouch3	Common Ore Bag	100	N / A	Misc	0	0	0	0	Bag	349	0	0	0	0	A sturdy bag for common ores storage. (Pick up the bag and click on a character's portrait to store the ore. Pick up and click again to get the ore from the bag when there is none in inventory.)
 192	pouch3	Rare Ore Bag	500	N / A	Misc	0	0	0	0	Bag	349	0	0	0	0	A sturdy bag for rare ores storage. (Pick up the bag and click on a character's portrait to store the ore. Pick up and click again to get the ore from the bag when there is none in inventory.)
-193	bottlebox	Bottle Box	250	N / A	Misc	0	0	2	0	Bottle Box	426	0	0	0	0	A fine-crafted box for keeping potion bottles, full or empty, safe from cracks and spills. (Pick up the box and click on a character's portrait to open it. Only potions and potion bottles go in.)
+193	bottlebox	Bottle Box	1000	N / A	Misc	0	0	2	0	Bottle Box	426	0	0	0	0	A fine-crafted box for keeping potion bottles, full or empty, safe from cracks and spills. (Pick up the box and click on a character's portrait to open it. Only potions and potion bottles go in. A character carries one bottle box at most.)
 194	null	_misc194	0	0	0	0	0	0	0	0	1	0	0	0	0	
 195	null	_misc195	0	0	0	0	0	0	0	0	1	0	0	0	0	
 196	null	_misc196	0	0	0	0	0	0	0	0	1	0	0	0	0	

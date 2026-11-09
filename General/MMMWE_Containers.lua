@@ -17,6 +17,12 @@
 	into Potion Bottles in the box the first time it opens.
 
 	MF.BoxCount(charges) -> the number of items in a box (the item descriptions).
+
+Shops: apothecary satchels and bottle boxes are sold by alchemists, not magic shops. A magic
+shop's "misc" item that comes out as one of them is rolled again; an alchemist's potion or
+reagent turns into one with a chance of ALCHEMIST_KIT_CHANCE % (which one: by the items'
+rnditems chances at the shop's level).
+One bottle box per character: a second one put into a backpack goes back to the mouse.
 --]]
 
 local MF = Merge.Functions
@@ -435,4 +441,103 @@ function events.AfterLoadMap()
 		end
 	end
 	s.Placed[Map.Name] = "no chest"
+end
+
+---------------------------------------------------------------------------
+-- satchels and bottle boxes: alchemists sell them, magic shops don't
+---------------------------------------------------------------------------
+
+local ALCHEMIST_KIT_CHANCE = 12        -- % of an alchemist's potions / reagents
+local KIT = {[193] = true}
+for n = 969, 987 do KIT[n] = true end
+
+local function shopType()
+	local h = MF.GetCurrentHouse and MF.GetCurrentHouse() or 0
+	local house = h > 0 and Game.Houses[h]
+	return house and house.Type
+end
+
+-- a kit item by the rnditems chances at treasure level lvl (1..6)
+local function rollKit(lvl)
+	lvl = math.max(1, math.min(6, lvl or 1))
+	local list, total = {}, 0
+	for n in pairs(KIT) do
+		local w = Game.ItemsTxt[n].ChanceByLevel[lvl]
+		if w > 0 then list[#list + 1] = {n, w}; total = total + w end
+	end
+	if total == 0 then return end
+	table.sort(list, function(a, b) return a[1] < b[1] end)
+	local r = math.random(total)
+	for _, e in ipairs(list) do
+		r = r - e[2]
+		if r <= 0 then return e[1] end
+	end
+end
+
+function events.GenerateItem(t)
+	if t.Handled or Game.CurrentScreen ~= const.Screens.House then return end
+	local kind, typ = t.Kind, shopType()
+	if typ == const.HouseType["Magic Shop"] and kind == const.ItemType.Misc then
+		for _ = 1, 30 do
+			t.CallDefault()
+			if not KIT[t.Item.Number] then return end
+		end
+		t.Item:Clear()
+		t.CallDefault()
+	elseif typ == const.HouseType.Alchemist
+		and (kind == const.ItemType.Potion_ or kind == const.ItemType.Reagent_
+			or kind == const.ItemType.Potion or kind == const.ItemType.Reagent)
+		and math.random(100) <= ALCHEMIST_KIT_CHANCE then
+		local n = rollKit(t.Strength)
+		if n then
+			t.Item:Clear()
+			t.Item.Number = n
+			t.Item.Identified = true
+			t.Handled = true
+		end
+	end
+end
+
+---------------------------------------------------------------------------
+-- one bottle box per character
+---------------------------------------------------------------------------
+
+local ONE_PER_CHARACTER = {[193] = Tx"Only one bottle box per character"}
+local checkTick = 0
+
+local function oneEach()
+	if Mouse.Item.Number ~= 0 then return end
+	for i = 0, Party.count - 1 do
+		local pl = Party[i]
+		local seen = {}
+		for c = 0, 125 do
+			local k = pl.Inventory[c]
+			if k > 0 then
+				local it = pl.Items[k]
+				local why = ONE_PER_CHARACTER[it.Number]
+				if why then
+					if seen[it.Number] then
+						mem.call(0x491A27, 1, Mouse.Item["?ptr"] - 0x5BBD4, it["?ptr"])
+						for c2 = 0, 125 do
+							if pl.Inventory[c2] == -(1 + c) then pl.Inventory[c2] = 0 end
+						end
+						pl.Inventory[c] = 0
+						it:Clear()
+						Game.ShowStatusText(why)
+						Game.NeedRedraw = true
+						return
+					end
+					seen[it.Number] = true
+				end
+			end
+		end
+	end
+end
+
+function events.Tick()
+	checkTick = checkTick + 1
+	if checkTick < 8 then return end
+	checkTick = 0
+	local ok, err = pcall(oneEach)
+	if not ok then MF.LogWarning("[Boxes] one each: %s", tostring(err)) end
 end
