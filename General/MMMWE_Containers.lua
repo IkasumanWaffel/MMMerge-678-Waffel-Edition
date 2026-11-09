@@ -69,14 +69,16 @@ local BOTTLE = const.ItemType.Potion - 1
 local RING, AMULET = const.ItemType.Ring - 1, const.ItemType.Amulet - 1
 local GemType                           -- the gems' EquipStat (Zircon's), when the items are loaded
 
--- picture: the chest picture the box opens with (Chest.txt)
+-- picture: the chest picture the box opens with (Chest.txt); Image: another background for
+-- it while the box is open (chestNN in the icons; the game keeps the grid place of each
+-- picture in its own tables, so the box borrows a picture with the same layout)
 local BOXES = {
 	[193]  = {Name = Tx"Bottle Box", Picture = 2,
 		Allow = function(t) return t.EquipStat == BOTTLE end, Only = Tx"Only potions go into the bottle box"},
 	[2229] = {Name = Tx"Jewelry Box", Picture = 5,
 		Allow = function(t) return t.EquipStat == RING or t.EquipStat == AMULET or t.EquipStat == GemType end,
 		Only = Tx"Only rings, amulets and gemstones go into the jewelry box"},
-	[2230] = {Name = Tx"Ancient Storage Box", Picture = 7, NotNearEnemies = true,
+	[2230] = {Name = Tx"Ancient Storage Box", Picture = 7, Image = 9, NotNearEnemies = true,   -- the orange chest of the Ancients (MM6/MM7)
 		Allow = function() return true end},
 }
 MF.Boxes = BOXES
@@ -193,6 +195,9 @@ local function close()
 		end
 	end)
 	if not ok then MF.LogWarning("[Boxes] closing: %s", tostring(err)) end
+	if Open.ImgSaved then
+		pcall(function() Game.ChestBin[Open.Box.Picture].ImageIndex = Open.ImgSaved end)
+	end
 	log("box %d closed (%d items)", Open.Id, MF.BoxCount(Open.Id))
 	Open = nil
 	-- the chest was opened by a script, so the game doesn't repaint the panels it covered
@@ -246,9 +251,15 @@ local function openNow(p)
 	local chest = Map.Chests[index]
 	if not added then saved = mem.string(chest["?ptr"], chest["?size"], true) end
 	chest.ChestPicture = box.Picture
+	local imgSaved
+	if box.Image then
+		local bin = Game.ChestBin[box.Picture]
+		imgSaved = bin.ImageIndex
+		bin.ImageIndex = box.Image
+	end
 	chest.Bits = const.ChestBits.ItemsPlaced
 	fill(chest, store()[p.Id])
-	Open = {Chest = index, Id = p.Id, Box = box, Added = added, Saved = saved}
+	Open = {Chest = index, Id = p.Id, Box = box, Added = added, Saved = saved, ImgSaved = imgSaved}
 	log("box %d (%s) opened as chest %d", p.Id, p.Number, index)
 	evt.OpenChest(index)
 	log("chest %d picture %d after opening (box picture %d), screen %d", index, chest.ChestPicture, box.Picture, Game.CurrentScreen)
