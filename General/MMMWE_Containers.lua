@@ -10,9 +10,9 @@
 	Pick a box up and click it on a character's portrait: the box goes back into the backpack
 	and opens as a chest. Its contents are kept with the saved game (vars.MMMWE_Boxes), by
 	the box's number in its Charges (from FIRST_ID up). While a box is open, its items are
-	in a spare chest of the map (the one after the map's own chests, of the 20 a map can
-	have); when the chest screen closes they are taken back out and the spare chest is
-	cleared. A wrong item put into a box goes back to the mouse at once.
+	in a spare chest of the map (the one after the map's own chests; on a map with all 20
+	chest records, its last chest is lent and restored byte by byte); when the chest screen
+	closes they are taken back out and the chest is cleared or restored. A wrong item put into a box goes back to the mouse at once.
 	Bottle boxes from before keep their empty bottles: the count in Charges (0..12) turns
 	into Potion Bottles in the box the first time it opens.
 
@@ -146,9 +146,14 @@ local function close()
 		if Open.Chest < i4[CHEST_COUNT] then
 			local chest = Map.Chests[Open.Chest]
 			store()[Open.Id] = take(chest)
-			fill(chest, nil)
-			chest.Bits = 0
-			if Open.Chest == i4[CHEST_COUNT] - 1 then i4[CHEST_COUNT] = Open.Chest end
+			if Open.Saved then
+				-- a chest of the map lent for the box: as it was
+				mem.copy(chest["?ptr"], Open.Saved, #Open.Saved)
+			else
+				fill(chest, nil)
+				chest.Bits = 0
+			end
+			if Open.Added then i4[CHEST_COUNT] = Open.Chest end
 		end
 	end)
 	if not ok then MF.LogWarning("[Boxes] closing: %s", tostring(err)) end
@@ -179,10 +184,6 @@ end
 
 local function openNow(p)
 	local box = BOXES[p.Number]
-	if i4[CHEST_COUNT] >= MAX_CHESTS then
-		Game.ShowStatusText(Tx"The box can't be opened here")
-		return
-	end
 	if box.NotNearEnemies and (Party.EnemyDetectorYellow or Party.EnemyDetectorRed) then
 		Game.ShowStatusText(Tx"The box locks up tight: there are enemies near")
 		return
@@ -195,13 +196,21 @@ local function openNow(p)
 		Game.ShowStatusText(Tx"The box can't be opened here")
 		return
 	end
-	local index = i4[CHEST_COUNT]
-	i4[CHEST_COUNT] = index + 1
+	-- a chest after the map's own ones; when the map has all 20 (most maps keep 20 records,
+	-- used or not), its last one is lent: kept byte by byte and put back when the box closes
+	local index, added, saved = i4[CHEST_COUNT], false, nil
+	if index < MAX_CHESTS then
+		i4[CHEST_COUNT] = index + 1
+		added = true
+	else
+		index = MAX_CHESTS - 1
+	end
 	local chest = Map.Chests[index]
+	if not added then saved = mem.string(chest["?ptr"], chest["?size"], true) end
 	chest.ChestPicture = box.Picture
 	chest.Bits = const.ChestBits.ItemsPlaced
 	fill(chest, store()[p.Id])
-	Open = {Chest = index, Id = p.Id, Box = box}
+	Open = {Chest = index, Id = p.Id, Box = box, Added = added, Saved = saved}
 	log("box %d (%s) opened as chest %d", p.Id, p.Number, index)
 	evt.OpenChest(index)
 	if Game.CurrentScreen ~= CHEST_SCREEN then close() end
