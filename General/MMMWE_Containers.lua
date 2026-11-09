@@ -27,6 +27,8 @@ local FIRST_ID = 1000
 local CHEST_COUNT = 0x61C528           -- Map.Chests count (MM8)
 local MAX_CHESTS = 20
 local CHEST_SCREEN = const.Screens.Chest
+local CHEST_INV_SCREEN = const.Screens.InventoryInChest or 15   -- a character's backpack beside the chest
+local ESC_WAIT = 30                    -- ticks to wait for the character screen to close
 local EMPTY_BOTTLE = 220
 
 local BOTTLE = const.ItemType.Potion - 1
@@ -188,13 +190,7 @@ local function openNow(p)
 		Game.ShowStatusText(Tx"The box locks up tight: there are enemies near")
 		return
 	end
-	-- out of the character screen (ExitScreen only handles houses in MM8): Esc, as the game does
-	for _ = 1, 3 do
-		if Game.CurrentScreen == 0 then break end
-		Game.Actions.Add(113, 0)
-		Game.Actions.Process()
-	end
-	if Game.CurrentScreen ~= 0 and Game.CurrentScreen ~= const.Screens.Inventory then
+	if Game.CurrentScreen ~= 0 then
 		log("can't open: screen %d", Game.CurrentScreen)
 		Game.ShowStatusText(Tx"The box can't be opened here")
 		return
@@ -278,8 +274,23 @@ end
 function events.Tick()
 	if Pending then
 		local p = Pending
-		Pending = nil
 		if Mouse.Item.Number ~= 0 then Mouse:ReleaseItem() end
+		-- out of the character screen first: one Esc, as if the key were pressed, and wait
+		-- (ExitScreen only handles houses in MM8; opening the chest over the character
+		-- screen leaves that screen half alive)
+		if Game.CurrentScreen ~= 0 then
+			p.Wait = (p.Wait or 0) + 1
+			if p.Wait == 1 or p.Wait == ESC_WAIT / 2 then
+				log("leaving screen %d", Game.CurrentScreen)
+				Game.Actions.Add(113, 0)
+			elseif p.Wait > ESC_WAIT then
+				Pending = nil
+				log("can't open: screen %d", Game.CurrentScreen)
+				Game.ShowStatusText(Tx"The box can't be opened here")
+			end
+			return
+		end
+		Pending = nil
 		local ok, err = pcall(openNow, p)
 		if not ok then
 			MF.LogWarning("[Boxes] opening: %s", tostring(err))
@@ -288,7 +299,10 @@ function events.Tick()
 		return
 	end
 	if Open then
-		if Game.CurrentScreen ~= CHEST_SCREEN then
+		-- the chest view and a character's backpack beside it are both the open box
+		local scr = Game.CurrentScreen
+		if scr ~= CHEST_SCREEN and scr ~= CHEST_INV_SCREEN then
+			log("closing on screen %d", scr)
 			close()
 		else
 			local ok, err = pcall(checkOpenBox)
