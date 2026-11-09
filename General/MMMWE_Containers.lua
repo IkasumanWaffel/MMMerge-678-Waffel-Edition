@@ -31,15 +31,36 @@ local CHEST_INV_SCREEN = const.Screens.InventoryInChest or 15   -- a character's
 local ESC_WAIT = 30                    -- ticks to wait for the character screen to close
 local DLG_TOP = 0x518CE8               -- the index of the topmost dialog (0: just the adventure interface)
 
--- dialogs open above the adventure interface, and their ids (for the log)
+-- the character screen is an "object-oriented" dialog in MM8 (not in Game.Dialogs); the Esc
+-- action leaves it alive behind the adventure view. OOBase: the manager's current dialog
+-- when nothing is open (taken while the party just walks about)
+local OOBase
+
+local function ooDialog()
+	return Game.OODialogs.CurrentDialogPtr, Game.OODialogs.Count
+end
+
+-- dialogs open above the adventure interface (old and object-oriented), for the log
 local function dialogsAbove()
 	local n = i4[DLG_TOP]
-	if n <= 0 then return 0, "" end
 	local ids = {}
 	pcall(function()
 		for k = 1, n do ids[#ids + 1] = tostring(Game.Dialogs[k].DlgID) end
 	end)
-	return n, table.concat(ids, ",")
+	local oo, cnt = ooDialog()
+	local stray = OOBase and oo ~= OOBase and oo ~= 0
+	return n + (stray and 1 or 0), table.concat(ids, ",") .. (" oo %X/%d"):format(oo, cnt), stray
+end
+
+-- closes a character screen left behind
+local function closeStrayOO()
+	local _, ids, stray = dialogsAbove()
+	if stray then
+		log("closing a dialog left behind (%s)", ids)
+		Game.OODialogs:CloseCurrent()
+		Game.NeedRedraw = true
+		return true
+	end
 end
 local EMPTY_BOTTLE = 220
 
@@ -293,11 +314,16 @@ local function checkOpenBox()
 end
 
 function events.Tick()
+	if not Open and not Pending and not Stray and Game.CurrentScreen == 0 and i4[DLG_TOP] == 0 then
+		OOBase = Game.OODialogs.CurrentDialogPtr
+	end
 	if Stray and Game.CurrentScreen == 0 then
 		Stray = Stray - 1
 		local above, ids = dialogsAbove()
-		if above > 0 then
-			-- a dialog left behind by the chest or the character screen: Esc closes it
+		if closeStrayOO() then
+			Stray = nil
+		elseif above > 0 then
+			-- an old-style dialog left behind: Esc closes it
 			log("a dialog left after closing (dialogs %s): Esc", ids)
 			Game.Actions.Add(113, 0)
 			Stray = nil
@@ -315,10 +341,12 @@ function events.Tick()
 		-- out of the character screen first: one Esc, as if the key were pressed, and wait
 		-- (ExitScreen only handles houses in MM8; opening the chest over the character
 		-- screen leaves that screen half alive)
-		local above, ids = dialogsAbove()
+		local above, ids, stray = dialogsAbove()
 		if Game.CurrentScreen ~= 0 or above > 0 then
 			p.Wait = (p.Wait or 0) + 1
-			if p.Wait == 1 or p.Wait == 10 or p.Wait == 20 then
+			if Game.CurrentScreen == 0 and stray then
+				closeStrayOO()
+			elseif p.Wait == 1 or p.Wait == 10 or p.Wait == 20 then
 				log("leaving screen %d (dialogs %s)", Game.CurrentScreen, ids)
 				Game.Actions.Add(113, 0)
 			elseif p.Wait > ESC_WAIT then
