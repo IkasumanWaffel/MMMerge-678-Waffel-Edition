@@ -289,6 +289,17 @@ end
 for _, p in ipairs{0x4B4065, 0x4B4CB3, 0x4B5A13, 0x4B6A4F, 0x4B7CEF, 0x4B83B3, 0x4B9483} do
 	patchSkillCmp(p, "eax", "edi", "bx")
 end
+-- clicking a learn topic: the game takes topics 0x24..0x4A (skills 0..38) only; the new
+-- skills' topics (0x24 + 41 .. 0x24 + 48) go the same way
+mem.asmpatch(0x4BAEFF, [[
+	cmp ebp, 0x4A
+	jle absolute 0x4BAF2E
+	cmp ebp, ]] .. (0x24 + EXTRA.First) .. [[;
+	jl @no
+	cmp ebp, ]] .. (0x24 + EXTRA.First + EXTRA.Slots - 1) .. [[;
+	jle absolute 0x4BAF2E
+@no:
+	]], 5)
 -- buying it (edi - player, ebp - the learn topic, 0x24 + id): the word set to 1
 mem.asmpatch(0x4BAF79, [[
 	push eax

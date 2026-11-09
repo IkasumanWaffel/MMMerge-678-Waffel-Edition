@@ -843,7 +843,7 @@ local function createFont()
     local key = tostring(actualSize)
     if key ~= lastFontKey or hFont == 0 then
         if hFont ~= 0 then gdi32.DeleteObject(hFont) end
-        hFont = gdi32.CreateFontA(actualSize, 0, 0, 0, 700, 0, 0, 0, 1, 0, 0, 0, 0, Merge.Functions.FontFace and Merge.Functions.FontFace("Sovngarde", "Book Antiqua") or "Book Antiqua")
+        hFont = gdi32.CreateFontA(actualSize, 0, 0, 0, 700, 0, 0, 0, (Merge.Functions.FontCharset and Merge.Functions.FontCharset() or 1), 0, 0, 0, 0, Merge.Functions.FontFace and Merge.Functions.FontFace("Sovngarde", "Book Antiqua") or "Book Antiqua")
         lastFontKey = key
         G.font = hFont
     end
@@ -851,7 +851,7 @@ local function createFont()
     local skey = tostring(smallSize)
     if skey ~= lastFontSmallKey or hFontSmall == 0 then
         if hFontSmall ~= 0 then gdi32.DeleteObject(hFontSmall) end
-        hFontSmall = gdi32.CreateFontA(smallSize, 0, 0, 0, 400, 0, 0, 0, 1, 0, 0, 5, 0, Merge.Functions.FontFace and Merge.Functions.FontFace("Sovngarde", "Book Antiqua") or "Book Antiqua")
+        hFontSmall = gdi32.CreateFontA(smallSize, 0, 0, 0, 400, 0, 0, 0, (Merge.Functions.FontCharset and Merge.Functions.FontCharset() or 1), 0, 0, 5, 0, Merge.Functions.FontFace and Merge.Functions.FontFace("Sovngarde", "Book Antiqua") or "Book Antiqua")
         lastFontSmallKey = skey
         G.fontSmall = hFontSmall
     end
