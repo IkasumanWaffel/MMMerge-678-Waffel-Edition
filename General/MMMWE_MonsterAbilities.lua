@@ -376,7 +376,8 @@ end
 ---------------------------------------------------------------------------
 
 local CARD_MASTERY = const.Master or 3
-local CARD_X = 0x1C
+local CARD_HEAD_X, CARD_X = 0x0C, 0x1C   -- as the card's "Effects" heading and its lines
+local CARD_GAP = 6
 
 -- the map monster the card shows: the card may hold a copy (Game.DialogLogic.MonsterInfoMonster)
 local function cardMonster(ptr)
@@ -407,13 +408,15 @@ mem.autohook(0x41E398, function(d)
 		if not r or #r.A == 0 or cardMastery() < CARD_MASTERY then return end
 		local dlg, font, color = mem.u4[d.ebp - 8], mem.u4[d.ebp - 0x20], mem.u4[d.ebp - 0xC]
 		local lineH = mem.u1[font + 5] - 3
-		local y = d.edi + 4
-		local function line(s)
-			mem.call(0x44A50F, 2, dlg, font, CARD_X, y, color, s, 0, 0, 0)
+		-- edi: the line after the last effect; with no effects the game drew "None" there
+		-- without moving on ([ebp-4] = 0)
+		local y = d.edi + (mem.i4[d.ebp - 4] == 0 and lineH or 0) + CARD_GAP
+		local function line(x, s)
+			mem.call(0x44A50F, 2, dlg, font, x, y, color, s, 0, 0, 0)
 			y = y + lineH
 		end
-		line(r.Leader and Tx"Abilities (pack leader):" or Tx"Abilities:")
-		for _, k in ipairs(r.A) do line("  " .. A[k].Name) end
+		line(CARD_HEAD_X, r.Leader and Tx"Abilities (pack leader)" or Tx"Abilities")
+		for _, k in ipairs(r.A) do line(CARD_X, A[k].Name) end
 	end)
 	if not ok and MF.LogWarning then MF.LogWarning("MonsterAbilities card: %s", tostring(err)) end
 end)

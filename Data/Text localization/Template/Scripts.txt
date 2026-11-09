@@ -1378,11 +1378,11 @@ Call for Help
 # General/MMMWE_MonsterAbilities.lua:317
 %s calls for help!	
 
-# General/MMMWE_MonsterAbilities.lua:415
-Abilities (pack leader):	
+# General/MMMWE_MonsterAbilities.lua:418
+Abilities (pack leader)	
 
-# General/MMMWE_MonsterAbilities.lua:415
-Abilities:	
+# General/MMMWE_MonsterAbilities.lua:418
+Abilities	
 
 # General/MMMWE_Moon.lua:271
 new moon	

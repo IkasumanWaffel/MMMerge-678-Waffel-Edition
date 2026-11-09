@@ -1378,11 +1378,11 @@ Call for Help	Зов на помощь
 # General/MMMWE_MonsterAbilities.lua:317
 %s calls for help!	%s зовёт на помощь!
 
-# General/MMMWE_MonsterAbilities.lua:415
-Abilities (pack leader):	Способности (вожак):
+# General/MMMWE_MonsterAbilities.lua:418
+Abilities (pack leader)	Способности (вожак)
 
-# General/MMMWE_MonsterAbilities.lua:415
-Abilities:	Способности:
+# General/MMMWE_MonsterAbilities.lua:418
+Abilities	Способности
 
 # General/MMMWE_Moon.lua:271
 new moon	новолуние
@@ -2702,6 +2702,8 @@ The %s path in %s costs %d gold. Come back when you have it.	Путь «%s» в навыке 
 %s is now %s in %s.%s	%s теперь — %s в навыке %s.%s
 
 # no longer used
+Abilities (pack leader):	Способности (вожак):
+Abilities:	Способности:
 Type the name; Enter keeps it, Esc drops it	Введите имя; Enter — оставить, Esc — отменить
 Spells %d/%d: click to pick; the price by rank and impact	Заклинания %d/%d: щёлкните, чтобы выбрать; цена по кругу и силе
 Starting items %d/%d: click +1, Ctrl+click -1; given when the class is taken	Начальные предметы %d/%d: щелчок +1, Ctrl+щелчок -1; выдаются при взятии класса
