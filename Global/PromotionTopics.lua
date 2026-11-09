@@ -279,20 +279,22 @@ local function promote_class(t)
 	local k = MF.GetCurrentPlayer() or 0
 	local player = Party[k]
 	local orig_class = player.Class
-	if player.Class == t.Class and not t.SameClass then
-		Message(strformat(TXT.already_promoted, Game.ClassNames[t.Class]))
+	-- MMMWE: a custom class counts as the preset class it resembles (MMMWE_CustomClassPromotions.lua)
+	local cls = MF.PresetClassOf and MF.PresetClassOf(player) or player.Class
+	if cls == t.Class and not t.SameClass then
+		Message(strformat(TXT.already_promoted, Game.ClassNames[player.Class]))
 		return false
 	else
 		if type(t.From) == "table" then
-			if not table.find(t.From, player.Class) then
+			if not table.find(t.From, cls) then
 				Message(strformat(TXT.cannot_be_promoted,
 					Game.ClassNames[player.Class], Game.ClassNames[t.Class]))
 				return false
 			end
-		elseif not table.find(MT.ClassPromotionsInv[t.Class] or {}, player.Class)
-				and (not t.SameClass or player.Class ~= t.Class) then
+		elseif not table.find(MT.ClassPromotionsInv[t.Class] or {}, cls)
+				and (not t.SameClass or cls ~= t.Class) then
 			local interm
-			for _, v in pairs(MT.ClassPromotions[player.Class] or {}) do
+			for _, v in pairs(MT.ClassPromotions[cls] or {}) do
 				if future_promotion(v, t.Class) then
 					interm = interm or {}
 					table.insert(interm, Game.ClassNames[v])
@@ -320,7 +322,7 @@ local function promote_class(t)
 		if t.Award then
 			player.Attrs.PromoAwards[t.Award] = true
 		end
-		Message(strformat(TXT.congratulations, Game.ClassNames[t.Class]))
+		Message(strformat(TXT.congratulations, Game.ClassNames[player.Class]))
 		MF.ShowAwardAnimation()
 		return true
 	end

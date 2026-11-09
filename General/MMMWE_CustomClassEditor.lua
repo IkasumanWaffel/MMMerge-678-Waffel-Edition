@@ -125,7 +125,7 @@ local function open(mode, player)
 	if mode == "creation" and not CC.IsCreating() then CC.BeginCreation() end
 	E.Mode, E.Player, E.Screen = mode, player, Game.CurrentScreen
 	E.Step, E.Typing, E.Msg = 1, false, nil
-	E.View, E.SpellPage = "skills", 1
+	E.View, E.SpellPage, E.ItemPage = "skills", 1, 1
 	-- the player's own custom class, or a new one
 	local f = CC.FamilyOf(player.Class)
 	E.NewF = nil
@@ -205,6 +205,10 @@ local function validate()
 end
 
 local function done()
+	if CC.ItemsTotal(fam()) > CC.ItemBudget then
+		message(string.format(Tx"Starting items: %d points at most", CC.ItemBudget))
+		return
+	end
 	local ok, err = validate()
 	if not ok then message(err) return end
 	local f, id = fam(), CC.ClassId(E.F, 1)
@@ -235,6 +239,9 @@ local function done()
 					end
 				end
 			end
+		end
+		for slot = 0, Party.count - 1 do
+			if Party[slot]["?ptr"] == pl["?ptr"] then CC.GiveItems(f, slot) end
 		end
 		local refund = pl.SkillPoints - before
 		Game.ShowStatusText(string.format(Tx"%s is now a %s%s", pl.Name, f.Steps[1].Name,
@@ -271,6 +278,7 @@ end
 
 local function edit(ok, err)
 	if not ok then message(err) return end
+	if CC.DropBadItems then CC.DropBadItems(fam()) end
 	CC.Apply()
 end
 
@@ -336,7 +344,7 @@ end
 
 -- the Spells button: skills -> spells page 1 -> 2 ... -> skills
 local function cycleView()
-	if E.View == "skills" then
+	if E.View ~= "spells" then
 		if #spellSchools() == 0 then message(Tx"Buy a magic school first") return end
 		E.View, E.SpellPage = "spells", 1
 	elseif E.SpellPage < spellPages() then
@@ -352,6 +360,30 @@ local function clickSpell(spell)
 	local picked = not s.Spells or s.Spells[spell]   -- older builds: every spell is picked
 	local on = not picked and not Keys.IsPressed(const.Keys.CTRL)
 	edit(CC.SetSpell(fam(), E.Step, spell, on))
+end
+
+-- starting items view (09.11.26): the base class's item pool, 36 a page; [Items] cycles the
+-- pages and goes back to the skills
+local ITEMS_PER_PAGE = 36
+local function itemPages()
+	return math.max(1, math.ceil(#CC.ItemPool(fam()) / ITEMS_PER_PAGE))
+end
+
+local function cycleItems()
+	if E.View ~= "items" then
+		E.View, E.ItemPage = "items", 1
+	elseif E.ItemPage < itemPages() then
+		E.ItemPage = E.ItemPage + 1
+	else
+		E.View = "skills"
+	end
+end
+
+local function clickItem(num)
+	if locked() then message(Tx"This class is taken by a character in the game") return end
+	local d = Keys.IsPressed(const.Keys.CTRL) and -1 or 1
+	local ok, err = CC.SetItem(fam(), num, d)
+	if not ok then message(err) end
 end
 
 -- Ctrl+S: the build to CustomClasses/<name>.txt; Ctrl+L: the next file of that folder
@@ -674,6 +706,31 @@ local function build()
 		end
 	end
 
+	-- starting items: three columns of twelve
+	for col = 0, 2 do
+		for row = 0, 11 do
+			local function itemAt()
+				local list = CC.ItemPool(fam())
+				return list[(E.ItemPage - 1) * ITEMS_PER_PAGE + col * 12 + row + 1]
+			end
+			text{Font = Skill, X = 18 + col * 206, Y = 163 + row * 21, W = 200, H = 18,
+				Get = function()
+					if E.View ~= "items" then return end
+					local num = itemAt()
+					if not num then return end
+					local f = fam()
+					local n = f.Items and f.Items[num] or 0
+					local name = Game.ItemsTxt[num].Name
+					local c = n > 0 and GOLD or (CC.ItemAllowed(f, num) and WHITE or GREY)
+					return string.format("%s%s %d", n > 1 and (n .. "x ") or "", name, CC.ItemCost(num)), c
+				end,
+				Click = function()
+					local num = itemAt()
+					if num then clickItem(num) end
+				end}
+		end
+	end
+
 	-- hint box: messages, problems or how to use the screen; the keys
 	text{Font = Small, X = 14, Y = 435, W = 432, H = 17,
 		Get = function()
@@ -684,11 +741,29 @@ local function build()
 			if E.View == "spells" then
 				return string.format(Tx"Spells %d/%d: click to pick; the price by rank and impact", E.SpellPage, spellPages())
 			end
+			if E.View == "items" then
+				return string.format(Tx"Starting items %d/%d: click +1, Ctrl+click -1; given when the class is taken",
+					E.ItemPage, itemPages())
+			end
 			return Tx"Click +, Ctrl+click -, Shift+click: start skill " ..
 				#(fam().StartSkills or {}) .. "/" .. START_SKILLS
 		end}
-	text{Font = Small, X = 14, Y = 453, W = 432, H = 17,
-		Get = function() return Tx"Ctrl+S: save the build, Ctrl+L: load one", GREY end}
+	text{Font = Small, X = 14, Y = 453, W = 120, H = 17,
+		Get = function()
+			local total = CC.ItemsTotal(fam())
+			return string.format(Tx"[Items %d/%d]", total, CC.ItemBudget),
+				total > CC.ItemBudget and RED or (E.View == "items" and GOLD or GREEN)
+		end,
+		Click = function() Game.PlaySound(23) cycleItems() end}
+	text{Font = Small, X = 136, Y = 453, W = 310, H = 17,
+		Get = function()
+			local preset, score = CC.PresetMatch(fam())
+			if preset and score >= CC.PresetMatchMin then
+				return string.format(Tx"Promoters: %s's (%d%%). Ctrl+S save, Ctrl+L load",
+					Game.ClassNames[preset], math.floor(score * 100 + 0.5)), GREY
+			end
+			return Tx"Ctrl+S: save the build, Ctrl+L: load one", GREY
+		end}
 
 	button{Up = "c_cncl_up", Down = "c_cncl_dn", Over = "c_cncl_ht", X = 459, Y = 440,
 		Click = function() Game.PlaySound(24) close() end}

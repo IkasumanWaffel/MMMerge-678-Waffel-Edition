@@ -3016,6 +3016,7 @@ local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 		local BS, BM = SplitSkill(pl:GetSkill(7))
 
 		smartPatch(0x41D220, "push ", DefineDurabilityString(IN))
+		if MF.SpellBookNotes then MF.SpellBookNotes(IN) end   -- who can learn a spellbook's spell
 
 		if Game.ItemsTxt[IN].Skill == 7 then
 			local bStrings = DefineBlasterModString(IN, BS)

@@ -138,3 +138,79 @@ for _, promoter in ipairs(PROMOTERS) do
 		Done = function() promoteAll(promoter) end,
 	}
 end
+
+---------------------------------------------------------------------------
+-- (09.11.26) the preset promoters: a custom class whose base build resembles a preset base
+-- class (CC.PresetMatch, at least CC.PresetMatchMin of its skill caps) is promoted by that
+-- class's promoters and quests (PromotionTopics.lua) as well - to its own steps. For their
+-- checks a custom character counts as the preset class of the same step
+-- (MF.PresetClassOf); a preset first promotion then gives the custom first promotion, a
+-- light / dark / neutral second promotion the custom light / dark / neutral step.
+---------------------------------------------------------------------------
+
+local MT = Merge.Tables
+
+-- the custom step a preset promotion class stands for, and the steps it promotes from
+local function stepFor(presetClass)
+	local ce = Game.ClassesExtra[presetClass]
+	if not ce then return end
+	if ce.Step == 1 then return 2, {1} end
+	if ce.Step == 2 then
+		if ce.Alignment == const.Alignment.Good then return 4, {2, 3} end
+		if ce.Alignment == const.Alignment.Evil then return 5, {2, 3} end
+		return 3, {2}
+	end
+end
+
+-- the preset classes of a base class's five steps: base, first promotion, neutral, light, dark
+local function presetSteps(base)
+	local t = {base}
+	local first = MT.ClassPromotions and MT.ClassPromotions[base] and MT.ClassPromotions[base][1]
+	t[2] = first or base
+	t[3], t[4], t[5] = t[2], t[2], t[2]
+	for _, c in ipairs(first and MT.ClassPromotions[first] or {}) do
+		local st = stepFor(c)
+		if st then t[st] = c end
+	end
+	return t
+end
+
+local Preset = {}         -- [family] = {five preset classes}, kept for the game's builds
+local function presetOf(f)
+	local fam = CC.Builds()[f]
+	if not fam then return end
+	local base, score = CC.PresetMatch(fam)
+	if not base or score < CC.PresetMatchMin then return end
+	return presetSteps(base)
+end
+
+-- the preset class a custom class character counts as for the preset promoters (nil for
+-- other characters and for builds that resemble no preset class)
+function MF.PresetClassOf(pl)
+	local f, step = CC.FamilyOf(pl.Class)
+	if not f then return end
+	local t = presetOf(f)
+	return t and t[step]
+end
+
+-- a preset promotion of a custom class character becomes the promotion to its own step
+local convert = MF.ConvertCharacter
+MF.ConvertCharacter = function(t)
+	local pl, to = t.Player, t.ToClass
+	local f, step = pl and CC.FamilyOf(pl.Class)
+	if f and to and not CC.FamilyOf(to) and presetOf(f) then
+		local toStep, from = stepFor(to)
+		if toStep and table.find(from, step) then
+			local refund, err = CC.Promote(pl, toStep)
+			if not refund then
+				Message(string.format(Tx"%s can't be promoted: the %s build has a problem (%s).",
+					pl.Name, stepName(f, toStep), tostring(err)))
+			end
+			if t.ToMaturity and pl.Attrs then
+				convert({Player = pl, ToMaturity = t.ToMaturity})
+			end
+			return
+		end
+	end
+	return convert(t)
+end

@@ -164,6 +164,142 @@ local function tierCost(t)
 	return 4 * math.min(t, 5) + 5 * math.max(t - 5, 0)
 end
 
+-- (09.11.26) starting items: bought with a budget of their own (not the build's points) and
+-- given to the characters who take the class on the party creation screen (at the start of
+-- the game) or in a training hall. An item costs its value / ITEM_VALUE_PER_POINT (at least
+-- 1); a spellbook ITEM_BOOK_MUL x the spell's price in the build (rank x impact). Weapons,
+-- bows, armor and shields need their skill on the base class; books a spell the base class
+-- has. Potions can be taken up to ITEM_MAX_STACK times.
+local ITEM_BUDGET = 20
+local ITEM_VALUE_PER_POINT = 50
+local ITEM_BOOK_MUL = 2
+local ITEM_MAX_STACK = 5
+local ITEM_POOL = {
+	1, 6, 21, 26, 31, 36, 42, 66, 857, 863, 79, 56, 61, 2201,    -- weapons, bows, a cestus
+	84, 85, 89, 90, 94, 104, 99,                                -- armor and shields
+	109, 114, 117, 122, 127, 132, 137,                          -- helm, hat, belt, cloak, gloves, boots, ring
+	222, 223, 224,                                              -- Cure Wounds, Magic, Cure Weakness potions
+}
+local STACKABLE = {[222] = true, [223] = true, [224] = true}
+local SKILL_ITEM = {[0] = true, [1] = true, [2] = true, [3] = true, [4] = true}   -- EquipStat that needs the skill
+
+local BookOf = {}
+local function bookOf(spell)   -- the spellbook item of a spell (Mod1DiceSides = the spell)
+	if BookOf[spell] ~= nil then return BookOf[spell] or nil end
+	BookOf[spell] = false
+	local t = Game.ItemsTxt
+	local i = 399 + spell
+	if not (t[i] and t[i].EquipStat == 16 and t[i].Mod1DiceSides == spell) then
+		i = nil
+		for j = 1, t.count - 1 do
+			if t[j].EquipStat == 16 and t[j].Mod1DiceSides == spell then i = j break end
+		end
+	end
+	BookOf[spell] = i or false
+	return i
+end
+
+local function itemCost(num)
+	local it = Game.ItemsTxt[num]
+	if it.EquipStat == 16 then
+		return math.max(1, math.ceil(ITEM_BOOK_MUL * spellPrice(it.Mod1DiceSides)))
+	end
+	return math.max(1, math.floor(it.Value / ITEM_VALUE_PER_POINT + 0.5))
+end
+
+-- the items a family's base class may take: the pool and the Novice spellbooks of its spells
+local function itemPool(fam)
+	local spec, list = fam.Steps[1], {}
+	for _, n in ipairs(ITEM_POOL) do list[#list + 1] = n end
+	for spell = 1, 99 do
+		if spellRank(spell) == 1 and (spec.Skills[spellSchool(spell)] or 0) > 0
+				and (not spec.Spells or spec.Spells[spell]) then
+			local b = bookOf(spell)
+			if b then list[#list + 1] = b end
+		end
+	end
+	return list
+end
+
+-- nil and the reason when the base class can't take the item
+local function itemAllowed(fam, num)
+	local it = Game.ItemsTxt[num]
+	if SKILL_ITEM[it.EquipStat] and (fam.Steps[1].Skills[it.Skill] or 0) == 0 then
+		return nil, string.format(Tx"%s needs %s", it.Name, Game.SkillNames[it.Skill])
+	end
+	if it.EquipStat == 16 then
+		local spell = it.Mod1DiceSides
+		local spec = fam.Steps[1]
+		if (spec.Skills[spellSchool(spell)] or 0) == 0 or (spec.Spells and not spec.Spells[spell]) then
+			return nil, string.format(Tx"%s isn't a spell of the class", spellName(spell))
+		end
+	end
+	return true
+end
+
+local function itemsTotal(fam)
+	local total = 0
+	for num, n in pairs(fam.Items or {}) do total = total + itemCost(num) * n end
+	return total
+end
+
+-- adds (d = 1) or removes (d = -1) one of an item
+local function famSetItem(fam, num, d)
+	fam.Items = fam.Items or {}
+	local n = fam.Items[num] or 0
+	if d > 0 then
+		local ok, err = itemAllowed(fam, num)
+		if not ok then return nil, err end
+		if n >= (STACKABLE[num] and ITEM_MAX_STACK or 1) then
+			return nil, string.format(Tx"No more of %s", Game.ItemsTxt[num].Name)
+		end
+		if itemsTotal(fam) + itemCost(num) > ITEM_BUDGET then
+			return nil, string.format(Tx"Starting items: %d points at most", ITEM_BUDGET)
+		end
+	end
+	n = math.max(0, n + d)
+	fam.Items[num] = n > 0 and n or nil
+	return true
+end
+
+-- items the base class can no longer take (after a skill or spell change) are dropped
+local function dropBadItems(fam)
+	for num in pairs(fam.Items or {}) do
+		if not itemAllowed(fam, num) then fam.Items[num] = nil end
+	end
+end
+
+-- gives a family's starting items to a party member (party slot)
+local function giveItems(fam, slot)
+	for num, n in pairs(fam.Items or {}) do
+		for _ = 1, n do evt.ForPlayer(slot).Add("Inventory", num) end
+	end
+end
+
+-- (09.11.26) the preset class a build resembles: the base class with the most alike skill
+-- caps (the sum of the smaller caps over the sum of the larger, over all skills); its
+-- promoters promote the custom class to its own steps (MMMWE_CustomClassPromotions.lua)
+local PRESET_MATCH = 0.7
+local function presetMatch(fam)
+	local spec = fam.Steps[1]
+	local best, bestScore
+	local CE = Game.ClassesExtra
+	if not CE then return end
+	for c = 0, FIRST_ID - 1 do
+		local ce = CE[c]
+		if ce and ce.Step == 0 and ce.Kind and ce.Kind > 0 and ce.Kind < 16 then
+			local lo, hi = 0, 0
+			for id = 0, 38 do
+				local a, b = spec.Skills[id] or 0, Game.Classes.Skills[c][id]
+				lo, hi = lo + math.min(a, b), hi + math.max(a, b)
+			end
+			local score = hi > 0 and lo / hi or 0
+			if not bestScore or score > bestScore then best, bestScore = c, score end
+		end
+	end
+	return best, bestScore or 0
+end
+
 ---------------------------------------------------------------------------
 -- ids
 ---------------------------------------------------------------------------
@@ -364,6 +500,7 @@ local STATS_NAME = {[1] = Tx"Intellect", [2] = Tx"Personality", [3] = Tx"Intelle
 -- the builds in use: the save's, or the ones made on the party creation screen (Pending,
 -- moved into the new game's vars when it starts)
 local Pending, Creating, NewGameStarted = {}, false, false
+local GiveStartItems = false
 
 local function builds()
 	if Creating then return Pending end
@@ -682,6 +819,17 @@ function events.NewGameMap()
 	NewGameStarted = true
 end
 
+-- the starting items of the classes taken on the creation screen, once the game has begun
+function events.AfterLoadMap()
+	if not GiveStartItems then return end
+	GiveStartItems = false
+	for i = 0, Party.count - 1 do
+		local f, step = familyOf(Party[i].Class)
+		local fam = f and builds()[f]
+		if fam and step == 1 then giveItems(fam, i) end
+	end
+end
+
 function events.BeforeLoadMap()
 	if Creating then
 		Creating = false
@@ -693,6 +841,7 @@ function events.BeforeLoadMap()
 				if f and Pending[f] then keep[f] = Pending[f] end
 			end
 			vars.CustomClasses = keep
+			GiveStartItems = true
 		end
 		Pending = {}
 	end
@@ -1062,6 +1211,10 @@ local function exportText(fam)
 	local ss = {}
 	for _, id in ipairs(fam.StartSkills or {}) do ss[#ss + 1] = string.format("%q", SKILL_IDS[id]) end
 	out[#out + 1] = "\tStartSkills = {" .. table.concat(ss, ", ") .. "},"
+	local its = {}
+	for num, n in pairs(fam.Items or {}) do its[#its + 1] = string.format("[%d] = %d", num, n) end
+	table.sort(its)
+	if #its > 0 then out[#out + 1] = "\tItems = {" .. table.concat(its, ", ") .. "}," end
 	out[#out + 1] = "\tSteps = {"
 	for step = 1, STEPS do
 		local spec = fam.Steps[step]
@@ -1124,6 +1277,15 @@ local function importText(text)
 			end
 		end
 		fam.Steps[step] = spec
+	end
+	if type(t.Items) == "table" then
+		fam.Items = {}
+		for num, n in pairs(t.Items) do
+			num, n = tonumber(num), tonumber(n)
+			if num and n and n >= 1 and Game.ItemsTxt[num] and itemAllowed(fam, num) then
+				fam.Items[num] = math.min(math.floor(n), STACKABLE[num] and ITEM_MAX_STACK or 1)
+			end
+		end
 	end
 	for _, v in ipairs(type(t.StartSkills) == "table" and t.StartSkills or {}) do
 		local id = skillId(v)
@@ -1248,6 +1410,16 @@ MF.CustomClasses = {
 	StatsName = STATS_NAME,
 	StepNames = STEP_NAMES,
 	Budget = BUDGET,
+	ItemBudget = ITEM_BUDGET,
+	ItemPool = itemPool,
+	ItemCost = itemCost,
+	ItemAllowed = itemAllowed,
+	ItemsTotal = itemsTotal,
+	SetItem = famSetItem,
+	DropBadItems = dropBadItems,
+	GiveItems = giveItems,
+	PresetMatch = presetMatch,
+	PresetMatchMin = PRESET_MATCH,
 	MaxTier = MAX_TIER,
 	HPTiers = HP_TIERS,
 	SPTiers = SP_TIERS,
