@@ -39,6 +39,8 @@ local BACKGROUND    = "CCEditor"         -- 640x480 screen with the boxes (waffe
 -- step tabs and Spells: buttons c_<name>_up / _ht / _dn / _pro (waffel.D.lod), 90 px apart
 local TAB_ICONS     = {"c_baseclass", "c_firstpromo", "c_neutral", "c_light", "c_dark"}
 local SPELLS_ICONS  = "c_spells"
+local ITEMS_ICONS   = "c_items"              -- "Starting Equipment" button, 162x30 (waffel.D.lod)
+local ITEMS_X, ITEMS_Y = 290, 438            -- right part of the hint box, left of Cancel
 local TAB_X, TAB_STEP = 54, 90
 local FLASH_TIME    = 0.5                -- seconds per phase of a red flashing button
 local ENTRY_X, ENTRY_Y = 286, 440                -- "Custom" button (83x30) on the creation screen:
@@ -732,7 +734,7 @@ local function build()
 	end
 
 	-- hint box: messages, problems or how to use the screen; the keys
-	text{Font = Small, X = 14, Y = 435, W = 432, H = 17,
+	text{Font = Small, X = 14, Y = 435, W = 272, H = 17,
 		Get = function()
 			if E.Msg and os.clock() - E.MsgTime < MSG_TIME then return E.Msg, E.MsgOk and GREEN or RED end
 			if E.Typing then return Tx"Type the name; Enter keeps it, Esc drops it" end
@@ -748,15 +750,13 @@ local function build()
 			return Tx"Click +, Ctrl+click -, Shift+click: start skill " ..
 				#(fam().StartSkills or {}) .. "/" .. START_SKILLS
 		end}
-	text{Font = Small, X = 14, Y = 453, W = 120, H = 17,
+	text{Font = Small, X = 14, Y = 453, W = 272, H = 17,
 		Get = function()
-			local total = CC.ItemsTotal(fam())
-			return string.format(Tx"[Items %d/%d]", total, CC.ItemBudget),
-				total > CC.ItemBudget and RED or (E.View == "items" and GOLD or GREEN)
-		end,
-		Click = function() Game.PlaySound(23) cycleItems() end}
-	text{Font = Small, X = 136, Y = 453, W = 310, H = 17,
-		Get = function()
+			if E.View == "items" then
+				local total = CC.ItemsTotal(fam())
+				return string.format(Tx"Items: %d of %d points", total, CC.ItemBudget),
+					total > CC.ItemBudget and RED or GREEN
+			end
 			local preset, score = CC.PresetMatch(fam())
 			if preset and score >= CC.PresetMatchMin then
 				return string.format(Tx"Promoters: %s's (%d%%). Ctrl+S save, Ctrl+L load",
@@ -764,6 +764,10 @@ local function build()
 			end
 			return Tx"Ctrl+S: save the build, Ctrl+L: load one", GREY
 		end}
+	button{Up = ITEMS_ICONS .. "_up", Down = ITEMS_ICONS .. "_dn", Over = ITEMS_ICONS .. "_ht",
+		X = ITEMS_X, Y = ITEMS_Y,
+		Update = function(self) flash(self, ITEMS_ICONS, E.View == "items", false) end,
+		Click = function() Game.PlaySound(23) cycleItems() end}
 
 	button{Up = "c_cncl_up", Down = "c_cncl_dn", Over = "c_cncl_ht", X = 459, Y = 440,
 		Click = function() Game.PlaySound(24) close() end}

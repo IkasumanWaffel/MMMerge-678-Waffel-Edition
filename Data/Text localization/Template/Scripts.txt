@@ -109,7 +109,7 @@ Master
 # General/MMMWE_Blasters.lua:428, General/MMMWE_Blasters.lua:429, General/MMMWE_Blasters.lua:465, General/MMMWE_Blasters.lua:508, General/MMMWE_Blasters.lua:541, General/MMMWE_Blasters.lua:598, General/MMMWE_CustomClasses.lua:137, General/MMMWE_CustomClasses.lua:490, General/MMMWE_SpellBookInfo.lua:19, Global/MMMWE_ExtraSkillTeachers.lua:38, Global/MMMWE_ExtraSkillTeachers.lua:39
 Grand Master	
 
-# General/MMMWE_Blasters.lua:429, General/MMMWE_CustomClassEditor.lua:621
+# General/MMMWE_Blasters.lua:429, General/MMMWE_CustomClassEditor.lua:623
 none	
 
 # General/MMMWE_Blasters.lua:434
@@ -268,128 +268,128 @@ Enchantment
 # General/MMMWE_ConcurrentEnchantments.lua:702
 Temp. %s:	
 
-# General/MMMWE_CustomClassEditor.lua:197
+# General/MMMWE_CustomClassEditor.lua:199
 Choose %d starting skills (Shift+click)	
 
-# General/MMMWE_CustomClassEditor.lua:202
+# General/MMMWE_CustomClassEditor.lua:204
 The base class needs at least %d skills	
 
-# General/MMMWE_CustomClassEditor.lua:209, General/MMMWE_CustomClasses.lua:257
+# General/MMMWE_CustomClassEditor.lua:211, General/MMMWE_CustomClasses.lua:257
 Starting items: %d points at most	
 
-# General/MMMWE_CustomClassEditor.lua:247, General/MMMWE_CustomClasses.lua:1139
+# General/MMMWE_CustomClassEditor.lua:249, General/MMMWE_CustomClasses.lua:1139
 %s is now a %s%s	
 
-# General/MMMWE_CustomClassEditor.lua:248, General/MMMWE_CustomClasses.lua:1140
+# General/MMMWE_CustomClassEditor.lua:250, General/MMMWE_CustomClasses.lua:1140
  (%d skill points refunded)	
 
-# General/MMMWE_CustomClassEditor.lua:286, General/MMMWE_CustomClassEditor.lua:292, General/MMMWE_CustomClassEditor.lua:298, General/MMMWE_CustomClassEditor.lua:309, General/MMMWE_CustomClassEditor.lua:358, General/MMMWE_CustomClassEditor.lua:383, General/MMMWE_CustomClassEditor.lua:397, General/MMMWE_CustomClassEditor.lua:599
+# General/MMMWE_CustomClassEditor.lua:288, General/MMMWE_CustomClassEditor.lua:294, General/MMMWE_CustomClassEditor.lua:300, General/MMMWE_CustomClassEditor.lua:311, General/MMMWE_CustomClassEditor.lua:360, General/MMMWE_CustomClassEditor.lua:385, General/MMMWE_CustomClassEditor.lua:399, General/MMMWE_CustomClassEditor.lua:601
 This class is taken by a character in the game	
 
-# General/MMMWE_CustomClassEditor.lua:299
+# General/MMMWE_CustomClassEditor.lua:301
 The kit is chosen on the base class tab	
 
-# General/MMMWE_CustomClassEditor.lua:313
+# General/MMMWE_CustomClassEditor.lua:315
 Starting skills are chosen on the base class tab	
 
-# General/MMMWE_CustomClassEditor.lua:318
+# General/MMMWE_CustomClassEditor.lua:320
 Only a skill the class can learn can be a starting skill	
 
-# General/MMMWE_CustomClassEditor.lua:319
+# General/MMMWE_CustomClassEditor.lua:321
 Dual-Wield and Robe are learned in houses, not at the start	
 
-# General/MMMWE_CustomClassEditor.lua:320
+# General/MMMWE_CustomClassEditor.lua:322
 Two starting skills are chosen already	
 
-# General/MMMWE_CustomClassEditor.lua:348
+# General/MMMWE_CustomClassEditor.lua:350
 Buy a magic school first	
 
-# General/MMMWE_CustomClassEditor.lua:393
+# General/MMMWE_CustomClassEditor.lua:395
 Saved to 	
 
-# General/MMMWE_CustomClassEditor.lua:399
+# General/MMMWE_CustomClassEditor.lua:401
 No builds in the CustomClasses folder	
 
-# General/MMMWE_CustomClassEditor.lua:407
+# General/MMMWE_CustomClassEditor.lua:409
 Loaded %s (%d/%d)	
 
-# General/MMMWE_CustomClassEditor.lua:528
+# General/MMMWE_CustomClassEditor.lua:530
  (taken, read-only)	
 
-# General/MMMWE_CustomClassEditor.lua:529
+# General/MMMWE_CustomClassEditor.lua:531
 Class %d/%d: %s	
 
-# General/MMMWE_CustomClassEditor.lua:533
+# General/MMMWE_CustomClassEditor.lua:535
 There is only this custom class so far	
 
-# General/MMMWE_CustomClassEditor.lua:544
+# General/MMMWE_CustomClassEditor.lua:546
 Points: %g / %d	
 
-# General/MMMWE_CustomClassEditor.lua:607
+# General/MMMWE_CustomClassEditor.lua:609
 %s: tier %d  (%d + %d per level)	
 
-# General/MMMWE_CustomClassEditor.lua:614
+# General/MMMWE_CustomClassEditor.lua:616
 Hit points	
 
-# General/MMMWE_CustomClassEditor.lua:615, General/MMMWE_CustomClassEditor.lua:628
+# General/MMMWE_CustomClassEditor.lua:617, General/MMMWE_CustomClassEditor.lua:630
 Spell points	
 
-# General/MMMWE_CustomClassEditor.lua:621
+# General/MMMWE_CustomClassEditor.lua:623
 Kit: 	
 
-# General/MMMWE_CustomClassEditor.lua:627
+# General/MMMWE_CustomClassEditor.lua:629
 click to buy one	
 
-# General/MMMWE_CustomClassEditor.lua:628
+# General/MMMWE_CustomClassEditor.lua:630
 %s, %d pts	
 
-# General/MMMWE_CustomClassEditor.lua:634, General/MMMWE_CustomClasses.lua:498, General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3452
+# General/MMMWE_CustomClassEditor.lua:636, General/MMMWE_CustomClasses.lua:498, General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3452
 Intellect	
 
-# General/MMMWE_CustomClassEditor.lua:634, General/MMMWE_CustomClasses.lua:498, General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3452
+# General/MMMWE_CustomClassEditor.lua:636, General/MMMWE_CustomClasses.lua:498, General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3452
 Personality	
 
-# General/MMMWE_CustomClassEditor.lua:634
+# General/MMMWE_CustomClassEditor.lua:636
 Int. and Pers.	
 
-# General/MMMWE_CustomClassEditor.lua:657
+# General/MMMWE_CustomClassEditor.lua:659
 Ident. Item	
 
-# General/MMMWE_CustomClassEditor.lua:657
+# General/MMMWE_CustomClassEditor.lua:659
 Disarm Traps	
 
-# General/MMMWE_CustomClassEditor.lua:657
+# General/MMMWE_CustomClassEditor.lua:659
 Ident. Monster	
 
-# General/MMMWE_CustomClassEditor.lua:658
+# General/MMMWE_CustomClassEditor.lua:660
 Bodybuilding	
 
-# General/MMMWE_CustomClassEditor.lua:658, General/MMMWE_CustomClasses.lua:654
+# General/MMMWE_CustomClassEditor.lua:660, General/MMMWE_CustomClasses.lua:654
 Repair Item	
 
-# General/MMMWE_CustomClassEditor.lua:658, General/MMMWE_CustomClasses.lua:473, General/MMMWE_ExtraSkills.lua:49
+# General/MMMWE_CustomClassEditor.lua:660, General/MMMWE_CustomClasses.lua:473, General/MMMWE_ExtraSkills.lua:49
 Dual-Wield	
 
-# General/MMMWE_CustomClassEditor.lua:677
+# General/MMMWE_CustomClassEditor.lua:679
 Prot. from Magic	
 
-# General/MMMWE_CustomClassEditor.lua:695
+# General/MMMWE_CustomClassEditor.lua:697
 %s Magic: %s	
 
-# General/MMMWE_CustomClassEditor.lua:738
+# General/MMMWE_CustomClassEditor.lua:740
 Type the name; Enter keeps it, Esc drops it	
 
-# General/MMMWE_CustomClassEditor.lua:742
+# General/MMMWE_CustomClassEditor.lua:744
 Spells %d/%d: click to pick; the price by rank and impact	
 
-# General/MMMWE_CustomClassEditor.lua:745
+# General/MMMWE_CustomClassEditor.lua:747
 Starting items %d/%d: click +1, Ctrl+click -1; given when the class is taken	
 
-# General/MMMWE_CustomClassEditor.lua:748
+# General/MMMWE_CustomClassEditor.lua:750
 Click +, Ctrl+click -, Shift+click: start skill 	
 
-# General/MMMWE_CustomClassEditor.lua:754
-[Items %d/%d]	
+# General/MMMWE_CustomClassEditor.lua:757
+Items: %d of %d points	
 
 # General/MMMWE_CustomClassEditor.lua:762
 Promoters: %s's (%d%%). Ctrl+S save, Ctrl+L load	
@@ -397,7 +397,7 @@ Promoters: %s's (%d%%). Ctrl+S save, Ctrl+L load
 # General/MMMWE_CustomClassEditor.lua:765
 Ctrl+S: save the build, Ctrl+L: load one	
 
-# General/MMMWE_CustomClassEditor.lua:805
+# General/MMMWE_CustomClassEditor.lua:809
 Become a custom class	
 
 # General/MMMWE_CustomClasses.lua:64
