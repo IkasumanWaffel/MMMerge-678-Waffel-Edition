@@ -376,28 +376,31 @@ Prot. from Magic	Защ. от магии
 # General/MMMWE_CustomClassEditor.lua:697
 %s Magic: %s	Магия %s: %s
 
-# General/MMMWE_CustomClassEditor.lua:740
-Type the name; Enter keeps it, Esc drops it	Введите имя; Enter — оставить, Esc — отменить
-
-# General/MMMWE_CustomClassEditor.lua:744
-Spells %d/%d: click to pick; the price by rank and impact	Заклинания %d/%d: щёлкните, чтобы выбрать; цена по кругу и силе
-
-# General/MMMWE_CustomClassEditor.lua:747
-Starting items %d/%d: click +1, Ctrl+click -1; given when the class is taken	Начальные предметы %d/%d: щелчок +1, Ctrl+щелчок -1; выдаются при взятии класса
+# General/MMMWE_CustomClassEditor.lua:748
+Enter keeps the name, Esc drops it	Enter — оставить имя, Esc — отменить
 
 # General/MMMWE_CustomClassEditor.lua:750
-Click +, Ctrl+click -, Shift+click: start skill 	Щелчок +, Ctrl+щелчок -, Shift+щелчок: начальный навык 
+Spells %d/%d: click to pick	Заклинания %d/%d: щёлкните
 
-# General/MMMWE_CustomClassEditor.lua:757
-Items: %d of %d points	Предметы: %d из %d очков
+# General/MMMWE_CustomClassEditor.lua:752
+Click +1, Ctrl+click -1	Щелчок +1, Ctrl+щелчок -1
+
+# General/MMMWE_CustomClassEditor.lua:753
+Click +, Ctrl -, Shift: start %d/%d	Щелчок +, Ctrl -, Shift: старт %d/%d
 
 # General/MMMWE_CustomClassEditor.lua:762
-Promoters: %s's (%d%%). Ctrl+S save, Ctrl+L load	Повышения: как у класса «%s» (%d%%). Ctrl+S сохранить, Ctrl+L загрузить
+Items: %d of %d points	Предметы: %d из %d очков
 
-# General/MMMWE_CustomClassEditor.lua:765
-Ctrl+S: save the build, Ctrl+L: load one	Ctrl+S: сохранить сборку, Ctrl+L: загрузить
+# General/MMMWE_CustomClassEditor.lua:766
+Price: rank x impact	Цена: круг x сила
 
-# General/MMMWE_CustomClassEditor.lua:809
+# General/MMMWE_CustomClassEditor.lua:769
+Promoters: %s (%d%%)	Повышения: %s (%d%%)
+
+# General/MMMWE_CustomClassEditor.lua:772
+Ctrl+S save, Ctrl+L load	Ctrl+S сохр., Ctrl+L загр.
+
+# General/MMMWE_CustomClassEditor.lua:816
 Become a custom class	Стать особым классом
 
 # General/MMMWE_CustomClasses.lua:64
@@ -2691,3 +2694,11 @@ The %s path in %s costs %d gold. Come back when you have it.	Путь «%s» в навыке 
 
 # Global/MMMWE_LegendaryTeachers.lua:55
 %s is now %s in %s.%s	%s теперь — %s в навыке %s.%s
+
+# no longer used
+Type the name; Enter keeps it, Esc drops it	Введите имя; Enter — оставить, Esc — отменить
+Spells %d/%d: click to pick; the price by rank and impact	Заклинания %d/%d: щёлкните, чтобы выбрать; цена по кругу и силе
+Starting items %d/%d: click +1, Ctrl+click -1; given when the class is taken	Начальные предметы %d/%d: щелчок +1, Ctrl+щелчок -1; выдаются при взятии класса
+Click +, Ctrl+click -, Shift+click: start skill 	Щелчок +, Ctrl+щелчок -, Shift+щелчок: начальный навык 
+Promoters: %s's (%d%%). Ctrl+S save, Ctrl+L load	Повышения: как у класса «%s» (%d%%). Ctrl+S сохранить, Ctrl+L загрузить
+Ctrl+S: save the build, Ctrl+L: load one	Ctrl+S: сохранить сборку, Ctrl+L: загрузить

@@ -376,28 +376,31 @@ Prot. from Magic
 # General/MMMWE_CustomClassEditor.lua:697
 %s Magic: %s	
 
-# General/MMMWE_CustomClassEditor.lua:740
-Type the name; Enter keeps it, Esc drops it	
-
-# General/MMMWE_CustomClassEditor.lua:744
-Spells %d/%d: click to pick; the price by rank and impact	
-
-# General/MMMWE_CustomClassEditor.lua:747
-Starting items %d/%d: click +1, Ctrl+click -1; given when the class is taken	
+# General/MMMWE_CustomClassEditor.lua:748
+Enter keeps the name, Esc drops it	
 
 # General/MMMWE_CustomClassEditor.lua:750
-Click +, Ctrl+click -, Shift+click: start skill 	
+Spells %d/%d: click to pick	
 
-# General/MMMWE_CustomClassEditor.lua:757
-Items: %d of %d points	
+# General/MMMWE_CustomClassEditor.lua:752
+Click +1, Ctrl+click -1	
+
+# General/MMMWE_CustomClassEditor.lua:753
+Click +, Ctrl -, Shift: start %d/%d	
 
 # General/MMMWE_CustomClassEditor.lua:762
-Promoters: %s's (%d%%). Ctrl+S save, Ctrl+L load	
+Items: %d of %d points	
 
-# General/MMMWE_CustomClassEditor.lua:765
-Ctrl+S: save the build, Ctrl+L: load one	
+# General/MMMWE_CustomClassEditor.lua:766
+Price: rank x impact	
 
-# General/MMMWE_CustomClassEditor.lua:809
+# General/MMMWE_CustomClassEditor.lua:769
+Promoters: %s (%d%%)	
+
+# General/MMMWE_CustomClassEditor.lua:772
+Ctrl+S save, Ctrl+L load	
+
+# General/MMMWE_CustomClassEditor.lua:816
 Become a custom class	
 
 # General/MMMWE_CustomClasses.lua:64

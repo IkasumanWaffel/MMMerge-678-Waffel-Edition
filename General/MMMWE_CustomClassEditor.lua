@@ -733,36 +733,43 @@ local function build()
 		end
 	end
 
-	-- hint box: messages, problems or how to use the screen; the keys
-	text{Font = Small, X = 14, Y = 435, W = 272, H = 17,
+	-- hint box (272 px wide, left of the Starting Equipment button): a message or a problem
+	-- takes both lines; otherwise line 1 says how to use the view, line 2 the points of the
+	-- items or (by turns) the promoters and the save / load keys
+	local function hintMessage()
+		if E.Msg and os.clock() - E.MsgTime < MSG_TIME then return E.Msg, E.MsgOk and GREEN or RED end
+		local bad = CC.Problems(fam(), E.Step)
+		if #bad > 0 then return bad[1], RED end
+	end
+	text{Font = Small, X = 14, Y = 435, W = 272, H = 34,
 		Get = function()
-			if E.Msg and os.clock() - E.MsgTime < MSG_TIME then return E.Msg, E.MsgOk and GREEN or RED end
-			if E.Typing then return Tx"Type the name; Enter keeps it, Esc drops it" end
-			local bad = CC.Problems(fam(), E.Step)
-			if #bad > 0 then return bad[1], RED end
+			local m, c = hintMessage()
+			if m then return m, c end
+			if E.Typing then return Tx"Enter keeps the name, Esc drops it" end
 			if E.View == "spells" then
-				return string.format(Tx"Spells %d/%d: click to pick; the price by rank and impact", E.SpellPage, spellPages())
+				return string.format(Tx"Spells %d/%d: click to pick", E.SpellPage, spellPages())
 			end
-			if E.View == "items" then
-				return string.format(Tx"Starting items %d/%d: click +1, Ctrl+click -1; given when the class is taken",
-					E.ItemPage, itemPages())
-			end
-			return Tx"Click +, Ctrl+click -, Shift+click: start skill " ..
-				#(fam().StartSkills or {}) .. "/" .. START_SKILLS
+			if E.View == "items" then return Tx"Click +1, Ctrl+click -1" end
+			return string.format(Tx"Click +, Ctrl -, Shift: start %d/%d",
+				#(fam().StartSkills or {}), START_SKILLS)
 		end}
 	text{Font = Small, X = 14, Y = 453, W = 272, H = 17,
 		Get = function()
+			if hintMessage() then return end
 			if E.View == "items" then
 				local total = CC.ItemsTotal(fam())
-				return string.format(Tx"Items: %d of %d points", total, CC.ItemBudget),
+				local pages = itemPages()
+				return string.format(Tx"Items: %d of %d points", total, CC.ItemBudget) ..
+					(pages > 1 and string.format(" (%d/%d)", E.ItemPage, pages) or ""),
 					total > CC.ItemBudget and RED or GREEN
 			end
+			if E.View == "spells" then return Tx"Price: rank x impact", GREY end
 			local preset, score = CC.PresetMatch(fam())
-			if preset and score >= CC.PresetMatchMin then
-				return string.format(Tx"Promoters: %s's (%d%%). Ctrl+S save, Ctrl+L load",
-					Game.ClassNames[preset], math.floor(score * 100 + 0.5)), GREY
+			if preset and score >= CC.PresetMatchMin and math.floor(os.clock() / 4) % 2 == 0 then
+				return string.format(Tx"Promoters: %s (%d%%)", Game.ClassNames[preset],
+					math.floor(score * 100 + 0.5)), GREY
 			end
-			return Tx"Ctrl+S: save the build, Ctrl+L: load one", GREY
+			return Tx"Ctrl+S save, Ctrl+L load", GREY
 		end}
 	button{Up = ITEMS_ICONS .. "_up", Down = ITEMS_ICONS .. "_dn", Over = ITEMS_ICONS .. "_ht",
 		X = ITEMS_X, Y = ITEMS_Y,
