@@ -188,11 +188,14 @@ local function openNow(p)
 		Game.ShowStatusText(Tx"The box locks up tight: there are enemies near")
 		return
 	end
-	for _ = 1, 5 do
+	-- out of the character screen (ExitScreen only handles houses in MM8): Esc, as the game does
+	for _ = 1, 3 do
 		if Game.CurrentScreen == 0 then break end
-		ExitScreen(true)
+		Game.Actions.Add(113, 0)
+		Game.Actions.Process()
 	end
-	if Game.CurrentScreen ~= 0 then
+	if Game.CurrentScreen ~= 0 and Game.CurrentScreen ~= const.Screens.Inventory then
+		log("can't open: screen %d", Game.CurrentScreen)
 		Game.ShowStatusText(Tx"The box can't be opened here")
 		return
 	end
@@ -213,11 +216,16 @@ local function openNow(p)
 	Open = {Chest = index, Id = p.Id, Box = box, Added = added, Saved = saved}
 	log("box %d (%s) opened as chest %d", p.Id, p.Number, index)
 	evt.OpenChest(index)
-	if Game.CurrentScreen ~= CHEST_SCREEN then close() end
+	if Game.CurrentScreen ~= CHEST_SCREEN then
+		log("the chest screen didn't open (screen %d)", Game.CurrentScreen)
+		Game.ShowStatusText(Tx"The box can't be opened here")
+		close()
+	end
 end
 
 -- using a box: back into the backpack, opened on the next tick
 local function useBox(target, item, playerId)
+	log("use: item %d, charges %d, screen %d", item.Number, item.Charges, Game.CurrentScreen)
 	local box = BOXES[item.Number]
 	if not box then return 0 end
 	if Open then return 0 end
