@@ -541,3 +541,12 @@ function events.Tick()
 	local ok, err = pcall(oneEach)
 	if not ok then MF.LogWarning("[Boxes] one each: %s", tostring(err)) end
 end
+
+-- Buying a satchel or a bottle box at an alchemist: the merchant text (0x49000D: item, shop
+-- kind, house, ...) answers "n/a" for anything that isn't a potion or a reagent; for these
+-- it is asked as a magic shop (3), which prices them (as for the ore at blacksmiths in
+-- MMMWE_Blasters.lua; 0x4B8C6E is the alchemist's call). The price paid is right already.
+mem.autohook(0x4B8C6E, function(d)
+	local ok, num = pcall(function() return i4[mem.u4[d.esp]] end)
+	if ok and KIT[num] and mem.u4[d.esp + 4] == 4 then mem.u4[d.esp + 4] = 3 end
+end)
