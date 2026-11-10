@@ -240,13 +240,30 @@ evt.PotionEffects[9] = function(IsDrunk, Target, Power)
 	end
 end
 
+-- Bless and Stoneskin (MMMWE 10.11.26): by their spells at the Master rank, the rank of
+-- Alchemy the potions take to brew, for the drinker alone. The spell's skill is
+-- potion strength / POTION_SPELL_DIV (rounded up, POTION_SPELL_MAX at most):
+--   Bless      +15 attack, +1 per point of that skill          (the spell at Master)
+--   Stoneskin  20% physical resistance, +1% per point of skill (the spell at Master)
+--   duration   1 hour 50 minutes + 5 minutes per point of skill
+-- The spell is cast at the Novice rank (one target) with 10 more points of skill, which
+-- gives the Master rank's numbers: Novice Bless is 5 + skill, Novice Stone Skin 10% + skill.
+-- Before, the skill was 5 * sqrt(strength) with nothing taken off: stronger than a Grand
+-- Master's spell from strength 50 on, and Stone Skin's formula broke past strength 300.
+local POTION_SPELL_DIV = 5
+local POTION_SPELL_MAX = 50
+
+local function potionSpellSkill(Power)
+	local k = math.ceil(math.max(Power or 1, 1) / POTION_SPELL_DIV)
+	return math.min(k, POTION_SPELL_MAX) + 10
+end
+
 -- Bless
 evt.PotionEffects[10] = function(IsDrunk, Target, Power)
 	if IsDrunk then
 		local ind = Target:GetSlot()
-		local BP = 5 * math.ceil(math.sqrt(Power))
 		local rid = Target:GetIndex()
-		CastSpellDirect(46, BP, 1, rid, ind) -- Bless
+		CastSpellDirect(46, potionSpellSkill(Power), 1, rid, ind) -- Bless
 		return true
 	end
 end
@@ -255,9 +272,8 @@ end
 evt.PotionEffects[14] = function(IsDrunk, Target, Power)
 	if IsDrunk then
 		local ind = Target:GetSlot()
-		local BP = 5 * math.ceil(math.sqrt(Power))
 		local rid = Target:GetIndex()
-		CastSpellDirect(38, BP, 1, rid, ind) -- Stoneskin
+		CastSpellDirect(38, potionSpellSkill(Power), 1, rid, ind) -- Stoneskin
 		return true
 	end
 end
