@@ -400,7 +400,15 @@ function events.ItemAdditionalDamage(t)
 
 	t.DamageKind = Effect.DamageKind or t.DamageKind
 	if Effect.Add then
-		t.Result = t.Result + Effect.Add
+		-- MMMWE (11.11.26): the artifact's own damage scales like a weapon enchantment
+		-- (MMMWE_EnchantScaling.lua: weapon and / or magic skill, two-handed). If that
+		-- script's handler has run already (t.EnchantScaled), the damage is scaled here;
+		-- if it runs after this one, it scales the whole result itself.
+		local add = Effect.Add
+		if t.EnchantScaled and Merge.Functions.ScaleEnchantDamage and t.Player then
+			add = Merge.Functions.ScaleEnchantDamage(t.Player, t.Item, add, t.DamageKind)
+		end
+		t.Result = t.Result + add
 	end
 	if Effect.Special then
 		Effect.Special(t)
