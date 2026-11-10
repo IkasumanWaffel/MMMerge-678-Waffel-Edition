@@ -28,6 +28,9 @@
 	  Master 15 (3):  x1.45      two-handed: x2.175
 	  GM 20 (4):      x1.80      two-handed: x2.70
 
+	The damage artifacts and relics deal on their own (Global/ExtraArtifacts.lua) is scaled
+	the same way, and their descriptions get the same note.
+
 	Works together with MMMWE_ConcurrentEnchantments.lua: a weapon's permanent enchantment
 	that keeps working under a temporary one (Fire Aura, potions) is scaled the same way.
 	The resistance of the monster is applied after scaling, as before.
@@ -145,6 +148,22 @@ local function updateTexts()
 			local new = base .. note
 			if new ~= s then
 				v.BonusStat = new
+			end
+		end
+	end
+	-- artifacts and relics with damage of their own (the list: Global/ExtraArtifacts.lua)
+	for id in pairs(MF.ScalingArtifacts or {}) do
+		local txt = Game.ItemsTxt[id]
+		local s = txt and txt.Notes
+		if s and s ~= "" then
+			local base = s
+			for _, n in pairs(Notes) do
+				local i1 = base:find(n, 1, true)
+				if i1 then base = base:sub(1, i1 - 1) end
+			end
+			local new = base .. note
+			if new ~= s then
+				txt.Notes = new
 			end
 		end
 	end

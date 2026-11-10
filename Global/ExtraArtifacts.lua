@@ -1867,4 +1867,21 @@ OnHitEffects[2228] = {
 		end
 	end}
 
+-- MMMWE (11.11.26): the artifacts and relics whose own damage scales like a weapon
+-- enchantment (MMMWE_EnchantScaling.lua adds its note to their descriptions): the on-hit
+-- damage above and the damaging special bonuses (group 1)
+do
+	local list = {}
+	for id, e in pairs(OnHitEffects) do
+		if e.Add then list[id] = true end
+	end
+	for id, bonuses in pairs(ItemSpcBonuses) do
+		for _, b in pairs(bonuses) do
+			if table.find(Bonus2Group[1], b) then list[id] = true end
+		end
+	end
+	MF.ScalingArtifacts = list
+	if EnchantScaling and EnchantScaling.UpdateTexts then pcall(EnchantScaling.UpdateTexts) end
+end
+
 MF.LogInit2(LogId)
