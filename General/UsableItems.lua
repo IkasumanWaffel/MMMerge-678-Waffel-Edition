@@ -162,6 +162,10 @@ local ApothecaryItems = {
 	[987] = {218, 1020, 3000},
 }
 
+-- MMMWE: for brewing in batches (MMMWE_Alchemy.lua): the reagents of each satchel, kept
+-- in its Charges as count1 + 100 * count2 + 10000 * count3
+Merge.Functions.ApothecarySatchels = ApothecaryItems
+
 local function Satchel(Target, Item, PlayerId)
 	local recipe = ApothecaryItems[Item.Number]
 	if not recipe then return 0 end

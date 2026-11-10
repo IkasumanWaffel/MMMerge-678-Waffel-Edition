@@ -9,10 +9,15 @@
 	   potions of a "mixed from" line). RECIPE_LINES lines at most of each kind.
 
 	2. Batches. Hold Ctrl while mixing two potions: after the game mixes the pair, every
-	   other pair of the same two potions in that character's backpack is mixed the same
-	   way (the result's strength is the mean of the pair's, an empty bottle is left in
-	   the place of the potion poured). Only mixes that give a potion are repeated: the
-	   game has done its checks (the Alchemy rank, explosions) on the first pair.
+	   other pair of the same two potions the character has is mixed the same way (the
+	   result's strength is the mean of the pair's, an empty bottle is left in the place
+	   of the potion poured). Only mixes that give a potion are repeated: the game has
+	   done its checks (the Alchemy rank, explosions) on the first pair.
+	   Hold Ctrl while putting a reagent into an empty bottle: every other empty bottle is
+	   filled the same way while the reagent lasts.
+	   What the character has: the backpack, the potions and bottles in the bottle box
+	   carried in it (they are changed inside the box; not while the box is open), and for
+	   reagents the apothecary satchels in the backpack.
 
 	The mix tables are the game's own (POTION.TXT, POTNOTES.TXT as loaded by
 	Structs/RemoveItemsLimits.lua); the order of the potions in them is that of
@@ -157,7 +162,11 @@ end
 -- 2. batches
 ---------------------------------------------------------------------------
 
-local Batch      -- {Player = pointer, Poured = item id, Into = item id, Result = item id, Slot = the first pair's}
+local ITEM_SIZE = 0x24
+local BOTTLE_BOX = 193
+local FIRST_BOX_ID = 1000
+
+local Batch      -- {Player = pointer, Kind = "mix" / "reagent", Poured, Into, Result, Power, Slot}
 
 -- 0x415AC2: the game is turning the potion at slot [ebp-0Ch] of the character esi into
 -- the result [ebp-4] of a mix (the potion in hand is still on the mouse)
@@ -166,20 +175,117 @@ mem.autohook(0x415AC2, function(d)
 	if not Keys.IsPressed(const.Keys.CTRL) then return end
 	local slot = i4[d.ebp - 0xC]
 	local result = i4[d.ebp - 4]
-	local into = i4[d.esi + 0x4A8 + slot * 0x24]
+	local into = i4[d.esi + 0x4A8 + slot * ITEM_SIZE]
 	local poured = Mouse.Item.Number
 	if result > 5 and poured ~= 0 and into ~= 0 and poured ~= into then
-		Batch = {Player = d.esi, Poured = poured, Into = into, Result = result, Slot = slot + 1}
+		Batch = {Kind = "mix", Player = d.esi, Poured = poured, Into = into, Result = result, Slot = slot + 1}
 	end
 end)
 
-local function inBackpack(pl)
-	local set = {}
+-- 0x415885: the game has turned the empty bottle at slot [ebp-0Ch] of the character esi
+-- into a potion with the reagent in hand (still on the mouse)
+mem.autohook(0x415885, function(d)
+	Batch = nil
+	if not Keys.IsPressed(const.Keys.CTRL) then return end
+	local slot = i4[d.ebp - 0xC]
+	local p = d.esi + 0x4A8 + slot * ITEM_SIZE
+	local reagent = Mouse.Item.Number
+	if reagent ~= 0 and i4[p] > BOTTLE then
+		Batch = {Kind = "reagent", Player = d.esi, Poured = reagent, Into = BOTTLE, Result = i4[p],
+			Power = i4[p + 4], Slot = slot + 1}
+	end
+end)
+
+local function int4(n)
+	n = n % 0x100000000
+	return string.char(n % 256, math.floor(n / 256) % 256, math.floor(n / 65536) % 256, math.floor(n / 16777216) % 256)
+end
+
+local function readInt4(s, at)
+	local a, b, c, e = s:byte(at, at + 3)
+	return a + b * 256 + c * 65536 + e * 16777216
+end
+
+-- Everything a character has to brew with, the backpack first, then the bottle box in it
+-- (unless it is open): entries {Number, Bonus, Set = function(number, bonus), Remove}
+local function supplies(pl, skipSlot)
+	local list = {}
+	local boxes = {}
+	local slots = {}
 	for c = 0, 125 do
 		local k = pl.Inventory[c]
-		if k > 0 then set[k] = true end
+		if k > 0 then slots[#slots + 1] = {k, c} end
 	end
-	return set
+	table.sort(slots, function(a, b) return a[1] < b[1] end)
+	for _, sc in ipairs(slots) do
+		local k, cell = sc[1], sc[2]
+		local it = pl.Items[k]
+		if it.Number == BOTTLE_BOX and it.Charges >= FIRST_BOX_ID then boxes[#boxes + 1] = it.Charges end
+		if k ~= skipSlot and it.Number ~= 0 and not it.Broken then
+			list[#list + 1] = {Number = it.Number, Bonus = it.Bonus,
+				Set = function(number, bonus)
+					it.Number, it.Bonus = number, bonus
+					it.Identified = true
+				end,
+				Remove = function()
+					for c2 = 0, 125 do
+						if pl.Inventory[c2] == -(1 + cell) then pl.Inventory[c2] = 0 end
+					end
+					pl.Inventory[cell] = 0
+					mem.fill(it["?ptr"], ITEM_SIZE, 0)
+				end}
+		end
+	end
+	local store = vars.MMMWE_Boxes
+	local open = MF.OpenBoxId and MF.OpenBoxId()
+	for _, id in ipairs(boxes) do
+		local rec = store and id ~= open and store[id]
+		if rec and rec.Items then
+			local keys = {}
+			for k in pairs(rec.Items) do keys[#keys + 1] = k end
+			table.sort(keys)
+			for _, k in ipairs(keys) do
+				local data = rec.Items[k]
+				if type(data) == "string" and #data >= ITEM_SIZE then
+					list[#list + 1] = {Number = readInt4(data, 1), Bonus = readInt4(data, 5), InBox = true,
+						Set = function(number, bonus)
+							local d = rec.Items[k]
+							-- number, bonus, the rest as it was, identified (the bit 1 at +14h)
+							local cond = d:byte(0x15)
+							rec.Items[k] = int4(number) .. int4(bonus) .. d:sub(9, 0x14)
+								.. string.char(cond % 2 == 1 and cond or cond + 1) .. d:sub(0x16)
+						end}
+				end
+			end
+		end
+	end
+	return list
+end
+
+-- units of a reagent in the character's satchels: {take = function()} each
+local function satchelUnits(pl, reagent)
+	local units = {}
+	local satchels = MF.ApothecarySatchels
+	if not satchels then return units end
+	for c = 0, 125 do
+		local k = pl.Inventory[c]
+		if k > 0 then
+			local it = pl.Items[k]
+			local kinds = satchels[it.Number]
+			if kinds then
+				for tier, num in ipairs(kinds) do
+					if num == reagent then
+						local mul = 100 ^ (tier - 1)
+						local count = math.floor(it.Charges / mul) % 100
+						for _ = 1, count do
+							units[#units + 1] = {Remove = function() it.Charges = it.Charges - mul end}
+						end
+					end
+				end
+			end
+		end
+	end
+	return units
 end
 
 local function brewRest(b)
@@ -187,30 +293,37 @@ local function brewRest(b)
 	local index = (b.Player - arr[0]["?ptr"]) / arr[0]["?size"]
 	if index ~= math.floor(index) or index < 0 or index >= arr.count then return end
 	local pl = arr[index]
-	local packed = inBackpack(pl)
 	local poured, into = {}, {}
-	for k in pairs(packed) do
-		local it = pl.Items[k]
-		if k ~= b.Slot and not it.Broken then
-			if it.Number == b.Poured then poured[#poured + 1] = k
-			elseif it.Number == b.Into then into[#into + 1] = k end
+	for _, e in ipairs(supplies(pl, b.Slot)) do
+		if e.Number == b.Poured then poured[#poured + 1] = e
+		elseif e.Number == b.Into then into[#into + 1] = e end
+	end
+	local fromBox = 0
+	local n
+	if b.Kind == "reagent" then
+		for _, u in ipairs(satchelUnits(pl, b.Poured)) do poured[#poured + 1] = u end
+		n = math.min(#poured, #into)
+		for i = 1, n do
+			into[i].Set(b.Result, b.Power)
+			poured[i].Remove()
+			if into[i].InBox then fromBox = fromBox + 1 end
+		end
+	else
+		n = math.min(#poured, #into)
+		for i = 1, n do
+			local a, t = poured[i], into[i]
+			t.Set(b.Result, math.floor((t.Bonus + a.Bonus) / 2))
+			a.Set(BOTTLE, 0)       -- the potion poured leaves its bottle (the same size) in its place
+			if t.InBox then fromBox = fromBox + 1 end
 		end
 	end
-	table.sort(poured); table.sort(into)
-	local n = math.min(#poured, #into)
-	for i = 1, n do
-		local a, t = pl.Items[poured[i]], pl.Items[into[i]]
-		t.Number = b.Result
-		t.Bonus = math.floor((t.Bonus + a.Bonus) / 2)
-		t.Identified = true
-		-- the potion poured leaves its bottle (the same size) in its place
-		a.Number = BOTTLE
-		a.Bonus = 0
-		a.Identified = true
-	end
 	if n > 0 then
-		Game.ShowStatusText(string.format(MF.TextN(n, "%d more potion brewed: %s", "%d more potions brewed: %s"),
-			n, Game.ItemsTxt[b.Result].Name))
+		local text = string.format(MF.TextN(n, "%d more potion brewed: %s", "%d more potions brewed: %s"),
+			n, Game.ItemsTxt[b.Result].Name)
+		if fromBox > 0 then
+			text = text .. string.format(Tx" (%d in the bottle box)", fromBox)
+		end
+		Game.ShowStatusText(text)
 		Game.NeedRedraw = true
 	end
 end

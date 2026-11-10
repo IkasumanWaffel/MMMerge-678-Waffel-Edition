@@ -213,6 +213,8 @@ local function close()
 	Game.NeedRedraw = true
 end
 MF.CloseBox = close
+-- the id of the box that is open now (its contents are in the chest, not in its record)
+function MF.OpenBoxId() return Open and Open.Id end
 
 -- the id of a box item, made on its first opening (an old bottle box: its bottles go in)
 local function boxId(item)

@@ -7,17 +7,20 @@
 # (e.g. Windows-1251 for Russian) as Data\Text localization\<Language>\Scripts.txt and put
 # the language's name into MMMWE_Language.txt in the game folder.
 
-# General/MMMWE_Alchemy.lua:212 plural, English plural: %d more potions brewed: %s
+# General/MMMWE_Alchemy.lua:321 plural, English plural: %d more potions brewed: %s
 %d more potion brewed: %s	
 
-# General/MMMWE_Alchemy.lua:130
+# General/MMMWE_Alchemy.lua:135
 ... and %d more	
 
-# General/MMMWE_Alchemy.lua:132
+# General/MMMWE_Alchemy.lua:137
 Mixed from:	
 
-# General/MMMWE_Alchemy.lua:133
+# General/MMMWE_Alchemy.lua:138
 Mixes into:	
+
+# General/MMMWE_Alchemy.lua:324
+ (%d in the bottle box)	
 
 # General/MMMWE_AncientArtifacts.lua:148
 The blow passes through %s's phase field!	
@@ -295,16 +298,16 @@ Only rings, amulets and gemstones go into the jewelry box
 # General/MMMWE_Containers.lua:87
 Ancient Storage Box	
 
-# General/MMMWE_Containers.lua:240, General/MMMWE_Containers.lua:286
+# General/MMMWE_Containers.lua:242, General/MMMWE_Containers.lua:288
 The box locks up tight: there are enemies near	
 
-# General/MMMWE_Containers.lua:245, General/MMMWE_Containers.lua:274, General/MMMWE_Containers.lua:372
+# General/MMMWE_Containers.lua:247, General/MMMWE_Containers.lua:276, General/MMMWE_Containers.lua:374
 The box can't be opened here	
 
-# General/MMMWE_Containers.lua:303
+# General/MMMWE_Containers.lua:305
 No box or bag goes into a box	
 
-# General/MMMWE_Containers.lua:505
+# General/MMMWE_Containers.lua:507
 Only one bottle box per character	
 
 # General/MMMWE_CustomClassEditor.lua:199
