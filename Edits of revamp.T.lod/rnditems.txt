@@ -1023,13 +1023,13 @@ Item #	Pic File	1	2	3	4	5	6
 1019	7item157	0	0	5	10	5	0	Vial of Ooze Endoplasm
 1020	7item158	0	0	0	0	5	10	Mercury
 1021	7item159	0	0	0	0	0	5	Philosopher's Stone
-1022	7item181	0	0	0	0	0	0	Potion Bottle
-1023	7item164	0	0	0	0	0	0	Catalyst
-1024	7item166	0	0	0	0	0	0	Cure Wounds
-1025	7item160	0	0	0	0	0	0	Magic Potion
-1026	7item162	0	0	0	0	0	0	Cure Weakness
-1027	7item168	0	0	0	0	0	0	Cure Disease
-1028	7item161	0	0	0	0	0	0	Cure Poison
+1022	7item171	0	2	3	0	0	0	Minor Might Boost
+1023	7item172	0	2	3	0	0	0	Minor Intellect Boost
+1024	7item178	0	2	3	0	0	0	Minor Personality Boost
+1025	7item179	0	2	3	0	0	0	Minor Endurance Boost
+1026	7item176	0	2	3	0	0	0	Minor Speed Boost
+1027	7item175	0	2	3	0	0	0	Minor Accuracy Boost
+1028	7item167	0	2	3	0	0	0	Minor Luck Boost
 1029	7item167	0	0	0	0	0	0	Awaken
 1030	7item169	0	0	0	0	0	0	Haste
 1031	7item170	0	0	0	0	0	0	Heroism

@@ -79,3 +79,10 @@ Pot Id	Item Id	Required mastery	Drinkable	Usable	Notes
 77	297	2	x	-	Minor Earth Resistance
 78	298	2	x	-	Minor Mind Resistance
 79	299	2	x	-	Minor Body Resistance
+80	1022	2	x	-	Minor Might Boost
+81	1023	2	x	-	Minor Intellect Boost
+82	1024	2	x	-	Minor Personality Boost
+83	1025	2	x	-	Minor Endurance Boost
+84	1026	2	x	-	Minor Speed Boost
+85	1027	2	x	-	Minor Accuracy Boost
+86	1028	2	x	-	Minor Luck Boost

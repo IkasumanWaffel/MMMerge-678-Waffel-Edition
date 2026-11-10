@@ -670,34 +670,34 @@ Light resistance is drained	сопротивление свету ослаблено
 # General/MMMWE_Drains.lua:228
 %s is drained	%s: ослаблено
 
-# General/MMMWE_EnchantScaling.lua:129
+# General/MMMWE_EnchantScaling.lua:132
  Scales with weapon skill.	 Растёт с навыком оружия.
 
-# General/MMMWE_EnchantScaling.lua:130
+# General/MMMWE_EnchantScaling.lua:133
  Scales with magic skill.	 Растёт с навыком магии.
 
-# General/MMMWE_EnchantScaling.lua:131
+# General/MMMWE_EnchantScaling.lua:134
  Scales with weapon and magic skill.	 Растёт с навыками оружия и магии.
 
-# General/MMMWE_EnchantScaling.lua:197
+# General/MMMWE_EnchantScaling.lua:216
 Weapon skill	Навык оружия
 
-# General/MMMWE_EnchantScaling.lua:198
+# General/MMMWE_EnchantScaling.lua:217
 Magic skill	Навык магии
 
-# General/MMMWE_EnchantScaling.lua:199
+# General/MMMWE_EnchantScaling.lua:218
 Weapon + magic	Оружие + магия
 
-# General/MMMWE_EnchantScaling.lua:270
+# General/MMMWE_EnchantScaling.lua:289
 Scale with	Рост от
 
-# General/MMMWE_EnchantScaling.lua:279
+# General/MMMWE_EnchantScaling.lua:298
 Per weapon point	За очко оружия
 
-# General/MMMWE_EnchantScaling.lua:284
+# General/MMMWE_EnchantScaling.lua:303
 Per magic point	За очко магии
 
-# General/MMMWE_EnchantScaling.lua:294
+# General/MMMWE_EnchantScaling.lua:313
 Damage scale = (100 + X) percent x skill x mastery.	Рост урона = (100 + X) процентов x навык x мастерство.
 
 # General/MMMWE_EnergyShield.lua:151
@@ -2740,4 +2740,5 @@ Starting items %d/%d: click +1, Ctrl+click -1; given when the class is taken	Нач
 Click +, Ctrl+click -, Shift+click: start skill 	Щелчок +, Ctrl+щелчок -, Shift+щелчок: начальный навык 
 Promoters: %s's (%d%%). Ctrl+S save, Ctrl+L load	Повышения: как у класса «%s» (%d%%). Ctrl+S сохранить, Ctrl+L загрузить
 Ctrl+S: save the build, Ctrl+L: load one	Ctrl+S: сохранить сборку, Ctrl+L: загрузить
-A stronger resistance is already in effect	Уже действует более сильное сопротивление
+A stronger effect of this kind is already active	Уже действует более сильный эффект этого рода
+Potions can't raise this any higher	Зельями выше уже не поднять

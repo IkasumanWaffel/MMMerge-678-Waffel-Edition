@@ -772,6 +772,13 @@ Id	Note	Subtype	MatGroup	EquipReq	Equip2Req	Equip3Req	ContF	QCont	LostQBit	Start
 1019	Vial of Ooze Endoplasm						1,3,2
 1020	Mercury						1,3,2
 1021	Philosopher's Stone						1,3,2
+1022	Minor Might Boost						3,3,3
+1023	Minor Intellect Boost						3,3,3
+1024	Minor Personality Boost						3,3,3
+1025	Minor Endurance Boost						3,3,3
+1026	Minor Speed Boost						3,3,3
+1027	Minor Accuracy Boost						3,3,3
+1028	Minor Luck Boost						3,3,3
 1102	Torch Light						3,3,3
 1103	Fire Bolt						3,3,3
 1104	Fire Resistance						3,3,3

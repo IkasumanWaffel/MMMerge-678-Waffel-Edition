@@ -634,11 +634,12 @@ local function SetSpellsExtraHooks()
 		if not IsDrunk then return end
 		Power = max(Power or 1, 1)
 		local buff = Target.SpellBuffs[PB.Preservation]
-		buff.ExpireTime = Game.Time + Power * 30 * const.Minute
+		-- the potions' common limits (ExtraPotions.lua): 12 hours, +150
+		buff.ExpireTime = Game.Time + min(Power * 30, MF.PotionMaxMinutes or 720) * const.Minute
 		buff.Skill = PRESERVATION_POTION_MASTERY
 		buff.Power = 0
 		presRecords()[Target:GetIndex()] = {Expire = buff.ExpireTime,
-			Bonus = PRESERVATION_POTION_MASTERY * (5 + Power)}
+			Bonus = min(PRESERVATION_POTION_MASTERY * (5 + Power), MF.PotionMasterCap or 150)}
 		return true
 	end
 
