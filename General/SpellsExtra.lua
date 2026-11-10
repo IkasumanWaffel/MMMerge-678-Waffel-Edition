@@ -588,6 +588,8 @@ local function SetSpellsExtraHooks()
 	--       potion 2 * (5 + power)         (as an Expert cast at skill = potion power)
 	--   Pain Reflection (spell 95, potion): Light and Dark + the buff's power
 	--     (skill * PowerPerLevel + PowerBonus; potion 25).
+	--   Spirit Resistance potion (item 293): Spirit + 3 per point of potion strength; it
+	--     doesn't add to Preservation's bonus, the larger of the two counts.
 	--   Day of Protection (spell 85): Spirit + its resistance power (the same as the other
 	--     six resistances), Light and Dark + half of it. Day of Protection is recognized
 	--     by its six party resistance buffs (same power and expiry) together with Feather
@@ -696,6 +698,18 @@ local function SetSpellsExtraHooks()
 				end
 				spirit = spirit + rec.Bonus
 				spiritExp = max(spiritExp, pres.ExpireTime)
+			end
+			-- the Spirit Resistance potion (ExtraPotions.lua): the larger of it and
+			-- Preservation's bonus counts
+			local sp = vars.MMMWE_SpiritPotion and vars.MMMWE_SpiritPotion[id]
+			if sp then
+				if sp.Expire > Game.Time then
+					local presBonus = spirit - dop
+					if sp.Power > presBonus then spirit = dop + sp.Power end
+					spiritExp = max(spiritExp, sp.Expire)
+				else
+					vars.MMMWE_SpiritPotion[id] = nil
+				end
 			end
 			setExtraBuff(xbs[XB_SPIRIT], spirit, spiritExp)
 

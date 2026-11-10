@@ -294,13 +294,13 @@ Item #	Pic File	1	2	3	4	5	6
 290	Placeholder	0	0	0	0	0	0	_potion/reagent290
 291	Placeholder	0	0	0	0	0	0	_potion/reagent291
 292	Placeholder	0	0	0	0	0	0	_potion/reagent292
-293	Placeholder	0	0	0	0	0	0	_potion/reagent293
-294	Placeholder	0	0	0	0	0	0	_potion/reagent294
-295	Placeholder	0	0	0	0	0	0	_potion/reagent295
-296	Placeholder	0	0	0	0	0	0	_potion/reagent296
-297	Placeholder	0	0	0	0	0	0	_potion/reagent297
-298	Placeholder	0	0	0	0	0	0	_potion/reagent298
-299	Placeholder	0	0	0	0	0	0	_potion/reagent299
+293	item180	0	0	0	2	1	0	Spirit Resistance
+294	7item169	0	2	3	0	0	0	Minor Fire Resistance
+295	7item177	0	2	3	0	0	0	Minor Air Resistance
+296	7item174	0	2	3	0	0	0	Minor Water Resistance
+297	7item180	0	2	3	0	0	0	Minor Earth Resistance
+298	7item173	0	2	3	0	0	0	Minor Mind Resistance
+299	7item170	0	2	3	0	0	0	Minor Body Resistance
 300	item511	1	2	0	0	0	0	Torch Light
 301	7item511	1	2	0	0	0	0	Fire Bolt
 302	item511	1	2	0	0	0	0	Fire Resistance

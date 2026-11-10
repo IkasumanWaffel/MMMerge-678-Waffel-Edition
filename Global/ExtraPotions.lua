@@ -217,6 +217,55 @@ evt.PotionEffects[67] = function(IsDrunk, Target, Power, ItemId) return PureResi
 evt.PotionEffects[68] = function(IsDrunk, Target, Power, ItemId) return PureResistance(Target, 7, ItemId) end
 evt.PotionEffects[69] = function(IsDrunk, Target, Power, ItemId) return PureResistance(Target, 8, ItemId) end
 
+-- Minor resistance potions and Spirit Resistance (MMMWE 11.11.26)
+--   73 (item 293)     Spirit Resistance, Master, as the other six: +3 per point of potion
+--                     strength for 30 minutes per point
+--   74..79 (294..299) Minor Fire / Air / Water / Earth / Mind / Body Resistance, Expert:
+--                     +MINOR_RES_POWER for 1 hour + 5 minutes per point of strength
+-- A minor potion isn't drunk while a stronger resistance of its kind is active (it would
+-- replace it). The Spirit bonus is kept in vars.MMMWE_SpiritPotion[player] = {Expire,
+-- Power} and added by SpellsExtra.lua (the larger of it and Preservation's).
+local MINOR_RES_POWER = 25
+local MINOR_RES_BASE  = 60     -- minutes
+local MINOR_RES_PER   = 5      -- minutes per point of potion strength
+local Tx = Merge.Functions.Text or function(s) return s end
+local PotionMessage
+
+local function MinorResistance(Target, BuffName, Power)
+	local Buff = Target.SpellBuffs[const.PlayerBuff[BuffName]]
+	if Buff.ExpireTime > Game.Time and Buff.Power > MINOR_RES_POWER then
+		PotionMessage = Tx"A stronger resistance is already in effect"
+		return -1
+	end
+	Buff.ExpireTime = Game.Time + const.Minute*(MINOR_RES_BASE + MINOR_RES_PER*math.max(Power or 1, 1))
+	Buff.Power = MINOR_RES_POWER
+	Buff.Skill = 1
+	Buff.OverlayId = 0
+end
+
+evt.PotionEffects[74] = function(IsDrunk, Target, Power) if IsDrunk then return MinorResistance(Target, "FireResistance", Power) end end
+evt.PotionEffects[75] = function(IsDrunk, Target, Power) if IsDrunk then return MinorResistance(Target, "AirResistance", Power) end end
+evt.PotionEffects[76] = function(IsDrunk, Target, Power) if IsDrunk then return MinorResistance(Target, "WaterResistance", Power) end end
+evt.PotionEffects[77] = function(IsDrunk, Target, Power) if IsDrunk then return MinorResistance(Target, "EarthResistance", Power) end end
+evt.PotionEffects[78] = function(IsDrunk, Target, Power) if IsDrunk then return MinorResistance(Target, "MindResistance", Power) end end
+evt.PotionEffects[79] = function(IsDrunk, Target, Power) if IsDrunk then return MinorResistance(Target, "BodyResistance", Power) end end
+
+-- Spirit Resistance
+evt.PotionEffects[73] = function(IsDrunk, Target, Power)
+	if IsDrunk then
+		Power = math.max(Power or 1, 1)
+		vars.MMMWE_SpiritPotion = vars.MMMWE_SpiritPotion or {}
+		vars.MMMWE_SpiritPotion[Target:GetIndex()] = {Expire = Game.Time + const.Minute*30*Power, Power = 3*Power}
+	end
+end
+
+function events.Tick()
+	if PotionMessage then
+		Game.ShowStatusText(PotionMessage)
+		PotionMessage = nil
+	end
+end
+
 -- Protection from Magic
 evt.PotionEffects[70] = function(IsDrunk, Target, Power)
 	if IsDrunk then

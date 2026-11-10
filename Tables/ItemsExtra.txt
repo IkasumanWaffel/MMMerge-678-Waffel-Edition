@@ -280,6 +280,13 @@ Id	Note	Subtype	MatGroup	EquipReq	Equip2Req	Equip3Req	ContF	QCont	LostQBit	Start
 288	Pure Mind Resistance						3,3,3
 289	Pure Body Resistance						3,3,3
 290	Protection from Magic						3,3,3
+293	Spirit Resistance						3,3,3
+294	Minor Fire Resistance						3,3,3
+295	Minor Air Resistance						3,3,3
+296	Minor Water Resistance						3,3,3
+297	Minor Earth Resistance						3,3,3
+298	Minor Mind Resistance						3,3,3
+299	Minor Body Resistance						3,3,3
 300	Torch Light						3,3,3
 301	Fire Bolt						3,3,3
 302	Fire Resistance						3,3,3

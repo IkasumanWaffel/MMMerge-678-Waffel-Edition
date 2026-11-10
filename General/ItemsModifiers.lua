@@ -1582,7 +1582,7 @@ end
 function events.RemoveConsumedItem(t)
 	local replacing_item = 0
 	if MF.SettingGtNum(MM.PreservePotionBottles, 0) then
-		if t.ItemId > 220 and t.ItemId < 291 then
+		if t.ItemId > 220 and t.ItemId < 291 or t.ItemId >= 293 and t.ItemId <= 299 then   -- MMMWE: the potions 293..299
 			replacing_item = 220
 		end
 	end

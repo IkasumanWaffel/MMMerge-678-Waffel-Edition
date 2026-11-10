@@ -731,4 +731,4 @@ Prison + Inside + Egg"	Misc
 723	Promoted to Honorary Ancient Researcher	Misc
 724	Promoted to Scientist	Misc
 725	Promoted to Honorary Scientist	Misc
-726	0	Misc
+726	Spirit Resistance (White) = Bless + Preservation. Minor resistance potions (Layered): Fire = Cure Wounds + Harden Item, Air = Magic Potion + Haste, Water = Cure Weakness + Shield, Earth = Magic Potion + Stoneskin, Mind = Cure Weakness + Heroism, Body = Cure Wounds + Recharge Item	potion

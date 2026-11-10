@@ -72,3 +72,10 @@ Pot Id	Item Id	Required mastery	Drinkable	Usable	Notes
 70	290	3	x	-	Protection from Magic
 71	291	4	x	-	Aqua Vitae
 72	292	4	x	-	Pain Reflection
+73	293	3	x	-	Spirit Resistance
+74	294	2	x	-	Minor Fire Resistance
+75	295	2	x	-	Minor Air Resistance
+76	296	2	x	-	Minor Water Resistance
+77	297	2	x	-	Minor Earth Resistance
+78	298	2	x	-	Minor Mind Resistance
+79	299	2	x	-	Minor Body Resistance

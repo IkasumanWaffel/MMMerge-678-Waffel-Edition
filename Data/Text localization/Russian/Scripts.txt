@@ -2740,3 +2740,4 @@ Starting items %d/%d: click +1, Ctrl+click -1; given when the class is taken	Нач
 Click +, Ctrl+click -, Shift+click: start skill 	Щелчок +, Ctrl+щелчок -, Shift+щелчок: начальный навык 
 Promoters: %s's (%d%%). Ctrl+S save, Ctrl+L load	Повышения: как у класса «%s» (%d%%). Ctrl+S сохранить, Ctrl+L загрузить
 Ctrl+S: save the build, Ctrl+L: load one	Ctrl+S: сохранить сборку, Ctrl+L: загрузить
+A stronger resistance is already in effect	Уже действует более сильное сопротивление
