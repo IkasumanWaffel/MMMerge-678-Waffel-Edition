@@ -670,34 +670,34 @@ Light resistance is drained
 # General/MMMWE_Drains.lua:228
 %s is drained	
 
-# General/MMMWE_EnchantScaling.lua:129
+# General/MMMWE_EnchantScaling.lua:132
  Scales with weapon skill.	
 
-# General/MMMWE_EnchantScaling.lua:130
+# General/MMMWE_EnchantScaling.lua:133
  Scales with magic skill.	
 
-# General/MMMWE_EnchantScaling.lua:131
+# General/MMMWE_EnchantScaling.lua:134
  Scales with weapon and magic skill.	
 
-# General/MMMWE_EnchantScaling.lua:197
+# General/MMMWE_EnchantScaling.lua:216
 Weapon skill	
 
-# General/MMMWE_EnchantScaling.lua:198
+# General/MMMWE_EnchantScaling.lua:217
 Magic skill	
 
-# General/MMMWE_EnchantScaling.lua:199
+# General/MMMWE_EnchantScaling.lua:218
 Weapon + magic	
 
-# General/MMMWE_EnchantScaling.lua:270
+# General/MMMWE_EnchantScaling.lua:289
 Scale with	
 
-# General/MMMWE_EnchantScaling.lua:279
+# General/MMMWE_EnchantScaling.lua:298
 Per weapon point	
 
-# General/MMMWE_EnchantScaling.lua:284
+# General/MMMWE_EnchantScaling.lua:303
 Per magic point	
 
-# General/MMMWE_EnchantScaling.lua:294
+# General/MMMWE_EnchantScaling.lua:313
 Damage scale = (100 + X) percent x skill x mastery.	
 
 # General/MMMWE_EnergyShield.lua:151
@@ -2673,6 +2673,9 @@ Light Res
 
 # Global/MMMWE_HPSPDisplay.lua:168
 Dark Res	
+
+# Global/MMMWE_HPSPDisplay.lua:169
+Magic Ward	
 
 # Global/MMMWE_HPSPDisplay.lua:170
 Restore HP	

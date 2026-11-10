@@ -2674,6 +2674,9 @@ Light Res	Сопр. свету
 # Global/MMMWE_HPSPDisplay.lua:168
 Dark Res	Сопр. тьме
 
+# Global/MMMWE_HPSPDisplay.lua:169
+Magic Ward	Защ. от магии
+
 # Global/MMMWE_HPSPDisplay.lua:170
 Restore HP	Восст. здоровья
 

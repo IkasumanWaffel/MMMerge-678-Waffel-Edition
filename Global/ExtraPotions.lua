@@ -344,15 +344,18 @@ evt.PotionEffects[67] = function(IsDrunk, Target, Power) if IsDrunk then return 
 evt.PotionEffects[68] = function(IsDrunk, Target, Power) if IsDrunk then return PureResistance(Target, 7, Power) end end
 evt.PotionEffects[69] = function(IsDrunk, Target, Power) if IsDrunk then return PureResistance(Target, 8, Power) end end
 
--- Protection from Magic
+-- Protection from Magic (MMMWE 11.11.26): wards the drinker alone (before: the whole
+-- party, for 2 hours per rank of the drinker's Alchemy, rank + 1 conditions). 30 minutes
+-- per point of strength; it turns away PFM_BASE conditions + 1 per PFM_PER points of
+-- strength. Like the potion before, it also protects from death and eradication.
+-- The ward itself: General/MMMWE_PersonalWard.lua.
+local PFM_BASE, PFM_PER = 2, 20
 evt.PotionEffects[70] = function(IsDrunk, Target, Power)
 	if IsDrunk then
-		local AS, AM = SplitSkill(Target:GetSkill(const.Skills.Alchemy))
-		local Buff = Party.SpellBuffs[const.PartyBuff.ProtectionFromMagic]
-		Buff.ExpireTime = Game.Time + const.Minute*120*math.max(1,AM)
-		Buff.Power = math.max(1,AM)+1
-		Buff.Skill = JoinSkill(10,4)
-		Buff.OverlayId = 0
+		Power = math.max(Power or 1, 1)
+		if MF.SetPersonalWard then
+			MF.SetPersonalWard(Target, math.min(30*Power, POTION_MAX_MINUTES), PFM_BASE + math.floor(Power / PFM_PER), 4)
+		end
 	end
 end
 

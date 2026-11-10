@@ -166,7 +166,7 @@ local buff2Colors = {
     [0] = {label = Tx"Spirit Res", color = 0xD3D3D3},  -- Spirit Resistance
     [1] = {label = Tx"Light Res", color = 0xFAFAFA},  -- Light Resistance
     [2] = {label = Tx"Dark Res", color = 0x6A6A6A},  -- Dark Resistance
-    [3] = {label = "Unk3", color = 0xCCCCCC},
+    [3] = {label = Tx"Magic Ward", color = 0x66CCFF},  -- Protection from Magic of the potion (MMMWE_PersonalWard.lua)
     [4] = {label = Tx"Restore HP", color = 0x6666FF},  -- Restore Health
     [5] = {label = Tx"Restore SP", color = 0xFF6633},  -- Restore Mana
     [6] = {label = "Unk6", color = 0xCCCCCC},
