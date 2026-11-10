@@ -240,22 +240,23 @@ evt.PotionEffects[9] = function(IsDrunk, Target, Power)
 	end
 end
 
--- Bless and Stoneskin (MMMWE 10.11.26): by their spells at the Master rank, the rank of
+-- Bless and Stoneskin (MMMWE 10.11.26): by their spells at the Expert rank, the rank of
 -- Alchemy the potions take to brew, for the drinker alone. The spell's skill is
 -- potion strength / POTION_SPELL_DIV (rounded up, POTION_SPELL_MAX at most):
---   Bless      +15 attack, +1 per point of that skill          (the spell at Master)
---   Stoneskin  20% physical resistance, +1% per point of skill (the spell at Master)
---   duration   1 hour 50 minutes + 5 minutes per point of skill
--- The spell is cast at the Novice rank (one target) with 10 more points of skill, which
--- gives the Master rank's numbers: Novice Bless is 5 + skill, Novice Stone Skin 10% + skill.
+--   Bless      +10 attack, +1 per point of that skill          (the spell at Expert)
+--   Stoneskin  15% physical resistance, +1% per point of skill (the spell at Expert)
+--   duration   1 hour 25 minutes + 5 minutes per point of skill
+-- The spell is cast at the Novice rank (one target) with 5 more points of skill, which
+-- gives the Expert rank's numbers: Novice Bless is 5 + skill, Novice Stone Skin 10% + skill.
 -- Before, the skill was 5 * sqrt(strength) with nothing taken off: stronger than a Grand
 -- Master's spell from strength 50 on, and Stone Skin's formula broke past strength 300.
 local POTION_SPELL_DIV = 5
 local POTION_SPELL_MAX = 50
+local POTION_SPELL_RANK = 5   -- skill points that make up for the rank: Expert over Novice
 
 local function potionSpellSkill(Power)
 	local k = math.ceil(math.max(Power or 1, 1) / POTION_SPELL_DIV)
-	return math.min(k, POTION_SPELL_MAX) + 10
+	return math.min(k, POTION_SPELL_MAX) + POTION_SPELL_RANK
 end
 
 -- Bless
