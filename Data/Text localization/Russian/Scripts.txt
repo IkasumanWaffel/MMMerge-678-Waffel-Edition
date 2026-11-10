@@ -7,6 +7,18 @@
 # (e.g. Windows-1251 for Russian) as Data\Text localization\<Language>\Scripts.txt and put
 # the language's name into MMMWE_Language.txt in the game folder.
 
+# General/MMMWE_Alchemy.lua:212 plural, English plural: %d more potions brewed: %s
+%d more potion brewed: %s	Сварено ещё %d зелье: %s|Сварено ещё %d зелья: %s|Сварено ещё %d зелий: %s
+
+# General/MMMWE_Alchemy.lua:130
+... and %d more	... и ещё %d
+
+# General/MMMWE_Alchemy.lua:132
+Mixed from:	Смешивается из:
+
+# General/MMMWE_Alchemy.lua:133
+Mixes into:	Даёт в смеси:
+
 # General/MMMWE_AncientArtifacts.lua:148
 The blow passes through %s's phase field!	Удар проходит сквозь фазовое поле: %s!
 
@@ -370,10 +382,10 @@ click to buy one	щёлкните, чтобы купить
 # General/MMMWE_CustomClassEditor.lua:630
 %s, %d pts	%s, %d оч.
 
-# General/MMMWE_CustomClassEditor.lua:636, General/MMMWE_CustomClasses.lua:522, General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3456
+# General/MMMWE_CustomClassEditor.lua:636, General/MMMWE_CustomClasses.lua:522, General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3457
 Intellect	Интеллект
 
-# General/MMMWE_CustomClassEditor.lua:636, General/MMMWE_CustomClasses.lua:522, General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3456
+# General/MMMWE_CustomClassEditor.lua:636, General/MMMWE_CustomClasses.lua:522, General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3457
 Personality	Сила духа
 
 # General/MMMWE_CustomClassEditor.lua:636
@@ -631,19 +643,19 @@ can't read 	не удаётся прочитать
 # General/MMMWE_DamageKinds.lua:209
 Sla %d%%\nPie %d%%\nBlu %d%%	Руб %d%%\nКол %d%%\nДроб %d%%
 
-# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3456
+# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3457
 Might	Сила
 
-# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3456
+# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3457
 Endurance	Выносливость
 
-# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3456
+# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3457
 Accuracy	Меткость
 
-# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3456
+# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3457
 Speed	Скорость
 
-# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3456
+# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3457
 Luck	Удача
 
 # General/MMMWE_Drains.lua:168
@@ -1270,7 +1282,7 @@ Armor: +%d   Block Power: %d%s (%s)	Броня: +%d   Сила блока: %d%s (%s)
 # General/MMMWE_Main.lua:2952
 \nParry Power: %d%s	\nСила парирования: %d%s
 
-# General/MMMWE_Main.lua:2955, General/MMMWE_Main.lua:3033, General/MMMWE_Main.lua:3035, General/MMMWE_Main.lua:3039
+# General/MMMWE_Main.lua:2955, General/MMMWE_Main.lua:3034, General/MMMWE_Main.lua:3036, General/MMMWE_Main.lua:3040
 %s: +%d   %s: %dd%d	%s: +%d   %s: %dd%d
 
 # General/MMMWE_Main.lua:2964, General/MMMWE_Main.lua:2993
@@ -1294,61 +1306,61 @@ Enr: %d Ant: %d Jad: %d	Энр: %d Ант: %d Джад: %d
 # General/MMMWE_Main.lua:3009
 Shoot: +%d    Damage: %d-%d	Стрельба: +%d    Урон: %d-%d
 
-# General/MMMWE_Main.lua:3216
+# General/MMMWE_Main.lua:3217
 Armor Class	Класс брони
 
-# General/MMMWE_Main.lua:3217
+# General/MMMWE_Main.lua:3218
 Condition (replaced by HR and Phys Res)	Состояние (заменено на HR и физ. сопр.)
 
-# General/MMMWE_Main.lua:3218
+# General/MMMWE_Main.lua:3219
 Quick spell (replaced by resistances and chances; 4 px higher for the Sla/Pie/Blu line)	Быстрое заклинание (заменено сопротивлениями и шансами; на 4 пикс. выше для строки Руб/Кол/Дроб)
 
-# General/MMMWE_Main.lua:3220
+# General/MMMWE_Main.lua:3221
 Melee damage	Урон в ближнем бою
 
-# General/MMMWE_Main.lua:3222
+# General/MMMWE_Main.lua:3223
 Ranged damage	Урон в дальнем бою
 
-# General/MMMWE_Main.lua:3225
+# General/MMMWE_Main.lua:3226
 Fire res	Сопр. огню
 
-# General/MMMWE_Main.lua:3226
+# General/MMMWE_Main.lua:3227
 Air res	Сопр. воздуху
 
-# General/MMMWE_Main.lua:3227
+# General/MMMWE_Main.lua:3228
 Water res	Сопр. воде
 
-# General/MMMWE_Main.lua:3228
+# General/MMMWE_Main.lua:3229
 Earth res	Сопр. земле
 
-# General/MMMWE_Main.lua:3229
+# General/MMMWE_Main.lua:3230
 Mind res	Сопр. разуму
 
-# General/MMMWE_Main.lua:3230
+# General/MMMWE_Main.lua:3231
 Body res	Сопр. телу
 
-# General/MMMWE_Main.lua:3979
+# General/MMMWE_Main.lua:3980
 Flight mode active. Remaining charge: %3.1f%%	Режим полёта включён. Остаток заряда: %3.1f%%
 
-# General/MMMWE_Main.lua:3983
+# General/MMMWE_Main.lua:3984
 WARNING! Low charge: %3.1f%%	ВНИМАНИЕ! Низкий заряд: %3.1f%%
 
-# General/MMMWE_Main.lua:3986
+# General/MMMWE_Main.lua:3987
 WARNING! Flight mode terminates in 5 minutes!	ВНИМАНИЕ! Режим полёта отключится через 5 минут!
 
-# General/MMMWE_Main.lua:4004
+# General/MMMWE_Main.lua:4005
 Tech mastery (%d/2) is insufficient to use this function	Владение техникой (%d/2) недостаточно для этой функции
 
-# General/MMMWE_Main.lua:4014
+# General/MMMWE_Main.lua:4015
 Remaining charge: %3.1f%%.	Остаток заряда: %3.1f%%.
 
-# General/MMMWE_Main.lua:4016, General/MMMWE_Main.lua:4040
+# General/MMMWE_Main.lua:4017, General/MMMWE_Main.lua:4041
 Device charge CRITICAL! Operation aborted	Заряд устройства КРИТИЧЕСКИЙ! Операция прервана
 
-# General/MMMWE_Main.lua:4034
+# General/MMMWE_Main.lua:4035
 Tech mastery (%d/3) is insufficient to use this function	Владение техникой (%d/3) недостаточно для этой функции
 
-# General/MMMWE_Main.lua:4052
+# General/MMMWE_Main.lua:4053
 Flight mode activated	Режим полёта включён
 
 # General/MMMWE_MonkBranches.lua:148

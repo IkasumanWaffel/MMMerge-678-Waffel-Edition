@@ -3021,6 +3021,7 @@ local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 
 		smartPatch(0x41D220, "push ", DefineDurabilityString(IN))
 		if MF.SpellBookNotes then MF.SpellBookNotes(IN) end   -- who can learn a spellbook's spell
+		if MF.PotionNotes then MF.PotionNotes(IN) end         -- a potion's known recipes (MMMWE_Alchemy.lua)
 
 		if Game.ItemsTxt[IN].Skill == 7 then
 			local bStrings = DefineBlasterModString(IN, BS)

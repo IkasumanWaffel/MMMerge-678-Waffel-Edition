@@ -7,6 +7,18 @@
 # (e.g. Windows-1251 for Russian) as Data\Text localization\<Language>\Scripts.txt and put
 # the language's name into MMMWE_Language.txt in the game folder.
 
+# General/MMMWE_Alchemy.lua:212 plural, English plural: %d more potions brewed: %s
+%d more potion brewed: %s	
+
+# General/MMMWE_Alchemy.lua:130
+... and %d more	
+
+# General/MMMWE_Alchemy.lua:132
+Mixed from:	
+
+# General/MMMWE_Alchemy.lua:133
+Mixes into:	
+
 # General/MMMWE_AncientArtifacts.lua:148
 The blow passes through %s's phase field!	
 
@@ -370,10 +382,10 @@ click to buy one
 # General/MMMWE_CustomClassEditor.lua:630
 %s, %d pts	
 
-# General/MMMWE_CustomClassEditor.lua:636, General/MMMWE_CustomClasses.lua:522, General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3456
+# General/MMMWE_CustomClassEditor.lua:636, General/MMMWE_CustomClasses.lua:522, General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3457
 Intellect	
 
-# General/MMMWE_CustomClassEditor.lua:636, General/MMMWE_CustomClasses.lua:522, General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3456
+# General/MMMWE_CustomClassEditor.lua:636, General/MMMWE_CustomClasses.lua:522, General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3457
 Personality	
 
 # General/MMMWE_CustomClassEditor.lua:636
@@ -631,19 +643,19 @@ can't read
 # General/MMMWE_DamageKinds.lua:209
 Sla %d%%\nPie %d%%\nBlu %d%%	
 
-# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3456
+# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3457
 Might	
 
-# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3456
+# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3457
 Endurance	
 
-# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3456
+# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3457
 Accuracy	
 
-# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3456
+# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3457
 Speed	
 
-# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3456
+# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3457
 Luck	
 
 # General/MMMWE_Drains.lua:168
@@ -1270,7 +1282,7 @@ Armor: +%d   Block Power: %d%s (%s)
 # General/MMMWE_Main.lua:2952
 \nParry Power: %d%s	
 
-# General/MMMWE_Main.lua:2955, General/MMMWE_Main.lua:3033, General/MMMWE_Main.lua:3035, General/MMMWE_Main.lua:3039
+# General/MMMWE_Main.lua:2955, General/MMMWE_Main.lua:3034, General/MMMWE_Main.lua:3036, General/MMMWE_Main.lua:3040
 %s: +%d   %s: %dd%d	
 
 # General/MMMWE_Main.lua:2964, General/MMMWE_Main.lua:2993
@@ -1294,61 +1306,61 @@ Enr: %d Ant: %d Jad: %d
 # General/MMMWE_Main.lua:3009
 Shoot: +%d    Damage: %d-%d	
 
-# General/MMMWE_Main.lua:3216
+# General/MMMWE_Main.lua:3217
 Armor Class	
 
-# General/MMMWE_Main.lua:3217
+# General/MMMWE_Main.lua:3218
 Condition (replaced by HR and Phys Res)	
 
-# General/MMMWE_Main.lua:3218
+# General/MMMWE_Main.lua:3219
 Quick spell (replaced by resistances and chances; 4 px higher for the Sla/Pie/Blu line)	
 
-# General/MMMWE_Main.lua:3220
+# General/MMMWE_Main.lua:3221
 Melee damage	
 
-# General/MMMWE_Main.lua:3222
+# General/MMMWE_Main.lua:3223
 Ranged damage	
 
-# General/MMMWE_Main.lua:3225
+# General/MMMWE_Main.lua:3226
 Fire res	
 
-# General/MMMWE_Main.lua:3226
+# General/MMMWE_Main.lua:3227
 Air res	
 
-# General/MMMWE_Main.lua:3227
+# General/MMMWE_Main.lua:3228
 Water res	
 
-# General/MMMWE_Main.lua:3228
+# General/MMMWE_Main.lua:3229
 Earth res	
 
-# General/MMMWE_Main.lua:3229
+# General/MMMWE_Main.lua:3230
 Mind res	
 
-# General/MMMWE_Main.lua:3230
+# General/MMMWE_Main.lua:3231
 Body res	
 
-# General/MMMWE_Main.lua:3979
+# General/MMMWE_Main.lua:3980
 Flight mode active. Remaining charge: %3.1f%%	
 
-# General/MMMWE_Main.lua:3983
+# General/MMMWE_Main.lua:3984
 WARNING! Low charge: %3.1f%%	
 
-# General/MMMWE_Main.lua:3986
+# General/MMMWE_Main.lua:3987
 WARNING! Flight mode terminates in 5 minutes!	
 
-# General/MMMWE_Main.lua:4004
+# General/MMMWE_Main.lua:4005
 Tech mastery (%d/2) is insufficient to use this function	
 
-# General/MMMWE_Main.lua:4014
+# General/MMMWE_Main.lua:4015
 Remaining charge: %3.1f%%.	
 
-# General/MMMWE_Main.lua:4016, General/MMMWE_Main.lua:4040
+# General/MMMWE_Main.lua:4017, General/MMMWE_Main.lua:4041
 Device charge CRITICAL! Operation aborted	
 
-# General/MMMWE_Main.lua:4034
+# General/MMMWE_Main.lua:4035
 Tech mastery (%d/3) is insufficient to use this function	
 
-# General/MMMWE_Main.lua:4052
+# General/MMMWE_Main.lua:4053
 Flight mode activated	
 
 # General/MMMWE_MonkBranches.lua:148
