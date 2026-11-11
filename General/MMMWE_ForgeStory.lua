@@ -18,7 +18,8 @@
 local MF = Merge.Functions
 local Tx = MF.Text
 
-local FORGE_DONE   = 633          -- QBit "Got the sci-fi part"
+local FORGE_DONE   = 633          -- QBit "Got the sci-fi part" (the end of either path)
+local DARK_PATH    = 612          -- QBit "Chose the path of Dark"
 local SIGNET_QUEST = 875          -- QBit: looking for the Signet
 local SIGNET_DONE  = 876          -- QBit: the Forge has read the Signet
 local SIGNET       = 2213
@@ -36,7 +37,7 @@ local STOCK = {
 }
 
 MF.ForgeStory = {
-	FORGE_DONE = FORGE_DONE, SIGNET_QUEST = SIGNET_QUEST, SIGNET_DONE = SIGNET_DONE,
+	FORGE_DONE = FORGE_DONE, DARK_PATH = DARK_PATH, SIGNET_QUEST = SIGNET_QUEST, SIGNET_DONE = SIGNET_DONE,
 	SIGNET = SIGNET, OUTFITTER = OUTFITTER,
 
 	ForgeTopic = Tx"The Forge",
@@ -53,24 +54,32 @@ MF.ForgeStory = {
 }
 
 ---------------------------------------------------------------------------
--- the guardian of the Signet in the Tomb of VARN
+-- the engine for both stories (the Light side registers in MMMWE_GateStory.lua):
+--   MF.AncientQuests[i] = {Map = map file, Quest = QBit open, Done = QBit done, Item = item,
+--     Guardian = monster id, Key = mapvars name, Shop = house, Stock = {groups as STOCK}}
 ---------------------------------------------------------------------------
 
-local function partyHasSignet()
+MF.AncientQuests = MF.AncientQuests or {}
+table.insert(MF.AncientQuests, {Name = "Forge", Map = "pyramid.blv", Quest = SIGNET_QUEST,
+	Done = SIGNET_DONE, Item = SIGNET, Guardian = GUARDIAN, Key = "MMMWE_SignetGuard",
+	Shop = OUTFITTER, Stock = STOCK})
+
+local function partyHas(num)
 	for _, pl in Party do
 		for i = 1, pl.Items.limit or 138 do
 			local it = pl.Items[i]
-			if it and it.Number == SIGNET then return true end
+			if it and it.Number == num then return true end
 		end
 	end
-	return Mouse.Item.Number == SIGNET
+	return Mouse.Item.Number == num
 end
 
-function events.AfterLoadMap()
-	if (Map.Name or ""):lower() ~= "pyramid.blv" then return end
-	if not Party.QBits[SIGNET_QUEST] or Party.QBits[SIGNET_DONE] then return end
-	if mapvars.MMMWE_SignetGuard or partyHasSignet() then return end
-	-- the deepest point: where the monster farthest from the entrance stands (or lies)
+-- the guardian carrying the quest item: at the deepest point, where the monster farthest
+-- from the entrance stands (or lies); while the quest is open and the party hasn't the item,
+-- once per map fill
+local function placeGuardian(q)
+	if not Party.QBits[q.Quest] or Party.QBits[q.Done] then return end
+	if mapvars[q.Key] or partyHas(q.Item) then return end
 	local best, bd = nil, -1
 	for i, m in Map.Monsters do
 		if m.AIState ~= const.AIState.Removed then
@@ -80,40 +89,48 @@ function events.AfterLoadMap()
 		end
 	end
 	if not best then return end
-	local ok, g = pcall(SummonMonster, GUARDIAN, best.X, best.Y, best.Z, false)
+	local ok, g = pcall(SummonMonster, q.Guardian, best.X, best.Y, best.Z, false)
 	if not ok or not g then return end
 	pcall(g.LoadFramesAndSounds, g)
 	g.Hostile = true
-	g.Item = SIGNET
+	g.Item = q.Item
 	g.GuardX, g.GuardY, g.GuardZ = g.X, g.Y, g.Z
-	mapvars.MMMWE_SignetGuard = true
-	MF.LogInfo("[Forge] the Signet's guardian placed at %d %d %d", g.X, g.Y, g.Z)
+	mapvars[q.Key] = true
+	MF.LogInfo("[%s] the guardian of item %d placed at %d %d %d", q.Name, q.Item, g.X, g.Y, g.Z)
 end
 
----------------------------------------------------------------------------
--- the Forge Outfitter's stock
----------------------------------------------------------------------------
+function events.AfterLoadMap()
+	local name = (Map.Name or ""):lower()
+	for _, q in ipairs(MF.AncientQuests) do
+		if q.Map == name then placeGuardian(q) end
+	end
+end
 
-local function pick()
+-- the shops' stock
+local function pick(stock)
 	local r = math.random(100)
-	for _, g in ipairs(STOCK) do
+	for _, g in ipairs(stock) do
 		r = r - g.Share
 		if r <= 0 then return g end
 	end
-	return STOCK[1]
+	return stock[1]
 end
 
 function events.GenerateItem(t)
 	if t.Handled or Game.CurrentScreen ~= const.Screens.House then return end
 	local h = MF.GetCurrentHouse and MF.GetCurrentHouse() or (Game.GetCurrentHouse and Game.GetCurrentHouse())
-	if h ~= OUTFITTER then return end
-	local g = pick()
+	local stock
+	for _, q in ipairs(MF.AncientQuests) do
+		if q.Shop == h then stock = q.Stock end
+	end
+	if not stock then return end
+	local g = pick(stock)
 	local it = t.Item
 	it:Clear()
 	it.Number = g.Items[math.random(#g.Items)]
 	it.Identified = true
 	if g.Upgrades and MF.BlasterSave and MF.BlasterSpecs then
-		-- a board of 2-4 (shields 1-3) upgrades, the cell full
+		-- an upgraded board (blasters 2-4 upgrades, shields 1-3), the cell full
 		local st = {Stack = {}, Work = 0, Cell = MF.BlasterSpecs.CellFull}
 		for _ = 1, math.random(g.Upgrades[1], g.Upgrades[2]) do
 			st.Stack[#st.Stack + 1] = {Spec = math.random(1, 4), Fine = false}

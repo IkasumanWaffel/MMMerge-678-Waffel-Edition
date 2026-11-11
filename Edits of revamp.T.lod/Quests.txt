@@ -875,8 +875,8 @@ Q Bit	Quest Note Text	Notes	Owner
 874		MM7 Scientist Promo complete	0
 875	Find the signet of Colonial Governor Padish in the Tomb of VARN in Enroth and bring it to Kastore in Castle Gloaming.	0	0
 876		The Heavenly Forge has read Padish's Signet (Forge Outfitter open)	0
-877	0	0	0
-878	0	0	0
+877	Find a Colonial command cube in the Control Center under Free Haven in Enroth and bring it to Resurectra in Celeste.	0	0
+878		Webstation Beta-5 knows the Command Cube (Webstation Supply open)	0
 879	0	0	0
 880	0	0	0
 881	0	0	0

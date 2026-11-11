@@ -167,6 +167,7 @@ end
 
 local function questMatches(q, mapIndex)
 	if q.QBit and not Party.QBits[q.QBit] then return false end
+	if q.QBit2 and not Party.QBits[q.QBit2] then return false end
 	if q.Map ~= nil and mapIndexOf(q.Map) ~= mapIndex then return false end
 	return true
 end
@@ -688,6 +689,6 @@ end
 	Music.SetMap(206, {Any = {42}})													-- Basement of the Breach
 
 	---- Quest music (moved here from the map scripts): replaces the daytime music once the quest is done
-	Music.AddQuestMusic{Map = "7d26.blv",   QBit = 633, Day = {22,72,117,121,134,124,125}}	-- The Pit
-	Music.AddQuestMusic{Map = "7out05.blv", QBit = 633, Day = {58,124,125}}				-- Deyja
+	Music.AddQuestMusic{Map = "7d26.blv",   QBit = 633, QBit2 = 612, Day = {22,72,117,121,134,124,125}}	-- The Pit
+	Music.AddQuestMusic{Map = "7out05.blv", QBit = 633, QBit2 = 612, Day = {58,124,125}}				-- Deyja
 	Music.AddQuestMusic{Map = "d03.blv",    QBit = 630, Day = {22,124,125}}				-- d03 (Throne Room map)

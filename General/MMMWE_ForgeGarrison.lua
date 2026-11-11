@@ -1,7 +1,7 @@
 --[[
 	MMMWE_ForgeGarrison.lua — Kastore's Forge troops after the Dark ending of MM7 (11.11.26)
 
-	Once the Heavenly Forge is running ("Got the sci-fi part", QBit 633), Castle Gloaming,
+	Once the Heavenly Forge is running ("Got the sci-fi part", QBit 633, on the path of Dark, 612), Castle Gloaming,
 	The Pit and Deyja get a garrison of the Forge's own make: real Blaster Guys and Droids
 	added next to the monsters that live there. The monsters of the map stay as they are, and
 	the garrison is scaled by AdaptiveMonstersStats.lua like any summoned monster
@@ -23,7 +23,8 @@
 
 local MF = Merge.Functions
 
-local FORGE_DONE = 633            -- QBit "Got the sci-fi part"
+local FORGE_DONE = 633            -- QBit "Got the sci-fi part" (the end of either path)
+local DARK_PATH  = 612            -- QBit "Chose the path of Dark"
 
 -- Monster ids
 local BLASTER_GUY = 459           -- Blaster Guy C
@@ -125,7 +126,7 @@ local function placeGarrison(g)
 end
 
 function events.AfterLoadMap()
-	if not Party.QBits[FORGE_DONE] then return end
+	if not (Party.QBits[FORGE_DONE] and Party.QBits[DARK_PATH]) then return end
 	local g = GARRISONS[(Map.Name or ""):lower()]
 	if not g then return end
 	makePeace(g)

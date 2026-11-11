@@ -8,7 +8,7 @@ function events.AfterLoadMap()
 	
 	LocalHostileTxt()
 	Game.HostileTxt[91][0] = 0
-	if Party.QBits[633] then
+	if Party.QBits[633] and Party.QBits[612] then	-- the end of the path of Dark
 		function events.SetOutdoorLight(t)
 			t.Hour, t.Minute = 5, 0
 		end

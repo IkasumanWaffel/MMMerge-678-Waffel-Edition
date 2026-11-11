@@ -14,6 +14,8 @@
 	  1537  Webstation Directory              tablet   the Lincoln
 	  1539  Forge Restart Log                 tablet   Castle Gloaming, after the Dark ending
 	  1540  Anomaly Survey                    tablet     (MMMWE_ForgeStory.lua)
+	  1541  Station Log: C.O.R.A.K.           tablet   Celeste, after the Light ending
+	  1575  Pathfinder Survey                 tablet     (MMMWE_GateStory.lua)
 
 	Their rows in Scroll.txt (revamp.T.lod) hold only a marker, "@MMMWE_LORE <item>": the texts
 	are here, so the language files translate them (Tx), and are written into the message
@@ -43,6 +45,10 @@ local LORE = {
 
 	[1540] = Tx"DIMENSIONAL SCANNER. SURVEY OF ANOMALIES.\n\nThin places found where the boundary between here and elsewhere has worn through. Most lead nowhere we can measure. One leads to Enroth, but not to Enroth as it is now: the readings place it years back.\n\nAt its far end, a known signature: the hull of a VARN-class vessel, buried. The old records call it the Tomb of VARN. The Governor's household travelled with the colonists' ships. If the command seal survived anywhere, it is there.",
 
+	[1541] = Tx"C.O.R.A.K., SECONDARY MODULE. Activation: external. Visitors through the surface Gate: Terran crew of the seedship Lincoln, and their local allies.\n\nPrimary unit: last report from Xeen, in pursuit of S.H.E.L.T.E.M. No contact since. Assumed lost.\n\nStation stores: SEALED. Fabricators: SEALED. A Colonial command cube is required to release them.",
+
+	[1575] = Tx"PATHFINDER BEACON. LISTENING LOG.\n\nThe beacon keeps hearing an old carrier signal, faint and patient. It comes through thin places where the world has worn through, from Enroth - but from Enroth years back.\n\nSource: a Colonial facility under the city of Free Haven, the one the Enrothians call the Control Center. Signal type: command equipment, on standby. Something there is still waiting for an order.",
+
 	[1538] = Tx"The Bracadan books say the Ancients left. I do not think they did. A thing that is abandoned rusts. These machines wait. The jetpack from Clanker's laboratory still held a charge after a thousand years. The scanners still know where the Gates were.\n\nIf the Ancients are silent, it is because something is in the way, not because they stopped caring. I mean to find out what.\n\n- Tallia Ravenswood",
 }
 MF.AncientLore = LORE
@@ -58,7 +64,8 @@ MF.TalliaArchives = {
 local TABLETS = {
 	["control center"] = {1533, 1534},
 	["the lincoln"]    = {1535, 1537},
-	["castle gloaming"] = {1539, 1540, QBit = 633},   -- the Forge's laboratory, after the Dark ending
+	["castle gloaming"] = {1539, 1540, QBits = {633, 612}},   -- the Forge's laboratory, after the Dark ending
+	["celeste"]         = {1541, 1575, QBits = {633, 611}},   -- after the Light ending (MMMWE_GateStory.lua)
 }
 MF.AncientTablets = TABLETS
 
@@ -105,7 +112,10 @@ function events.AfterLoadMap()
 	local ms = Game.MapStats[Map.MapStatsIndex]
 	local name = ms and ms.Name and ms.Name:lower() or ""
 	local list = TABLETS[name]
-	if not list or (list.QBit and not Party.QBits[list.QBit]) then return end
+	if not list then return end
+	for _, q in ipairs(list.QBits or {}) do
+		if not Party.QBits[q] then return end
+	end
 	vars.MMMWE_AncientLore = vars.MMMWE_AncientLore or {}
 	local placed = vars.MMMWE_AncientLore
 	for _, num in ipairs(list) do

@@ -45,7 +45,7 @@
 43	8	Armor Shop	62	174	Erik's Armory	Erik	Armorsmith	0537	0	0	0	1.5	1		7			6	18	0	0	0	0
 44	9	Armor Shop	62	174	Castle Deadwood	Placeholder		0537	0	0	0	1.5	1			1		6	18	0	0	0	0
 45	10	Armor Shop	62	174	Forge Outfitter	Quartermaster Voss	Forge Quartermaster	0537	0	0	0	1.5	1					6	18	0	0	0	0
-46	11	Armor Shop	62	174	Placeholder	Placeholder		0537	0	0	0	1.5	1					6	18	0	0	0	0
+46	11	Armor Shop	62	174	Webstation Supply	C.O.R.A.K.	Station Quartermaster	0537	0	0	0	1.5	1					6	18	0	0	0	0
 47	12	Armor Shop	63	174	The Peasant's Smithy	Peter	Armorsmith	0537	0	0	0	1.5	1		14			6	18	0	0	0	0
 48	13	Armor Shop	62	174	Placeholder	Placeholder		0537	0	0	0	1.5	1					6	18	0	0	0	0
 49	14	Armor Shop	64	174	Queen Catherine's Smithy	David	Armorsmith	0537	0	0	0	2	1		21			6	18	0	0	0	0

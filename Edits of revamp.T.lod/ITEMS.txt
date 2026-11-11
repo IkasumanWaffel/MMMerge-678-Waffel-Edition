@@ -1540,7 +1540,7 @@ Item #	Pic File	Name	Value	Equip Stat	Skill Group	Mod1	Mod2	material	ID/Rep/St	N
 1538	7item182	Field Notes of Tallia Ravenswood	0	Mscroll	Misc	M37	1	2	0	Notebook	230	0	0	0	0	Tallia Ravenswood's own notes on the Ancients. (To read it, pick it up and click it on a character's portrait.)
 1539	anctab	Forge Restart Log	1000	Mscroll	Misc	M38	1	2	0	Ancient Tablet	230	0	0	0	0	A tablet from the Heavenly Forge's control desk in Castle Gloaming. (To read it, pick it up and click it on a character's portrait.)
 1540	anctab	Anomaly Survey	1000	Mscroll	Misc	M39	1	2	0	Ancient Tablet	230	0	0	0	0	A tablet of Kastore's researchers, linked to the Dimensional Scanner. (To read it, pick it up and click it on a character's portrait.)
-1541	7item182	Empty Message Scroll	0	Mscroll	Misc	M40	1	2	0	Message Scroll	230	0	0	0	0	A message scroll.  To read this message, pick the scroll up and left-click over the character picture in the inventory screen.
+1541	anctab	Station Log: C.O.R.A.K.	1000	Mscroll	Misc	M40	1	2	0	Ancient Tablet	230	0	0	0	0	A tablet brought back through the Gate from Webstation Beta-5. (To read it, pick it up and click it on a character's portrait.)
 1542	7item182	Rejuvenation Recipe	500	Mscroll	Misc	M41	1	2	0	Rejuvenation Recipe	230	0	0	0	0	A message scroll.  To read this message, pick the scroll up and left-click over the character picture in the inventory screen.
 1543	7item182	Pure Might Recipe	500	Mscroll	Misc	M42	1	2	0	Pure Might Recipe	230	0	0	0	0	A message scroll.  To read this message, pick the scroll up and left-click over the character picture in the inventory screen.
 1544	7item182	Pure Accuracy Recipe	500	Mscroll	Misc	M43	1	2	0	Pure Accuracy Recipe	230	0	0	0	0	A message scroll.  To read this message, pick the scroll up and left-click over the character picture in the inventory screen.
@@ -1574,7 +1574,7 @@ Item #	Pic File	Name	Value	Equip Stat	Skill Group	Mod1	Mod2	material	ID/Rep/St	N
 1572	7item182	Mind Resistance Recipe	150	Mscroll	Misc	M71	1	2	0	Mind Resistance Recipe	230	0	0	0	0	A message scroll.  To read this message, pick the scroll up and left-click over the character picture in the inventory screen.
 1573	7item182	Body Resistance Recipe	150	Mscroll	Misc	M72	1	2	0	Body Resistance Recipe	230	0	0	0	0	A message scroll.  To read this message, pick the scroll up and left-click over the character picture in the inventory screen.
 1574	7item182	Empty Message Scroll	0	Mscroll	Misc	M73	1	2	0	Message Scroll	230	0	0	0	0	A message scroll.  To read this message, pick the scroll up and left-click over the character picture in the inventory screen.
-1575	7item182	Empty Message Scroll	0	Mscroll	Misc	M74	1	2	0	Message Scroll	230	0	0	0	0	A message scroll.  To read this message, pick the scroll up and left-click over the character picture in the inventory screen.
+1575	anctab	Pathfinder Survey	1000	Mscroll	Misc	M74	1	2	0	Ancient Tablet	230	0	0	0	0	A tablet of Resurectra's researchers, linked to the Pathfinder Beacon. (To read it, pick it up and click it on a character's portrait.)
 1576	7item182	Empty Message Scroll	0	Mscroll	Misc	M75	1	2	0	Message Scroll	230	0	0	0	0	A message scroll.  To read this message, pick the scroll up and left-click over the character picture in the inventory screen.
 1577	7item182	Empty Message Scroll	0	Mscroll	Misc	M76	1	2	0	Message Scroll	230	0	0	0	0	Description here.
 1578	7item182	Empty Message Scroll	0	Mscroll	Misc	M77	1	2	0	Message Scroll	230	0	0	0	0	Description here.

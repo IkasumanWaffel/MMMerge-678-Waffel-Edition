@@ -11,7 +11,7 @@ Quest{
 	Name = "MMMWE_Forge_Talk",
 	NPC = KASTORE,
 	Slot = 2,
-	CanShow = function() return Party.QBits[F.FORGE_DONE] end,
+	CanShow = function() return Party.QBits[F.FORGE_DONE] and Party.QBits[F.DARK_PATH] end,
 	Texts = {
 		Topic = F.ForgeTopic,
 		Ungive = F.ForgeText,
@@ -26,7 +26,7 @@ Quest{
 	QuestItem = F.SIGNET,
 	KeepQuestItem = true,
 	Exp = 50000,
-	CanShow = function() return Party.QBits[F.FORGE_DONE] end,
+	CanShow = function() return Party.QBits[F.FORGE_DONE] and Party.QBits[F.DARK_PATH] end,
 	Done = function()
 		Party.QBits[F.SIGNET_DONE] = true
 	end,

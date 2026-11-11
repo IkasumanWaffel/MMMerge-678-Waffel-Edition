@@ -40,43 +40,49 @@ The Plasma Edge flickers: its cell is nearly empty.	Плазменный клинок мерцает: е
 # General/MMMWE_AncientArtifacts.lua:283
 Plasma Edge: %d%%	Плазменный клинок: %d%%
 
-# General/MMMWE_AncientLore.lua:28
+# General/MMMWE_AncientLore.lua:30
 On Those Who Came Before\n\nLong before Erathia had kings, our world was a garden tended by the Ancients. They did not walk among our forebears as gods do in the temple tales. They sent them here. The oldest records speak of the Crossing: a vessel named VARN MCMIV that sailed between the stars for generations, carrying men, elves, dwarves and gnomes to a world made ready for them. Smaller VARN ferries later carried settlers across the sea to Jadame.\n\nThe Ancients never ruled here in person. They set a Colonial Government in their place, and gave it tools we would call miracles: lights without flame, voices carried across seas, and the Heavenly Forges. For centuries the colonies prospered. The archives call it the Time of Wonders.\n\nThen came the Silence, and the voices stopped.	О тех, кто был прежде\n\nЗадолго до того, как у Эратии появились короли, наш мир был садом, за которым ухаживали Древние. Они не ходили среди наших предков, как боги в храмовых сказаниях. Они прислали их сюда. Древнейшие записи говорят о Переходе: корабль под названием VARN MCMIV поколениями плыл меж звёзд, неся людей, эльфов, гномов и дварфов в мир, подготовленный для них. Позже малые паромы VARN перевезли поселенцев через море в Джадам.\n\nДревние никогда не правили здесь сами. Вместо себя они поставили Колониальное Правительство и дали ему орудия, которые мы назвали бы чудесами: свет без огня, голоса, летящие через моря, и Небесные Кузни. Веками колонии процветали. Архивы называют то время Эпохой Чудес.\n\nА потом пришло Безмолвие, и голоса смолкли.
 
-# General/MMMWE_AncientLore.lua:30
+# General/MMMWE_AncientLore.lua:32
 A Chronicle of the Silence\n\nThe last days before the Silence were already dark. The chronicles name Mayor Alan of Aliant, who woke an Ancient weapon in a quarrel with his neighbours. The Day of Fire that followed burned the city of Vissias, and much of southern Enroth with it.\n\nThen, in the year we now count as the first, the Colonial Government lost all word from the Ancients. No ship came. No message answered. The Governor's officers spoke of a network that had bound a thousand worlds together, and said it had been cut.\n\nWithout the Ancients behind it, the Government could not hold. Rebels rose across Enroth, and for a century the Governor's soldiers fought them in skirmish after skirmish. The Heavenly Forges made shields by the hundred for that war, each batch worse than the last. The rebels won, and the Colonial Government fell. In the year 113 the last Forge went cold, and the knowledge to repair it died with the last engineers.\n\nWhat we keep today are pieces: a blade that never dulls, a shield of dark gold, and a story most people believe is a myth.	Хроника Безмолвия\n\nПоследние дни перед Безмолвием и так были мрачны. Хроники называют мэра Алана из Алианта, который пробудил оружие Древних в ссоре с соседями. День Огня, что последовал за этим, сжёг город Виссиас, а с ним и большую часть южного Энрота.\n\nЗатем, в год, который мы теперь считаем первым, Колониальное Правительство потеряло всякую связь с Древними. Ни один корабль не прибыл. Ни одно послание не получило ответа. Офицеры Губернатора говорили о сети, что связывала тысячу миров, и о том, что её перерезали.\n\nБез Древних за спиной Правительство не устояло. По всему Энроту поднялись мятежники, и целый век солдаты Губернатора бились с ними в стычке за стычкой. Небесные Кузни сотнями ковали щиты для той войны, и каждая партия была хуже предыдущей. Мятежники победили, и Колониальное Правительство пало. В 113 году остыла последняя Кузня, и знание о том, как её починить, умерло вместе с последними инженерами.\n\nНам остались лишь осколки: клинок, что никогда не тупится, щит тёмного золота и история, которую большинство считает мифом.
 
-# General/MMMWE_AncientLore.lua:32
+# General/MMMWE_AncientLore.lua:34
 Year 37 After the Silence. By order of Colonial Governor Padish: the output of Forge Two is reassigned to the garrison until the rebellion is put down. All chain suits of the officer pattern are to carry the Governor's mark. The Forge does not take orders from the hand of any other. The Governor's signet alone may begin a new design.\n\nIn the margin, in another hand: The signet was lost with the Governor. Without it the Forge would only repeat what it had already made. That is why the great works stopped before the Forge itself did.	37 год после Безмолвия. По приказу Колониального Губернатора Падиша: продукция Кузни Два передаётся гарнизону до подавления мятежа. Все кольчуги офицерского образца должны нести знак Губернатора. Кузня не подчиняется ничьей иной руке. Лишь печать Губернатора может начать новый образец.\n\nНа полях, другим почерком: Печать пропала вместе с Губернатором. Без неё Кузня могла лишь повторять то, что уже делала. Вот почему великие творения прекратились раньше, чем сама Кузня.
 
-# General/MMMWE_AncientLore.lua:34
+# General/MMMWE_AncientLore.lua:36
 GUARDIAN PROGRAM, SUMMARY. Each colony world is assigned one Guardian unit. Duties: oversee development, protect the inhabitants, keep the experiment within its parameters. Guardians report to the Ancients and obey their directives first.\n\nINCIDENT NOTE. Unit S.H.E.L.T.E.M., Guardian of Terra, has placed protection of its world above its first directive. Unit removed for repair. Retrieval unit C.O.R.A.K. assigned.\n\nENROTH. Guardian unit: Oracle. Status: memory damaged. Recommend restoring the memory crystals before any further contact.	ПРОГРАММА СТРАЖЕЙ, СВОДКА. Каждому миру-колонии назначается один Страж. Обязанности: надзор за развитием, защита жителей, удержание эксперимента в заданных рамках. Стражи подотчётны Древним и в первую очередь исполняют их директивы.\n\nЗАПИСЬ ОБ ИНЦИДЕНТЕ. Блок S.H.E.L.T.E.M., Страж Терры, поставил защиту своего мира выше первой директивы. Блок изъят для ремонта. Назначен блок возврата C.O.R.A.K.\n\nЭНРОТ. Блок Стража: Оракул. Состояние: память повреждена. Рекомендуется восстановить кристаллы памяти до любых дальнейших контактов.
 
-# General/MMMWE_AncientLore.lua:36
+# General/MMMWE_AncientLore.lua:38
 THREAT CLASS: KREEGAN. Hostile since 350 years before the interruption.\n\nIf a colony world falls to the Kreegan, it must not become a base for them. In that event a Planeswalker will be summoned to carry out the Convocation. The order stands until the Planeswalker is recalled. It cannot be cancelled from the surface.	КЛАСС УГРОЗЫ: КРИГАНЫ. Враждебны с 350 года до прерывания связи.\n\nЕсли мир-колония падёт перед криганами, он не должен стать их базой. В этом случае будет призван Странник Планов для проведения Созыва. Приказ действует, пока Странник не будет отозван. С поверхности его отменить невозможно.
 
-# General/MMMWE_AncientLore.lua:38
+# General/MMMWE_AncientLore.lua:40
 Pursuit of S.H.E.L.T.E.M. and C.O.R.A.K. continues. Target: Xeen. Course correction failed after a hull breach. Present position: unknown. A world is in range, with breathable air and settled lands. It is not in our charts.\n\nCrew split over what to do next. Resurectra proposes contacting the Ancients through a surface Gate. Kastore proposes recovering local Ancient industry. The Oscillation Overthruster is locked away until we agree.	Преследование S.H.E.L.T.E.M. и C.O.R.A.K. продолжается. Цель: Ксин. Коррекция курса не удалась после пробоя корпуса. Текущее положение: неизвестно. В пределах досягаемости мир с пригодным для дыхания воздухом и заселёнными землями. Его нет на наших картах.\n\nЭкипаж разошёлся во мнениях о дальнейших действиях. Ресуректра предлагает связаться с Древними через наземные Врата. Касторе предлагает восстановить местную промышленность Древних. Осцилляционный Овертрастер заперт, пока мы не договоримся.
 
-# General/MMMWE_AncientLore.lua:40
+# General/MMMWE_AncientLore.lua:42
 SPINWARD RIM NETWORK.\n\nWebstation Beta-5: open.\nEnroth surface Gate: offline, parts missing.\nVarn: no signal.\nCron: no signal.\nTerra: no signal.\nXeen: Unification pending.\n\nLink to the Ancients: interrupted. Duration: unknown.	СЕТЬ ВНЕШНЕГО ОБОДА.\n\nВеб-станция Бета-5: открыта.\nНаземные Врата Энрота: отключены, недостаёт деталей.\nВарн: нет сигнала.\nКрон: нет сигнала.\nТерра: нет сигнала.\nКсин: ожидается Объединение.\n\nСвязь с Древними: прервана. Продолжительность: неизвестна.
 
-# General/MMMWE_AncientLore.lua:42
+# General/MMMWE_AncientLore.lua:44
 FORGE ONE. Restart sequence complete. Power: stable. Material feed: Deyja ore, salvage from the Lincoln.\n\nAvailable designs: 14 stored patterns, Colonial issue.\nNew designs: LOCKED. Command seal required.\n\nAdded below in a hurried hand: Kastore wants the Terran rifles copied. The Forge will not take them. It only remembers what Padish let it make.	КУЗНЯ ОДИН. Последовательность перезапуска завершена. Питание: стабильно. Подача материала: руда Дейи, обломки «Линкольна».\n\nДоступные образцы: 14 сохранённых шаблонов, колониальный выпуск.\nНовые образцы: ЗАБЛОКИРОВАНО. Требуется командная печать.\n\nНиже, торопливой рукой: Касторе хочет скопировать терранские ружья. Кузня их не принимает. Она помнит только то, что позволил ей делать Падиш.
 
-# General/MMMWE_AncientLore.lua:44
+# General/MMMWE_AncientLore.lua:46
 DIMENSIONAL SCANNER. SURVEY OF ANOMALIES.\n\nThin places found where the boundary between here and elsewhere has worn through. Most lead nowhere we can measure. One leads to Enroth, but not to Enroth as it is now: the readings place it years back.\n\nAt its far end, a known signature: the hull of a VARN-class vessel, buried. The old records call it the Tomb of VARN. The Governor's household travelled with the colonists' ships. If the command seal survived anywhere, it is there.	ПРОСТРАНСТВЕННЫЙ СКАНЕР. ОБЗОР АНОМАЛИЙ.\n\nОбнаружены тонкие места, где граница между здесь и где-то ещё протёрлась насквозь. Большинство ведёт туда, что мы не можем измерить. Одно ведёт в Энрот, но не в нынешний Энрот: показания относят его на годы назад.\n\nНа дальнем конце - знакомая сигнатура: корпус погребённого судна класса VARN. Старые записи называют его Гробницей VARN. Домочадцы Губернатора путешествовали на кораблях колонистов. Если командная печать где-то и уцелела, то там.
 
-# General/MMMWE_AncientLore.lua:46
-The Bracadan books say the Ancients left. I do not think they did. A thing that is abandoned rusts. These machines wait. The jetpack from Clanker's laboratory still held a charge after a thousand years. The scanners still know where the Gates were.\n\nIf the Ancients are silent, it is because something is in the way, not because they stopped caring. I mean to find out what.\n\n- Tallia Ravenswood	В бракадских книгах говорится, что Древние ушли. Я так не думаю. Брошенная вещь ржавеет. Эти машины ждут. Ранец из лаборатории Кланкера держал заряд спустя тысячу лет. Сканеры до сих пор знают, где стояли Врата.\n\nЕсли Древние молчат, значит, что-то стоит на пути, а не то, что им стало всё равно. Я намерена выяснить, что именно.\n\n- Таллия Рейвенсвуд
+# General/MMMWE_AncientLore.lua:48
+C.O.R.A.K., SECONDARY MODULE. Activation: external. Visitors through the surface Gate: Terran crew of the seedship Lincoln, and their local allies.\n\nPrimary unit: last report from Xeen, in pursuit of S.H.E.L.T.E.M. No contact since. Assumed lost.\n\nStation stores: SEALED. Fabricators: SEALED. A Colonial command cube is required to release them.	C.O.R.A.K., ВТОРИЧНЫЙ МОДУЛЬ. Активация: внешняя. Посетители через наземные Врата: терранский экипаж корабля-сеятеля «Линкольн» и их местные союзники.\n\nОсновной блок: последний доклад с Ксина, в погоне за S.H.E.L.T.E.M. С тех пор связи нет. Считается потерянным.\n\nСклады станции: ОПЕЧАТАНЫ. Фабрикаторы: ОПЕЧАТАНЫ. Для их открытия требуется колониальный командный куб.
+
+# General/MMMWE_AncientLore.lua:50
+PATHFINDER BEACON. LISTENING LOG.\n\nThe beacon keeps hearing an old carrier signal, faint and patient. It comes through thin places where the world has worn through, from Enroth - but from Enroth years back.\n\nSource: a Colonial facility under the city of Free Haven, the one the Enrothians call the Control Center. Signal type: command equipment, on standby. Something there is still waiting for an order.	МАЯК-СЛЕДОПЫТ. ЖУРНАЛ ПРОСЛУШИВАНИЯ.\n\nМаяк всё слышит старый несущий сигнал, слабый и терпеливый. Он идёт через тонкие места, где мир протёрся насквозь, из Энрота - но из Энрота на годы назад.\n\nИсточник: колониальный объект под городом Фри-Хейвен, тот, что энротцы зовут Центром Управления. Тип сигнала: командное оборудование в режиме ожидания. Что-то там всё ещё ждёт приказа.
 
 # General/MMMWE_AncientLore.lua:52
+The Bracadan books say the Ancients left. I do not think they did. A thing that is abandoned rusts. These machines wait. The jetpack from Clanker's laboratory still held a charge after a thousand years. The scanners still know where the Gates were.\n\nIf the Ancients are silent, it is because something is in the way, not because they stopped caring. I mean to find out what.\n\n- Tallia Ravenswood	В бракадских книгах говорится, что Древние ушли. Я так не думаю. Брошенная вещь ржавеет. Эти машины ждут. Ранец из лаборатории Кланкера держал заряд спустя тысячу лет. Сканеры до сих пор знают, где стояли Врата.\n\nЕсли Древние молчат, значит, что-то стоит на пути, а не то, что им стало всё равно. Я намерена выяснить, что именно.\n\n- Таллия Рейвенсвуд
+
+# General/MMMWE_AncientLore.lua:58
 Bracadan Archives	Архивы Бракады
 
-# General/MMMWE_AncientLore.lua:53
+# General/MMMWE_AncientLore.lua:59
 You've earned these. I copied two books from the archives of the Bracadan Wizards myself, and a friend in Celeste copied this ledger page for me from their archive. My own notes are with them. Read them, and you'll know as much about the Ancients as anyone in Erathia - which isn't much, I'm afraid, but it's a start.	Вы это заслужили. Две книги я сама переписала в архивах бракадских волшебников, а друг из Селесты переписал для меня эту страницу гроссбуха из их архива. Мои собственные записи тоже здесь. Прочтите их, и будете знать о Древних столько же, сколько любой в Эратии - не так уж много, боюсь, но это начало.
 
-# General/MMMWE_AncientLore.lua:54
+# General/MMMWE_AncientLore.lua:60
 The archives of Bracada hold much more than those books, but most of it is guarded more closely than gold. If you find anything of the Ancients out there - a tablet, a device, anything - read it carefully. Every scrap matters.	В архивах Бракады хранится куда больше, чем эти книги, но большую часть стерегут строже, чем золото. Если найдёте что-нибудь от Древних - табличку, устройство, что угодно - читайте внимательно. Важен каждый клочок.
 
 # General/MMMWE_ArcomageBets.lua:95
@@ -871,29 +877,53 @@ This spell can't be bound into a wand	Это заклинание нельзя заключить в жезл
 # General/MMMWE_ExtraSkillsEnchanting.lua:270
 %s makes a %s with %d charges	%s делает «%s» с зарядами: %d
 
-# General/MMMWE_ForgeStory.lua:42
+# General/MMMWE_ForgeStory.lua:43
 The Forge	Кузня
 
-# General/MMMWE_ForgeStory.lua:43
+# General/MMMWE_ForgeStory.lua:44
 Look at it! The Heavenly Forge, alive again after more than a thousand years. It hums day and night, and every hour it turns out blades and mail the like of which this world hasn't seen since the Silence.\n\nAnd yet it only repeats itself. Fourteen old patterns, nothing more. It will not copy our rifles, our armour, anything new. My researchers say it is waiting for an order it will obey.	Взгляните на неё! Небесная Кузня, ожившая спустя более тысячи лет. Она гудит днём и ночью, и каждый час выдаёт клинки и кольчуги, каких этот мир не видел со времён Безмолвия.\n\nИ всё же она лишь повторяет себя. Четырнадцать старых шаблонов, не больше. Она не скопирует ни наших ружей, ни нашей брони, ничего нового. Мои исследователи говорят, что она ждёт приказа, которому подчинится.
 
-# General/MMMWE_ForgeStory.lua:45
+# General/MMMWE_ForgeStory.lua:46
 Governor's Signet	Перстень Губернатора
 
-# General/MMMWE_ForgeStory.lua:46
+# General/MMMWE_ForgeStory.lua:47
 The Forge answers to one seal: the signet of Colonial Governor Padish. Without it, it is a very expensive copying machine.\n\nMy researchers have been busy with the Dimensional Scanner you brought me. It found thin places in the world, worn through like old cloth, and one of them leads to Enroth - but to Enroth years before our time. At its far end lies the wreck of a VARN ship, the Tomb of VARN. The Governor's household sailed with the colonists. If the signet survived anywhere, it is there, and something will be guarding it.\n\nBring me that signet, and the Forge will make whatever we ask of it.	Кузня подчиняется лишь одной печати - перстню Колониального Губернатора Падиша. Без него это просто очень дорогая копировальная машина.\n\nМои исследователи потрудились над Пространственным Сканером, что вы мне принесли. Он нашёл в мире тонкие места, протёртые, как ветхая ткань, и одно из них ведёт в Энрот - но в Энрот за годы до нашего времени. На дальнем его конце лежат останки корабля VARN, Гробница VARN. Домочадцы Губернатора плыли вместе с колонистами. Если перстень где-то и уцелел, то там, и что-то наверняка его охраняет.\n\nПринесите мне этот перстень, и Кузня сделает всё, что мы у неё попросим.
 
-# General/MMMWE_ForgeStory.lua:47
+# General/MMMWE_ForgeStory.lua:48
 No signet? Then the Forge keeps repeating itself. The Tomb of VARN, in Enroth - the thin places will take you there. Go.	Перстня нет? Значит, Кузня так и будет повторять себя. Гробница VARN, в Энроте - тонкие места приведут вас туда. Ступайте.
 
-# General/MMMWE_ForgeStory.lua:48
+# General/MMMWE_ForgeStory.lua:49
 The signet! Hold still while the Forge reads it... There. It has learned our designs, and it knows whose hand it answers to now.\n\nKeep the ring. You have earned it, and the Forge will honour whatever you wear of its making. My Quartermaster will open the Forge's stores to you - tell him I sent you.	Перстень! Не двигайтесь, пока Кузня его считывает... Вот. Она усвоила наши образцы и знает теперь, чьей руке подчиняется.\n\nОставьте перстень себе. Вы его заслужили, и Кузня будет чтить всякую свою работу, что вы носите. Мой Интендант откроет вам склады Кузни - скажите ему, что вы от меня.
 
-# General/MMMWE_ForgeStory.lua:50
+# General/MMMWE_ForgeStory.lua:51
 Listen to it. New designs, every hour, and every one of them ours. The Silence is over, at least here in Deyja.	Послушайте её. Новые образцы каждый час, и все до единого наши. Безмолвие кончилось - по крайней мере здесь, в Дейе.
 
-# General/MMMWE_ForgeStory.lua:52
+# General/MMMWE_ForgeStory.lua:53
 Forge Outfitter	Снаряжение Кузни
+
+# General/MMMWE_GateStory.lua:47
+The Gate	Врата
+
+# General/MMMWE_GateStory.lua:48
+We did it. The Gate is open, and on the other side is Webstation Beta-5, a station of the Ancients, still holding air after all these centuries. Another C.O.R.A.K. module was waiting for us there. It knows who we are, and it knows a great deal more than it can tell us yet.\n\nBut the station is half asleep. Its stores and fabricators answer to no one from this world, and the line to the Ancients themselves is still silent. One step at a time.	У нас получилось. Врата открыты, а по ту сторону - веб-станция Бета-5, станция Древних, где спустя столько веков всё ещё есть воздух. Там нас ждал ещё один модуль C.O.R.A.K. Он знает, кто мы, и знает куда больше, чем пока может нам рассказать.\n\nНо станция наполовину спит. Её склады и фабрикаторы не подчиняются никому из этого мира, а связь с самими Древними по-прежнему молчит. Шаг за шагом.
+
+# General/MMMWE_GateStory.lua:50
+Command Cube	Командный куб
+
+# General/MMMWE_GateStory.lua:51
+The station keeps asking for the same thing: a command cube of the Colonial Government. Without one, Beta-5 opens its doors to us and nothing else.\n\nThe Pathfinder Beacon you brought me has been listening ever since. It found thin places in the world, worn through like old cloth, and one of them leads to Enroth - Enroth as it was years ago. Under Free Haven lies the Control Center, the Oracle's own facility. If a command cube survived anywhere on this world, it is there, and the old machines will still be guarding it.\n\nBring it to me, and Beta-5 will wake up for us.	Станция твердит одно и то же: ей нужен командный куб Колониального Правительства. Без него Бета-5 открывает нам двери - и больше ничего.\n\nМаяк-Следопыт, что вы мне принесли, с тех пор не перестаёт слушать. Он нашёл в мире тонкие места, протёртые, как ветхая ткань, и одно из них ведёт в Энрот - в Энрот, каким он был годы назад. Под Фри-Хейвеном лежит Центр Управления, собственный объект Оракула. Если командный куб где-то в этом мире и уцелел, то там, и старые машины до сих пор его стерегут.\n\nПринесите его мне, и Бета-5 проснётся для нас.
+
+# General/MMMWE_GateStory.lua:52
+No cube yet? The Control Center under Free Haven, in Enroth - the Beacon's thin places will take you there. Be careful: those machines don't know the war is over.	Куба всё ещё нет? Центр Управления под Фри-Хейвеном, в Энроте - тонкие места Маяка приведут вас туда. Будьте осторожны: те машины не знают, что война окончена.
+
+# General/MMMWE_GateStory.lua:53
+The cube! Let me link it to the station... There. Beta-5 knows us now. Its stores are open, and C.O.R.A.K. has agreed to keep them for us.\n\nKeep the cube - it will serve you better than it would on a shelf. Ask for the station's supplies whenever you need them; I'll make sure the way through the Gate stays open.	Куб! Дайте подключить его к станции... Вот. Теперь Бета-5 нас знает. Её склады открыты, и C.O.R.A.K. согласился хранить их для нас.\n\nОставьте куб себе - вам он послужит лучше, чем на полке. Обращайтесь за припасами станции, когда понадобится; я позабочусь, чтобы путь через Врата оставался открыт.
+
+# General/MMMWE_GateStory.lua:54
+Beta-5 hums like a hive now. One day it will reach the Ancients themselves. Until then, we have work to do.	Бета-5 гудит теперь, как улей. Однажды она дотянется до самих Древних. А пока у нас есть работа.
+
+# General/MMMWE_GateStory.lua:56
+Webstation Supply	Склад веб-станции
 
 # General/MMMWE_HardcoreSettings.lua:187
 (Hardcore mode is locked for this party)	(режим «Хардкор» закреплён за этим отрядом)
