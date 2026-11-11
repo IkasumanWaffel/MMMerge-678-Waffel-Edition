@@ -15,6 +15,8 @@
 	   done its checks (the Alchemy rank, explosions) on the first pair.
 	   Hold Ctrl while putting a reagent into an empty bottle: every other empty bottle is
 	   filled the same way while the reagent lasts.
+	   Hold a digit with Ctrl to brew at most that many more (Ctrl+3: three more; 0 means
+	   ten); Ctrl alone brews as many as there are.
 	   What the character has: the backpack, the potions and bottles in the bottle box
 	   carried in it (they are changed inside the box; not while the box is open), and for
 	   reagents the apothecary satchels in the backpack.
@@ -166,7 +168,17 @@ local ITEM_SIZE = 0x24
 local BOTTLE_BOX = 193
 local FIRST_BOX_ID = 1000
 
-local Batch      -- {Player = pointer, Kind = "mix" / "reagent", Poured, Into, Result, Power, Slot}
+local Batch      -- {Player = pointer, Kind = "mix" / "reagent", Poured, Into, Result, Power, Slot, Limit}
+
+-- (11.11.26) how many more to brew: a digit held with Ctrl (the top row or the numeric
+-- keypad; 0 means 10), nil (as many as there are) when no digit is held
+local function batchLimit()
+	for d = 0, 9 do
+		if Keys.IsPressed(0x30 + d) or Keys.IsPressed(0x60 + d) then
+			return d == 0 and 10 or d
+		end
+	end
+end
 
 -- 0x415AC2: the game is turning the potion at slot [ebp-0Ch] of the character esi into
 -- the result [ebp-4] of a mix (the potion in hand is still on the mouse)
@@ -178,7 +190,8 @@ mem.autohook(0x415AC2, function(d)
 	local into = i4[d.esi + 0x4A8 + slot * ITEM_SIZE]
 	local poured = Mouse.Item.Number
 	if result > 5 and poured ~= 0 and into ~= 0 and poured ~= into then
-		Batch = {Kind = "mix", Player = d.esi, Poured = poured, Into = into, Result = result, Slot = slot + 1}
+		Batch = {Kind = "mix", Player = d.esi, Poured = poured, Into = into, Result = result, Slot = slot + 1,
+			Limit = batchLimit()}
 	end
 end)
 
@@ -192,7 +205,7 @@ mem.autohook(0x415885, function(d)
 	local reagent = Mouse.Item.Number
 	if reagent ~= 0 and i4[p] > BOTTLE then
 		Batch = {Kind = "reagent", Player = d.esi, Poured = reagent, Into = BOTTLE, Result = i4[p],
-			Power = i4[p + 4], Slot = slot + 1}
+			Power = i4[p + 4], Slot = slot + 1, Limit = batchLimit()}
 	end
 end)
 
@@ -302,14 +315,14 @@ local function brewRest(b)
 	local n
 	if b.Kind == "reagent" then
 		for _, u in ipairs(satchelUnits(pl, b.Poured)) do poured[#poured + 1] = u end
-		n = math.min(#poured, #into)
+		n = math.min(#poured, #into, b.Limit or math.huge)
 		for i = 1, n do
 			into[i].Set(b.Result, b.Power)
 			poured[i].Remove()
 			if into[i].InBox then fromBox = fromBox + 1 end
 		end
 	else
-		n = math.min(#poured, #into)
+		n = math.min(#poured, #into, b.Limit or math.huge)
 		for i = 1, n do
 			local a, t = poured[i], into[i]
 			t.Set(b.Result, math.floor((t.Bonus + a.Bonus) / 2))
