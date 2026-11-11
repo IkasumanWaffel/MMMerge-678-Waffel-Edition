@@ -40,6 +40,39 @@ The Plasma Edge flickers: its cell is nearly empty.
 # General/MMMWE_AncientArtifacts.lua:283
 Plasma Edge: %d%%	
 
+# General/MMMWE_AncientLore.lua:26
+On Those Who Came Before\n\nLong before Erathia had kings, our world was a garden tended by the Ancients. They did not walk among our forebears as gods do in the temple tales. They sent them here. The oldest records speak of the Crossing: a vessel named VARN MCMIV that sailed between the stars for generations, carrying men, elves, dwarves and gnomes to a world made ready for them. Smaller VARN ferries later carried settlers across the sea to Jadame.\n\nThe Ancients never ruled here in person. They set a Colonial Government in their place, and gave it tools we would call miracles: lights without flame, voices carried across seas, and the Heavenly Forges. For centuries the colonies prospered. The archives call it the Time of Wonders.\n\nThen came the Silence, and the voices stopped.	
+
+# General/MMMWE_AncientLore.lua:28
+A Chronicle of the Silence\n\nThe last days before the Silence were already dark. The chronicles name Mayor Alan of Aliant, who woke an Ancient weapon in a quarrel with his neighbours. The Day of Fire that followed burned the city of Vissias, and much of southern Enroth with it.\n\nThen, in the year we now count as the first, the Colonial Government lost all word from the Ancients. No ship came. No message answered. The Governor's officers spoke of a network that had bound a thousand worlds together, and said it had been cut.\n\nWithout the Ancients behind it, the Government could not hold. Rebels rose across Enroth, and for a century the Governor's soldiers fought them in skirmish after skirmish. The Heavenly Forges made shields by the hundred for that war, each batch worse than the last. The rebels won, and the Colonial Government fell. In the year 113 the last Forge went cold, and the knowledge to repair it died with the last engineers.\n\nWhat we keep today are pieces: a blade that never dulls, a shield of dark gold, and a story most people believe is a myth.	
+
+# General/MMMWE_AncientLore.lua:30
+Year 37 After the Silence. By order of Colonial Governor Padish: the output of Forge Two is reassigned to the garrison until the rebellion is put down. All chain suits of the officer pattern are to carry the Governor's mark. The Forge does not take orders from the hand of any other. The Governor's signet alone may begin a new design.\n\nIn the margin, in another hand: The signet was lost with the Governor. Without it the Forge would only repeat what it had already made. That is why the great works stopped before the Forge itself did.	
+
+# General/MMMWE_AncientLore.lua:32
+GUARDIAN PROGRAM, SUMMARY. Each colony world is assigned one Guardian unit. Duties: oversee development, protect the inhabitants, keep the experiment within its parameters. Guardians report to the Ancients and obey their directives first.\n\nINCIDENT NOTE. Unit S.H.E.L.T.E.M., Guardian of Terra, has placed protection of its world above its first directive. Unit removed for repair. Retrieval unit C.O.R.A.K. assigned.\n\nENROTH. Guardian unit: Oracle. Status: memory damaged. Recommend restoring the memory crystals before any further contact.	
+
+# General/MMMWE_AncientLore.lua:34
+THREAT CLASS: KREEGAN. Hostile since 350 years before the interruption.\n\nIf a colony world falls to the Kreegan, it must not become a base for them. In that event a Planeswalker will be summoned to carry out the Convocation. The order stands until the Planeswalker is recalled. It cannot be cancelled from the surface.	
+
+# General/MMMWE_AncientLore.lua:36
+Pursuit of S.H.E.L.T.E.M. and C.O.R.A.K. continues. Target: Xeen. Course correction failed after a hull breach. Present position: unknown. A world is in range, with breathable air and settled lands. It is not in our charts.\n\nCrew split over what to do next. Resurectra proposes contacting the Ancients through a surface Gate. Kastore proposes recovering local Ancient industry. The Oscillation Overthruster is locked away until we agree.	
+
+# General/MMMWE_AncientLore.lua:38
+SPINWARD RIM NETWORK.\n\nWebstation Beta-5: open.\nEnroth surface Gate: offline, parts missing.\nVarn: no signal.\nCron: no signal.\nTerra: no signal.\nXeen: Unification pending.\n\nLink to the Ancients: interrupted. Duration: unknown.	
+
+# General/MMMWE_AncientLore.lua:40
+The Bracadan books say the Ancients left. I do not think they did. A thing that is abandoned rusts. These machines wait. The jetpack from Clanker's laboratory still held a charge after a thousand years. The scanners still know where the Gates were.\n\nIf the Ancients are silent, it is because something is in the way, not because they stopped caring. I mean to find out what.\n\n- Tallia Ravenswood	
+
+# General/MMMWE_AncientLore.lua:46
+Bracadan Archives	
+
+# General/MMMWE_AncientLore.lua:47
+You've earned these. I copied two books from the archives of the Bracadan Wizards myself, and a friend in Celeste copied this ledger page for me from their archive. My own notes are with them. Read them, and you'll know as much about the Ancients as anyone in Erathia - which isn't much, I'm afraid, but it's a start.	
+
+# General/MMMWE_AncientLore.lua:48
+The archives of Bracada hold much more than those books, but most of it is guarded more closely than gold. If you find anything of the Ancients out there - a tablet, a device, anything - read it carefully. Every scrap matters.	
+
 # General/MMMWE_ArcomageBets.lua:95
 Stake	
 
@@ -913,10 +946,10 @@ Confirm
 # General/MMMWE_HardcoreSettings.lua:339
 Cancel	
 
-# General/MMMWE_InventorySort.lua:486 plural, English plural: Party gathered: %d items moved
+# General/MMMWE_InventorySort.lua:494 plural, English plural: Party gathered: %d items moved
 Party gathered: %d item moved	
 
-# General/MMMWE_InventorySort.lua:666 plural, English plural: %d items
+# General/MMMWE_InventorySort.lua:674 plural, English plural: %d items
 %d item	
 
 # General/MMMWE_InventorySort.lua:108
@@ -928,49 +961,49 @@ unidentified items
 # General/MMMWE_InventorySort.lua:115
 broken items	
 
-# General/MMMWE_InventorySort.lua:465, General/MMMWE_InventorySort.lua:481, General/MMMWE_InventorySort.lua:651
+# General/MMMWE_InventorySort.lua:473, General/MMMWE_InventorySort.lua:489, General/MMMWE_InventorySort.lua:659
 Put down the item you are holding first	
 
-# General/MMMWE_InventorySort.lua:472
+# General/MMMWE_InventorySort.lua:480
 Backpack sorted	
 
-# General/MMMWE_InventorySort.lua:474
+# General/MMMWE_InventorySort.lua:482
 The backpack is too full to rearrange	
 
-# General/MMMWE_InventorySort.lua:488, General/MMMWE_InventorySort.lua:673
+# General/MMMWE_InventorySort.lua:496, General/MMMWE_InventorySort.lua:681
 , %d didn't fit	
 
-# General/MMMWE_InventorySort.lua:491
+# General/MMMWE_InventorySort.lua:499
 , some backpacks too full to sort	
 
-# General/MMMWE_InventorySort.lua:656
+# General/MMMWE_InventorySort.lua:664
 Can't tell which chest is open	
 
-# General/MMMWE_InventorySort.lua:660
+# General/MMMWE_InventorySort.lua:668
 There is no gold here	
 
-# General/MMMWE_InventorySort.lua:660
+# General/MMMWE_InventorySort.lua:668
 Nothing to take	
 
-# General/MMMWE_InventorySort.lua:669
+# General/MMMWE_InventorySort.lua:677
 %d gold	
 
-# General/MMMWE_InventorySort.lua:671
+# General/MMMWE_InventorySort.lua:679
 Took 	
 
-# General/MMMWE_InventorySort.lua:671
+# General/MMMWE_InventorySort.lua:679
  and 	
 
-# General/MMMWE_InventorySort.lua:671
+# General/MMMWE_InventorySort.lua:679
 Took nothing	
 
-# General/MMMWE_InventorySort.lua:710
+# General/MMMWE_InventorySort.lua:718
 Take all	
 
-# General/MMMWE_InventorySort.lua:711
+# General/MMMWE_InventorySort.lua:719
 Take gold	
 
-# General/MMMWE_InventorySort.lua:712
+# General/MMMWE_InventorySort.lua:720
 Take valued	
 
 # General/MMMWE_ItemDurability.lua:335

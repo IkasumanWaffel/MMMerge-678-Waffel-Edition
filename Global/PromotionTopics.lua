@@ -2561,6 +2561,27 @@ Quest{
 		},
 	}
 
+-- the archives: copies of the books of the Ancients' lore (General/MMMWE_AncientLore.lua)
+local TA = Merge.Functions.TalliaArchives
+Quest{
+	Slot = 3,
+	CanShow = || Q.MM7_Promo_Engineer_1 == "Done",
+	Ungive = function()
+		if not vars.MMMWE_TalliaArchives then
+			vars.MMMWE_TalliaArchives = true
+			for _, n in ipairs{1529, 1531, 1532, 1538} do
+				evt.Add("Inventory", n)
+			end
+			Message(TA.First)
+		else
+			Message(TA.Again)
+		end
+	end,
+	Texts = {
+		Topic = TA.Topic,
+	}
+}
+
 -- Second good
 QuestNPC = 419	-- Resurectra
 

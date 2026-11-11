@@ -40,6 +40,39 @@ The Plasma Edge flickers: its cell is nearly empty.	Плазменный клинок мерцает: е
 # General/MMMWE_AncientArtifacts.lua:283
 Plasma Edge: %d%%	Плазменный клинок: %d%%
 
+# General/MMMWE_AncientLore.lua:26
+On Those Who Came Before\n\nLong before Erathia had kings, our world was a garden tended by the Ancients. They did not walk among our forebears as gods do in the temple tales. They sent them here. The oldest records speak of the Crossing: a vessel named VARN MCMIV that sailed between the stars for generations, carrying men, elves, dwarves and gnomes to a world made ready for them. Smaller VARN ferries later carried settlers across the sea to Jadame.\n\nThe Ancients never ruled here in person. They set a Colonial Government in their place, and gave it tools we would call miracles: lights without flame, voices carried across seas, and the Heavenly Forges. For centuries the colonies prospered. The archives call it the Time of Wonders.\n\nThen came the Silence, and the voices stopped.	О тех, кто был прежде\n\nЗадолго до того, как у Эратии появились короли, наш мир был садом, за которым ухаживали Древние. Они не ходили среди наших предков, как боги в храмовых сказаниях. Они прислали их сюда. Древнейшие записи говорят о Переходе: корабль под названием VARN MCMIV поколениями плыл меж звёзд, неся людей, эльфов, гномов и дварфов в мир, подготовленный для них. Позже малые паромы VARN перевезли поселенцев через море в Джадам.\n\nДревние никогда не правили здесь сами. Вместо себя они поставили Колониальное Правительство и дали ему орудия, которые мы назвали бы чудесами: свет без огня, голоса, летящие через моря, и Небесные Кузни. Веками колонии процветали. Архивы называют то время Эпохой Чудес.\n\nА потом пришло Безмолвие, и голоса смолкли.
+
+# General/MMMWE_AncientLore.lua:28
+A Chronicle of the Silence\n\nThe last days before the Silence were already dark. The chronicles name Mayor Alan of Aliant, who woke an Ancient weapon in a quarrel with his neighbours. The Day of Fire that followed burned the city of Vissias, and much of southern Enroth with it.\n\nThen, in the year we now count as the first, the Colonial Government lost all word from the Ancients. No ship came. No message answered. The Governor's officers spoke of a network that had bound a thousand worlds together, and said it had been cut.\n\nWithout the Ancients behind it, the Government could not hold. Rebels rose across Enroth, and for a century the Governor's soldiers fought them in skirmish after skirmish. The Heavenly Forges made shields by the hundred for that war, each batch worse than the last. The rebels won, and the Colonial Government fell. In the year 113 the last Forge went cold, and the knowledge to repair it died with the last engineers.\n\nWhat we keep today are pieces: a blade that never dulls, a shield of dark gold, and a story most people believe is a myth.	Хроника Безмолвия\n\nПоследние дни перед Безмолвием и так были мрачны. Хроники называют мэра Алана из Алианта, который пробудил оружие Древних в ссоре с соседями. День Огня, что последовал за этим, сжёг город Виссиас, а с ним и большую часть южного Энрота.\n\nЗатем, в год, который мы теперь считаем первым, Колониальное Правительство потеряло всякую связь с Древними. Ни один корабль не прибыл. Ни одно послание не получило ответа. Офицеры Губернатора говорили о сети, что связывала тысячу миров, и о том, что её перерезали.\n\nБез Древних за спиной Правительство не устояло. По всему Энроту поднялись мятежники, и целый век солдаты Губернатора бились с ними в стычке за стычкой. Небесные Кузни сотнями ковали щиты для той войны, и каждая партия была хуже предыдущей. Мятежники победили, и Колониальное Правительство пало. В 113 году остыла последняя Кузня, и знание о том, как её починить, умерло вместе с последними инженерами.\n\nНам остались лишь осколки: клинок, что никогда не тупится, щит тёмного золота и история, которую большинство считает мифом.
+
+# General/MMMWE_AncientLore.lua:30
+Year 37 After the Silence. By order of Colonial Governor Padish: the output of Forge Two is reassigned to the garrison until the rebellion is put down. All chain suits of the officer pattern are to carry the Governor's mark. The Forge does not take orders from the hand of any other. The Governor's signet alone may begin a new design.\n\nIn the margin, in another hand: The signet was lost with the Governor. Without it the Forge would only repeat what it had already made. That is why the great works stopped before the Forge itself did.	37 год после Безмолвия. По приказу Колониального Губернатора Падиша: продукция Кузни Два передаётся гарнизону до подавления мятежа. Все кольчуги офицерского образца должны нести знак Губернатора. Кузня не подчиняется ничьей иной руке. Лишь печать Губернатора может начать новый образец.\n\nНа полях, другим почерком: Печать пропала вместе с Губернатором. Без неё Кузня могла лишь повторять то, что уже делала. Вот почему великие творения прекратились раньше, чем сама Кузня.
+
+# General/MMMWE_AncientLore.lua:32
+GUARDIAN PROGRAM, SUMMARY. Each colony world is assigned one Guardian unit. Duties: oversee development, protect the inhabitants, keep the experiment within its parameters. Guardians report to the Ancients and obey their directives first.\n\nINCIDENT NOTE. Unit S.H.E.L.T.E.M., Guardian of Terra, has placed protection of its world above its first directive. Unit removed for repair. Retrieval unit C.O.R.A.K. assigned.\n\nENROTH. Guardian unit: Oracle. Status: memory damaged. Recommend restoring the memory crystals before any further contact.	ПРОГРАММА СТРАЖЕЙ, СВОДКА. Каждому миру-колонии назначается один Страж. Обязанности: надзор за развитием, защита жителей, удержание эксперимента в заданных рамках. Стражи подотчётны Древним и в первую очередь исполняют их директивы.\n\nЗАПИСЬ ОБ ИНЦИДЕНТЕ. Блок S.H.E.L.T.E.M., Страж Терры, поставил защиту своего мира выше первой директивы. Блок изъят для ремонта. Назначен блок возврата C.O.R.A.K.\n\nЭНРОТ. Блок Стража: Оракул. Состояние: память повреждена. Рекомендуется восстановить кристаллы памяти до любых дальнейших контактов.
+
+# General/MMMWE_AncientLore.lua:34
+THREAT CLASS: KREEGAN. Hostile since 350 years before the interruption.\n\nIf a colony world falls to the Kreegan, it must not become a base for them. In that event a Planeswalker will be summoned to carry out the Convocation. The order stands until the Planeswalker is recalled. It cannot be cancelled from the surface.	КЛАСС УГРОЗЫ: КРИГАНЫ. Враждебны с 350 года до прерывания связи.\n\nЕсли мир-колония падёт перед криганами, он не должен стать их базой. В этом случае будет призван Странник Планов для проведения Созыва. Приказ действует, пока Странник не будет отозван. С поверхности его отменить невозможно.
+
+# General/MMMWE_AncientLore.lua:36
+Pursuit of S.H.E.L.T.E.M. and C.O.R.A.K. continues. Target: Xeen. Course correction failed after a hull breach. Present position: unknown. A world is in range, with breathable air and settled lands. It is not in our charts.\n\nCrew split over what to do next. Resurectra proposes contacting the Ancients through a surface Gate. Kastore proposes recovering local Ancient industry. The Oscillation Overthruster is locked away until we agree.	Преследование S.H.E.L.T.E.M. и C.O.R.A.K. продолжается. Цель: Ксин. Коррекция курса не удалась после пробоя корпуса. Текущее положение: неизвестно. В пределах досягаемости мир с пригодным для дыхания воздухом и заселёнными землями. Его нет на наших картах.\n\nЭкипаж разошёлся во мнениях о дальнейших действиях. Ресуректра предлагает связаться с Древними через наземные Врата. Касторе предлагает восстановить местную промышленность Древних. Осцилляционный Овертрастер заперт, пока мы не договоримся.
+
+# General/MMMWE_AncientLore.lua:38
+SPINWARD RIM NETWORK.\n\nWebstation Beta-5: open.\nEnroth surface Gate: offline, parts missing.\nVarn: no signal.\nCron: no signal.\nTerra: no signal.\nXeen: Unification pending.\n\nLink to the Ancients: interrupted. Duration: unknown.	СЕТЬ ВНЕШНЕГО ОБОДА.\n\nВеб-станция Бета-5: открыта.\nНаземные Врата Энрота: отключены, недостаёт деталей.\nВарн: нет сигнала.\nКрон: нет сигнала.\nТерра: нет сигнала.\nКсин: ожидается Объединение.\n\nСвязь с Древними: прервана. Продолжительность: неизвестна.
+
+# General/MMMWE_AncientLore.lua:40
+The Bracadan books say the Ancients left. I do not think they did. A thing that is abandoned rusts. These machines wait. The jetpack from Clanker's laboratory still held a charge after a thousand years. The scanners still know where the Gates were.\n\nIf the Ancients are silent, it is because something is in the way, not because they stopped caring. I mean to find out what.\n\n- Tallia Ravenswood	В бракадских книгах говорится, что Древние ушли. Я так не думаю. Брошенная вещь ржавеет. Эти машины ждут. Ранец из лаборатории Кланкера держал заряд спустя тысячу лет. Сканеры до сих пор знают, где стояли Врата.\n\nЕсли Древние молчат, значит, что-то стоит на пути, а не то, что им стало всё равно. Я намерена выяснить, что именно.\n\n- Таллия Рейвенсвуд
+
+# General/MMMWE_AncientLore.lua:46
+Bracadan Archives	Архивы Бракады
+
+# General/MMMWE_AncientLore.lua:47
+You've earned these. I copied two books from the archives of the Bracadan Wizards myself, and a friend in Celeste copied this ledger page for me from their archive. My own notes are with them. Read them, and you'll know as much about the Ancients as anyone in Erathia - which isn't much, I'm afraid, but it's a start.	Вы это заслужили. Две книги я сама переписала в архивах бракадских волшебников, а друг из Селесты переписал для меня эту страницу гроссбуха из их архива. Мои собственные записи тоже здесь. Прочтите их, и будете знать о Древних столько же, сколько любой в Эратии - не так уж много, боюсь, но это начало.
+
+# General/MMMWE_AncientLore.lua:48
+The archives of Bracada hold much more than those books, but most of it is guarded more closely than gold. If you find anything of the Ancients out there - a tablet, a device, anything - read it carefully. Every scrap matters.	В архивах Бракады хранится куда больше, чем эти книги, но большую часть стерегут строже, чем золото. Если найдёте что-нибудь от Древних - табличку, устройство, что угодно - читайте внимательно. Важен каждый клочок.
+
 # General/MMMWE_ArcomageBets.lua:95
 Stake	Ставка
 
@@ -913,10 +946,10 @@ Confirm	Подтвердить
 # General/MMMWE_HardcoreSettings.lua:339
 Cancel	Отмена
 
-# General/MMMWE_InventorySort.lua:486 plural, English plural: Party gathered: %d items moved
+# General/MMMWE_InventorySort.lua:494 plural, English plural: Party gathered: %d items moved
 Party gathered: %d item moved	Отряд собран: перемещён %d предмет|Отряд собран: перемещено %d предмета|Отряд собран: перемещено %d предметов
 
-# General/MMMWE_InventorySort.lua:666 plural, English plural: %d items
+# General/MMMWE_InventorySort.lua:674 plural, English plural: %d items
 %d item	%d предмет|%d предмета|%d предметов
 
 # General/MMMWE_InventorySort.lua:108
@@ -928,49 +961,49 @@ unidentified items	неопознанные предметы
 # General/MMMWE_InventorySort.lua:115
 broken items	сломанные предметы
 
-# General/MMMWE_InventorySort.lua:465, General/MMMWE_InventorySort.lua:481, General/MMMWE_InventorySort.lua:651
+# General/MMMWE_InventorySort.lua:473, General/MMMWE_InventorySort.lua:489, General/MMMWE_InventorySort.lua:659
 Put down the item you are holding first	Сначала положите предмет, который держите
 
-# General/MMMWE_InventorySort.lua:472
+# General/MMMWE_InventorySort.lua:480
 Backpack sorted	Рюкзак разобран
 
-# General/MMMWE_InventorySort.lua:474
+# General/MMMWE_InventorySort.lua:482
 The backpack is too full to rearrange	Рюкзак слишком полон, чтобы его разобрать
 
-# General/MMMWE_InventorySort.lua:488, General/MMMWE_InventorySort.lua:673
+# General/MMMWE_InventorySort.lua:496, General/MMMWE_InventorySort.lua:681
 , %d didn't fit	, не поместилось: %d
 
-# General/MMMWE_InventorySort.lua:491
+# General/MMMWE_InventorySort.lua:499
 , some backpacks too full to sort	, некоторые рюкзаки слишком полны
 
-# General/MMMWE_InventorySort.lua:656
+# General/MMMWE_InventorySort.lua:664
 Can't tell which chest is open	Не удаётся понять, какой сундук открыт
 
-# General/MMMWE_InventorySort.lua:660
+# General/MMMWE_InventorySort.lua:668
 There is no gold here	Здесь нет золота
 
-# General/MMMWE_InventorySort.lua:660
+# General/MMMWE_InventorySort.lua:668
 Nothing to take	Брать нечего
 
-# General/MMMWE_InventorySort.lua:669
+# General/MMMWE_InventorySort.lua:677
 %d gold	%d золота
 
-# General/MMMWE_InventorySort.lua:671
+# General/MMMWE_InventorySort.lua:679
 Took 	Взято: 
 
-# General/MMMWE_InventorySort.lua:671
+# General/MMMWE_InventorySort.lua:679
  and 	 и 
 
-# General/MMMWE_InventorySort.lua:671
+# General/MMMWE_InventorySort.lua:679
 Took nothing	Ничего не взято
 
-# General/MMMWE_InventorySort.lua:710
+# General/MMMWE_InventorySort.lua:718
 Take all	Взять всё
 
-# General/MMMWE_InventorySort.lua:711
+# General/MMMWE_InventorySort.lua:719
 Take gold	Взять золото
 
-# General/MMMWE_InventorySort.lua:712
+# General/MMMWE_InventorySort.lua:720
 Take valued	Взять ценное
 
 # General/MMMWE_ItemDurability.lua:335
