@@ -40,7 +40,7 @@ local BACKGROUND    = "CCEditor"         -- 640x480 screen with the boxes (waffe
 local TAB_ICONS     = {"c_baseclass", "c_firstpromo", "c_neutral", "c_light", "c_dark"}
 local SPELLS_ICONS  = "c_spells"
 local ITEMS_ICONS   = "c_items"              -- "Starting Equipment" button, 162x30 (waffel.D.lod)
-local ITEMS_X, ITEMS_Y = 290, 438            -- right part of the hint box, left of Cancel
+local ITEMS_X, ITEMS_Y = 290, 440            -- left of Cancel, in line with Cancel and OK
 local TAB_X, TAB_STEP = 54, 90
 local FLASH_TIME    = 0.5                -- seconds per phase of a red flashing button
 local ENTRY_X, ENTRY_Y = 286, 440                -- "Custom" button (83x30) on the creation screen:
@@ -653,7 +653,7 @@ local function build()
 	-- alignment (base, first and neutral promotions; the light and dark ones are fixed)
 	local AL = const.Alignment
 	local ALIGN_NAMES = {[AL.Good] = Tx"good", [AL.Neutral] = Tx"neutral", [AL.Evil] = Tx"evil"}
-	text{Font = Small, X = 470, Y = 145, W = 156, H = 16,
+	text{Font = Small, X = 292, Y = 423, W = 336, H = 16,   -- above Starting Equipment, Cancel and OK
 		Get = function()
 			local a
 			if E.Step == 4 then a = AL.Good elseif E.Step == 5 then a = AL.Evil else a = fam().Alignment or AL.Neutral end
