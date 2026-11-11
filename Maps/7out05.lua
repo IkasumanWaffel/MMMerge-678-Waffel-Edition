@@ -16,24 +16,7 @@ function events.AfterLoadMap()
 		Game.Weather.SetFog(100,1024)
 		Map.OutdoorExtra.AlwaysFoggy = true
 		-- music after this quest: MMMWE_Music.lua (Music.QuestMusic)
-		Game.HostileTxt[153][0] = 0
-		Game.HostileTxt[130] = Game.HostileTxt[153]
-		for i,v in Map.Monsters do
-			if v.Id > 0 and v.Id < Game.MonstersTxt.Limit then
-				if v.Id == 272 then
-					v:ChangeLook(459)
-					v:SetId(459)
-					v.Attack1.Type = 12
-					v.Attack1.Missile = 13
-					v.Attack2.Type = 12
-					v.Attack2.Missile = 13
-					v.FullHP = 880
-					v.HP = v.FullHP
-					v.Level = 100
-					v.Bonus = 16
-				end
-			end
-		end
+		-- the Forge garrison (Blaster Guys and Droids on the party's side): MMMWE_ForgeGarrison.lua
 	end
 	evt.SetMonGroupBit {56,  const.MonsterBits.Hostile,  true}
 	evt.SetMonGroupBit {55,  const.MonsterBits.Hostile,  Party.QBits[611]}
