@@ -2232,6 +2232,25 @@ Item #	Pic File	1	2	3	4	5	6
 2228	warscyth	0	0	0	0	0	1	Warscythe
 2229	jewelbox	5	10	10	5	0	0	Jewelry Box
 2230	ancbox	0	0	0	0	0	0	Ancient Storage Box
+2231	wand1	10	10	10	10	10	10	Blank Wand
+2232	7item136	0	1	2	2	1	0	Wand of Healing
+2233	wand1	0	1	2	2	1	0	Wand of Strength
+2234	item153	0	1	2	2	1	0	Wand of Antidotes
+2235	7item137	0	0	1	2	2	1	Wand of Cleansing
+2236	item154	0	1	2	2	1	0	Wand of Unbinding
+2237	wand2	0	1	2	2	1	0	Wand of Courage
+2238	item156	0	0	1	2	2	1	Wand of Clarity
+2239	7item138	0	1	2	2	1	0	Wand of Uncursing
+2240	wand3	0	1	2	2	1	0	Wand of Blessing
+2241	item155	0	0	1	2	2	1	Wand of Heroism
+2242	wand4	0	1	2	2	1	0	Wand of Stone Skin
+2243	7item139	0	1	2	2	1	0	Wand of Haste
+2244	item152	0	1	2	2	1	0	Wand of Shielding
+2245	wand2	0	1	2	2	1	0	Wand of Feather Fall
+2246	7item135	0	1	2	2	1	0	Wand of Water Walking
+2247	wand5	0	0	1	2	2	1	Wand of Flight
+2248	7item136	0	1	2	2	1	0	Wand of Regeneration
+2249	item156	0	0	1	2	2	1	Wand of Power Cure
 								
 								
 								

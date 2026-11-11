@@ -118,16 +118,16 @@ Stalt can't be refined any further.
 # General/MMMWE_Blasters.lua:427
 Smelting %s needs Repair %d (%s), %s has %d (%s).	
 
-# General/MMMWE_Blasters.lua:428, General/MMMWE_Blasters.lua:429, General/MMMWE_Blasters.lua:465, General/MMMWE_Blasters.lua:508, General/MMMWE_Blasters.lua:541, General/MMMWE_Blasters.lua:598, General/MMMWE_CustomClasses.lua:137, General/MMMWE_CustomClasses.lua:514, General/MMMWE_SpellBookInfo.lua:19, Global/MMMWE_ExtraSkillTeachers.lua:38
+# General/MMMWE_Blasters.lua:428, General/MMMWE_Blasters.lua:429, General/MMMWE_Blasters.lua:465, General/MMMWE_Blasters.lua:508, General/MMMWE_Blasters.lua:541, General/MMMWE_Blasters.lua:598, General/MMMWE_CustomClasses.lua:137, General/MMMWE_CustomClasses.lua:514, General/MMMWE_SpellBookInfo.lua:19, Global/MMMWE_ExtraSkillTeachers.lua:45
 Novice	
 
-# General/MMMWE_Blasters.lua:428, General/MMMWE_Blasters.lua:429, General/MMMWE_Blasters.lua:465, General/MMMWE_Blasters.lua:508, General/MMMWE_Blasters.lua:541, General/MMMWE_Blasters.lua:598, General/MMMWE_CustomClasses.lua:137, General/MMMWE_CustomClasses.lua:514, General/MMMWE_SpellBookInfo.lua:19, Global/MMMWE_ExtraSkillTeachers.lua:38, Global/MMMWE_ExtraSkillTeachers.lua:39
+# General/MMMWE_Blasters.lua:428, General/MMMWE_Blasters.lua:429, General/MMMWE_Blasters.lua:465, General/MMMWE_Blasters.lua:508, General/MMMWE_Blasters.lua:541, General/MMMWE_Blasters.lua:598, General/MMMWE_CustomClasses.lua:137, General/MMMWE_CustomClasses.lua:514, General/MMMWE_SpellBookInfo.lua:19, Global/MMMWE_ExtraSkillTeachers.lua:45, Global/MMMWE_ExtraSkillTeachers.lua:46
 Expert	
 
-# General/MMMWE_Blasters.lua:428, General/MMMWE_Blasters.lua:429, General/MMMWE_Blasters.lua:465, General/MMMWE_Blasters.lua:508, General/MMMWE_Blasters.lua:541, General/MMMWE_Blasters.lua:598, General/MMMWE_CustomClasses.lua:137, General/MMMWE_CustomClasses.lua:514, General/MMMWE_SpellBookInfo.lua:19, Global/MMMWE_ExtraSkillTeachers.lua:38, Global/MMMWE_ExtraSkillTeachers.lua:39
+# General/MMMWE_Blasters.lua:428, General/MMMWE_Blasters.lua:429, General/MMMWE_Blasters.lua:465, General/MMMWE_Blasters.lua:508, General/MMMWE_Blasters.lua:541, General/MMMWE_Blasters.lua:598, General/MMMWE_CustomClasses.lua:137, General/MMMWE_CustomClasses.lua:514, General/MMMWE_SpellBookInfo.lua:19, Global/MMMWE_ExtraSkillTeachers.lua:45, Global/MMMWE_ExtraSkillTeachers.lua:46
 Master	
 
-# General/MMMWE_Blasters.lua:428, General/MMMWE_Blasters.lua:429, General/MMMWE_Blasters.lua:465, General/MMMWE_Blasters.lua:508, General/MMMWE_Blasters.lua:541, General/MMMWE_Blasters.lua:598, General/MMMWE_CustomClasses.lua:137, General/MMMWE_CustomClasses.lua:514, General/MMMWE_SpellBookInfo.lua:19, Global/MMMWE_ExtraSkillTeachers.lua:38, Global/MMMWE_ExtraSkillTeachers.lua:39
+# General/MMMWE_Blasters.lua:428, General/MMMWE_Blasters.lua:429, General/MMMWE_Blasters.lua:465, General/MMMWE_Blasters.lua:508, General/MMMWE_Blasters.lua:541, General/MMMWE_Blasters.lua:598, General/MMMWE_CustomClasses.lua:137, General/MMMWE_CustomClasses.lua:514, General/MMMWE_SpellBookInfo.lua:19, Global/MMMWE_ExtraSkillTeachers.lua:45, Global/MMMWE_ExtraSkillTeachers.lua:46
 Grand Master	
 
 # General/MMMWE_Blasters.lua:429, General/MMMWE_CustomClassEditor.lua:623
@@ -391,10 +391,10 @@ click to buy one
 # General/MMMWE_CustomClassEditor.lua:630
 %s, %d pts	
 
-# General/MMMWE_CustomClassEditor.lua:636, General/MMMWE_CustomClasses.lua:522, General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3457
+# General/MMMWE_CustomClassEditor.lua:636, General/MMMWE_CustomClasses.lua:522, General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3465
 Intellect	
 
-# General/MMMWE_CustomClassEditor.lua:636, General/MMMWE_CustomClasses.lua:522, General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3457
+# General/MMMWE_CustomClassEditor.lua:636, General/MMMWE_CustomClasses.lua:522, General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3465
 Personality	
 
 # General/MMMWE_CustomClassEditor.lua:636
@@ -415,7 +415,7 @@ Bodybuilding
 # General/MMMWE_CustomClassEditor.lua:660, General/MMMWE_CustomClasses.lua:678
 Repair Item	
 
-# General/MMMWE_CustomClassEditor.lua:660, General/MMMWE_CustomClasses.lua:497, General/MMMWE_ExtraSkills.lua:49
+# General/MMMWE_CustomClassEditor.lua:660, General/MMMWE_CustomClasses.lua:497, General/MMMWE_ExtraSkills.lua:52
 Dual-Wield	
 
 # General/MMMWE_CustomClassEditor.lua:679
@@ -652,19 +652,19 @@ can't read
 # General/MMMWE_DamageKinds.lua:209
 Sla %d%%\nPie %d%%\nBlu %d%%	
 
-# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3457
+# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3465
 Might	
 
-# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3457
+# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3465
 Endurance	
 
-# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3457
+# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3465
 Accuracy	
 
-# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3457
+# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3465
 Speed	
 
-# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3457
+# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3465
 Luck	
 
 # General/MMMWE_Drains.lua:168
@@ -748,38 +748,89 @@ no energy shield worn
 # General/MMMWE_EnergyShield.lua:346
 %s: charge %.1f / %.1f, Nova %d Rate %d Delay %d Capacity %d, delay %.2f min%s, recharge %.1f/min	
 
-# General/MMMWE_ExtraSkills.lua:50
+# General/MMMWE_ExtraSkills.lua:53
 Robe	
 
-# General/MMMWE_ExtraSkills.lua:53
-Fighting with a weapon in each hand. Any weapon in the off hand needs this skill (the Blaster skill still rules a second blaster pistol). With a weapon in each hand the skill adds to Attack: -10 plus 1 per point of skill. Below Master the off hand hits weaker and the attacks are slower; a Master wields two weapons as one would a single weapon; a Grand Master can hold a two-handed weapon in each hand.	
-
 # General/MMMWE_ExtraSkills.lua:54
-The art of fighting and casting in robes and plain clothes instead of armor. Works while no body armor is worn (and in robes, when there are robes).	
+Enchanting	
 
 # General/MMMWE_ExtraSkills.lua:57
-Weapons of any kind in the off hand. Off-hand damage halved, recovery +20%	
+Fighting with a weapon in each hand. Any weapon in the off hand needs this skill (the Blaster skill still rules a second blaster pistol). With a weapon in each hand the skill adds to Attack: -10 plus 1 per point of skill. Below Master the off hand hits weaker and the attacks are slower; a Master wields two weapons as one would a single weapon; a Grand Master can hold a two-handed weapon in each hand.	
 
 # General/MMMWE_ExtraSkills.lua:58
-+1 AC per 2 skill points	
+The art of fighting and casting in robes and plain clothes instead of armor. Works while no body armor is worn (and in robes, when there are robes).	
 
-# General/MMMWE_ExtraSkills.lua:61
-Off-hand damage 75%, recovery +10%	
+# General/MMMWE_ExtraSkills.lua:59
+The craft of binding spells into wands, a caster's sidearm for when the spell points run out. Wands cast their spells at the Enchanting skill and rank of the one who uses them (the game's own wands: skill 8, Novice). A gem right-clicked on a wand refills it; a gem right-clicked on a blank wand sets it in, and a spell scroll right-clicked on a blank wand with a gem makes a wand of that spell: the dearer the gem, the more charges. Wands of spells cast on characters (healing, cures, flight and the like) are used by clicking a portrait with the wand.	
 
 # General/MMMWE_ExtraSkills.lua:62
+Weapons of any kind in the off hand. Off-hand damage halved, recovery +20%	
+
+# General/MMMWE_ExtraSkills.lua:63
++1 AC per 2 skill points	
+
+# General/MMMWE_ExtraSkills.lua:64
+Wands cast at the Enchanting skill (at least 8), Novice rank	
+
+# General/MMMWE_ExtraSkills.lua:67
+Off-hand damage 75%, recovery +10%	
+
+# General/MMMWE_ExtraSkills.lua:68
 Spell recovery 1% faster per skill point	
 
-# General/MMMWE_ExtraSkills.lua:65
+# General/MMMWE_ExtraSkills.lua:69
+Wands cast at Expert rank; a gem refills a wand, which loses a fifth of its most charges	
+
+# General/MMMWE_ExtraSkills.lua:72
 No penalties	
 
-# General/MMMWE_ExtraSkills.lua:66
+# General/MMMWE_ExtraSkills.lua:73
 Spells cost 10% less SP	
 
-# General/MMMWE_ExtraSkills.lua:69
+# General/MMMWE_ExtraSkills.lua:74
+Wands cast at Master rank; wands are made from blank wands, gems and spell scrolls; refilling loses a tenth	
+
+# General/MMMWE_ExtraSkills.lua:77
 A two-handed weapon may be held in each hand; two of them: off-hand damage 75%, recovery +20%	
 
-# General/MMMWE_ExtraSkills.lua:70
+# General/MMMWE_ExtraSkills.lua:78
 +1 to all magic resistances per skill point	
+
+# General/MMMWE_ExtraSkills.lua:79
+Wands cast at Grand Master rank; a use costs no charge one time in four; refilling loses nothing	
+
+# General/MMMWE_ExtraSkillsEnchanting.lua:154
+The wand has no charges left	
+
+# General/MMMWE_ExtraSkillsEnchanting.lua:166
+The wand crumbles to dust	
+
+# General/MMMWE_ExtraSkillsEnchanting.lua:230, General/MMMWE_ExtraSkillsEnchanting.lua:255
+Making wands takes a Master of Enchanting	
+
+# General/MMMWE_ExtraSkillsEnchanting.lua:231
+The blank wand has a gem already	
+
+# General/MMMWE_ExtraSkillsEnchanting.lua:235
+%s sets the %s in the blank wand	
+
+# General/MMMWE_ExtraSkillsEnchanting.lua:241
+Refilling wands takes an Expert in Enchanting	
+
+# General/MMMWE_ExtraSkillsEnchanting.lua:244
+The wand is full	
+
+# General/MMMWE_ExtraSkillsEnchanting.lua:249
+%s refills the %s: %d charges	
+
+# General/MMMWE_ExtraSkillsEnchanting.lua:258
+Set a gem in the blank wand first	
+
+# General/MMMWE_ExtraSkillsEnchanting.lua:261
+This spell can't be bound into a wand	
+
+# General/MMMWE_ExtraSkillsEnchanting.lua:270
+%s makes a %s with %d charges	
 
 # General/MMMWE_HardcoreSettings.lua:187
 (Hardcore mode is locked for this party)	
@@ -1201,49 +1252,55 @@ Unseen
 # General/MMMWE_LegendaryPassives.lua:146
 without body armor, monsters pick this character as a target half as often (threat halved)	
 
-# General/MMMWE_LegendaryPassives.lua:156
+# General/MMMWE_LegendaryPassives.lua:148
+Living Wands	
+
+# General/MMMWE_LegendaryPassives.lua:148
+the party's wands regain a charge every hour, up to their most	
+
+# General/MMMWE_LegendaryPassives.lua:158
 Phantom	
 
-# General/MMMWE_LegendaryPassives.lua:156
+# General/MMMWE_LegendaryPassives.lua:158
 stealing from shops costs no reputation, and corpses give double gold	
 
-# General/MMMWE_LegendaryPassives.lua:157
+# General/MMMWE_LegendaryPassives.lua:159
 Philosopher's Stone	
 
-# General/MMMWE_LegendaryPassives.lua:157
+# General/MMMWE_LegendaryPassives.lua:159
 potions brewed from reagents are 50% stronger, and the party's potions have twice the limits: up to 24 hours and twice the most power (permanent potions excepted)	
 
-# General/MMMWE_LegendaryPassives.lua:158
+# General/MMMWE_LegendaryPassives.lua:160
 Sage	
 
-# General/MMMWE_LegendaryPassives.lua:158
+# General/MMMWE_LegendaryPassives.lua:160
 the whole party gains 10% more experience	
 
-# General/MMMWE_LegendaryPassives.lua:548
+# General/MMMWE_LegendaryPassives.lua:550
 %s disarms the trap	
 
-# General/MMMWE_LegendaryPassives.lua:548
+# General/MMMWE_LegendaryPassives.lua:550
 %s sidesteps the trap	
 
-# General/MMMWE_LegendaryPassives.lua:582
+# General/MMMWE_LegendaryPassives.lua:584
 %s evades the attack	
 
-# General/MMMWE_LegendaryPassives.lua:585
+# General/MMMWE_LegendaryPassives.lua:587
 %s blocks it with the shield	
 
-# General/MMMWE_LegendaryPassives.lua:589
+# General/MMMWE_LegendaryPassives.lua:591
 %s slips aside	
 
-# General/MMMWE_LegendaryPassives.lua:594
+# General/MMMWE_LegendaryPassives.lua:596
 %s parries and strikes back!	
 
-# General/MMMWE_LegendaryPassives.lua:686
+# General/MMMWE_LegendaryPassives.lua:688
 %s cleaves through!	
 
-# General/MMMWE_LegendaryPassives.lua:721
+# General/MMMWE_LegendaryPassives.lua:723
 %s refuses to fall!	
 
-# General/MMMWE_Main.lua:2979 plural, English plural: Holds %d items
+# General/MMMWE_Main.lua:2982 plural, English plural: Holds %d items
 Holds %d item	
 
 # General/MMMWE_Main.lua:683
@@ -1276,100 +1333,109 @@ Dead
 # General/MMMWE_Main.lua:2537
 %s takes %d %s damage (%d negated, %.1f%%)	
 
-# General/MMMWE_Main.lua:2903, General/MMMWE_Main.lua:2906
+# General/MMMWE_Main.lua:2906, General/MMMWE_Main.lua:2909
 Type: %s \nDurability: %s	
 
-# General/MMMWE_Main.lua:2908
+# General/MMMWE_Main.lua:2911
 Type: %s	
 
-# General/MMMWE_Main.lua:2914, General/MMMWE_Main.lua:2920
+# General/MMMWE_Main.lua:2917, General/MMMWE_Main.lua:2923
 %s: +%lu	
 
-# General/MMMWE_Main.lua:2929
+# General/MMMWE_Main.lua:2932
 Armor: +%d   Block Power: %d%s (%s)	
 
-# General/MMMWE_Main.lua:2952
+# General/MMMWE_Main.lua:2955
 \nParry Power: %d%s	
 
-# General/MMMWE_Main.lua:2955, General/MMMWE_Main.lua:3034, General/MMMWE_Main.lua:3036, General/MMMWE_Main.lua:3040
+# General/MMMWE_Main.lua:2958, General/MMMWE_Main.lua:3042, General/MMMWE_Main.lua:3044, General/MMMWE_Main.lua:3048
 %s: +%d   %s: %dd%d	
 
-# General/MMMWE_Main.lua:2964, General/MMMWE_Main.lua:2993
+# General/MMMWE_Main.lua:2967, General/MMMWE_Main.lua:3001
 %s: %lu	
 
-# General/MMMWE_Main.lua:2969
+# General/MMMWE_Main.lua:2972
 Steel: %d Siertal: %d Phylt: %d	
 
-# General/MMMWE_Main.lua:2972
+# General/MMMWE_Main.lua:2975
 Kergar: %d Erudine: %d Stalt: %d	
 
-# General/MMMWE_Main.lua:2976
+# General/MMMWE_Main.lua:2979
 Bottles: %d	
 
-# General/MMMWE_Main.lua:2987
+# General/MMMWE_Main.lua:2990
 Ant: %d Jad: %d	
 
-# General/MMMWE_Main.lua:2990
+# General/MMMWE_Main.lua:2993
+Charges: %d of %d	
+
+# General/MMMWE_Main.lua:2996
+Gem: %s	
+
+# General/MMMWE_Main.lua:2996
+No gem set	
+
+# General/MMMWE_Main.lua:2998
 Enr: %d Ant: %d Jad: %d	
 
-# General/MMMWE_Main.lua:3009
+# General/MMMWE_Main.lua:3017
 Shoot: +%d    Damage: %d-%d	
 
-# General/MMMWE_Main.lua:3217
+# General/MMMWE_Main.lua:3225
 Armor Class	
 
-# General/MMMWE_Main.lua:3218
+# General/MMMWE_Main.lua:3226
 Condition (replaced by HR and Phys Res)	
 
-# General/MMMWE_Main.lua:3219
+# General/MMMWE_Main.lua:3227
 Quick spell (replaced by resistances and chances; 4 px higher for the Sla/Pie/Blu line)	
 
-# General/MMMWE_Main.lua:3221
+# General/MMMWE_Main.lua:3229
 Melee damage	
 
-# General/MMMWE_Main.lua:3223
+# General/MMMWE_Main.lua:3231
 Ranged damage	
 
-# General/MMMWE_Main.lua:3226
+# General/MMMWE_Main.lua:3234
 Fire res	
 
-# General/MMMWE_Main.lua:3227
+# General/MMMWE_Main.lua:3235
 Air res	
 
-# General/MMMWE_Main.lua:3228
+# General/MMMWE_Main.lua:3236
 Water res	
 
-# General/MMMWE_Main.lua:3229
+# General/MMMWE_Main.lua:3237
 Earth res	
 
-# General/MMMWE_Main.lua:3230
+# General/MMMWE_Main.lua:3238
 Mind res	
 
-# General/MMMWE_Main.lua:3231
+# General/MMMWE_Main.lua:3239
 Body res	
 
-# General/MMMWE_Main.lua:3980
+# General/MMMWE_Main.lua:3988
 Flight mode active. Remaining charge: %3.1f%%	
 
-# General/MMMWE_Main.lua:3984
+# General/MMMWE_Main.lua:3992
 WARNING! Low charge: %3.1f%%	
 
-# General/MMMWE_Main.lua:3987
+# General/MMMWE_Main.lua:3995
 WARNING! Flight mode terminates in 5 minutes!	
 
-# General/MMMWE_Main.lua:4005
+# General/MMMWE_Main.lua:4013
 Tech mastery (%d/2) is insufficient to use this function	
 
-# General/MMMWE_Main.lua:4015
+# General/MMMWE_Main.lua:4023
 Remaining charge: %3.1f%%.	
 
-# General/MMMWE_Main.lua:4017, General/MMMWE_Main.lua:4041
+# General/MMMWE_Main.lua:4025, General/MMMWE_Main.lua:4049
 Device charge CRITICAL! Operation aborted	
 
-# General/MMMWE_Main.lua:4035
+# General/MMMWE_Main.lua:4043
 Tech mastery (%d/3) is insufficient to use this function	
 
-# General/MMMWE_Main.lua:4053
+# General/MMMWE_Main.lua:4061
 Flight mode activated	
 
 # General/MMMWE_MonkBranches.lua:148
@@ -2521,106 +2587,136 @@ The Grandmaster of the Dodging Skill, Sila Daewon, can be found in the town of K
 # Global/MMMWE_DodgingUnarmedTeachers.lua:43
 The Grandmaster of Unarmed Combat, Ian Trom, can be found in Dragonsand.	
 
-# Global/MMMWE_ExtraSkillTeachers.lua:34
+# Global/MMMWE_ExtraSkillTeachers.lua:40
 Training halls and the mercenary guilds teach it.	
 
-# Global/MMMWE_ExtraSkillTeachers.lua:35
+# Global/MMMWE_ExtraSkillTeachers.lua:41
 Temples and the guilds of magic teach it.	
 
-# Global/MMMWE_ExtraSkillTeachers.lua:44
-Aznog Black in the city of Ravenshore	
-
-# Global/MMMWE_ExtraSkillTeachers.lua:45
-Brand Featherwind in Alvar	
-
-# Global/MMMWE_ExtraSkillTeachers.lua:46
-Pirate Paul in Regna	
-
-# Global/MMMWE_ExtraSkillTeachers.lua:47
-Jillian Applebee in the city of Ravenshore	
-
-# Global/MMMWE_ExtraSkillTeachers.lua:48
-Myles Greydawn in Alvar	
-
-# Global/MMMWE_ExtraSkillTeachers.lua:49
-Yoel Wargreen in Shadowspire	
+# Global/MMMWE_ExtraSkillTeachers.lua:42
+The guilds of magic teach it.	
 
 # Global/MMMWE_ExtraSkillTeachers.lua:51
-Brahein Kadarr in Harmondale	
+Aznog Black in the city of Ravenshore	
 
 # Global/MMMWE_ExtraSkillTeachers.lua:52
-Matthias Bearheart in Steadwick, Erathia	
+Brand Featherwind in Alvar	
 
 # Global/MMMWE_ExtraSkillTeachers.lua:53
-Claes Mogren in Deyja	
+Pirate Paul in Regna	
 
 # Global/MMMWE_ExtraSkillTeachers.lua:54
-Tanya Kirklynn in Harmondale	
+Jillian Applebee in the city of Ravenshore	
 
 # Global/MMMWE_ExtraSkillTeachers.lua:55
-Mireille Warlin in the Tularean Forest	
+Myles Greydawn in Alvar	
 
 # Global/MMMWE_ExtraSkillTeachers.lua:56
-Alashandra Reese in the Bracada Desert	
+Yoel Wargreen in Shadowspire	
 
 # Global/MMMWE_ExtraSkillTeachers.lua:58
-Miriam Boyer in the town of Free Haven	
+Brahein Kadarr in Harmondale	
 
 # Global/MMMWE_ExtraSkillTeachers.lua:59
-Selena Stipe on the Misty Islands	
+Matthias Bearheart in Steadwick, Erathia	
 
 # Global/MMMWE_ExtraSkillTeachers.lua:60
-Darth Cartwright in Dragonsand	
+Claes Mogren in Deyja	
 
 # Global/MMMWE_ExtraSkillTeachers.lua:61
-Orville Corvair in New Sorpigal	
+Tanya Kirklynn in Harmondale	
 
 # Global/MMMWE_ExtraSkillTeachers.lua:62
-Svetlanta Irktusk in Bootleg Bay	
+Mireille Warlin in the Tularean Forest	
 
 # Global/MMMWE_ExtraSkillTeachers.lua:63
+Alashandra Reese in the Bracada Desert	
+
+# Global/MMMWE_ExtraSkillTeachers.lua:65
+Miriam Boyer in the town of Free Haven	
+
+# Global/MMMWE_ExtraSkillTeachers.lua:66
+Selena Stipe on the Misty Islands	
+
+# Global/MMMWE_ExtraSkillTeachers.lua:67
+Darth Cartwright in Dragonsand	
+
+# Global/MMMWE_ExtraSkillTeachers.lua:68
+Orville Corvair in New Sorpigal	
+
+# Global/MMMWE_ExtraSkillTeachers.lua:69
+Svetlanta Irktusk in Bootleg Bay	
+
+# Global/MMMWE_ExtraSkillTeachers.lua:70
 Jo Handlebaum in Dragonsand	
 
-# Global/MMMWE_ExtraSkillTeachers.lua:83
+# Global/MMMWE_ExtraSkillTeachers.lua:72
+Lathius in the city of Ravenshore	
+
+# Global/MMMWE_ExtraSkillTeachers.lua:73
+Xavier Havest in Alvar	
+
+# Global/MMMWE_ExtraSkillTeachers.lua:74
+Whisper in Shadowspire	
+
+# Global/MMMWE_ExtraSkillTeachers.lua:75
+Torrent in Harmondale	
+
+# Global/MMMWE_ExtraSkillTeachers.lua:76
+Sethrik Windsong in the Tularean Forest	
+
+# Global/MMMWE_ExtraSkillTeachers.lua:77
+Ethan Lightsworn in the Bracada Desert	
+
+# Global/MMMWE_ExtraSkillTeachers.lua:78
+Isao Magistrus in New Sorpigal	
+
+# Global/MMMWE_ExtraSkillTeachers.lua:79
+Zoltan Phelps in the town of Free Haven	
+
+# Global/MMMWE_ExtraSkillTeachers.lua:80
+Leon Lazaru in Castle Ironfist	
+
+# Global/MMMWE_ExtraSkillTeachers.lua:100
 You must first learn %s, %s. %s	
 
-# Global/MMMWE_ExtraSkillTeachers.lua:87
+# Global/MMMWE_ExtraSkillTeachers.lua:104
 You already know all I can teach you of %s, %s.	
 
-# Global/MMMWE_ExtraSkillTeachers.lua:91
+# Global/MMMWE_ExtraSkillTeachers.lua:108
 You must be %s in %s before I can teach you more, %s.	
 
-# Global/MMMWE_ExtraSkillTeachers.lua:92
+# Global/MMMWE_ExtraSkillTeachers.lua:109
 an Expert	
 
-# Global/MMMWE_ExtraSkillTeachers.lua:92
+# Global/MMMWE_ExtraSkillTeachers.lua:109
 a Master	
 
-# Global/MMMWE_ExtraSkillTeachers.lua:97
+# Global/MMMWE_ExtraSkillTeachers.lua:114
 %s is not for one of your calling, %s.	
 
-# Global/MMMWE_ExtraSkillTeachers.lua:99
+# Global/MMMWE_ExtraSkillTeachers.lua:116
 Your calling takes %s no further than %s, %s.	
 
-# Global/MMMWE_ExtraSkillTeachers.lua:104
+# Global/MMMWE_ExtraSkillTeachers.lua:121
 You need %s at %d to become %s %s, %s.	
 
-# Global/MMMWE_ExtraSkillTeachers.lua:105, Global/MMMWE_ExtraSkillTeachers.lua:116
+# Global/MMMWE_ExtraSkillTeachers.lua:122, Global/MMMWE_ExtraSkillTeachers.lua:133
 a Grand Master of	
 
-# Global/MMMWE_ExtraSkillTeachers.lua:105, Global/MMMWE_ExtraSkillTeachers.lua:116
+# Global/MMMWE_ExtraSkillTeachers.lua:122, Global/MMMWE_ExtraSkillTeachers.lua:133
 a Master of	
 
-# Global/MMMWE_ExtraSkillTeachers.lua:105, Global/MMMWE_ExtraSkillTeachers.lua:116
+# Global/MMMWE_ExtraSkillTeachers.lua:122, Global/MMMWE_ExtraSkillTeachers.lua:133
 an Expert in	
 
-# Global/MMMWE_ExtraSkillTeachers.lua:110
+# Global/MMMWE_ExtraSkillTeachers.lua:127
 %s %s costs %d gold, %s.	
 
-# Global/MMMWE_ExtraSkillTeachers.lua:115
+# Global/MMMWE_ExtraSkillTeachers.lua:132
 %s is now %s %s.	
 
-# Global/MMMWE_ExtraSkillTeachers.lua:128
+# Global/MMMWE_ExtraSkillTeachers.lua:145
 %s %s is taught by %s.	
 
 # Global/MMMWE_HPSPDisplay.lua:129
@@ -2704,22 +2800,22 @@ Restore HP
 # Global/MMMWE_HPSPDisplay.lua:171
 Restore SP	
 
-# Global/MMMWE_HPSPDisplay.lua:248, Global/MMMWE_HPSPDisplay.lua:623
+# Global/MMMWE_HPSPDisplay.lua:248, Global/MMMWE_HPSPDisplay.lua:626
 Party Buff 	
 
-# Global/MMMWE_HPSPDisplay.lua:259, Global/MMMWE_HPSPDisplay.lua:683
+# Global/MMMWE_HPSPDisplay.lua:259, Global/MMMWE_HPSPDisplay.lua:690
 Party Debuff 	
 
-# Global/MMMWE_HPSPDisplay.lua:1235
+# Global/MMMWE_HPSPDisplay.lua:1242
 Cell %d%% / %d%%	
 
-# Global/MMMWE_HPSPDisplay.lua:1236
+# Global/MMMWE_HPSPDisplay.lua:1243
 Cell %d%%	
 
-# Global/MMMWE_HPSPDisplay.lua:1245
+# Global/MMMWE_HPSPDisplay.lua:1252
 Shield %d%%	
 
-# Global/MMMWE_HPSPDisplay.lua:1475
+# Global/MMMWE_HPSPDisplay.lua:1482
 HP/SP overlay 	
 
 # Global/MMMWE_HardcoreMode.lua:100

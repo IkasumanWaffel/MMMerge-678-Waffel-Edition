@@ -1,4 +1,4 @@
--- MMMWE: teachers of the new skills Dual-Wield and Robe (General\MMMWE_ExtraSkills.lua)
+-- MMMWE: teachers of the new skills Dual-Wield, Robe and Enchanting (General\MMMWE_ExtraSkills.lua)
 --
 -- As the Dodging and Unarmed teachers of MMMWE_DodgingUnarmedTeachers.lua: house NPCs who
 -- had nothing to teach before (no topics, or only hints) take the topics, chosen by their
@@ -12,6 +12,10 @@
 --               Robe:       Harmondale, the Tularean Forest, the Bracada Desert
 --   Enroth      Dual-Wield: Free Haven, Misty Islands, Dragonsand
 --               Robe:       New Sorpigal, Bootleg Bay, Dragonsand
+--   Enchanting (11.11.26, learned in the guilds of magic):
+--               Jadame: Ravenshore, Alvar, Shadowspire; Antagarich: Harmondale, the
+--               Tularean Forest, the Bracada Desert; Enroth: New Sorpigal, Free Haven,
+--               Castle Ironfist
 --
 -- Prices and the skill levels needed are those of Sword (Dual-Wield) and Leather (Robe):
 -- Expert at 5, Master at 10, Grand Master at 15. The class must allow the rank
@@ -25,14 +29,17 @@ if not EXTRA then
 end
 
 local DW, ROBE = EXTRA.Skills.DualWield, EXTRA.Skills.Robe
+local ENCH = EXTRA.Skills.Enchanting
 
 local PRICES = {
 	[DW]   = {[2] = 5000, [3] = 10000, [4] = 15000},
 	[ROBE] = {[2] = 4000, [3] = 8000,  [4] = 12000},
+	[ENCH] = {[2] = 4000, [3] = 8000,  [4] = 12000},
 }
 local LEARN_WHERE = {
 	[DW]   = Tx"Training halls and the mercenary guilds teach it.",
 	[ROBE] = Tx"Temples and the guilds of magic teach it.",
+	[ENCH] = Tx"The guilds of magic teach it.",
 }
 local LEVEL = {[2] = 5, [3] = 10, [4] = 15}
 local MASTERY_NAME = {Tx"Novice", Tx"Expert", Tx"Master", Tx"Grand Master"}
@@ -61,6 +68,16 @@ local TEACHERS = {
 	{NPC = 843,  Skill = ROBE, Rank = 2, Slot = 0, Where = Tx"Orville Corvair in New Sorpigal"},
 	{NPC = 1047, Skill = ROBE, Rank = 3, Slot = 0, Where = Tx"Svetlanta Irktusk in Bootleg Bay"},
 	{NPC = 979,  Skill = ROBE, Rank = 4, Slot = 0, Where = Tx"Jo Handlebaum in Dragonsand"},
+	-- (11.11.26) Enchanting
+	{NPC = 73,   Skill = ENCH, Rank = 2, Slot = 1, Where = Tx"Lathius in the city of Ravenshore"},
+	{NPC = 246,  Skill = ENCH, Rank = 3, Slot = 1, Where = Tx"Xavier Havest in Alvar"},
+	{NPC = 101,  Skill = ENCH, Rank = 4, Slot = 2, Where = Tx"Whisper in Shadowspire"},
+	{NPC = 484,  Skill = ENCH, Rank = 2, Slot = 2, Where = Tx"Torrent in Harmondale"},
+	{NPC = 479,  Skill = ENCH, Rank = 3, Slot = 2, Where = Tx"Sethrik Windsong in the Tularean Forest"},
+	{NPC = 497,  Skill = ENCH, Rank = 4, Slot = 2, Where = Tx"Ethan Lightsworn in the Bracada Desert"},
+	{NPC = 866,  Skill = ENCH, Rank = 2, Slot = 2, Where = Tx"Isao Magistrus in New Sorpigal"},
+	{NPC = 861,  Skill = ENCH, Rank = 3, Slot = 1, Where = Tx"Zoltan Phelps in the town of Free Haven"},
+	{NPC = 841,  Skill = ENCH, Rank = 4, Slot = 2, Where = Tx"Leon Lazaru in Castle Ironfist"},
 }
 MF.ExtraSkillTeachers = TEACHERS
 

@@ -144,6 +144,8 @@ passive(SK.Armsmaster, Tx"Weapon Master", Tx"all weapon skills count 5 higher, a
 -- (08.11.26) the new skill of MMMWE_ExtraSkills.lua (its effect: MMMWE_ExtraSkillsEffects.lua)
 passive(41, Tx"Twin Titans", Tx"a two-handed weapon in each hand without penalties")
 passive(42, Tx"Unseen", Tx"without body armor, monsters pick this character as a target half as often (threat halved)")
+-- (11.11.26) Enchanting (its effect: MMMWE_ExtraSkillsEnchanting.lua)
+passive(43, Tx"Living Wands", Tx"the party's wands regain a charge every hour, up to their most")
 
 -- Robe: the threat of MMMWE_Threat.lua halved while no body armor is worn (as Robe's own effects)
 P.RobeThreatMul = 0.5

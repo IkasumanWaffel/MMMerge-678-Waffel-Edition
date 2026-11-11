@@ -1546,3 +1546,22 @@ Id	Note	Subtype	MatGroup	EquipReq	Equip2Req	Equip3Req	ContF	QCont	LostQBit	Start
 2228	Warscythe	8		B1
 2229	Jewelry Box
 2230	Ancient Storage Box
+2231	Blank Wand						3,3,3
+2232	Wand of Healing						3,3,3
+2233	Wand of Strength						3,3,3
+2234	Wand of Antidotes						3,3,3
+2235	Wand of Cleansing						3,3,3
+2236	Wand of Unbinding						3,3,3
+2237	Wand of Courage						3,3,3
+2238	Wand of Clarity						3,3,3
+2239	Wand of Uncursing						3,3,3
+2240	Wand of Blessing						3,3,3
+2241	Wand of Heroism						3,3,3
+2242	Wand of Stone Skin						3,3,3
+2243	Wand of Haste						3,3,3
+2244	Wand of Shielding						3,3,3
+2245	Wand of Feather Fall						3,3,3
+2246	Wand of Water Walking						3,3,3
+2247	Wand of Flight						3,3,3
+2248	Wand of Regeneration						3,3,3
+2249	Wand of Power Cure						3,3,3

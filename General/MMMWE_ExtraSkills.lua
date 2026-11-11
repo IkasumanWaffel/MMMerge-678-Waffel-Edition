@@ -4,6 +4,7 @@
 	New skills get ids from 41 up (39 and 40 are MMPatch's Club and Misc item skills):
 	  41 Dual-Wield   in the Weapons list
 	  42 Robe         in the Armor list
+	  43 Enchanting   in the Magic list (11.11.26; its effects: MMMWE_ExtraSkillsEnchanting.lua)
 	The character record holds only 39 skills, so the values of the new ones live in a block
 	of their own (8 per character, by roster index), kept in the save game
 	(vars.MMMWE_ExtraSkills). Values are coded as the old ones (level + mastery bits,
@@ -39,56 +40,64 @@ local EXTRA = {
 	Skills = {
 		DualWield = 41,
 		Robe      = 42,
+		Enchanting = 43,
 	},
 	-- the Skills screen list each new skill goes to
 	Lists = {
 		[41] = "WeaponSkills",
 		[42] = "ArmorSkills",
+		[43] = "MagicSkills",
 	},
 	Names = {
 		[41] = Tx"Dual-Wield",
 		[42] = Tx"Robe",
+		[43] = Tx"Enchanting",
 	},
 	Descriptions = {
 		[41] = Tx"Fighting with a weapon in each hand. Any weapon in the off hand needs this skill (the Blaster skill still rules a second blaster pistol). With a weapon in each hand the skill adds to Attack: -10 plus 1 per point of skill. Below Master the off hand hits weaker and the attacks are slower; a Master wields two weapons as one would a single weapon; a Grand Master can hold a two-handed weapon in each hand.",
 		[42] = Tx"The art of fighting and casting in robes and plain clothes instead of armor. Works while no body armor is worn (and in robes, when there are robes).",
+		[43] = Tx"The craft of binding spells into wands, a caster's sidearm for when the spell points run out. Wands cast their spells at the Enchanting skill and rank of the one who uses them (the game's own wands: skill 8, Novice). A gem right-clicked on a wand refills it; a gem right-clicked on a blank wand sets it in, and a spell scroll right-clicked on a blank wand with a gem makes a wand of that spell: the dearer the gem, the more charges. Wands of spells cast on characters (healing, cures, flight and the like) are used by clicking a portrait with the wand.",
 	},
 	Normal = {
 		[41] = Tx"Weapons of any kind in the off hand. Off-hand damage halved, recovery +20%",
 		[42] = Tx"+1 AC per 2 skill points",
+		[43] = Tx"Wands cast at the Enchanting skill (at least 8), Novice rank",
 	},
 	Expert = {
 		[41] = Tx"Off-hand damage 75%, recovery +10%",
 		[42] = Tx"Spell recovery 1% faster per skill point",
+		[43] = Tx"Wands cast at Expert rank; a gem refills a wand, which loses a fifth of its most charges",
 	},
 	Master = {
 		[41] = Tx"No penalties",
 		[42] = Tx"Spells cost 10% less SP",
+		[43] = Tx"Wands cast at Master rank; wands are made from blank wands, gems and spell scrolls; refilling loses a tenth",
 	},
 	GM = {
 		[41] = Tx"A two-handed weapon may be held in each hand; two of them: off-hand damage 75%, recovery +20%",
 		[42] = Tx"+1 to all magic resistances per skill point",
+		[43] = Tx"Wands cast at Grand Master rank; a use costs no charge one time in four; refilling loses nothing",
 	},
 	-- class caps by class kind (Class Extra.txt "Kind"): the second promotion's; the base
 	-- class gets at most Expert and the first promotion at most Master (StepCap)
 	KindCaps = {
-		--            Dual-Wield  Robe
-		[1]  = {[41] = 3, [42] = 3},   -- Archer (Dark Elf)
-		[2]  = {[41] = 2, [42] = 4},   -- Cleric
-		[3]  = {[41] = 4, [42] = 2},   -- Deerslayer
-		[4]  = {[41] = 3, [42] = 0},   -- Dragon
-		[5]  = {[41] = 1, [42] = 4},   -- Druid
-		[6]  = {[41] = 4, [42] = 0},   -- Knight
-		[7]  = {[41] = 4, [42] = 0},   -- Minotaur
-		[8]  = {[41] = 2, [42] = 3},   -- Monk
-		[9]  = {[41] = 3, [42] = 2},   -- Paladin
-		[10] = {[41] = 4, [42] = 2},   -- Ranger
-		[11] = {[41] = 4, [42] = 0},   -- Thief
-		[12] = {[41] = 4, [42] = 0},   -- Barbarian
-		[13] = {[41] = 3, [42] = 3},   -- Vampire
-		[14] = {[41] = 1, [42] = 4},   -- Sorcerer, Necromancer
-		[15] = {[41] = 3, [42] = 3},   -- Technician
-		[16] = {[41] = 2, [42] = 2},   -- Peasant
+		--            Dual-Wield  Robe  Enchanting (the casters; hybrids to Expert or Master)
+		[1]  = {[41] = 3, [42] = 3, [43] = 3},   -- Archer (Dark Elf)
+		[2]  = {[41] = 2, [42] = 4, [43] = 4},   -- Cleric
+		[3]  = {[41] = 4, [42] = 2, [43] = 0},   -- Deerslayer
+		[4]  = {[41] = 3, [42] = 0, [43] = 0},   -- Dragon
+		[5]  = {[41] = 1, [42] = 4, [43] = 4},   -- Druid
+		[6]  = {[41] = 4, [42] = 0, [43] = 0},   -- Knight
+		[7]  = {[41] = 4, [42] = 0, [43] = 0},   -- Minotaur
+		[8]  = {[41] = 2, [42] = 3, [43] = 0},   -- Monk
+		[9]  = {[41] = 3, [42] = 2, [43] = 2},   -- Paladin
+		[10] = {[41] = 4, [42] = 2, [43] = 2},   -- Ranger
+		[11] = {[41] = 4, [42] = 0, [43] = 0},   -- Thief
+		[12] = {[41] = 4, [42] = 0, [43] = 0},   -- Barbarian
+		[13] = {[41] = 3, [42] = 3, [43] = 3},   -- Vampire
+		[14] = {[41] = 1, [42] = 4, [43] = 4},   -- Sorcerer, Necromancer
+		[15] = {[41] = 3, [42] = 3, [43] = 0},   -- Technician
+		[16] = {[41] = 2, [42] = 2, [43] = 0},   -- Peasant
 	},
 	StepCap = {[0] = 2, 3, 4},
 	-- custom classes (MMMWE_CustomClasses.lua) until their editor has the new skills
@@ -320,6 +329,8 @@ EXTRA.LearnAt = {
 	[41] = {[18] = true, [30] = true},               -- Dual-Wield: mercenary guilds, training halls
 	[42] = {[5] = true, [6] = true, [7] = true, [8] = true, [9] = true, [10] = true, [11] = true,
 		[12] = true, [13] = true, [14] = true, [15] = true, [23] = true},   -- Robe: magic guilds, temples
+	[43] = {[5] = true, [6] = true, [7] = true, [8] = true, [9] = true, [10] = true, [11] = true,
+		[12] = true, [13] = true, [14] = true, [15] = true},   -- Enchanting: magic guilds
 }
 local GAME_LEARN = {   -- the game's own learn topics of the houses HousesTweaks.lua leaves alone
 	[12] = {0x37, 0x40}, [13] = {0x38, 0x40}, [14] = {0x30, 0x31, 0x33, 0x32, 0x4A},

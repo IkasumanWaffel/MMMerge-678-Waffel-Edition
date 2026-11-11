@@ -2840,6 +2840,9 @@ local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 		[984] = 5, [985] = 5, [986] = 5, [987] = 5,
 		[969] = 6, [974] = 6, [979] = 6,
 	}
+	-- (11.11.26) MMMWE_ExtraSkillsEnchanting.lua: the blank wand (10: its gem), the support wands (9: charges)
+	SpecialItemGroups[2231] = 10
+	for n = 2232, 2249 do SpecialItemGroups[n] = 9 end
 
 	local DICell = 0
 	mem.autohook(0x41d3b3, function(d)
@@ -2986,6 +2989,11 @@ local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 		elseif group == 5 then
 			return cachedCstring(string.format(Tx"Ant: %d Jad: %d",
 				math.fmod(math.modf(ch / 100), 100), math.fmod(ch, 100)))
+		elseif group == 9 then
+			return cachedCstring(string.format(Tx"Charges: %d of %d", ch, math.max(DICell, ch)))
+		elseif group == 10 then
+			local gem = ch > 0 and Game.ItemsTxt[ch]
+			return cachedCstring(gem and string.format(Tx"Gem: %s", gem.Name) or Tx"No gem set")
 		elseif group == 6 then
 			return cachedCstring(string.format(Tx"Enr: %d Ant: %d Jad: %d",
 				math.modf(ch / 10000), math.fmod(math.modf(ch / 100), 100), math.fmod(ch, 100)))

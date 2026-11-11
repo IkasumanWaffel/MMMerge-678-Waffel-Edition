@@ -118,16 +118,16 @@ Stalt can't be refined any further.	Стальт нельзя очистить ещё сильнее.
 # General/MMMWE_Blasters.lua:427
 Smelting %s needs Repair %d (%s), %s has %d (%s).	Плавка (%s) требует Ремонта %d (%s), у %s — %d (%s).
 
-# General/MMMWE_Blasters.lua:428, General/MMMWE_Blasters.lua:429, General/MMMWE_Blasters.lua:465, General/MMMWE_Blasters.lua:508, General/MMMWE_Blasters.lua:541, General/MMMWE_Blasters.lua:598, General/MMMWE_CustomClasses.lua:137, General/MMMWE_CustomClasses.lua:514, General/MMMWE_SpellBookInfo.lua:19, Global/MMMWE_ExtraSkillTeachers.lua:38
+# General/MMMWE_Blasters.lua:428, General/MMMWE_Blasters.lua:429, General/MMMWE_Blasters.lua:465, General/MMMWE_Blasters.lua:508, General/MMMWE_Blasters.lua:541, General/MMMWE_Blasters.lua:598, General/MMMWE_CustomClasses.lua:137, General/MMMWE_CustomClasses.lua:514, General/MMMWE_SpellBookInfo.lua:19, Global/MMMWE_ExtraSkillTeachers.lua:45
 Novice	Новичок
 
-# General/MMMWE_Blasters.lua:428, General/MMMWE_Blasters.lua:429, General/MMMWE_Blasters.lua:465, General/MMMWE_Blasters.lua:508, General/MMMWE_Blasters.lua:541, General/MMMWE_Blasters.lua:598, General/MMMWE_CustomClasses.lua:137, General/MMMWE_CustomClasses.lua:514, General/MMMWE_SpellBookInfo.lua:19, Global/MMMWE_ExtraSkillTeachers.lua:38, Global/MMMWE_ExtraSkillTeachers.lua:39
+# General/MMMWE_Blasters.lua:428, General/MMMWE_Blasters.lua:429, General/MMMWE_Blasters.lua:465, General/MMMWE_Blasters.lua:508, General/MMMWE_Blasters.lua:541, General/MMMWE_Blasters.lua:598, General/MMMWE_CustomClasses.lua:137, General/MMMWE_CustomClasses.lua:514, General/MMMWE_SpellBookInfo.lua:19, Global/MMMWE_ExtraSkillTeachers.lua:45, Global/MMMWE_ExtraSkillTeachers.lua:46
 Expert	Эксперт
 
-# General/MMMWE_Blasters.lua:428, General/MMMWE_Blasters.lua:429, General/MMMWE_Blasters.lua:465, General/MMMWE_Blasters.lua:508, General/MMMWE_Blasters.lua:541, General/MMMWE_Blasters.lua:598, General/MMMWE_CustomClasses.lua:137, General/MMMWE_CustomClasses.lua:514, General/MMMWE_SpellBookInfo.lua:19, Global/MMMWE_ExtraSkillTeachers.lua:38, Global/MMMWE_ExtraSkillTeachers.lua:39
+# General/MMMWE_Blasters.lua:428, General/MMMWE_Blasters.lua:429, General/MMMWE_Blasters.lua:465, General/MMMWE_Blasters.lua:508, General/MMMWE_Blasters.lua:541, General/MMMWE_Blasters.lua:598, General/MMMWE_CustomClasses.lua:137, General/MMMWE_CustomClasses.lua:514, General/MMMWE_SpellBookInfo.lua:19, Global/MMMWE_ExtraSkillTeachers.lua:45, Global/MMMWE_ExtraSkillTeachers.lua:46
 Master	Мастер
 
-# General/MMMWE_Blasters.lua:428, General/MMMWE_Blasters.lua:429, General/MMMWE_Blasters.lua:465, General/MMMWE_Blasters.lua:508, General/MMMWE_Blasters.lua:541, General/MMMWE_Blasters.lua:598, General/MMMWE_CustomClasses.lua:137, General/MMMWE_CustomClasses.lua:514, General/MMMWE_SpellBookInfo.lua:19, Global/MMMWE_ExtraSkillTeachers.lua:38, Global/MMMWE_ExtraSkillTeachers.lua:39
+# General/MMMWE_Blasters.lua:428, General/MMMWE_Blasters.lua:429, General/MMMWE_Blasters.lua:465, General/MMMWE_Blasters.lua:508, General/MMMWE_Blasters.lua:541, General/MMMWE_Blasters.lua:598, General/MMMWE_CustomClasses.lua:137, General/MMMWE_CustomClasses.lua:514, General/MMMWE_SpellBookInfo.lua:19, Global/MMMWE_ExtraSkillTeachers.lua:45, Global/MMMWE_ExtraSkillTeachers.lua:46
 Grand Master	Грандмастер
 
 # General/MMMWE_Blasters.lua:429, General/MMMWE_CustomClassEditor.lua:623
@@ -391,10 +391,10 @@ click to buy one	щёлкните, чтобы купить
 # General/MMMWE_CustomClassEditor.lua:630
 %s, %d pts	%s, %d оч.
 
-# General/MMMWE_CustomClassEditor.lua:636, General/MMMWE_CustomClasses.lua:522, General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3457
+# General/MMMWE_CustomClassEditor.lua:636, General/MMMWE_CustomClasses.lua:522, General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3465
 Intellect	Интеллект
 
-# General/MMMWE_CustomClassEditor.lua:636, General/MMMWE_CustomClasses.lua:522, General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3457
+# General/MMMWE_CustomClassEditor.lua:636, General/MMMWE_CustomClasses.lua:522, General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3465
 Personality	Сила духа
 
 # General/MMMWE_CustomClassEditor.lua:636
@@ -415,7 +415,7 @@ Bodybuilding	Телосложение
 # General/MMMWE_CustomClassEditor.lua:660, General/MMMWE_CustomClasses.lua:678
 Repair Item	Ремонт
 
-# General/MMMWE_CustomClassEditor.lua:660, General/MMMWE_CustomClasses.lua:497, General/MMMWE_ExtraSkills.lua:49
+# General/MMMWE_CustomClassEditor.lua:660, General/MMMWE_CustomClasses.lua:497, General/MMMWE_ExtraSkills.lua:52
 Dual-Wield	Парное оружие
 
 # General/MMMWE_CustomClassEditor.lua:679
@@ -652,19 +652,19 @@ can't read 	не удаётся прочитать
 # General/MMMWE_DamageKinds.lua:209
 Sla %d%%\nPie %d%%\nBlu %d%%	Руб %d%%\nКол %d%%\nДроб %d%%
 
-# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3457
+# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3465
 Might	Сила
 
-# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3457
+# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3465
 Endurance	Выносливость
 
-# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3457
+# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3465
 Accuracy	Меткость
 
-# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3457
+# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3465
 Speed	Скорость
 
-# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3457
+# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3465
 Luck	Удача
 
 # General/MMMWE_Drains.lua:168
@@ -748,38 +748,89 @@ no energy shield worn	энергощит не надет
 # General/MMMWE_EnergyShield.lua:346
 %s: charge %.1f / %.1f, Nova %d Rate %d Delay %d Capacity %d, delay %.2f min%s, recharge %.1f/min	%s: заряд %.1f / %.1f, Нова %d Скорость %d Задержка %d Ёмкость %d, задержка %.2f мин%s, подзарядка %.1f/мин
 
-# General/MMMWE_ExtraSkills.lua:50
+# General/MMMWE_ExtraSkills.lua:53
 Robe	Мантия
 
-# General/MMMWE_ExtraSkills.lua:53
-Fighting with a weapon in each hand. Any weapon in the off hand needs this skill (the Blaster skill still rules a second blaster pistol). With a weapon in each hand the skill adds to Attack: -10 plus 1 per point of skill. Below Master the off hand hits weaker and the attacks are slower; a Master wields two weapons as one would a single weapon; a Grand Master can hold a two-handed weapon in each hand.	Бой с оружием в каждой руке. Любое оружие в левой руке требует этого навыка (второй бластерный пистолет по-прежнему зависит от навыка Бластер). С оружием в каждой руке навык прибавляет к Атаке: -10 плюс 1 за очко навыка. Ниже Мастера левая рука бьёт слабее, а атаки медленнее; Мастер владеет двумя клинками так же, как одним; Грандмастер может держать двуручное оружие в каждой руке.
-
 # General/MMMWE_ExtraSkills.lua:54
-The art of fighting and casting in robes and plain clothes instead of armor. Works while no body armor is worn (and in robes, when there are robes).	Искусство сражаться и колдовать в мантии и простой одежде вместо доспехов. Действует, пока не надета броня (и в мантиях, если они есть).
+Enchanting	Зачарование
 
 # General/MMMWE_ExtraSkills.lua:57
-Weapons of any kind in the off hand. Off-hand damage halved, recovery +20%	Любое оружие в левой руке. Урон левой рукой вдвое меньше, восстановление +20%
+Fighting with a weapon in each hand. Any weapon in the off hand needs this skill (the Blaster skill still rules a second blaster pistol). With a weapon in each hand the skill adds to Attack: -10 plus 1 per point of skill. Below Master the off hand hits weaker and the attacks are slower; a Master wields two weapons as one would a single weapon; a Grand Master can hold a two-handed weapon in each hand.	Бой с оружием в каждой руке. Любое оружие в левой руке требует этого навыка (второй бластерный пистолет по-прежнему зависит от навыка Бластер). С оружием в каждой руке навык прибавляет к Атаке: -10 плюс 1 за очко навыка. Ниже Мастера левая рука бьёт слабее, а атаки медленнее; Мастер владеет двумя клинками так же, как одним; Грандмастер может держать двуручное оружие в каждой руке.
 
 # General/MMMWE_ExtraSkills.lua:58
-+1 AC per 2 skill points	+1 КБ за 2 очка навыка
+The art of fighting and casting in robes and plain clothes instead of armor. Works while no body armor is worn (and in robes, when there are robes).	Искусство сражаться и колдовать в мантии и простой одежде вместо доспехов. Действует, пока не надета броня (и в мантиях, если они есть).
 
-# General/MMMWE_ExtraSkills.lua:61
-Off-hand damage 75%, recovery +10%	Урон левой рукой 75%, восстановление +10%
+# General/MMMWE_ExtraSkills.lua:59
+The craft of binding spells into wands, a caster's sidearm for when the spell points run out. Wands cast their spells at the Enchanting skill and rank of the one who uses them (the game's own wands: skill 8, Novice). A gem right-clicked on a wand refills it; a gem right-clicked on a blank wand sets it in, and a spell scroll right-clicked on a blank wand with a gem makes a wand of that spell: the dearer the gem, the more charges. Wands of spells cast on characters (healing, cures, flight and the like) are used by clicking a portrait with the wand.	Искусство заключать заклинания в жезлы — запасное оружие заклинателя на случай, когда кончилась мана. Жезлы творят свои заклинания с навыком и рангом Зачарования того, кто ими пользуется (жезлы самой игры: навык 8, Новичок). Самоцвет, щёлкнутый правой кнопкой по жезлу, заряжает его; самоцвет, щёлкнутый по заготовке жезла, вставляется в неё, а свиток заклинания, щёлкнутый по заготовке с самоцветом, делает жезл этого заклинания: чем дороже самоцвет, тем больше зарядов. Жезлами заклинаний для персонажей (лечение, исцеления, полёт и подобное) пользуются, щёлкая жезлом по портрету.
 
 # General/MMMWE_ExtraSkills.lua:62
+Weapons of any kind in the off hand. Off-hand damage halved, recovery +20%	Любое оружие в левой руке. Урон левой рукой вдвое меньше, восстановление +20%
+
+# General/MMMWE_ExtraSkills.lua:63
++1 AC per 2 skill points	+1 КБ за 2 очка навыка
+
+# General/MMMWE_ExtraSkills.lua:64
+Wands cast at the Enchanting skill (at least 8), Novice rank	Жезлы творят заклинания с навыком Зачарования (не меньше 8), ранг Новичка
+
+# General/MMMWE_ExtraSkills.lua:67
+Off-hand damage 75%, recovery +10%	Урон левой рукой 75%, восстановление +10%
+
+# General/MMMWE_ExtraSkills.lua:68
 Spell recovery 1% faster per skill point	Восстановление после заклинаний на 1% быстрее за очко навыка
 
-# General/MMMWE_ExtraSkills.lua:65
+# General/MMMWE_ExtraSkills.lua:69
+Wands cast at Expert rank; a gem refills a wand, which loses a fifth of its most charges	Жезлы творят заклинания с рангом Эксперта; самоцвет заряжает жезл, а наибольшее число его зарядов уменьшается на пятую часть
+
+# General/MMMWE_ExtraSkills.lua:72
 No penalties	Без штрафов
 
-# General/MMMWE_ExtraSkills.lua:66
+# General/MMMWE_ExtraSkills.lua:73
 Spells cost 10% less SP	Заклинания стоят на 10% меньше маны
 
-# General/MMMWE_ExtraSkills.lua:69
+# General/MMMWE_ExtraSkills.lua:74
+Wands cast at Master rank; wands are made from blank wands, gems and spell scrolls; refilling loses a tenth	Жезлы творят заклинания с рангом Мастера; жезлы делаются из заготовок, самоцветов и свитков; при зарядке теряется десятая часть
+
+# General/MMMWE_ExtraSkills.lua:77
 A two-handed weapon may be held in each hand; two of them: off-hand damage 75%, recovery +20%	Двуручное оружие можно держать в каждой руке; с двумя такими: урон левой рукой 75%, восстановление +20%
 
-# General/MMMWE_ExtraSkills.lua:70
+# General/MMMWE_ExtraSkills.lua:78
 +1 to all magic resistances per skill point	+1 ко всем сопротивлениям магии за очко навыка
+
+# General/MMMWE_ExtraSkills.lua:79
+Wands cast at Grand Master rank; a use costs no charge one time in four; refilling loses nothing	Жезлы творят заклинания с рангом Грандмастера; каждое четвёртое применение не тратит заряда; при зарядке ничего не теряется
+
+# General/MMMWE_ExtraSkillsEnchanting.lua:154
+The wand has no charges left	В жезле не осталось зарядов
+
+# General/MMMWE_ExtraSkillsEnchanting.lua:166
+The wand crumbles to dust	Жезл рассыпается в прах
+
+# General/MMMWE_ExtraSkillsEnchanting.lua:230, General/MMMWE_ExtraSkillsEnchanting.lua:255
+Making wands takes a Master of Enchanting	Чтобы делать жезлы, нужен Мастер зачарования
+
+# General/MMMWE_ExtraSkillsEnchanting.lua:231
+The blank wand has a gem already	В заготовке жезла уже есть самоцвет
+
+# General/MMMWE_ExtraSkillsEnchanting.lua:235
+%s sets the %s in the blank wand	%s вставляет «%s» в заготовку жезла
+
+# General/MMMWE_ExtraSkillsEnchanting.lua:241
+Refilling wands takes an Expert in Enchanting	Чтобы заряжать жезлы, нужен Эксперт зачарования
+
+# General/MMMWE_ExtraSkillsEnchanting.lua:244
+The wand is full	Жезл заряжен полностью
+
+# General/MMMWE_ExtraSkillsEnchanting.lua:249
+%s refills the %s: %d charges	%s заряжает «%s»: зарядов — %d
+
+# General/MMMWE_ExtraSkillsEnchanting.lua:258
+Set a gem in the blank wand first	Сначала вставьте в заготовку жезла самоцвет
+
+# General/MMMWE_ExtraSkillsEnchanting.lua:261
+This spell can't be bound into a wand	Это заклинание нельзя заключить в жезл
+
+# General/MMMWE_ExtraSkillsEnchanting.lua:270
+%s makes a %s with %d charges	%s делает «%s» с зарядами: %d
 
 # General/MMMWE_HardcoreSettings.lua:187
 (Hardcore mode is locked for this party)	(режим «Хардкор» закреплён за этим отрядом)
@@ -1201,49 +1252,55 @@ Unseen	Незримый
 # General/MMMWE_LegendaryPassives.lua:146
 without body armor, monsters pick this character as a target half as often (threat halved)	без брони монстры выбирают этого персонажа целью вдвое реже (угроза вдвое меньше)
 
-# General/MMMWE_LegendaryPassives.lua:156
+# General/MMMWE_LegendaryPassives.lua:148
+Living Wands	Живые жезлы
+
+# General/MMMWE_LegendaryPassives.lua:148
+the party's wands regain a charge every hour, up to their most	жезлы отряда восстанавливают по заряду каждый час, до наибольшего числа
+
+# General/MMMWE_LegendaryPassives.lua:158
 Phantom	Фантом
 
-# General/MMMWE_LegendaryPassives.lua:156
+# General/MMMWE_LegendaryPassives.lua:158
 stealing from shops costs no reputation, and corpses give double gold	кражи в лавках не портят репутацию, и с тел выпадает вдвое больше золота
 
-# General/MMMWE_LegendaryPassives.lua:157
+# General/MMMWE_LegendaryPassives.lua:159
 Philosopher's Stone	Философский камень
 
-# General/MMMWE_LegendaryPassives.lua:157
+# General/MMMWE_LegendaryPassives.lua:159
 potions brewed from reagents are 50% stronger, and the party's potions have twice the limits: up to 24 hours and twice the most power (permanent potions excepted)	зелья из реагентов на 50% сильнее, а у зелий отряда вдвое выше пределы: до 24 часов и вдвое большая наибольшая сила (кроме зелий с постоянным действием)
 
-# General/MMMWE_LegendaryPassives.lua:158
+# General/MMMWE_LegendaryPassives.lua:160
 Sage	Мудрец
 
-# General/MMMWE_LegendaryPassives.lua:158
+# General/MMMWE_LegendaryPassives.lua:160
 the whole party gains 10% more experience	весь отряд получает на 10% больше опыта
 
-# General/MMMWE_LegendaryPassives.lua:548
+# General/MMMWE_LegendaryPassives.lua:550
 %s disarms the trap	%s обезвреживает ловушку
 
-# General/MMMWE_LegendaryPassives.lua:548
+# General/MMMWE_LegendaryPassives.lua:550
 %s sidesteps the trap	%s уходит от ловушки
 
-# General/MMMWE_LegendaryPassives.lua:582
+# General/MMMWE_LegendaryPassives.lua:584
 %s evades the attack	%s уклоняется от атаки
 
-# General/MMMWE_LegendaryPassives.lua:585
+# General/MMMWE_LegendaryPassives.lua:587
 %s blocks it with the shield	%s отражает щитом
 
-# General/MMMWE_LegendaryPassives.lua:589
+# General/MMMWE_LegendaryPassives.lua:591
 %s slips aside	%s ускользает в сторону
 
-# General/MMMWE_LegendaryPassives.lua:594
+# General/MMMWE_LegendaryPassives.lua:596
 %s parries and strikes back!	%s парирует и бьёт в ответ!
 
-# General/MMMWE_LegendaryPassives.lua:686
+# General/MMMWE_LegendaryPassives.lua:688
 %s cleaves through!	%s рассекает насквозь!
 
-# General/MMMWE_LegendaryPassives.lua:721
+# General/MMMWE_LegendaryPassives.lua:723
 %s refuses to fall!	%s не желает падать!
 
-# General/MMMWE_Main.lua:2979 plural, English plural: Holds %d items
+# General/MMMWE_Main.lua:2982 plural, English plural: Holds %d items
 Holds %d item	Внутри %d предмет|Внутри %d предмета|Внутри %d предметов
 
 # General/MMMWE_Main.lua:683
@@ -1276,100 +1333,109 @@ Dead	мёртв
 # General/MMMWE_Main.lua:2537
 %s takes %d %s damage (%d negated, %.1f%%)	%s получает %d урона (%s) (поглощено %d, %.1f%%)
 
-# General/MMMWE_Main.lua:2903, General/MMMWE_Main.lua:2906
+# General/MMMWE_Main.lua:2906, General/MMMWE_Main.lua:2909
 Type: %s \nDurability: %s	Тип: %s \nПрочность: %s
 
-# General/MMMWE_Main.lua:2908
+# General/MMMWE_Main.lua:2911
 Type: %s	Тип: %s
 
-# General/MMMWE_Main.lua:2914, General/MMMWE_Main.lua:2920
+# General/MMMWE_Main.lua:2917, General/MMMWE_Main.lua:2923
 %s: +%lu	%s: +%lu
 
-# General/MMMWE_Main.lua:2929
+# General/MMMWE_Main.lua:2932
 Armor: +%d   Block Power: %d%s (%s)	Броня: +%d   Сила блока: %d%s (%s)
 
-# General/MMMWE_Main.lua:2952
+# General/MMMWE_Main.lua:2955
 \nParry Power: %d%s	\nСила парирования: %d%s
 
-# General/MMMWE_Main.lua:2955, General/MMMWE_Main.lua:3034, General/MMMWE_Main.lua:3036, General/MMMWE_Main.lua:3040
+# General/MMMWE_Main.lua:2958, General/MMMWE_Main.lua:3042, General/MMMWE_Main.lua:3044, General/MMMWE_Main.lua:3048
 %s: +%d   %s: %dd%d	%s: +%d   %s: %dd%d
 
-# General/MMMWE_Main.lua:2964, General/MMMWE_Main.lua:2993
+# General/MMMWE_Main.lua:2967, General/MMMWE_Main.lua:3001
 %s: %lu	%s: %lu
 
-# General/MMMWE_Main.lua:2969
+# General/MMMWE_Main.lua:2972
 Steel: %d Siertal: %d Phylt: %d	Сталь: %d Сиертал: %d Филт: %d
 
-# General/MMMWE_Main.lua:2972
+# General/MMMWE_Main.lua:2975
 Kergar: %d Erudine: %d Stalt: %d	Кергар: %d Эрудин: %d Стальт: %d
 
-# General/MMMWE_Main.lua:2976
+# General/MMMWE_Main.lua:2979
 Bottles: %d	Бутылки: %d
 
-# General/MMMWE_Main.lua:2987
+# General/MMMWE_Main.lua:2990
 Ant: %d Jad: %d	Ант: %d Джад: %d
 
-# General/MMMWE_Main.lua:2990
+# General/MMMWE_Main.lua:2993
+Charges: %d of %d	Зарядов: %d из %d
+
+# General/MMMWE_Main.lua:2996
+Gem: %s	Самоцвет: %s
+
+# General/MMMWE_Main.lua:2996
+No gem set	Самоцвет не вставлен
+
+# General/MMMWE_Main.lua:2998
 Enr: %d Ant: %d Jad: %d	Энр: %d Ант: %d Джад: %d
 
-# General/MMMWE_Main.lua:3009
+# General/MMMWE_Main.lua:3017
 Shoot: +%d    Damage: %d-%d	Стрельба: +%d    Урон: %d-%d
 
-# General/MMMWE_Main.lua:3217
+# General/MMMWE_Main.lua:3225
 Armor Class	Класс брони
 
-# General/MMMWE_Main.lua:3218
+# General/MMMWE_Main.lua:3226
 Condition (replaced by HR and Phys Res)	Состояние (заменено на HR и физ. сопр.)
 
-# General/MMMWE_Main.lua:3219
+# General/MMMWE_Main.lua:3227
 Quick spell (replaced by resistances and chances; 4 px higher for the Sla/Pie/Blu line)	Быстрое заклинание (заменено сопротивлениями и шансами; на 4 пикс. выше для строки Руб/Кол/Дроб)
 
-# General/MMMWE_Main.lua:3221
+# General/MMMWE_Main.lua:3229
 Melee damage	Урон в ближнем бою
 
-# General/MMMWE_Main.lua:3223
+# General/MMMWE_Main.lua:3231
 Ranged damage	Урон в дальнем бою
 
-# General/MMMWE_Main.lua:3226
+# General/MMMWE_Main.lua:3234
 Fire res	Сопр. огню
 
-# General/MMMWE_Main.lua:3227
+# General/MMMWE_Main.lua:3235
 Air res	Сопр. воздуху
 
-# General/MMMWE_Main.lua:3228
+# General/MMMWE_Main.lua:3236
 Water res	Сопр. воде
 
-# General/MMMWE_Main.lua:3229
+# General/MMMWE_Main.lua:3237
 Earth res	Сопр. земле
 
-# General/MMMWE_Main.lua:3230
+# General/MMMWE_Main.lua:3238
 Mind res	Сопр. разуму
 
-# General/MMMWE_Main.lua:3231
+# General/MMMWE_Main.lua:3239
 Body res	Сопр. телу
 
-# General/MMMWE_Main.lua:3980
+# General/MMMWE_Main.lua:3988
 Flight mode active. Remaining charge: %3.1f%%	Режим полёта включён. Остаток заряда: %3.1f%%
 
-# General/MMMWE_Main.lua:3984
+# General/MMMWE_Main.lua:3992
 WARNING! Low charge: %3.1f%%	ВНИМАНИЕ! Низкий заряд: %3.1f%%
 
-# General/MMMWE_Main.lua:3987
+# General/MMMWE_Main.lua:3995
 WARNING! Flight mode terminates in 5 minutes!	ВНИМАНИЕ! Режим полёта отключится через 5 минут!
 
-# General/MMMWE_Main.lua:4005
+# General/MMMWE_Main.lua:4013
 Tech mastery (%d/2) is insufficient to use this function	Владение техникой (%d/2) недостаточно для этой функции
 
-# General/MMMWE_Main.lua:4015
+# General/MMMWE_Main.lua:4023
 Remaining charge: %3.1f%%.	Остаток заряда: %3.1f%%.
 
-# General/MMMWE_Main.lua:4017, General/MMMWE_Main.lua:4041
+# General/MMMWE_Main.lua:4025, General/MMMWE_Main.lua:4049
 Device charge CRITICAL! Operation aborted	Заряд устройства КРИТИЧЕСКИЙ! Операция прервана
 
-# General/MMMWE_Main.lua:4035
+# General/MMMWE_Main.lua:4043
 Tech mastery (%d/3) is insufficient to use this function	Владение техникой (%d/3) недостаточно для этой функции
 
-# General/MMMWE_Main.lua:4053
+# General/MMMWE_Main.lua:4061
 Flight mode activated	Режим полёта включён
 
 # General/MMMWE_MonkBranches.lua:148
@@ -2521,106 +2587,136 @@ The Grandmaster of the Dodging Skill, Sila Daewon, can be found in the town of K
 # Global/MMMWE_DodgingUnarmedTeachers.lua:43
 The Grandmaster of Unarmed Combat, Ian Trom, can be found in Dragonsand.	Грандмастера Рукопашного боя, Иана Трома, можно найти в Драконьих песках.
 
-# Global/MMMWE_ExtraSkillTeachers.lua:34
+# Global/MMMWE_ExtraSkillTeachers.lua:40
 Training halls and the mercenary guilds teach it.	Ему учат в тренировочных залах и гильдиях наёмников.
 
-# Global/MMMWE_ExtraSkillTeachers.lua:35
+# Global/MMMWE_ExtraSkillTeachers.lua:41
 Temples and the guilds of magic teach it.	Ему учат в храмах и гильдиях магии.
 
-# Global/MMMWE_ExtraSkillTeachers.lua:44
-Aznog Black in the city of Ravenshore	Азног Блэк в городе Рейвеншор
-
-# Global/MMMWE_ExtraSkillTeachers.lua:45
-Brand Featherwind in Alvar	Бранд Фезервинд в Алваре
-
-# Global/MMMWE_ExtraSkillTeachers.lua:46
-Pirate Paul in Regna	Пират Пол в Регне
-
-# Global/MMMWE_ExtraSkillTeachers.lua:47
-Jillian Applebee in the city of Ravenshore	Джиллиан Эпплби в городе Рейвеншор
-
-# Global/MMMWE_ExtraSkillTeachers.lua:48
-Myles Greydawn in Alvar	Майлз Грейдон в Алваре
-
-# Global/MMMWE_ExtraSkillTeachers.lua:49
-Yoel Wargreen in Shadowspire	Йоэль Варгрин в Шэдоуспайре
+# Global/MMMWE_ExtraSkillTeachers.lua:42
+The guilds of magic teach it.	Ему учат в гильдиях магии.
 
 # Global/MMMWE_ExtraSkillTeachers.lua:51
-Brahein Kadarr in Harmondale	Брахейн Кадарр в Хармондейле
+Aznog Black in the city of Ravenshore	Азног Блэк в городе Рейвеншор
 
 # Global/MMMWE_ExtraSkillTeachers.lua:52
-Matthias Bearheart in Steadwick, Erathia	Маттиас Берхарт в Стедвике, Эрафия
+Brand Featherwind in Alvar	Бранд Фезервинд в Алваре
 
 # Global/MMMWE_ExtraSkillTeachers.lua:53
-Claes Mogren in Deyja	Клас Могрен в Дейе
+Pirate Paul in Regna	Пират Пол в Регне
 
 # Global/MMMWE_ExtraSkillTeachers.lua:54
-Tanya Kirklynn in Harmondale	Таня Кирклинн в Хармондейле
+Jillian Applebee in the city of Ravenshore	Джиллиан Эпплби в городе Рейвеншор
 
 # Global/MMMWE_ExtraSkillTeachers.lua:55
-Mireille Warlin in the Tularean Forest	Мирей Уорлин в Тулерианском лесу
+Myles Greydawn in Alvar	Майлз Грейдон в Алваре
 
 # Global/MMMWE_ExtraSkillTeachers.lua:56
-Alashandra Reese in the Bracada Desert	Алашандра Риз в пустыне Бракада
+Yoel Wargreen in Shadowspire	Йоэль Варгрин в Шэдоуспайре
 
 # Global/MMMWE_ExtraSkillTeachers.lua:58
-Miriam Boyer in the town of Free Haven	Мириам Бойер в городе Фри-Хейвен
+Brahein Kadarr in Harmondale	Брахейн Кадарр в Хармондейле
 
 # Global/MMMWE_ExtraSkillTeachers.lua:59
-Selena Stipe on the Misty Islands	Селена Стайп на Туманных островах
+Matthias Bearheart in Steadwick, Erathia	Маттиас Берхарт в Стедвике, Эрафия
 
 # Global/MMMWE_ExtraSkillTeachers.lua:60
-Darth Cartwright in Dragonsand	Дарт Картрайт в Драконьих песках
+Claes Mogren in Deyja	Клас Могрен в Дейе
 
 # Global/MMMWE_ExtraSkillTeachers.lua:61
-Orville Corvair in New Sorpigal	Орвилл Корвэр в Новом Сорпигале
+Tanya Kirklynn in Harmondale	Таня Кирклинн в Хармондейле
 
 # Global/MMMWE_ExtraSkillTeachers.lua:62
-Svetlanta Irktusk in Bootleg Bay	Светланта Ирктуск в Бухте Бутлег
+Mireille Warlin in the Tularean Forest	Мирей Уорлин в Тулерианском лесу
 
 # Global/MMMWE_ExtraSkillTeachers.lua:63
+Alashandra Reese in the Bracada Desert	Алашандра Риз в пустыне Бракада
+
+# Global/MMMWE_ExtraSkillTeachers.lua:65
+Miriam Boyer in the town of Free Haven	Мириам Бойер в городе Фри-Хейвен
+
+# Global/MMMWE_ExtraSkillTeachers.lua:66
+Selena Stipe on the Misty Islands	Селена Стайп на Туманных островах
+
+# Global/MMMWE_ExtraSkillTeachers.lua:67
+Darth Cartwright in Dragonsand	Дарт Картрайт в Драконьих песках
+
+# Global/MMMWE_ExtraSkillTeachers.lua:68
+Orville Corvair in New Sorpigal	Орвилл Корвэр в Новом Сорпигале
+
+# Global/MMMWE_ExtraSkillTeachers.lua:69
+Svetlanta Irktusk in Bootleg Bay	Светланта Ирктуск в Бухте Бутлег
+
+# Global/MMMWE_ExtraSkillTeachers.lua:70
 Jo Handlebaum in Dragonsand	Джо Хэндлбаум в Драконьих песках
 
-# Global/MMMWE_ExtraSkillTeachers.lua:83
+# Global/MMMWE_ExtraSkillTeachers.lua:72
+Lathius in the city of Ravenshore	Латиус в городе Рейвеншор
+
+# Global/MMMWE_ExtraSkillTeachers.lua:73
+Xavier Havest in Alvar	Ксавьер Хавест в Алваре
+
+# Global/MMMWE_ExtraSkillTeachers.lua:74
+Whisper in Shadowspire	Шёпот в Шэдоуспайре
+
+# Global/MMMWE_ExtraSkillTeachers.lua:75
+Torrent in Harmondale	Торрент в Хармондейле
+
+# Global/MMMWE_ExtraSkillTeachers.lua:76
+Sethrik Windsong in the Tularean Forest	Сетрик Ветропев в Тулерианском лесу
+
+# Global/MMMWE_ExtraSkillTeachers.lua:77
+Ethan Lightsworn in the Bracada Desert	Итан Светоклятый в пустыне Бракада
+
+# Global/MMMWE_ExtraSkillTeachers.lua:78
+Isao Magistrus in New Sorpigal	Исао Магиструс в Новом Сорпигале
+
+# Global/MMMWE_ExtraSkillTeachers.lua:79
+Zoltan Phelps in the town of Free Haven	Золтан Фелпс в городе Фри-Хейвен
+
+# Global/MMMWE_ExtraSkillTeachers.lua:80
+Leon Lazaru in Castle Ironfist	Леон Лазару в замке Айронфист
+
+# Global/MMMWE_ExtraSkillTeachers.lua:100
 You must first learn %s, %s. %s	Сначала вам нужно изучить навык %s, %s. %s
 
-# Global/MMMWE_ExtraSkillTeachers.lua:87
+# Global/MMMWE_ExtraSkillTeachers.lua:104
 You already know all I can teach you of %s, %s.	Вы уже знаете всё, чему я могу научить в навыке %s, %s.
 
-# Global/MMMWE_ExtraSkillTeachers.lua:91
+# Global/MMMWE_ExtraSkillTeachers.lua:108
 You must be %s in %s before I can teach you more, %s.	Вы должны стать %s в навыке %s, прежде чем я научу вас большему, %s.
 
-# Global/MMMWE_ExtraSkillTeachers.lua:92
+# Global/MMMWE_ExtraSkillTeachers.lua:109
 an Expert	Экспертом
 
-# Global/MMMWE_ExtraSkillTeachers.lua:92
+# Global/MMMWE_ExtraSkillTeachers.lua:109
 a Master	Мастером
 
-# Global/MMMWE_ExtraSkillTeachers.lua:97
+# Global/MMMWE_ExtraSkillTeachers.lua:114
 %s is not for one of your calling, %s.	%s — не для людей вашего призвания, %s.
 
-# Global/MMMWE_ExtraSkillTeachers.lua:99
+# Global/MMMWE_ExtraSkillTeachers.lua:116
 Your calling takes %s no further than %s, %s.	Ваше призвание не ведёт в навыке %s дальше уровня «%s», %s.
 
-# Global/MMMWE_ExtraSkillTeachers.lua:104
+# Global/MMMWE_ExtraSkillTeachers.lua:121
 You need %s at %d to become %s %s, %s.	Нужен навык %s на уровне %d, чтобы получить звание «%s %s», %s.
 
-# Global/MMMWE_ExtraSkillTeachers.lua:105, Global/MMMWE_ExtraSkillTeachers.lua:116
+# Global/MMMWE_ExtraSkillTeachers.lua:122, Global/MMMWE_ExtraSkillTeachers.lua:133
 a Grand Master of	Грандмастер навыка
 
-# Global/MMMWE_ExtraSkillTeachers.lua:105, Global/MMMWE_ExtraSkillTeachers.lua:116
+# Global/MMMWE_ExtraSkillTeachers.lua:122, Global/MMMWE_ExtraSkillTeachers.lua:133
 a Master of	Мастер навыка
 
-# Global/MMMWE_ExtraSkillTeachers.lua:105, Global/MMMWE_ExtraSkillTeachers.lua:116
+# Global/MMMWE_ExtraSkillTeachers.lua:122, Global/MMMWE_ExtraSkillTeachers.lua:133
 an Expert in	Эксперт навыка
 
-# Global/MMMWE_ExtraSkillTeachers.lua:110
+# Global/MMMWE_ExtraSkillTeachers.lua:127
 %s %s costs %d gold, %s.	Обучение «%s %s» стоит %d золота, %s.
 
-# Global/MMMWE_ExtraSkillTeachers.lua:115
+# Global/MMMWE_ExtraSkillTeachers.lua:132
 %s is now %s %s.	%s теперь — %s %s.
 
-# Global/MMMWE_ExtraSkillTeachers.lua:128
+# Global/MMMWE_ExtraSkillTeachers.lua:145
 %s %s is taught by %s.	%s %s: учит %s.
 
 # Global/MMMWE_HPSPDisplay.lua:129
@@ -2704,22 +2800,22 @@ Restore HP	Восст. здоровья
 # Global/MMMWE_HPSPDisplay.lua:171
 Restore SP	Восст. маны
 
-# Global/MMMWE_HPSPDisplay.lua:248, Global/MMMWE_HPSPDisplay.lua:623
+# Global/MMMWE_HPSPDisplay.lua:248, Global/MMMWE_HPSPDisplay.lua:626
 Party Buff 	Бафф отряда 
 
-# Global/MMMWE_HPSPDisplay.lua:259, Global/MMMWE_HPSPDisplay.lua:683
+# Global/MMMWE_HPSPDisplay.lua:259, Global/MMMWE_HPSPDisplay.lua:690
 Party Debuff 	Дебафф отряда 
 
-# Global/MMMWE_HPSPDisplay.lua:1235
+# Global/MMMWE_HPSPDisplay.lua:1242
 Cell %d%% / %d%%	Ячейка %d%% / %d%%
 
-# Global/MMMWE_HPSPDisplay.lua:1236
+# Global/MMMWE_HPSPDisplay.lua:1243
 Cell %d%%	Ячейка %d%%
 
-# Global/MMMWE_HPSPDisplay.lua:1245
+# Global/MMMWE_HPSPDisplay.lua:1252
 Shield %d%%	Щит %d%%
 
-# Global/MMMWE_HPSPDisplay.lua:1475
+# Global/MMMWE_HPSPDisplay.lua:1482
 HP/SP overlay 	Индикатор HP/SP 
 
 # Global/MMMWE_HardcoreMode.lua:100
