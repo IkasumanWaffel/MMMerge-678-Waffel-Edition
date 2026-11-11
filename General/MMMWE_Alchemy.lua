@@ -15,8 +15,8 @@
 	   done its checks (the Alchemy rank, explosions) on the first pair.
 	   Hold Ctrl while putting a reagent into an empty bottle: every other empty bottle is
 	   filled the same way while the reagent lasts.
-	   Hold a digit with Ctrl to brew at most that many more (Ctrl+3: three more; 0 means
-	   ten). Ctrl alone brews as many potions in all as the batch size set with Ctrl + the
+	   Hold a digit with Ctrl to brew that many potions in all, the first one included
+	   (Ctrl+3: three potions; 0 means ten). Ctrl alone brews as many potions in all as the batch size set with Ctrl + the
 	   mouse wheel on the character screen (kept with the game), or every pair there is
 	   when the size is "all" (the wheel turned down below 2).
 	   What the character has: the backpack, the potions and bottles in the bottle box
@@ -173,7 +173,7 @@ local FIRST_BOX_ID = 1000
 local Batch      -- {Player = pointer, Kind = "mix" / "reagent", Poured, Into, Result, Power, Slot, Limit}
 
 -- (11.11.26) how many more to brew: a digit held with Ctrl (the top row or the numeric
--- keypad; 0 means 10); otherwise the batch size set with Ctrl + the mouse wheel on the
+-- keypad) is the potions in all, the first one included (0 means 10); otherwise the batch size set with Ctrl + the mouse wheel on the
 -- character screen (vars.MMMWE_BatchSize: the potions in all, the first one included;
 -- nil: as many as there are)
 local BATCH_MAX = 50
@@ -181,7 +181,7 @@ local BATCH_MAX = 50
 local function batchLimit()
 	for d = 0, 9 do
 		if Keys.IsPressed(0x30 + d) or Keys.IsPressed(0x60 + d) then
-			return d == 0 and 10 or d
+			return (d == 0 and 10 or d) - 1
 		end
 	end
 	local size = vars and vars.MMMWE_BatchSize
