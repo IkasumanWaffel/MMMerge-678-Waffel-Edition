@@ -317,6 +317,10 @@ local function brewRest(b)
 			if t.InBox then fromBox = fromBox + 1 end
 		end
 	end
+	if MF.LogInfo then
+		MF.LogInfo("[Alchemy] batch %s: %d + %d -> %d, %d more brewed (%d in the box); %d poured and %d to fill found",
+			b.Kind, b.Poured, b.Into, b.Result, n, fromBox, #poured, #into)
+	end
 	if n > 0 then
 		local text = string.format(MF.TextN(n, "%d more potion brewed: %s", "%d more potions brewed: %s"),
 			n, Game.ItemsTxt[b.Result].Name)
