@@ -22,9 +22,8 @@ end
 --       + MASTER_PER x strength (MASTER_CAP at most)
 --   Expert spell potions (Bless, Stoneskin, Heroism): the spell at the Expert rank with
 --       skill strength / 5 (FULL_STRENGTH / 5 at most), ExtraPotions below
---   minor stat boosts (Expert): + MINOR_POWER
---   minor resistances (Expert, as Preservation's Spirit): + MINOR_RES_BASE + strength /
---       MINOR_RES_DIV (MINOR_RES_CAP at most), the time of the Master potions
+--   minor resistances and stat boosts (Expert, as Preservation's Spirit): + MINOR_RES_BASE
+--       + strength / MINOR_RES_DIV (MINOR_RES_CAP at most), the time of the Master potions
 --   durations: base + so much per point of strength that MAX_MINUTES (12 hours) is
 --       reached at FULL_STRENGTH (Master potions and the like: 2 hours base, minor ones:
 --       1 hour)
@@ -307,8 +306,8 @@ end
 --   74..79 (294..299)   Minor Fire / Air / Water / Earth / Mind / Body Resistance, Expert
 --   80..86 (1022..1028) Minor Might / Intellect / Personality / Endurance / Speed /
 --                       Accuracy / Luck Boost, Expert
--- The minor potions add MINOR_POWER for MINOR_BASE minutes + the share of strength (the
--- rules at the top). A minor potion isn't drunk while a stronger effect of its kind is active (it
+-- The minor potions: the rules at the top (MINOR_POWER and MINOR_BASE, a flat +25 for
+-- 1 hour + the share of strength, are no longer used). A minor potion isn't drunk while a stronger effect of its kind is active (it
 -- would replace it). The Spirit bonus is kept in vars.MMMWE_SpiritPotion[player] =
 -- {Expire, Power} and added by SpellsExtra.lua (the larger of it and Preservation's).
 local function MinorPotion(Target, BuffName, Power, resistance)
@@ -336,7 +335,7 @@ for id, name in pairs{[74] = "FireResistance", [75] = "AirResistance", [76] = "W
 		[80] = "TempMight", [81] = "TempIntellect", [82] = "TempPersonality", [83] = "TempEndurance",
 		[84] = "TempSpeed", [85] = "TempAccuracy", [86] = "TempLuck"} do
 	evt.PotionEffects[id] = function(IsDrunk, Target, Power)
-		if IsDrunk then return MinorPotion(Target, name, Power, id <= 79) end
+		if IsDrunk then return MinorPotion(Target, name, Power, true) end
 	end
 end
 
