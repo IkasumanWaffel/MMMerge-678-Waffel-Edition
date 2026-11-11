@@ -970,277 +970,277 @@ not a Grand Master of
 # General/MMMWE_LegendaryMastery.lua:110
 level %d of %d	
 
-# General/MMMWE_LegendaryPassives.lua:105
+# General/MMMWE_LegendaryPassives.lua:107
 Spellstaff	
 
-# General/MMMWE_LegendaryPassives.lua:105
+# General/MMMWE_LegendaryPassives.lua:107
 wielding a staff, spells cost 15% less SP and blows get a second stun roll	
 
-# General/MMMWE_LegendaryPassives.lua:106
+# General/MMMWE_LegendaryPassives.lua:108
 Riposte	
 
-# General/MMMWE_LegendaryPassives.lua:106
+# General/MMMWE_LegendaryPassives.lua:108
 10% chance to parry a monster's melee blow completely and strike back (sword in hand)	
 
-# General/MMMWE_LegendaryPassives.lua:107, General/MMMWE_Resources.lua:249
+# General/MMMWE_LegendaryPassives.lua:109, General/MMMWE_Resources.lua:249
 Assassin	
 
-# General/MMMWE_LegendaryPassives.lua:107
+# General/MMMWE_LegendaryPassives.lua:109
 with a dagger in hand, double critical chance; critical hits ignore physical resistance	
 
-# General/MMMWE_LegendaryPassives.lua:108, General/MMMWE_MonsterAbilities.lua:58
+# General/MMMWE_LegendaryPassives.lua:110, General/MMMWE_MonsterAbilities.lua:58
 Cleave	
 
-# General/MMMWE_LegendaryPassives.lua:108
+# General/MMMWE_LegendaryPassives.lua:110
 each axe blow also hits a foe next to the target for 50% damage	
 
-# General/MMMWE_LegendaryPassives.lua:109
+# General/MMMWE_LegendaryPassives.lua:111
 Impale	
 
-# General/MMMWE_LegendaryPassives.lua:109
+# General/MMMWE_LegendaryPassives.lua:111
 with a spear in hand, blows hit as if the target had half its AC, and +AC equal to the Spear skill	
 
-# General/MMMWE_LegendaryPassives.lua:110, General/MMMWE_Resources.lua:301
+# General/MMMWE_LegendaryPassives.lua:112, General/MMMWE_Resources.lua:301
 Volley	
 
-# General/MMMWE_LegendaryPassives.lua:110
+# General/MMMWE_LegendaryPassives.lua:112
 three arrows a shot	
 
-# General/MMMWE_LegendaryPassives.lua:111
+# General/MMMWE_LegendaryPassives.lua:113
 Crushing Blows	
 
-# General/MMMWE_LegendaryPassives.lua:111
+# General/MMMWE_LegendaryPassives.lua:113
 a second stun and paralyze roll, and the target gets no resistance roll against them	
 
-# General/MMMWE_LegendaryPassives.lua:112
+# General/MMMWE_LegendaryPassives.lua:114
 Overcharge	
 
-# General/MMMWE_LegendaryPassives.lua:112
+# General/MMMWE_LegendaryPassives.lua:114
 shots use half the cell charge and deal 20% more damage	
 
-# General/MMMWE_LegendaryPassives.lua:113
+# General/MMMWE_LegendaryPassives.lua:115
 Bulwark	
 
-# General/MMMWE_LegendaryPassives.lua:113
+# General/MMMWE_LegendaryPassives.lua:115
 with a shield in hand, 20% chance to block a missile or a spell bolt completely	
 
-# General/MMMWE_LegendaryPassives.lua:114
+# General/MMMWE_LegendaryPassives.lua:116
 Light Step	
 
-# General/MMMWE_LegendaryPassives.lua:114
+# General/MMMWE_LegendaryPassives.lua:116
 in leather armor, 10% chance to evade a monster's blow or missile	
 
-# General/MMMWE_LegendaryPassives.lua:115
+# General/MMMWE_LegendaryPassives.lua:117
 Interlinked	
 
-# General/MMMWE_LegendaryPassives.lua:115
+# General/MMMWE_LegendaryPassives.lua:117
 in chain armor, 20% less Fire, Air, Water and Earth damage	
 
-# General/MMMWE_LegendaryPassives.lua:116
+# General/MMMWE_LegendaryPassives.lua:118
 Unbreakable	
 
-# General/MMMWE_LegendaryPassives.lua:116
+# General/MMMWE_LegendaryPassives.lua:118
 worn plate armor takes no wear; Paralysis and Stone don't hold	
 
-# General/MMMWE_LegendaryPassives.lua:117
+# General/MMMWE_LegendaryPassives.lua:119
 the school's spells cost 25% less SP and are 25% stronger (damage, duration, power, healing)	
 
-# General/MMMWE_LegendaryPassives.lua:118
+# General/MMMWE_LegendaryPassives.lua:120
 Archmage of Fire	
 
-# General/MMMWE_LegendaryPassives.lua:118
+# General/MMMWE_LegendaryPassives.lua:120
 ; half the target's fire resistance is ignored	
 
-# General/MMMWE_LegendaryPassives.lua:119
+# General/MMMWE_LegendaryPassives.lua:121
 Archmage of Air	
 
-# General/MMMWE_LegendaryPassives.lua:119
+# General/MMMWE_LegendaryPassives.lua:121
 ; they recover 25% faster	
 
-# General/MMMWE_LegendaryPassives.lua:120
+# General/MMMWE_LegendaryPassives.lua:122
 Archmage of Water	
 
-# General/MMMWE_LegendaryPassives.lua:120
+# General/MMMWE_LegendaryPassives.lua:122
 ; Town Portal and Lloyd's Beacon cost no SP	
 
-# General/MMMWE_LegendaryPassives.lua:121
+# General/MMMWE_LegendaryPassives.lua:123
 Archmage of Earth	
 
-# General/MMMWE_LegendaryPassives.lua:121
+# General/MMMWE_LegendaryPassives.lua:123
 ; Stone Skin and Rock Blast are twice as strong instead	
 
-# General/MMMWE_LegendaryPassives.lua:122
+# General/MMMWE_LegendaryPassives.lua:124
 Archmage of Spirit	
 
-# General/MMMWE_LegendaryPassives.lua:122
+# General/MMMWE_LegendaryPassives.lua:124
 ; Raise Dead and Resurrection leave no Weakness	
 
-# General/MMMWE_LegendaryPassives.lua:123
+# General/MMMWE_LegendaryPassives.lua:125
 Archmage of Mind	
 
-# General/MMMWE_LegendaryPassives.lua:123
+# General/MMMWE_LegendaryPassives.lua:125
 ; Charm, Berserk, Mass Fear and Enslave can't be resisted by monsters of the caster's level or lower	
 
-# General/MMMWE_LegendaryPassives.lua:124
+# General/MMMWE_LegendaryPassives.lua:126
 Archmage of Body	
 
-# General/MMMWE_LegendaryPassives.lua:124
+# General/MMMWE_LegendaryPassives.lua:126
 ; Heal and Power Cure cure Poison and Disease as well	
 
-# General/MMMWE_LegendaryPassives.lua:125
+# General/MMMWE_LegendaryPassives.lua:127
 Archmage of Light	
 
-# General/MMMWE_LegendaryPassives.lua:125
+# General/MMMWE_LegendaryPassives.lua:127
 ; the durations are doubled instead	
 
-# General/MMMWE_LegendaryPassives.lua:126
+# General/MMMWE_LegendaryPassives.lua:128
 Archmage of Dark	
 
-# General/MMMWE_LegendaryPassives.lua:126
+# General/MMMWE_LegendaryPassives.lua:128
 ; their damage heals the caster for 10% of it	
 
-# General/MMMWE_LegendaryPassives.lua:127
+# General/MMMWE_LegendaryPassives.lua:129
 Heir of the Dark Elves	
 
-# General/MMMWE_LegendaryPassives.lua:127
+# General/MMMWE_LegendaryPassives.lua:129
 the Dark Elf abilities are 50% stronger	
 
-# General/MMMWE_LegendaryPassives.lua:128
+# General/MMMWE_LegendaryPassives.lua:130
 Elder Blood	
 
-# General/MMMWE_LegendaryPassives.lua:128
+# General/MMMWE_LegendaryPassives.lua:130
 the Vampire abilities are 50% stronger	
 
-# General/MMMWE_LegendaryPassives.lua:129
+# General/MMMWE_LegendaryPassives.lua:131
 Ancient Wyrm	
 
-# General/MMMWE_LegendaryPassives.lua:129
+# General/MMMWE_LegendaryPassives.lua:131
 the Dragon abilities and the breath are 50% stronger	
 
-# General/MMMWE_LegendaryPassives.lua:130
+# General/MMMWE_LegendaryPassives.lua:132
 Appraiser	
 
-# General/MMMWE_LegendaryPassives.lua:130
+# General/MMMWE_LegendaryPassives.lua:132
 every item the party carries is identified, and this character sells 10% dearer	
 
-# General/MMMWE_LegendaryPassives.lua:131
+# General/MMMWE_LegendaryPassives.lua:133
 Trade Prince	
 
-# General/MMMWE_LegendaryPassives.lua:131
+# General/MMMWE_LegendaryPassives.lua:133
 this character buys at half price and sells at full value	
 
-# General/MMMWE_LegendaryPassives.lua:132
+# General/MMMWE_LegendaryPassives.lua:134
 Master Smith	
 
-# General/MMMWE_LegendaryPassives.lua:132
+# General/MMMWE_LegendaryPassives.lua:134
 the party's equipment wears at half the rate, and broken items are mended while resting	
 
-# General/MMMWE_LegendaryPassives.lua:133
+# General/MMMWE_LegendaryPassives.lua:135
 Titan	
 
-# General/MMMWE_LegendaryPassives.lua:133
+# General/MMMWE_LegendaryPassives.lua:135
 HP from Bodybuilding doubled, and Weakness doesn't hold	
 
-# General/MMMWE_LegendaryPassives.lua:134
+# General/MMMWE_LegendaryPassives.lua:136
 Clarity	
 
-# General/MMMWE_LegendaryPassives.lua:134
+# General/MMMWE_LegendaryPassives.lua:136
 SP from Meditation doubled, and 1% of SP comes back every 5 minutes	
 
-# General/MMMWE_LegendaryPassives.lua:135
+# General/MMMWE_LegendaryPassives.lua:137
 Sixth Sense	
 
-# General/MMMWE_LegendaryPassives.lua:135
+# General/MMMWE_LegendaryPassives.lua:137
 chest and map traps do the party no harm, and 20% more gold is found	
 
-# General/MMMWE_LegendaryPassives.lua:136
+# General/MMMWE_LegendaryPassives.lua:138
 Undying	
 
-# General/MMMWE_LegendaryPassives.lua:136
+# General/MMMWE_LegendaryPassives.lua:138
 once a day, a fatal blow leaves 1 HP instead	
 
-# General/MMMWE_LegendaryPassives.lua:137
+# General/MMMWE_LegendaryPassives.lua:139
 Lockbreaker	
 
-# General/MMMWE_LegendaryPassives.lua:137
+# General/MMMWE_LegendaryPassives.lua:139
 chests always open with their traps disarmed	
 
-# General/MMMWE_LegendaryPassives.lua:138
+# General/MMMWE_LegendaryPassives.lua:140
 Shadow	
 
-# General/MMMWE_LegendaryPassives.lua:138
+# General/MMMWE_LegendaryPassives.lua:140
 15% chance to evade any attack, spells included	
 
-# General/MMMWE_LegendaryPassives.lua:139
+# General/MMMWE_LegendaryPassives.lua:141
 Iron Fist	
 
-# General/MMMWE_LegendaryPassives.lua:139
+# General/MMMWE_LegendaryPassives.lua:141
 bare-handed blows always hit and strike twice	
 
-# General/MMMWE_LegendaryPassives.lua:140
+# General/MMMWE_LegendaryPassives.lua:142
 Know Thy Enemy	
 
-# General/MMMWE_LegendaryPassives.lua:140
+# General/MMMWE_LegendaryPassives.lua:142
 the whole party deals 10% more damage	
 
-# General/MMMWE_LegendaryPassives.lua:141
+# General/MMMWE_LegendaryPassives.lua:143
 Weapon Master	
 
-# General/MMMWE_LegendaryPassives.lua:141
+# General/MMMWE_LegendaryPassives.lua:143
 all weapon skills count 5 higher, and recovery is 10% faster	
 
-# General/MMMWE_LegendaryPassives.lua:143
+# General/MMMWE_LegendaryPassives.lua:145
 Twin Titans	
 
-# General/MMMWE_LegendaryPassives.lua:143
+# General/MMMWE_LegendaryPassives.lua:145
 a two-handed weapon in each hand without penalties	
 
-# General/MMMWE_LegendaryPassives.lua:144
+# General/MMMWE_LegendaryPassives.lua:146
 Unseen	
 
-# General/MMMWE_LegendaryPassives.lua:144
+# General/MMMWE_LegendaryPassives.lua:146
 without body armor, monsters pick this character as a target half as often (threat halved)	
 
-# General/MMMWE_LegendaryPassives.lua:154
+# General/MMMWE_LegendaryPassives.lua:156
 Phantom	
 
-# General/MMMWE_LegendaryPassives.lua:154
+# General/MMMWE_LegendaryPassives.lua:156
 stealing from shops costs no reputation, and corpses give double gold	
 
-# General/MMMWE_LegendaryPassives.lua:155
+# General/MMMWE_LegendaryPassives.lua:157
 Philosopher's Stone	
 
-# General/MMMWE_LegendaryPassives.lua:155
-potions brewed from reagents are 50% stronger	
+# General/MMMWE_LegendaryPassives.lua:157
+potions brewed from reagents are 50% stronger, and the party's potions have twice the limits: up to 24 hours and twice the most power (permanent potions excepted)	
 
-# General/MMMWE_LegendaryPassives.lua:156
+# General/MMMWE_LegendaryPassives.lua:158
 Sage	
 
-# General/MMMWE_LegendaryPassives.lua:156
+# General/MMMWE_LegendaryPassives.lua:158
 the whole party gains 10% more experience	
 
-# General/MMMWE_LegendaryPassives.lua:546
+# General/MMMWE_LegendaryPassives.lua:548
 %s disarms the trap	
 
-# General/MMMWE_LegendaryPassives.lua:546
+# General/MMMWE_LegendaryPassives.lua:548
 %s sidesteps the trap	
 
-# General/MMMWE_LegendaryPassives.lua:580
+# General/MMMWE_LegendaryPassives.lua:582
 %s evades the attack	
 
-# General/MMMWE_LegendaryPassives.lua:583
+# General/MMMWE_LegendaryPassives.lua:585
 %s blocks it with the shield	
 
-# General/MMMWE_LegendaryPassives.lua:587
+# General/MMMWE_LegendaryPassives.lua:589
 %s slips aside	
 
-# General/MMMWE_LegendaryPassives.lua:592
+# General/MMMWE_LegendaryPassives.lua:594
 %s parries and strikes back!	
 
-# General/MMMWE_LegendaryPassives.lua:684
+# General/MMMWE_LegendaryPassives.lua:686
 %s cleaves through!	
 
-# General/MMMWE_LegendaryPassives.lua:719
+# General/MMMWE_LegendaryPassives.lua:721
 %s refuses to fall!	
 
 # General/MMMWE_Main.lua:2979 plural, English plural: Holds %d items

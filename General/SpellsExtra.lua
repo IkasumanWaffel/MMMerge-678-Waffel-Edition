@@ -585,7 +585,7 @@ local function SetSpellsExtraHooks()
 	--   Preservation (spell 50, potion 231): Spirit + a fixed bonus, set when the buff
 	--     starts and kept for its whole duration:
 	--       spell  mastery * (5 + skill)   (e.g. Novice 1: 6, Grand Master 20: 100)
-	--       potion 2 * (5 + power)         (as an Expert cast at skill = potion power)
+	--       potion 10 + power / 2, 60 at most (ExtraPotions.lua: the potions' rules)
 	--   Pain Reflection (spell 95, potion): Light and Dark + the buff's power
 	--     (skill * PowerPerLevel + PowerBonus; potion 25).
 	--   Spirit Resistance potion (item 293): Spirit + 3 per point of potion strength; it
@@ -600,7 +600,8 @@ local function SetSpellsExtraHooks()
 	-- CalcStatBonusByMagic adds the Power of an active extra buff.
 	local PreservationDur      = {60, 300, 300, 900}       -- defaults if the table has no value
 	local PreservationDurConst = {1800, 3600, 3600, 3600}
-	local PRESERVATION_POTION_MASTERY = 2                  -- potion bonus = this * (5 + power)
+	local PRESERVATION_POTION_MASTERY = 2                  -- the rank the potion's buff has
+	local PRESERVATION_POTION_CAP = 60                     -- the potion's Spirit bonus at most
 	local DOP_LIGHT_DARK_SHARE = 0.5
 	local GameSecond = const.Minute / 60
 	local PB, PartyB, ST = const.PlayerBuff, const.PartyBuff, const.Stats
@@ -634,12 +635,16 @@ local function SetSpellsExtraHooks()
 		if not IsDrunk then return end
 		Power = max(Power or 1, 1)
 		local buff = Target.SpellBuffs[PB.Preservation]
-		-- the potions' common limits (ExtraPotions.lua): 12 hours, +150
-		buff.ExpireTime = Game.Time + min(Power * 30, MF.PotionMaxMinutes or 720) * const.Minute
+		-- the potions' common rules (ExtraPotions.lua): the time of the Master potions;
+		-- Spirit + 10 + half the strength, PRESERVATION_POTION_CAP at most (both limits
+		-- doubled by a legendary alchemist)
+		local mul = MF.PotionLimitMul and MF.PotionLimitMul() or 1
+		buff.ExpireTime = Game.Time + (MF.PotionTime and MF.PotionTime(MF.PotionMasterBase, Power, mul)
+			or min(Power * 30, 720) * const.Minute)
 		buff.Skill = PRESERVATION_POTION_MASTERY
 		buff.Power = 0
 		presRecords()[Target:GetIndex()] = {Expire = buff.ExpireTime,
-			Bonus = min(PRESERVATION_POTION_MASTERY * (5 + Power), MF.PotionMasterCap or 150)}
+			Bonus = min(10 + floor(Power / 2), PRESERVATION_POTION_CAP * mul)}
 		return true
 	end
 

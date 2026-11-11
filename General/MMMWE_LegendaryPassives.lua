@@ -46,7 +46,9 @@
 	  Identify Monster Know Thy Enemy  the whole party deals +10% damage
 	  Armsmaster     Weapon Master     weapon skills count 5 higher; 10% faster recovery
 	  Stealing       Phantom           shop theft costs no reputation; double gold from corpses
-	  Alchemy        Philosopher's Stone  potions brewed from reagents are 50% stronger
+	  Alchemy        Philosopher's Stone  potions brewed from reagents are 50% stronger; the
+	                                      potions drunk in the party have twice the limits
+	                                      (Global/ExtraPotions.lua, MF.PotionLimitMul)
 	  Learning       Sage              +10% experience for the whole party
 
 	Mixed abilities (party-wide ones) work while their owner is in the party.
@@ -152,7 +154,7 @@ function MF.LegendaryThreatMult(pl)
 	return P.RobeThreatMul
 end
 passive(SK.Stealing, Tx"Phantom", Tx"stealing from shops costs no reputation, and corpses give double gold")
-passive(SK.Alchemy, Tx"Philosopher's Stone", Tx"potions brewed from reagents are 50% stronger")
+passive(SK.Alchemy, Tx"Philosopher's Stone", Tx"potions brewed from reagents are 50% stronger, and the party's potions have twice the limits: up to 24 hours and twice the most power (permanent potions excepted)")
 passive(SK.Learning, Tx"Sage", Tx"the whole party gains 10% more experience")
 
 ---------------------------------------------------------------------------

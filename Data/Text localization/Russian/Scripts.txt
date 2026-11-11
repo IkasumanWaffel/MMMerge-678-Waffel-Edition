@@ -970,277 +970,277 @@ not a Grand Master of 	не Грандмастер в навыке
 # General/MMMWE_LegendaryMastery.lua:110
 level %d of %d	уровень %d из %d
 
-# General/MMMWE_LegendaryPassives.lua:105
+# General/MMMWE_LegendaryPassives.lua:107
 Spellstaff	Посох чародея
 
-# General/MMMWE_LegendaryPassives.lua:105
+# General/MMMWE_LegendaryPassives.lua:107
 wielding a staff, spells cost 15% less SP and blows get a second stun roll	с посохом в руках заклинания стоят на 15% меньше маны, а удары дают второй бросок на оглушение
 
-# General/MMMWE_LegendaryPassives.lua:106
+# General/MMMWE_LegendaryPassives.lua:108
 Riposte	Ответный удар
 
-# General/MMMWE_LegendaryPassives.lua:106
+# General/MMMWE_LegendaryPassives.lua:108
 10% chance to parry a monster's melee blow completely and strike back (sword in hand)	10% шанс полностью парировать удар монстра в ближнем бою и ответить ударом (с мечом в руке)
 
-# General/MMMWE_LegendaryPassives.lua:107, General/MMMWE_Resources.lua:249
+# General/MMMWE_LegendaryPassives.lua:109, General/MMMWE_Resources.lua:249
 Assassin	Убийца
 
-# General/MMMWE_LegendaryPassives.lua:107
+# General/MMMWE_LegendaryPassives.lua:109
 with a dagger in hand, double critical chance; critical hits ignore physical resistance	с кинжалом в руке шанс критического удара удвоен; критические удары игнорируют физическое сопротивление
 
-# General/MMMWE_LegendaryPassives.lua:108, General/MMMWE_MonsterAbilities.lua:58
+# General/MMMWE_LegendaryPassives.lua:110, General/MMMWE_MonsterAbilities.lua:58
 Cleave	Рассечение
 
-# General/MMMWE_LegendaryPassives.lua:108
+# General/MMMWE_LegendaryPassives.lua:110
 each axe blow also hits a foe next to the target for 50% damage	каждый удар топора задевает и врага рядом с целью на 50% урона
 
-# General/MMMWE_LegendaryPassives.lua:109
+# General/MMMWE_LegendaryPassives.lua:111
 Impale	Пронзание
 
-# General/MMMWE_LegendaryPassives.lua:109
+# General/MMMWE_LegendaryPassives.lua:111
 with a spear in hand, blows hit as if the target had half its AC, and +AC equal to the Spear skill	с копьём в руке удары попадают так, будто у цели вдвое меньше КБ, и +КБ, равный навыку Копьё
 
-# General/MMMWE_LegendaryPassives.lua:110, General/MMMWE_Resources.lua:301
+# General/MMMWE_LegendaryPassives.lua:112, General/MMMWE_Resources.lua:301
 Volley	Залп
 
-# General/MMMWE_LegendaryPassives.lua:110
+# General/MMMWE_LegendaryPassives.lua:112
 three arrows a shot	три стрелы за выстрел
 
-# General/MMMWE_LegendaryPassives.lua:111
+# General/MMMWE_LegendaryPassives.lua:113
 Crushing Blows	Сокрушающие удары
 
-# General/MMMWE_LegendaryPassives.lua:111
+# General/MMMWE_LegendaryPassives.lua:113
 a second stun and paralyze roll, and the target gets no resistance roll against them	второй бросок на оглушение и паралич, и цель не получает броска сопротивления против них
 
-# General/MMMWE_LegendaryPassives.lua:112
+# General/MMMWE_LegendaryPassives.lua:114
 Overcharge	Перегрузка
 
-# General/MMMWE_LegendaryPassives.lua:112
+# General/MMMWE_LegendaryPassives.lua:114
 shots use half the cell charge and deal 20% more damage	выстрелы тратят вдвое меньше заряда ячейки и наносят на 20% больше урона
 
-# General/MMMWE_LegendaryPassives.lua:113
+# General/MMMWE_LegendaryPassives.lua:115
 Bulwark	Оплот
 
-# General/MMMWE_LegendaryPassives.lua:113
+# General/MMMWE_LegendaryPassives.lua:115
 with a shield in hand, 20% chance to block a missile or a spell bolt completely	со щитом в руке 20% шанс полностью отразить снаряд или заряд заклинания
 
-# General/MMMWE_LegendaryPassives.lua:114
+# General/MMMWE_LegendaryPassives.lua:116
 Light Step	Лёгкий шаг
 
-# General/MMMWE_LegendaryPassives.lua:114
+# General/MMMWE_LegendaryPassives.lua:116
 in leather armor, 10% chance to evade a monster's blow or missile	в кожаной броне 10% шанс уклониться от удара или снаряда монстра
 
-# General/MMMWE_LegendaryPassives.lua:115
+# General/MMMWE_LegendaryPassives.lua:117
 Interlinked	Сплетение
 
-# General/MMMWE_LegendaryPassives.lua:115
+# General/MMMWE_LegendaryPassives.lua:117
 in chain armor, 20% less Fire, Air, Water and Earth damage	в кольчуге на 20% меньше урона от Огня, Воздуха, Воды и Земли
 
-# General/MMMWE_LegendaryPassives.lua:116
+# General/MMMWE_LegendaryPassives.lua:118
 Unbreakable	Несокрушимость
 
-# General/MMMWE_LegendaryPassives.lua:116
+# General/MMMWE_LegendaryPassives.lua:118
 worn plate armor takes no wear; Paralysis and Stone don't hold	надетые латы не изнашиваются; Паралич и Окаменение не действуют
 
-# General/MMMWE_LegendaryPassives.lua:117
+# General/MMMWE_LegendaryPassives.lua:119
 the school's spells cost 25% less SP and are 25% stronger (damage, duration, power, healing)	заклинания школы стоят на 25% меньше маны и на 25% сильнее (урон, длительность, сила, лечение)
 
-# General/MMMWE_LegendaryPassives.lua:118
+# General/MMMWE_LegendaryPassives.lua:120
 Archmage of Fire	Архимаг Огня
 
-# General/MMMWE_LegendaryPassives.lua:118
+# General/MMMWE_LegendaryPassives.lua:120
 ; half the target's fire resistance is ignored	; половина сопротивления цели огню игнорируется
 
-# General/MMMWE_LegendaryPassives.lua:119
+# General/MMMWE_LegendaryPassives.lua:121
 Archmage of Air	Архимаг Воздуха
 
-# General/MMMWE_LegendaryPassives.lua:119
+# General/MMMWE_LegendaryPassives.lua:121
 ; they recover 25% faster	; восстановление после них на 25% быстрее
 
-# General/MMMWE_LegendaryPassives.lua:120
+# General/MMMWE_LegendaryPassives.lua:122
 Archmage of Water	Архимаг Воды
 
-# General/MMMWE_LegendaryPassives.lua:120
+# General/MMMWE_LegendaryPassives.lua:122
 ; Town Portal and Lloyd's Beacon cost no SP	; Городской портал и Маяк Ллойда не тратят ману
 
-# General/MMMWE_LegendaryPassives.lua:121
+# General/MMMWE_LegendaryPassives.lua:123
 Archmage of Earth	Архимаг Земли
 
-# General/MMMWE_LegendaryPassives.lua:121
+# General/MMMWE_LegendaryPassives.lua:123
 ; Stone Skin and Rock Blast are twice as strong instead	; вместо этого Каменная кожа и Каменный взрыв вдвое сильнее
 
-# General/MMMWE_LegendaryPassives.lua:122
+# General/MMMWE_LegendaryPassives.lua:124
 Archmage of Spirit	Архимаг Духа
 
-# General/MMMWE_LegendaryPassives.lua:122
+# General/MMMWE_LegendaryPassives.lua:124
 ; Raise Dead and Resurrection leave no Weakness	; Оживление и Воскрешение не оставляют Слабости
 
-# General/MMMWE_LegendaryPassives.lua:123
+# General/MMMWE_LegendaryPassives.lua:125
 Archmage of Mind	Архимаг Разума
 
-# General/MMMWE_LegendaryPassives.lua:123
+# General/MMMWE_LegendaryPassives.lua:125
 ; Charm, Berserk, Mass Fear and Enslave can't be resisted by monsters of the caster's level or lower	; Очарованию, Берсерку, Массовому страху и Порабощению не могут сопротивляться монстры уровня заклинателя и ниже
 
-# General/MMMWE_LegendaryPassives.lua:124
+# General/MMMWE_LegendaryPassives.lua:126
 Archmage of Body	Архимаг Тела
 
-# General/MMMWE_LegendaryPassives.lua:124
+# General/MMMWE_LegendaryPassives.lua:126
 ; Heal and Power Cure cure Poison and Disease as well	; Лечение и Мощное исцеление излечивают также Яд и Болезнь
 
-# General/MMMWE_LegendaryPassives.lua:125
+# General/MMMWE_LegendaryPassives.lua:127
 Archmage of Light	Архимаг Света
 
-# General/MMMWE_LegendaryPassives.lua:125
+# General/MMMWE_LegendaryPassives.lua:127
 ; the durations are doubled instead	; вместо этого длительность удвоена
 
-# General/MMMWE_LegendaryPassives.lua:126
+# General/MMMWE_LegendaryPassives.lua:128
 Archmage of Dark	Архимаг Тьмы
 
-# General/MMMWE_LegendaryPassives.lua:126
+# General/MMMWE_LegendaryPassives.lua:128
 ; their damage heals the caster for 10% of it	; 10% их урона лечат заклинателя
 
-# General/MMMWE_LegendaryPassives.lua:127
+# General/MMMWE_LegendaryPassives.lua:129
 Heir of the Dark Elves	Наследник тёмных эльфов
 
-# General/MMMWE_LegendaryPassives.lua:127
+# General/MMMWE_LegendaryPassives.lua:129
 the Dark Elf abilities are 50% stronger	способности тёмного эльфа на 50% сильнее
 
-# General/MMMWE_LegendaryPassives.lua:128
+# General/MMMWE_LegendaryPassives.lua:130
 Elder Blood	Древняя кровь
 
-# General/MMMWE_LegendaryPassives.lua:128
+# General/MMMWE_LegendaryPassives.lua:130
 the Vampire abilities are 50% stronger	способности вампира на 50% сильнее
 
-# General/MMMWE_LegendaryPassives.lua:129
+# General/MMMWE_LegendaryPassives.lua:131
 Ancient Wyrm	Древний змей
 
-# General/MMMWE_LegendaryPassives.lua:129
+# General/MMMWE_LegendaryPassives.lua:131
 the Dragon abilities and the breath are 50% stronger	способности дракона и его дыхание на 50% сильнее
 
-# General/MMMWE_LegendaryPassives.lua:130
+# General/MMMWE_LegendaryPassives.lua:132
 Appraiser	Оценщик
 
-# General/MMMWE_LegendaryPassives.lua:130
+# General/MMMWE_LegendaryPassives.lua:132
 every item the party carries is identified, and this character sells 10% dearer	все предметы отряда опознаны, и этот персонаж продаёт на 10% дороже
 
-# General/MMMWE_LegendaryPassives.lua:131
+# General/MMMWE_LegendaryPassives.lua:133
 Trade Prince	Торговый князь
 
-# General/MMMWE_LegendaryPassives.lua:131
+# General/MMMWE_LegendaryPassives.lua:133
 this character buys at half price and sells at full value	этот персонаж покупает за полцены и продаёт по полной стоимости
 
-# General/MMMWE_LegendaryPassives.lua:132
+# General/MMMWE_LegendaryPassives.lua:134
 Master Smith	Мастер-кузнец
 
-# General/MMMWE_LegendaryPassives.lua:132
+# General/MMMWE_LegendaryPassives.lua:134
 the party's equipment wears at half the rate, and broken items are mended while resting	снаряжение отряда изнашивается вдвое медленнее, а сломанные предметы чинятся во время отдыха
 
-# General/MMMWE_LegendaryPassives.lua:133
+# General/MMMWE_LegendaryPassives.lua:135
 Titan	Титан
 
-# General/MMMWE_LegendaryPassives.lua:133
+# General/MMMWE_LegendaryPassives.lua:135
 HP from Bodybuilding doubled, and Weakness doesn't hold	здоровье от Телосложения удвоено, и Слабость не действует
 
-# General/MMMWE_LegendaryPassives.lua:134
+# General/MMMWE_LegendaryPassives.lua:136
 Clarity	Ясность
 
-# General/MMMWE_LegendaryPassives.lua:134
+# General/MMMWE_LegendaryPassives.lua:136
 SP from Meditation doubled, and 1% of SP comes back every 5 minutes	мана от Медитации удвоена, и 1% маны возвращается каждые 5 минут
 
-# General/MMMWE_LegendaryPassives.lua:135
+# General/MMMWE_LegendaryPassives.lua:137
 Sixth Sense	Шестое чувство
 
-# General/MMMWE_LegendaryPassives.lua:135
+# General/MMMWE_LegendaryPassives.lua:137
 chest and map traps do the party no harm, and 20% more gold is found	ловушки сундуков и карт не вредят отряду, и золота находится на 20% больше
 
-# General/MMMWE_LegendaryPassives.lua:136
+# General/MMMWE_LegendaryPassives.lua:138
 Undying	Неумирающий
 
-# General/MMMWE_LegendaryPassives.lua:136
+# General/MMMWE_LegendaryPassives.lua:138
 once a day, a fatal blow leaves 1 HP instead	раз в день смертельный удар вместо этого оставляет 1 очко здоровья
 
-# General/MMMWE_LegendaryPassives.lua:137
+# General/MMMWE_LegendaryPassives.lua:139
 Lockbreaker	Взломщик
 
-# General/MMMWE_LegendaryPassives.lua:137
+# General/MMMWE_LegendaryPassives.lua:139
 chests always open with their traps disarmed	сундуки всегда открываются с обезвреженными ловушками
 
-# General/MMMWE_LegendaryPassives.lua:138
+# General/MMMWE_LegendaryPassives.lua:140
 Shadow	Тень
 
-# General/MMMWE_LegendaryPassives.lua:138
+# General/MMMWE_LegendaryPassives.lua:140
 15% chance to evade any attack, spells included	15% шанс уклониться от любой атаки, включая заклинания
 
-# General/MMMWE_LegendaryPassives.lua:139
+# General/MMMWE_LegendaryPassives.lua:141
 Iron Fist	Железный кулак
 
-# General/MMMWE_LegendaryPassives.lua:139
+# General/MMMWE_LegendaryPassives.lua:141
 bare-handed blows always hit and strike twice	удары голыми руками всегда попадают и бьют дважды
 
-# General/MMMWE_LegendaryPassives.lua:140
+# General/MMMWE_LegendaryPassives.lua:142
 Know Thy Enemy	Знай врага
 
-# General/MMMWE_LegendaryPassives.lua:140
+# General/MMMWE_LegendaryPassives.lua:142
 the whole party deals 10% more damage	весь отряд наносит на 10% больше урона
 
-# General/MMMWE_LegendaryPassives.lua:141
+# General/MMMWE_LegendaryPassives.lua:143
 Weapon Master	Мастер оружия
 
-# General/MMMWE_LegendaryPassives.lua:141
+# General/MMMWE_LegendaryPassives.lua:143
 all weapon skills count 5 higher, and recovery is 10% faster	все навыки оружия считаются на 5 выше, и восстановление на 10% быстрее
 
-# General/MMMWE_LegendaryPassives.lua:143
+# General/MMMWE_LegendaryPassives.lua:145
 Twin Titans	Парные титаны
 
-# General/MMMWE_LegendaryPassives.lua:143
+# General/MMMWE_LegendaryPassives.lua:145
 a two-handed weapon in each hand without penalties	двуручное оружие в каждой руке без штрафов
 
-# General/MMMWE_LegendaryPassives.lua:144
+# General/MMMWE_LegendaryPassives.lua:146
 Unseen	Незримый
 
-# General/MMMWE_LegendaryPassives.lua:144
+# General/MMMWE_LegendaryPassives.lua:146
 without body armor, monsters pick this character as a target half as often (threat halved)	без брони монстры выбирают этого персонажа целью вдвое реже (угроза вдвое меньше)
 
-# General/MMMWE_LegendaryPassives.lua:154
+# General/MMMWE_LegendaryPassives.lua:156
 Phantom	Фантом
 
-# General/MMMWE_LegendaryPassives.lua:154
+# General/MMMWE_LegendaryPassives.lua:156
 stealing from shops costs no reputation, and corpses give double gold	кражи в лавках не портят репутацию, и с тел выпадает вдвое больше золота
 
-# General/MMMWE_LegendaryPassives.lua:155
+# General/MMMWE_LegendaryPassives.lua:157
 Philosopher's Stone	Философский камень
 
-# General/MMMWE_LegendaryPassives.lua:155
-potions brewed from reagents are 50% stronger	зелья, сваренные из реагентов, на 50% сильнее
+# General/MMMWE_LegendaryPassives.lua:157
+potions brewed from reagents are 50% stronger, and the party's potions have twice the limits: up to 24 hours and twice the most power (permanent potions excepted)	зелья из реагентов на 50% сильнее, а у зелий отряда вдвое выше пределы: до 24 часов и вдвое большая наибольшая сила (кроме зелий с постоянным действием)
 
-# General/MMMWE_LegendaryPassives.lua:156
+# General/MMMWE_LegendaryPassives.lua:158
 Sage	Мудрец
 
-# General/MMMWE_LegendaryPassives.lua:156
+# General/MMMWE_LegendaryPassives.lua:158
 the whole party gains 10% more experience	весь отряд получает на 10% больше опыта
 
-# General/MMMWE_LegendaryPassives.lua:546
+# General/MMMWE_LegendaryPassives.lua:548
 %s disarms the trap	%s обезвреживает ловушку
 
-# General/MMMWE_LegendaryPassives.lua:546
+# General/MMMWE_LegendaryPassives.lua:548
 %s sidesteps the trap	%s уходит от ловушки
 
-# General/MMMWE_LegendaryPassives.lua:580
+# General/MMMWE_LegendaryPassives.lua:582
 %s evades the attack	%s уклоняется от атаки
 
-# General/MMMWE_LegendaryPassives.lua:583
+# General/MMMWE_LegendaryPassives.lua:585
 %s blocks it with the shield	%s отражает щитом
 
-# General/MMMWE_LegendaryPassives.lua:587
+# General/MMMWE_LegendaryPassives.lua:589
 %s slips aside	%s ускользает в сторону
 
-# General/MMMWE_LegendaryPassives.lua:592
+# General/MMMWE_LegendaryPassives.lua:594
 %s parries and strikes back!	%s парирует и бьёт в ответ!
 
-# General/MMMWE_LegendaryPassives.lua:684
+# General/MMMWE_LegendaryPassives.lua:686
 %s cleaves through!	%s рассекает насквозь!
 
-# General/MMMWE_LegendaryPassives.lua:719
+# General/MMMWE_LegendaryPassives.lua:721
 %s refuses to fall!	%s не желает падать!
 
 # General/MMMWE_Main.lua:2979 plural, English plural: Holds %d items

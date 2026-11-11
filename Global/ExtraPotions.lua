@@ -15,38 +15,68 @@ local function potionGive(pl, hp, sp)
 end
 
 ---------------------------------------------------------------------------
--- MMMWE (11.11.26): the common limits of the potions
---   POTION_MAX_MINUTES  no potion's effect lasts longer (12 hours)
---   MASTER_CAP          the most a potion adds to a statistic or a resistance for a time
---                       (the boosts, the resistances, the Divine potions: 3 per point of
---                       potion strength, reached at strength 50)
---   MINOR_POWER         what the Expert ("minor") potions add: a fixed amount for
---                       MINOR_BASE minutes + MINOR_PER per point of strength
---   PURE_DIV, PURE_STAT_MAX, PURE_RES_MAX   the black "Pure" potions: + strength /
---                       PURE_DIV for good, as many times as one likes, until the
---                       statistic's (resistance's) own value reaches the maximum
+-- MMMWE (11.11.26): the common rules of the potions
+-- Every potion with a timed effect reaches its limits at the same potion strength,
+-- FULL_STRENGTH; the tier only sets how much it gives there:
+--   Master boosts and resistances (and Spirit Resistance, Divine Boost / Protection):
+--       + MASTER_PER x strength (MASTER_CAP at most)
+--   Expert spell potions (Bless, Stoneskin, Heroism): the spell at the Expert rank with
+--       skill strength / 5 (FULL_STRENGTH / 5 at most), ExtraPotions below
+--   minor potions (Expert): + MINOR_POWER
+--   durations: base + so much per point of strength that MAX_MINUTES (12 hours) is
+--       reached at FULL_STRENGTH (Master potions and the like: 2 hours base, minor ones:
+--       1 hour)
+-- A legendary alchemist in the party (Philosopher's Stone, MMMWE_LegendaryPassives.lua)
+-- doubles the limits (MF.PotionLimitMul): the most power, the longest time and the
+-- strength they are reached at. The black "Pure" potions don't change: + strength /
+-- PURE_DIV for good, as many times as one likes, until the statistic's (resistance's)
+-- own value reaches PURE_STAT_MAX (PURE_RES_MAX).
 ---------------------------------------------------------------------------
-local POTION_MAX_MINUTES = 12 * 60
+local FULL_STRENGTH = 100
+local MAX_MINUTES   = 12 * 60
+local MASTER_PER    = 1.5
 local MASTER_CAP    = 150
+local MASTER_BASE   = 120      -- minutes
 local MINOR_POWER   = 25
-local MINOR_BASE    = 60
-local MINOR_PER     = 5
+local MINOR_BASE    = 60       -- minutes
 local PURE_DIV      = 4
 local PURE_STAT_MAX = 150
 local PURE_RES_MAX  = 100
 local Tx = Merge.Functions.Text or function(s) return s end
 local PotionMessage      -- a status line shown after the game's own
 
-local function potionMinutes(minutes)
-	return const.Minute * math.min(minutes, POTION_MAX_MINUTES)
+-- 2 with a legendary alchemist in the party, else 1
+local function limitMul()
+	if MF.IsLegendary then
+		for _, pl in Party do
+			if MF.IsLegendary(pl, const.Skills.Alchemy) then return 2 end
+		end
+	end
+	return 1
 end
-MF.PotionMaxMinutes = POTION_MAX_MINUTES
-MF.PotionMasterCap = MASTER_CAP
+MF.PotionLimitMul = limitMul
+
+-- the game time of a duration of base minutes + the share of strength up to the limit
+local function potionTime(base, Power, mul)
+	mul = mul or limitMul()
+	local per = (MAX_MINUTES - base) / FULL_STRENGTH
+	return const.Minute * math.floor(math.min(base + per * math.max(Power or 1, 1), MAX_MINUTES * mul))
+end
+-- a fixed duration in minutes within the limit
+local function potionMinutes(minutes)
+	return const.Minute * math.min(minutes, MAX_MINUTES * limitMul())
+end
+local function masterPower(Power, mul)
+	return math.min(math.floor(MASTER_PER * math.max(Power or 1, 1)), MASTER_CAP * (mul or limitMul()))
+end
+MF.PotionTime = potionTime
+MF.PotionMasterBase = MASTER_BASE
 
 -- The potions the game itself handles (Shield, Water Breathing, the Master boosts and
 -- resistances): the drinker's buffs are noted before the game applies the potion, and on
--- the next tick the buffs it changed are brought within the limits.
-local Limited            -- {Player = index, Before = {[buff] = {ExpireTime, Power}}}
+-- the next tick the buffs it changed get the duration (and the boosts and resistances the
+-- power) of the rules above.
+local Limited            -- {Player = index, Power = strength, Before = {[buff] = {ExpireTime, Power}}}
 local CAPPED_POWER = {}
 for _, n in ipairs{"TempMight", "TempIntellect", "TempPersonality", "TempEndurance", "TempSpeed",
 		"TempAccuracy", "TempLuck", "FireResistance", "AirResistance", "WaterResistance",
@@ -54,13 +84,13 @@ for _, n in ipairs{"TempMight", "TempIntellect", "TempPersonality", "TempEnduran
 	CAPPED_POWER[const.PlayerBuff[n]] = true
 end
 
-local function limitGamePotion(IsDrunk, Target)
+local function limitGamePotion(IsDrunk, Target, Power)
 	if not IsDrunk then return end
 	local before = {}
 	for i, b in Target.SpellBuffs do
 		before[i] = {b.ExpireTime, b.Power}
 	end
-	Limited = {Player = Target:GetIndex(), Before = before}
+	Limited = {Player = Target:GetIndex(), Power = Power, Before = before}
 end
 for _, id in ipairs{12, 15, 20, 21, 22, 23, 24, 25, 35, 36, 37, 38, 39, 40, 41} do
 	evt.PotionEffects[id] = limitGamePotion
@@ -75,12 +105,13 @@ function events.Tick()
 		local l = Limited
 		Limited = nil
 		local pl = Party.PlayersArray[l.Player]
-		local latest = Game.Time + potionMinutes(POTION_MAX_MINUTES)
+		local mul = limitMul()
+		local expire = Game.Time + potionTime(MASTER_BASE, l.Power, mul)
 		for i, b in pl.SpellBuffs do
 			local was = l.Before[i]
 			if was and (b.ExpireTime ~= was[1] or b.Power ~= was[2]) then
-				if b.ExpireTime > latest then b.ExpireTime = latest end
-				if CAPPED_POWER[i] and b.Power > MASTER_CAP then b.Power = MASTER_CAP end
+				b.ExpireTime = expire
+				if CAPPED_POWER[i] then b.Power = masterPower(l.Power, mul) end
 			end
 		end
 	end
@@ -117,8 +148,8 @@ end
 evt.PotionEffects[60] = function(IsDrunk, Target, Power)
 	if IsDrunk then
 		local Buffs = Target.SpellBuffs
-		local ExpireTime = Game.Time + potionMinutes(Power*30)
-		local Effect = math.min(Power*3, MASTER_CAP)
+		local ExpireTime = Game.Time + potionTime(MASTER_BASE, Power)
+		local Effect = masterPower(Power)
 
 		for k,v in pairs({"TempLuck", "TempIntellect", "TempPersonality", "TempAccuracy", "TempEndurance", "TempSpeed", "TempMight"}) do
 			Buff = Buffs[const.PlayerBuff[v]]
@@ -132,8 +163,8 @@ end
 evt.PotionEffects[61] = function(IsDrunk, Target, Power)
 	if IsDrunk then
 		local Buffs = Target.SpellBuffs
-		local ExpireTime = Game.Time + potionMinutes(Power*30)
-		local Effect = math.min(Power*3, MASTER_CAP)
+		local ExpireTime = Game.Time + potionTime(MASTER_BASE, Power)
+		local Effect = masterPower(Power)
 
 		for k,v in pairs({"AirResistance", "BodyResistance", "EarthResistance", "FireResistance", "MindResistance", "WaterResistance"}) do
 			Buff = Buffs[const.PlayerBuff[v]]
@@ -269,13 +300,12 @@ evt.PotionEffects[59] = function(IsDrunk, Target, Power)
 end
 
 -- Minor potions and Spirit Resistance (MMMWE 11.11.26)
---   73 (item 293)       Spirit Resistance, Master, as the other six: +3 per point of potion
---                       strength (MASTER_CAP at most) for 30 minutes per point
+--   73 (item 293)       Spirit Resistance, Master, as the other six
 --   74..79 (294..299)   Minor Fire / Air / Water / Earth / Mind / Body Resistance, Expert
 --   80..86 (1022..1028) Minor Might / Intellect / Personality / Endurance / Speed /
 --                       Accuracy / Luck Boost, Expert
--- The minor potions add MINOR_POWER for MINOR_BASE minutes + MINOR_PER per point of
--- strength. A minor potion isn't drunk while a stronger effect of its kind is active (it
+-- The minor potions add MINOR_POWER for MINOR_BASE minutes + the share of strength (the
+-- rules at the top). A minor potion isn't drunk while a stronger effect of its kind is active (it
 -- would replace it). The Spirit bonus is kept in vars.MMMWE_SpiritPotion[player] =
 -- {Expire, Power} and added by SpellsExtra.lua (the larger of it and Preservation's).
 local function MinorPotion(Target, BuffName, Power)
@@ -284,7 +314,7 @@ local function MinorPotion(Target, BuffName, Power)
 		PotionMessage = Tx"A stronger effect of this kind is already active"
 		return -1
 	end
-	Buff.ExpireTime = Game.Time + potionMinutes(MINOR_BASE + MINOR_PER*math.max(Power or 1, 1))
+	Buff.ExpireTime = Game.Time + potionTime(MINOR_BASE, Power)
 	Buff.Power = MINOR_POWER
 	Buff.Skill = 1
 	Buff.OverlayId = 0
@@ -304,8 +334,8 @@ evt.PotionEffects[73] = function(IsDrunk, Target, Power)
 	if IsDrunk then
 		Power = math.max(Power or 1, 1)
 		vars.MMMWE_SpiritPotion = vars.MMMWE_SpiritPotion or {}
-		vars.MMMWE_SpiritPotion[Target:GetIndex()] = {Expire = Game.Time + potionMinutes(30*Power),
-			Power = math.min(3*Power, MASTER_CAP)}
+		vars.MMMWE_SpiritPotion[Target:GetIndex()] = {Expire = Game.Time + potionTime(MASTER_BASE, Power),
+			Power = masterPower(Power)}
 	end
 end
 
@@ -345,8 +375,8 @@ evt.PotionEffects[68] = function(IsDrunk, Target, Power) if IsDrunk then return 
 evt.PotionEffects[69] = function(IsDrunk, Target, Power) if IsDrunk then return PureResistance(Target, 8, Power) end end
 
 -- Protection from Magic (MMMWE 11.11.26): wards the drinker alone (before: the whole
--- party, for 2 hours per rank of the drinker's Alchemy, rank + 1 conditions). 30 minutes
--- per point of strength; it turns away PFM_BASE conditions + 1 per PFM_PER points of
+-- party, for 2 hours per rank of the drinker's Alchemy, rank + 1 conditions). The time of
+-- the Master potions; it turns away PFM_BASE conditions + 1 per PFM_PER points of
 -- strength. Like the potion before, it also protects from death and eradication.
 -- The ward itself: General/MMMWE_PersonalWard.lua.
 local PFM_BASE, PFM_PER = 2, 20
@@ -354,7 +384,7 @@ evt.PotionEffects[70] = function(IsDrunk, Target, Power)
 	if IsDrunk then
 		Power = math.max(Power or 1, 1)
 		if MF.SetPersonalWard then
-			MF.SetPersonalWard(Target, math.min(30*Power, POTION_MAX_MINUTES), PFM_BASE + math.floor(Power / PFM_PER), 4)
+			MF.SetPersonalWard(Target, potionTime(MASTER_BASE, Power) / const.Minute, PFM_BASE + math.floor(Power / PFM_PER), 4)
 		end
 	end
 end
@@ -373,7 +403,8 @@ end
 
 -- Bless and Stoneskin (MMMWE 10.11.26): by their spells at the Expert rank, the rank of
 -- Alchemy the potions take to brew, for the drinker alone. The spell's skill is
--- potion strength / POTION_SPELL_DIV (rounded up, POTION_SPELL_MAX at most):
+-- potion strength / POTION_SPELL_DIV (rounded up, POTION_SPELL_MAX at most, twice that
+-- with a legendary alchemist):
 --   Heroism    +15 damage, +1 per point of that skill          (the spell at Expert)
 --   Bless      +10 attack, +1 per point of that skill          (the spell at Expert)
 --   Stoneskin  15% physical resistance, +1% per point of skill (the spell at Expert)
@@ -384,12 +415,12 @@ end
 -- Before, the skill was 5 * sqrt(strength) with nothing taken off: stronger than a Grand
 -- Master's spell from strength 50 on, and Stone Skin's formula broke past strength 300.
 local POTION_SPELL_DIV = 5
-local POTION_SPELL_MAX = 50
+local POTION_SPELL_MAX = FULL_STRENGTH / POTION_SPELL_DIV   -- doubled by a legendary alchemist
 local POTION_SPELL_RANK = 5   -- skill points that make up for the rank: Expert over Novice
 
 function potionSpellSkill(Power)
 	local k = math.ceil(math.max(Power or 1, 1) / POTION_SPELL_DIV)
-	return math.min(k, POTION_SPELL_MAX) + POTION_SPELL_RANK
+	return math.min(k, POTION_SPELL_MAX * limitMul()) + POTION_SPELL_RANK
 end
 
 -- Bless
