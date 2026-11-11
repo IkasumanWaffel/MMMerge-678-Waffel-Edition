@@ -630,20 +630,21 @@ local function build()
 	tierRow(126, "SP", Tx"Spell points", CC.SPTiers)
 
 	-- resource kit (chosen on the base tab, kept by the promotions) and the SP stats
-	text{Font = Big, X = 470, Y = 84, W = 156, H = 19,
+	-- the box on the right holds four lines in the small font: kit, its price, SP stats, alignment
+	text{Font = Small, X = 470, Y = 82, W = 156, H = 16,
 		Get = function()
 			local k = fam().Kit and CC.KitByKey[fam().Kit]
 			return Tx"Kit: " .. (k and Tx(k.Name) or Tx"none"), k and GOLD or (E.Step == 1 and WHITE or GREY)
 		end,
 		Click = cycleKit}
-	text{Font = Small, X = 470, Y = 105, W = 156, H = 17,
+	text{Font = Small, X = 470, Y = 98, W = 156, H = 16,
 		Get = function()
 			local k = fam().Kit and CC.KitByKey[fam().Kit]
 			if not k then return E.Step == 1 and Tx"click to buy one" or " ", GREY end
 			return string.format(Tx"%s, %d pts", k.Resource and Tx(k.Resource) or Tx"Spell points", k.Price), GREY
 		end,
 		Click = cycleKit}
-	text{Font = Big, X = 470, Y = 126, W = 156, H = 19,
+	text{Font = Small, X = 470, Y = 114, W = 156, H = 16,
 		Get = function()
 			local s = spec()
 			return "SP: " .. (({Tx"Intellect", Tx"Personality", Tx"Int. and Pers."})[s.Stats] or "?"),
@@ -653,7 +654,7 @@ local function build()
 	-- alignment (base, first and neutral promotions; the light and dark ones are fixed)
 	local AL = const.Alignment
 	local ALIGN_NAMES = {[AL.Good] = Tx"good", [AL.Neutral] = Tx"neutral", [AL.Evil] = Tx"evil"}
-	text{Font = Small, X = 292, Y = 423, W = 336, H = 16,   -- above Starting Equipment, Cancel and OK
+	text{Font = Small, X = 470, Y = 130, W = 156, H = 16,
 		Get = function()
 			local a
 			if E.Step == 4 then a = AL.Good elseif E.Step == 5 then a = AL.Evil else a = fam().Alignment or AL.Neutral end
