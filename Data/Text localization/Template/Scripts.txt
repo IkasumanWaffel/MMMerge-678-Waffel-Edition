@@ -175,7 +175,7 @@ Master
 # General/MMMWE_Blasters.lua:428, General/MMMWE_Blasters.lua:429, General/MMMWE_Blasters.lua:465, General/MMMWE_Blasters.lua:508, General/MMMWE_Blasters.lua:541, General/MMMWE_Blasters.lua:598, General/MMMWE_CustomClasses.lua:145, General/MMMWE_CustomClasses.lua:522, General/MMMWE_SpellBookInfo.lua:19, Global/MMMWE_ExtraSkillTeachers.lua:45, Global/MMMWE_ExtraSkillTeachers.lua:46
 Grand Master	
 
-# General/MMMWE_Blasters.lua:429, General/MMMWE_CustomClassEditor.lua:636
+# General/MMMWE_Blasters.lua:429, General/MMMWE_CustomClassEditor.lua:637
 none	
 
 # General/MMMWE_Blasters.lua:434
@@ -392,7 +392,7 @@ Starting skills are chosen on the base class tab
 Only a skill the class can learn can be a starting skill	
 
 # General/MMMWE_CustomClassEditor.lua:334
-Dual-Wield and Robe are learned in houses, not at the start	
+Dual-Wield, Robe and Enchanting are learned in houses, not at the start	
 
 # General/MMMWE_CustomClassEditor.lua:335
 Two starting skills are chosen already	
@@ -427,88 +427,91 @@ Points: %g / %d
 # General/MMMWE_CustomClassEditor.lua:629
 Hit points	
 
-# General/MMMWE_CustomClassEditor.lua:630, General/MMMWE_CustomClassEditor.lua:643
+# General/MMMWE_CustomClassEditor.lua:630, General/MMMWE_CustomClassEditor.lua:644
 Spell points	
 
-# General/MMMWE_CustomClassEditor.lua:636
+# General/MMMWE_CustomClassEditor.lua:637
 Kit: 	
 
-# General/MMMWE_CustomClassEditor.lua:642
+# General/MMMWE_CustomClassEditor.lua:643
 click to buy one	
 
-# General/MMMWE_CustomClassEditor.lua:643
+# General/MMMWE_CustomClassEditor.lua:644
 %s, %d pts	
 
-# General/MMMWE_CustomClassEditor.lua:649, General/MMMWE_CustomClasses.lua:530, General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3465
+# General/MMMWE_CustomClassEditor.lua:650, General/MMMWE_CustomClasses.lua:530, General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3465
 Intellect	
 
-# General/MMMWE_CustomClassEditor.lua:649, General/MMMWE_CustomClasses.lua:530, General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3465
+# General/MMMWE_CustomClassEditor.lua:650, General/MMMWE_CustomClasses.lua:530, General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3465
 Personality	
 
-# General/MMMWE_CustomClassEditor.lua:649
+# General/MMMWE_CustomClassEditor.lua:650
 Int. and Pers.	
 
-# General/MMMWE_CustomClassEditor.lua:655
+# General/MMMWE_CustomClassEditor.lua:656
 good	
 
-# General/MMMWE_CustomClassEditor.lua:655, General/MMMWE_CustomClasses.lua:72
+# General/MMMWE_CustomClassEditor.lua:656, General/MMMWE_CustomClasses.lua:72
 neutral	
 
-# General/MMMWE_CustomClassEditor.lua:655
+# General/MMMWE_CustomClassEditor.lua:656
 evil	
 
-# General/MMMWE_CustomClassEditor.lua:660
+# General/MMMWE_CustomClassEditor.lua:661
 Alignment: 	
 
-# General/MMMWE_CustomClassEditor.lua:682
+# General/MMMWE_CustomClassEditor.lua:684
 Ident. Item	
 
-# General/MMMWE_CustomClassEditor.lua:682
+# General/MMMWE_CustomClassEditor.lua:684
 Disarm Traps	
 
-# General/MMMWE_CustomClassEditor.lua:682
+# General/MMMWE_CustomClassEditor.lua:684
 Ident. Monster	
 
-# General/MMMWE_CustomClassEditor.lua:683
+# General/MMMWE_CustomClassEditor.lua:685
 Bodybuilding	
 
-# General/MMMWE_CustomClassEditor.lua:683, General/MMMWE_CustomClasses.lua:686
+# General/MMMWE_CustomClassEditor.lua:685, General/MMMWE_CustomClasses.lua:686
 Repair Item	
 
-# General/MMMWE_CustomClassEditor.lua:683, General/MMMWE_CustomClasses.lua:505, General/MMMWE_ExtraSkills.lua:52
+# General/MMMWE_CustomClassEditor.lua:685, General/MMMWE_CustomClasses.lua:505, General/MMMWE_ExtraSkills.lua:52
 Dual-Wield	
 
-# General/MMMWE_CustomClassEditor.lua:702
+# General/MMMWE_CustomClassEditor.lua:685, General/MMMWE_ExtraSkills.lua:54
+Enchanting	
+
+# General/MMMWE_CustomClassEditor.lua:704
 Prot. from Magic	
 
-# General/MMMWE_CustomClassEditor.lua:720
+# General/MMMWE_CustomClassEditor.lua:722
 %s Magic: %s	
 
-# General/MMMWE_CustomClassEditor.lua:771
+# General/MMMWE_CustomClassEditor.lua:773
 Enter keeps the name, Esc drops it	
 
-# General/MMMWE_CustomClassEditor.lua:773
+# General/MMMWE_CustomClassEditor.lua:775
 Spells %d/%d: click to pick	
 
-# General/MMMWE_CustomClassEditor.lua:775
+# General/MMMWE_CustomClassEditor.lua:777
 Click +1, Ctrl+click -1	
 
-# General/MMMWE_CustomClassEditor.lua:776
+# General/MMMWE_CustomClassEditor.lua:778
 Click +, Ctrl -, Shift: start %d/%d	
 
-# General/MMMWE_CustomClassEditor.lua:785
+# General/MMMWE_CustomClassEditor.lua:787
 Items: %d of %d points	
 
-# General/MMMWE_CustomClassEditor.lua:789
+# General/MMMWE_CustomClassEditor.lua:791
 Price: rank x impact	
 
-# General/MMMWE_CustomClassEditor.lua:792
+# General/MMMWE_CustomClassEditor.lua:794
 Promoters: %s (%d%%)	
 
-# General/MMMWE_CustomClassEditor.lua:795
+# General/MMMWE_CustomClassEditor.lua:797
 Ctrl+S save, Ctrl+L load	
 
-# General/MMMWE_CustomClassEditor.lua:839
+# General/MMMWE_CustomClassEditor.lua:841
 Become a custom class	
 
 # General/MMMWE_CustomClasses.lua:72
@@ -810,9 +813,6 @@ no energy shield worn
 
 # General/MMMWE_ExtraSkills.lua:53
 Robe	
-
-# General/MMMWE_ExtraSkills.lua:54
-Enchanting	
 
 # General/MMMWE_ExtraSkills.lua:57
 Fighting with a weapon in each hand. Any weapon in the off hand needs this skill (the Blaster skill still rules a second blaster pistol). With a weapon in each hand the skill adds to Attack: -10 plus 1 per point of skill. Below Master the off hand hits weaker and the attacks are slower; a Master wields two weapons as one would a single weapon; a Grand Master can hold a two-handed weapon in each hand.	

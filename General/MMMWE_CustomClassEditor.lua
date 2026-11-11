@@ -180,7 +180,7 @@ end
 
 local function purchasable(s)
 	local n = 0
-	for id, m in pairs(s.Skills) do if m > 0 and id < 39 then n = n + 1 end end   -- not Dual-Wield, Robe
+	for id, m in pairs(s.Skills) do if m > 0 and id < 39 then n = n + 1 end end   -- not Dual-Wield, Robe, Enchanting
 	return n
 end
 
@@ -331,7 +331,7 @@ local function clickSkill(id)
 			if sk == id then table.remove(f.StartSkills, i) return end
 		end
 		if cap == 0 then message(Tx"Only a skill the class can learn can be a starting skill") return end
-		if id >= 39 then message(Tx"Dual-Wield and Robe are learned in houses, not at the start") return end
+		if id >= 39 then message(Tx"Dual-Wield, Robe and Enchanting are learned in houses, not at the start") return end
 		if #f.StartSkills >= START_SKILLS then message(Tx"Two starting skills are chosen already") return end
 		table.insert(f.StartSkills, id)
 		return
@@ -667,7 +667,8 @@ local function build()
 	for id = 0, 38 do
 		if CC.SkillNames[id] then SKILL_ORDER[#SKILL_ORDER + 1] = id end
 	end
-	-- Dual-Wield right after Mace, Robe before the magic schools
+	-- Dual-Wield right after Mace, Robe before the magic schools; the rest (Enchanting) at the end,
+	-- below Learning
 	local AFTER = {[41] = const.Skills.Mace, [42] = const.Skills.Plate}
 	for id = 39, 48 do
 		if CC.SkillNames[id] then
@@ -681,7 +682,7 @@ local function build()
 	local ROW_H = ROWS > 12 and math.floor(12 * 21 / ROWS) or 21
 	local SHORT = {[0] = "-", "Nov", "Exp", "Mas", "GM"}
 	local NICE = {IdentifyItem = Tx"Ident. Item", DisarmTraps = Tx"Disarm Traps", IdentifyMonster = Tx"Ident. Monster",
-		Bodybuilding = Tx"Bodybuilding", Repair = Tx"Repair Item", DualWield = Tx"Dual-Wield"}
+		Bodybuilding = Tx"Bodybuilding", Repair = Tx"Repair Item", DualWield = Tx"Dual-Wield", Enchanting = Tx"Enchanting"}
 	for i, id in ipairs(SKILL_ORDER) do
 		local col, row = math.floor((i - 1) / ROWS), (i - 1) % ROWS
 		local name = CC.SkillNames[id]

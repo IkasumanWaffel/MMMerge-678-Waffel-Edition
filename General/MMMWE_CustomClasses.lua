@@ -162,7 +162,7 @@ end
 local KIT_BY_KEY = {}
 for _, k in ipairs(KITS) do KIT_BY_KEY[k.Key] = k end
 local SKILL_MUL = {Armsmaster = 1.5, Merchant = 1.5, Light = 1.5, Dark = 1.5,
-	Learning = 1.25, Alchemy = 1.25, Blaster = 1.25}
+	Learning = 1.25, Alchemy = 1.25, Blaster = 1.25, Enchanting = 1.25}
 local GROUPS    = {{"Fire", "Air", "Water", "Earth"}, {"Spirit", "Mind", "Body"}}
 local GROUP_REST = 0.75                          -- share paid for the other caps of a group
 local FORBIDDEN = {DarkElfAbility = true, VampireAbility = true, DragonAbility = true}
@@ -500,7 +500,7 @@ end
 -- (08.11.26) the new skills of MMMWE_ExtraSkills.lua (not in const.Skills): their caps go to
 -- MF.ExtraSkills.Caps[class] (MF.ClassSkillCap), not to the game's class table. They can't be
 -- starting skills: they are learned in houses.
-local EXTRA_SKILL_IDS = {[41] = "DualWield", [42] = "Robe"}
+local EXTRA_SKILL_IDS = {[41] = "DualWield", [42] = "Robe", [43] = "Enchanting"}
 for id, name in pairs(EXTRA_SKILL_IDS) do SKILL_IDS[id] = name end
 local SKILL_LABEL = {DualWield = Tx"Dual-Wield"}
 local function skillLabel(id)

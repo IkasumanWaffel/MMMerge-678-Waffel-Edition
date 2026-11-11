@@ -175,7 +175,7 @@ Master	Мастер
 # General/MMMWE_Blasters.lua:428, General/MMMWE_Blasters.lua:429, General/MMMWE_Blasters.lua:465, General/MMMWE_Blasters.lua:508, General/MMMWE_Blasters.lua:541, General/MMMWE_Blasters.lua:598, General/MMMWE_CustomClasses.lua:145, General/MMMWE_CustomClasses.lua:522, General/MMMWE_SpellBookInfo.lua:19, Global/MMMWE_ExtraSkillTeachers.lua:45, Global/MMMWE_ExtraSkillTeachers.lua:46
 Grand Master	Грандмастер
 
-# General/MMMWE_Blasters.lua:429, General/MMMWE_CustomClassEditor.lua:636
+# General/MMMWE_Blasters.lua:429, General/MMMWE_CustomClassEditor.lua:637
 none	нет
 
 # General/MMMWE_Blasters.lua:434
@@ -392,7 +392,7 @@ Starting skills are chosen on the base class tab	Начальные навыки выбираются на 
 Only a skill the class can learn can be a starting skill	Начальным может быть только навык, доступный классу
 
 # General/MMMWE_CustomClassEditor.lua:334
-Dual-Wield and Robe are learned in houses, not at the start	Парное оружие и Мантии изучаются в домах, а не в начале игры
+Dual-Wield, Robe and Enchanting are learned in houses, not at the start	Парное оружие, Мантии и Зачарование изучаются в домах, а не в начале игры
 
 # General/MMMWE_CustomClassEditor.lua:335
 Two starting skills are chosen already	Два начальных навыка уже выбраны
@@ -427,88 +427,91 @@ Points: %g / %d	Очки: %g / %d
 # General/MMMWE_CustomClassEditor.lua:629
 Hit points	Здоровье
 
-# General/MMMWE_CustomClassEditor.lua:630, General/MMMWE_CustomClassEditor.lua:643
+# General/MMMWE_CustomClassEditor.lua:630, General/MMMWE_CustomClassEditor.lua:644
 Spell points	Мана
 
-# General/MMMWE_CustomClassEditor.lua:636
+# General/MMMWE_CustomClassEditor.lua:637
 Kit: 	Набор: 
 
-# General/MMMWE_CustomClassEditor.lua:642
+# General/MMMWE_CustomClassEditor.lua:643
 click to buy one	щёлкните, чтобы купить
 
-# General/MMMWE_CustomClassEditor.lua:643
+# General/MMMWE_CustomClassEditor.lua:644
 %s, %d pts	%s, %d оч.
 
-# General/MMMWE_CustomClassEditor.lua:649, General/MMMWE_CustomClasses.lua:530, General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3465
+# General/MMMWE_CustomClassEditor.lua:650, General/MMMWE_CustomClasses.lua:530, General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3465
 Intellect	Интеллект
 
-# General/MMMWE_CustomClassEditor.lua:649, General/MMMWE_CustomClasses.lua:530, General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3465
+# General/MMMWE_CustomClassEditor.lua:650, General/MMMWE_CustomClasses.lua:530, General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3465
 Personality	Сила духа
 
-# General/MMMWE_CustomClassEditor.lua:649
+# General/MMMWE_CustomClassEditor.lua:650
 Int. and Pers.	Инт. и Дух
 
-# General/MMMWE_CustomClassEditor.lua:655
+# General/MMMWE_CustomClassEditor.lua:656
 good	добрый
 
-# General/MMMWE_CustomClassEditor.lua:655, General/MMMWE_CustomClasses.lua:72
+# General/MMMWE_CustomClassEditor.lua:656, General/MMMWE_CustomClasses.lua:72
 neutral	нейтральный
 
-# General/MMMWE_CustomClassEditor.lua:655
+# General/MMMWE_CustomClassEditor.lua:656
 evil	злой
 
-# General/MMMWE_CustomClassEditor.lua:660
+# General/MMMWE_CustomClassEditor.lua:661
 Alignment: 	Мировоззрение: 
 
-# General/MMMWE_CustomClassEditor.lua:682
+# General/MMMWE_CustomClassEditor.lua:684
 Ident. Item	Опознание пр.
 
-# General/MMMWE_CustomClassEditor.lua:682
+# General/MMMWE_CustomClassEditor.lua:684
 Disarm Traps	Обезвреживание
 
-# General/MMMWE_CustomClassEditor.lua:682
+# General/MMMWE_CustomClassEditor.lua:684
 Ident. Monster	Опознание мон.
 
-# General/MMMWE_CustomClassEditor.lua:683
+# General/MMMWE_CustomClassEditor.lua:685
 Bodybuilding	Телосложение
 
-# General/MMMWE_CustomClassEditor.lua:683, General/MMMWE_CustomClasses.lua:686
+# General/MMMWE_CustomClassEditor.lua:685, General/MMMWE_CustomClasses.lua:686
 Repair Item	Ремонт
 
-# General/MMMWE_CustomClassEditor.lua:683, General/MMMWE_CustomClasses.lua:505, General/MMMWE_ExtraSkills.lua:52
+# General/MMMWE_CustomClassEditor.lua:685, General/MMMWE_CustomClasses.lua:505, General/MMMWE_ExtraSkills.lua:52
 Dual-Wield	Парное оружие
 
-# General/MMMWE_CustomClassEditor.lua:702
+# General/MMMWE_CustomClassEditor.lua:685, General/MMMWE_ExtraSkills.lua:54
+Enchanting	Зачарование
+
+# General/MMMWE_CustomClassEditor.lua:704
 Prot. from Magic	Защ. от магии
 
-# General/MMMWE_CustomClassEditor.lua:720
+# General/MMMWE_CustomClassEditor.lua:722
 %s Magic: %s	Магия %s: %s
 
-# General/MMMWE_CustomClassEditor.lua:771
+# General/MMMWE_CustomClassEditor.lua:773
 Enter keeps the name, Esc drops it	Enter — оставить имя, Esc — отменить
 
-# General/MMMWE_CustomClassEditor.lua:773
+# General/MMMWE_CustomClassEditor.lua:775
 Spells %d/%d: click to pick	Заклинания %d/%d: щёлкните
 
-# General/MMMWE_CustomClassEditor.lua:775
+# General/MMMWE_CustomClassEditor.lua:777
 Click +1, Ctrl+click -1	Щелчок +1, Ctrl+щелчок -1
 
-# General/MMMWE_CustomClassEditor.lua:776
+# General/MMMWE_CustomClassEditor.lua:778
 Click +, Ctrl -, Shift: start %d/%d	Щелчок +, Ctrl -, Shift: старт %d/%d
 
-# General/MMMWE_CustomClassEditor.lua:785
+# General/MMMWE_CustomClassEditor.lua:787
 Items: %d of %d points	Предметы: %d из %d очков
 
-# General/MMMWE_CustomClassEditor.lua:789
+# General/MMMWE_CustomClassEditor.lua:791
 Price: rank x impact	Цена: круг x сила
 
-# General/MMMWE_CustomClassEditor.lua:792
+# General/MMMWE_CustomClassEditor.lua:794
 Promoters: %s (%d%%)	Повышения: %s (%d%%)
 
-# General/MMMWE_CustomClassEditor.lua:795
+# General/MMMWE_CustomClassEditor.lua:797
 Ctrl+S save, Ctrl+L load	Ctrl+S сохр., Ctrl+L загр.
 
-# General/MMMWE_CustomClassEditor.lua:839
+# General/MMMWE_CustomClassEditor.lua:841
 Become a custom class	Стать особым классом
 
 # General/MMMWE_CustomClasses.lua:72
@@ -810,9 +813,6 @@ no energy shield worn	энергощит не надет
 
 # General/MMMWE_ExtraSkills.lua:53
 Robe	Мантия
-
-# General/MMMWE_ExtraSkills.lua:54
-Enchanting	Зачарование
 
 # General/MMMWE_ExtraSkills.lua:57
 Fighting with a weapon in each hand. Any weapon in the off hand needs this skill (the Blaster skill still rules a second blaster pistol). With a weapon in each hand the skill adds to Attack: -10 plus 1 per point of skill. Below Master the off hand hits weaker and the attacks are slower; a Master wields two weapons as one would a single weapon; a Grand Master can hold a two-handed weapon in each hand.	Бой с оружием в каждой руке. Любое оружие в левой руке требует этого навыка (второй бластерный пистолет по-прежнему зависит от навыка Бластер). С оружием в каждой руке навык прибавляет к Атаке: -10 плюс 1 за очко навыка. Ниже Мастера левая рука бьёт слабее, а атаки медленнее; Мастер владеет двумя клинками так же, как одним; Грандмастер может держать двуручное оружие в каждой руке.
@@ -2954,6 +2954,7 @@ The %s path in %s costs %d gold. Come back when you have it.	Путь «%s» в навыке 
 %s is now %s in %s.%s	%s теперь — %s в навыке %s.%s
 
 # no longer used
+Dual-Wield and Robe are learned in houses, not at the start	Парное оружие и Мантии изучаются в домах, а не в начале игры
 The signet! Hold still while the Forge reads it... There. It has learned our designs, and it knows whose hand it answers to now.\n\nKeep the ring. You have earned it, and the Forge will honour whatever you wear of its making. My Quartermaster will open the Forge's stores to you - tell him I sent you.	Перстень! Не двигайтесь, пока Кузня его считывает... Вот. Она усвоила наши образцы и знает теперь, чьей руке подчиняется.\n\nОставьте перстень себе. Вы его заслужили, и Кузня будет чтить всякую свою работу, что вы носите. Мой Интендант откроет вам склады Кузни - скажите ему, что вы от меня.
 Forge Outfitter	Снаряжение Кузни
 The cube! Let me link it to the station... There. Beta-5 knows us now. Its stores are open, and C.O.R.A.K. has agreed to keep them for us.\n\nKeep the cube - it will serve you better than it would on a shelf. Ask for the station's supplies whenever you need them; I'll make sure the way through the Gate stays open.	Куб! Дайте подключить его к станции... Вот. Теперь Бета-5 нас знает. Её склады открыты, и C.O.R.A.K. согласился хранить их для нас.\n\nОставьте куб себе - вам он послужит лучше, чем на полке. Обращайтесь за припасами станции, когда понадобится; я позабочусь, чтобы путь через Врата оставался открыт.
