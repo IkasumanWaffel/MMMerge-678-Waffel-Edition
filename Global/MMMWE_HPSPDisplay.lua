@@ -565,8 +565,11 @@ local function getBuffs(player, playerIndex, currentTime)
             if buff then
                 local expireTime = buff.ExpireTime or 0
                 if expireTime and expireTime > currentTime then
+                    -- the potion's Protection from Magic: the conditions it still turns away
+                    local label = info.label
+                    if info.idx == 3 then label = string.format("%s (%d)", label, buff.Power or 0) end
                     active[#active + 1] = {
-                        label = info.label,
+                        label = label,
                         name = info.name,
                         power = buff.Power or 0,
                         timeStr = formatTime(expireTime, currentTime),
@@ -624,6 +627,10 @@ local function getPartyBuffs(currentTime)
                     if partyBuffNames[i + 1] then
                         label = partyBuffNames[i + 1]--:sub(1, 4)
                         name = partyBuffNames[i + 1]
+                    end
+                    -- Protection from Magic: the conditions it still turns away
+                    if i == const.PartyBuff.ProtectionFromMagic then
+                        label = string.format("%s (%d)", label, buff.Power or 0)
                     end
                     active[#active + 1] = {
                         label = label, name = name,
