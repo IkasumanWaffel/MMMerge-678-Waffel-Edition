@@ -7,19 +7,25 @@
 # (e.g. Windows-1251 for Russian) as Data\Text localization\<Language>\Scripts.txt and put
 # the language's name into MMMWE_Language.txt in the game folder.
 
-# General/MMMWE_Alchemy.lua:321 plural, English plural: %d more potions brewed: %s
+# General/MMMWE_Alchemy.lua:372 plural, English plural: %d more potions brewed: %s
 %d more potion brewed: %s	Сварено ещё %d зелье: %s|Сварено ещё %d зелья: %s|Сварено ещё %d зелий: %s
 
-# General/MMMWE_Alchemy.lua:135
+# General/MMMWE_Alchemy.lua:139
 ... and %d more	... и ещё %d
 
-# General/MMMWE_Alchemy.lua:137
+# General/MMMWE_Alchemy.lua:141
 Mixed from:	Смешивается из:
 
-# General/MMMWE_Alchemy.lua:138
+# General/MMMWE_Alchemy.lua:142
 Mixes into:	Даёт в смеси:
 
-# General/MMMWE_Alchemy.lua:324
+# General/MMMWE_Alchemy.lua:193
+Batch brewing (Ctrl): %d potions	Варка партией (Ctrl): %d зелий
+
+# General/MMMWE_Alchemy.lua:194
+Batch brewing (Ctrl): all the potions there are	Варка партией (Ctrl): все зелья, сколько выйдет
+
+# General/MMMWE_Alchemy.lua:375
  (%d in the bottle box)	 (в ящике для бутылок: %d)
 
 # General/MMMWE_AncientArtifacts.lua:148
@@ -1429,43 +1435,43 @@ Abilities (pack leader)	Способности (вожак)
 # General/MMMWE_MonsterAbilities.lua:418
 Abilities	Способности
 
-# General/MMMWE_Moon.lua:271
+# General/MMMWE_Moon.lua:305
 new moon	новолуние
 
-# General/MMMWE_Moon.lua:271
+# General/MMMWE_Moon.lua:305
 waxing crescent	растущий серп
 
-# General/MMMWE_Moon.lua:271
+# General/MMMWE_Moon.lua:305
 first quarter	первая четверть
 
-# General/MMMWE_Moon.lua:271
+# General/MMMWE_Moon.lua:305
 waxing gibbous	растущая луна
 
-# General/MMMWE_Moon.lua:271
+# General/MMMWE_Moon.lua:305
 full moon	полнолуние
 
-# General/MMMWE_Moon.lua:272
+# General/MMMWE_Moon.lua:306
 waning gibbous	убывающая луна
 
-# General/MMMWE_Moon.lua:272
+# General/MMMWE_Moon.lua:306
 last quarter	последняя четверть
 
-# General/MMMWE_Moon.lua:272
+# General/MMMWE_Moon.lua:306
 waning crescent	убывающий серп
 
-# General/MMMWE_Moon.lua:278
+# General/MMMWE_Moon.lua:312
 day %.1f of the month: %s (picture %d); time %.2f h; moon %s; object %s; shown %s	день месяца %.1f: %s (картинка %d); время %.2f ч; луна %s; объект %s; видна %s
 
-# General/MMMWE_Moon.lua:280, General/MMMWE_Sun.lua:324
+# General/MMMWE_Moon.lua:314, General/MMMWE_Sun.lua:358
 azimuth %d, elevation %d degrees	азимут %d, высота %d градусов
 
-# General/MMMWE_Moon.lua:280, General/MMMWE_Sun.lua:324
+# General/MMMWE_Moon.lua:314, General/MMMWE_Sun.lua:358
 below the horizon	за горизонтом
 
-# General/MMMWE_Moon.lua:281
+# General/MMMWE_Moon.lua:315
 %d at %d, %d, %d	%d в точке %d, %d, %d
 
-# General/MMMWE_Moon.lua:282
+# General/MMMWE_Moon.lua:316
 ; skyline %.1f degrees	; линия горизонта %.1f градусов
 
 # General/MMMWE_OverlaySettings.lua:42
@@ -2374,34 +2380,34 @@ Spirit Resistance	Сопротивление Духу
 # General/MMMWE_StatsTooltips.lua:115
 game entry 	игровая запись 
 
-# General/MMMWE_Sun.lua:144
+# General/MMMWE_Sun.lua:176
 objlist %d '%s' SFTIndex %d Bits %X	objlist %d '%s' SFTIndex %d Bits %X
 
-# General/MMMWE_Sun.lua:147
+# General/MMMWE_Sun.lua:179
 group %s (picture %s)	группа %s (картинка %s)
 
-# General/MMMWE_Sun.lua:150
+# General/MMMWE_Sun.lua:182
 frame '%s'/'%s' sprite %d loaded %s scale %d	кадр '%s'/'%s' спрайт %d загружен %s масштаб %d
 
-# General/MMMWE_Sun.lua:323
+# General/MMMWE_Sun.lua:357
 time %.2f h; sun %s; object %s	время %.2f ч; солнце %s; объект %s
 
-# General/MMMWE_Sun.lua:325
+# General/MMMWE_Sun.lua:359
 %d at %d, %d, %d, visible %s	%d в точке %d, %d, %d, видимо %s
 
-# General/MMMWE_Sun.lua:327
+# General/MMMWE_Sun.lua:361
 %s, ends at %d; sky %s%s	%s, конец в %d; небо %s%s
 
-# General/MMMWE_Sun.lua:329
+# General/MMMWE_Sun.lua:363
 \nshown %s (outdoor %s, too foggy %s; weather fog %s)	\nвидно %s (снаружи %s, слишком туманно %s; туман погоды %s)
 
-# General/MMMWE_Sun.lua:331
+# General/MMMWE_Sun.lua:365
 \nskyline toward the sun %.1f degrees	\nлиния горизонта в сторону солнца %.1f градусов
 
-# General/MMMWE_Sun.lua:356
+# General/MMMWE_Sun.lua:390
 laser %d at %d, %d, %d	луч %d в точке %d, %d, %d
 
-# General/MMMWE_Sun.lua:361
+# General/MMMWE_Sun.lua:395
 no laser made	луч не создан
 
 # General/MMMWE_Threat.lua:148

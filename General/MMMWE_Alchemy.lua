@@ -16,7 +16,9 @@
 	   Hold Ctrl while putting a reagent into an empty bottle: every other empty bottle is
 	   filled the same way while the reagent lasts.
 	   Hold a digit with Ctrl to brew at most that many more (Ctrl+3: three more; 0 means
-	   ten); Ctrl alone brews as many as there are.
+	   ten). Ctrl alone brews as many potions in all as the batch size set with Ctrl + the
+	   mouse wheel on the character screen (kept with the game), or every pair there is
+	   when the size is "all" (the wheel turned down below 2).
 	   What the character has: the backpack, the potions and bottles in the bottle box
 	   carried in it (they are changed inside the box; not while the box is open), and for
 	   reagents the apothecary satchels in the backpack.
@@ -171,13 +173,45 @@ local FIRST_BOX_ID = 1000
 local Batch      -- {Player = pointer, Kind = "mix" / "reagent", Poured, Into, Result, Power, Slot, Limit}
 
 -- (11.11.26) how many more to brew: a digit held with Ctrl (the top row or the numeric
--- keypad; 0 means 10), nil (as many as there are) when no digit is held
+-- keypad; 0 means 10); otherwise the batch size set with Ctrl + the mouse wheel on the
+-- character screen (vars.MMMWE_BatchSize: the potions in all, the first one included;
+-- nil: as many as there are)
+local BATCH_MAX = 50
+
 local function batchLimit()
 	for d = 0, 9 do
 		if Keys.IsPressed(0x30 + d) or Keys.IsPressed(0x60 + d) then
 			return d == 0 and 10 or d
 		end
 	end
+	local size = vars and vars.MMMWE_BatchSize
+	if size then return size - 1 end
+end
+
+local function showBatchSize()
+	local size = vars.MMMWE_BatchSize
+	Game.ShowStatusText(size and string.format(Tx"Batch brewing (Ctrl): %d potions", size)
+		or Tx"Batch brewing (Ctrl): all the potions there are")
+end
+
+-- Ctrl + the mouse wheel on the character screen: up for more, down for fewer; below 2 is
+-- "all", above it 2 again
+function events.WindowMessage(t)
+	if t.Msg ~= 0x20A or Game.CurrentScreen ~= const.Screens.Inventory
+			or not Keys.IsPressed(const.Keys.CTRL) then
+		return
+	end
+	local up = t.WParam >= 0 and t.WParam < 0x80000000
+	local size = vars.MMMWE_BatchSize
+	if up then
+		size = size and math.min(size + 1, BATCH_MAX) or 2
+	else
+		size = size and size > 2 and size - 1 or nil
+	end
+	vars.MMMWE_BatchSize = size
+	showBatchSize()
+	t.Handled = true
+	t.Result = 0
 end
 
 -- 0x415AC2: the game is turning the potion at slot [ebp-0Ch] of the character esi into
