@@ -64,8 +64,14 @@ local function IsLocked()
 	return id ~= nil and id.Index == lock.Index and id.Name == lock.Name
 end
 
+-- a run id makes the lock unique, so this party's save files can be told from others'
+local function NewRunId()
+	return string.format("%x-%x", os.time(), math.random(0, 0x7fffffff))
+end
+
 local function SetLock()
 	vars.HCMLock = LeaderId()
+	if vars.HCMLock then vars.HCMLock.RunId = NewRunId() end
 end
 
 -- Enforce the lock; also locks saves that had Hardcore mode on before the lock existed
@@ -74,6 +80,7 @@ local function EnforceLock()
 		return
 	end
 	if IsLocked() then
+		vars.HCMLock.RunId = vars.HCMLock.RunId or NewRunId()   -- a lock from before the run ids
 		if vars.HardCoreMode ~= 1 then
 			vars.HardCoreMode = 1
 			MV.HCM = 1
@@ -83,6 +90,86 @@ local function EnforceLock()
 	end
 end
 Merge.Functions.HCMIsLocked = IsLocked
+
+---- This party's save files
+-- Every save of a locked Hardcore party is listed with the party's run id in
+-- Saves\MMMWE_HardcoreSaves.txt (file name, run id, leader's name); a save made by another
+-- party into the same file takes it off the list. The last allowed party death deletes the
+-- files listed for this party only (Global/MMMWE_HardcoreMode.lua), not the other parties'.
+-- the game folder's Saves folder (os.chdir() gives the current folder, as the old deletion used)
+local function SavesDir() return path.addslash(os.chdir()) .. "Saves\\" end
+local function SaveListPath() return SavesDir() .. "MMMWE_HardcoreSaves.txt" end
+
+local function ReadSaveList()
+	local list = {}
+	local f = io.open(SaveListPath(), "rb")
+	if f then
+		for line in f:lines() do
+			local file, id, name = line:match("^([^\t\r]+)\t([^\t\r]+)\t?([^\r]*)")
+			if file then list[file:lower()] = {RunId = id, Name = name} end
+		end
+		f:close()
+	end
+	return list
+end
+
+local function WriteSaveList(list)
+	local out = {}
+	for file, e in pairs(list) do out[#out + 1] = file .. "\t" .. e.RunId .. "\t" .. (e.Name or "") end
+	table.sort(out)
+	local f = io.open(SaveListPath(), "wb")
+	if f then
+		f:write(table.concat(out, "\r\n"), #out > 0 and "\r\n" or "")
+		f:close()
+	end
+end
+
+-- the save file written last (the one the game has just saved into)
+local function NewestSave()
+	local best, hi, lo
+	for file, st in path.find(SavesDir() .. "*.dod") do
+		local h, l = st.LastWriteTimeHigh, st.LastWriteTimeLow
+		if not best or h > hi or (h == hi and l > lo) then
+			best, hi, lo = file, h, l
+		end
+	end
+	return best and path.name(best):lower()
+end
+
+function events.AfterSaveGame()
+	local file = NewestSave()
+	if not file then return end
+	local list = ReadSaveList()
+	local lock = V().HCMLock
+	if IsOn() and IsLocked() and lock.RunId then
+		list[file] = {RunId = lock.RunId, Name = lock.Name}
+	elseif not list[file] then
+		return
+	else
+		list[file] = nil
+	end
+	WriteSaveList(list)
+end
+
+-- the run id of this party (nil without a lock) and the deletion of its save files
+function Merge.Functions.HCMRunId()
+	local lock = V().HCMLock
+	return lock and lock.RunId
+end
+
+function Merge.Functions.HCMRemovePartySaves(runId)
+	if not runId then return 0 end
+	local list, n = ReadSaveList(), 0
+	for file, e in pairs(list) do
+		if e.RunId == runId then
+			os.remove(SavesDir() .. file, true)
+			list[file] = nil
+			n = n + 1
+		end
+	end
+	WriteSaveList(list)
+	return n
+end
 
 ---- Experience curve
 local function Curve()
@@ -186,7 +273,7 @@ function events.GameInitialized2()
 		UI.LimitValue.Text = LimitText()
 		UI.LimitNote.Text = IsLocked() and Tx"(Hardcore mode is locked for this party)"
 			or IsOn() and Tx"(locked while Hardcore mode is on)"
-			or (Limit() == 1 and Tx"(the first party death deletes all saves)" or " ")
+			or (Limit() == 1 and Tx"(the first party death deletes this party's saves)" or " ")
 		UI.DeathsValue.Text = tostring(Deaths()) .. (IsOn() and (" of " .. Limit()) or "")
 		local strip = Limit() > 1
 		UI.ItemsNote1.Text = strip and Tx"Each party death before the last removes all items" or " "
@@ -287,9 +374,9 @@ function events.GameInitialized2()
 	---- Confirmation dialog
 	local function DialogText()
 		local deaths = Limit() == 1
-			and (Tx"All save files " .. StrColor(255, 180, 32, Tx"will be deleted ")
+			and (Tx"This party's save files " .. StrColor(255, 180, 32, Tx"will be deleted ")
 				.. Tx"if the entire party is killed.\n\n")
-			or (Tx"All save files " .. StrColor(255, 180, 32, Tx"will be deleted ")
+			or (Tx"This party's save files " .. StrColor(255, 180, 32, Tx"will be deleted ")
 				.. Tx"after " .. Limit() .. Tx" party deaths.\n"
 				.. Tx"Every party death before that "
 				.. StrColor(255, 180, 32, Tx"removes all items ")

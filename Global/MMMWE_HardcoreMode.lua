@@ -1,4 +1,4 @@
--- Hardcore mode (quit to main menu and remove all savefiles after total party kill, no saves in battle)
+-- Hardcore mode (quit to main menu and remove the party's savefiles after total party kill, no saves in battle)
 -- Optional limit of party deaths (vars.HCMDeathLimit, set on the "Hardcore mode" page of the Extra
 -- Settings menu, MMMWE_HardcoreSettings.lua). Every party death before the last one removes all
 -- items of the party except special items, artifacts, relics and ancient items.
@@ -86,12 +86,13 @@ function events.DeathMap(t)
   local limit = vars.HCMDeathLimit or 1
 
   if vars.HCMDeaths >= limit then
-    -- last allowed death: game over
+    -- last allowed death: game over; this party's save files are deleted (the ones listed
+    -- with its run id, General/MMMWE_HardcoreSettings.lua), other parties' saves are kept
+    local runId = Merge.Functions.HCMRunId and Merge.Functions.HCMRunId()
     DoGameAction(132, 0, 0, true)
     DoGameAction(132)
-    local dir = os.chdir()
-    for fname in path.find(dir .. '\\Saves\\*.dod') do
-      os.remove(fname, true)
+    if Merge.Functions.HCMRemovePartySaves then
+      Merge.Functions.HCMRemovePartySaves(runId)
     end
   else
     -- revived, but the party's belongings are lost

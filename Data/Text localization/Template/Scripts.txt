@@ -934,85 +934,85 @@ The cube! Let me link it to the station... There. Beta-5 knows us now. Its store
 # General/MMMWE_GateStory.lua:59
 Beta-5 hums like a hive now. One day it will reach the Ancients themselves. Until then, we have work to do.	
 
-# General/MMMWE_HardcoreSettings.lua:187
+# General/MMMWE_HardcoreSettings.lua:274
 (Hardcore mode is locked for this party)	
 
-# General/MMMWE_HardcoreSettings.lua:188
+# General/MMMWE_HardcoreSettings.lua:275
 (locked while Hardcore mode is on)	
 
-# General/MMMWE_HardcoreSettings.lua:189
-(the first party death deletes all saves)	
+# General/MMMWE_HardcoreSettings.lua:276
+(the first party death deletes this party's saves)	
 
-# General/MMMWE_HardcoreSettings.lua:192
+# General/MMMWE_HardcoreSettings.lua:279
 Each party death before the last removes all items	
 
-# General/MMMWE_HardcoreSettings.lua:193
+# General/MMMWE_HardcoreSettings.lua:280
 except special items, artifacts, relics and ancient items.	
 
-# General/MMMWE_HardcoreSettings.lua:197
+# General/MMMWE_HardcoreSettings.lua:284
 Level 50: %s exp, level 100: %s (game: %s, %s)	
 
-# General/MMMWE_HardcoreSettings.lua:211
+# General/MMMWE_HardcoreSettings.lua:298
 Hardcore mode can't be turned off for this party	
 
-# General/MMMWE_HardcoreSettings.lua:232
+# General/MMMWE_HardcoreSettings.lua:319
 Party deaths allowed	
 
-# General/MMMWE_HardcoreSettings.lua:253
+# General/MMMWE_HardcoreSettings.lua:340
 Party deaths so far	
 
-# General/MMMWE_HardcoreSettings.lua:263
+# General/MMMWE_HardcoreSettings.lua:350
 Experience curve	
 
-# General/MMMWE_HardcoreSettings.lua:290, General/MMMWE_HardcoreSettings.lua:292
-All save files 	
+# General/MMMWE_HardcoreSettings.lua:377, General/MMMWE_HardcoreSettings.lua:379
+This party's save files 	
 
-# General/MMMWE_HardcoreSettings.lua:290, General/MMMWE_HardcoreSettings.lua:292
+# General/MMMWE_HardcoreSettings.lua:377, General/MMMWE_HardcoreSettings.lua:379
 will be deleted 	
 
-# General/MMMWE_HardcoreSettings.lua:291
+# General/MMMWE_HardcoreSettings.lua:378
 if the entire party is killed.\n\n	
 
-# General/MMMWE_HardcoreSettings.lua:293
+# General/MMMWE_HardcoreSettings.lua:380
 after 	
 
-# General/MMMWE_HardcoreSettings.lua:293
+# General/MMMWE_HardcoreSettings.lua:380
  party deaths.\n	
 
-# General/MMMWE_HardcoreSettings.lua:294
+# General/MMMWE_HardcoreSettings.lua:381
 Every party death before that 	
 
-# General/MMMWE_HardcoreSettings.lua:295
+# General/MMMWE_HardcoreSettings.lua:382
 removes all items 	
 
-# General/MMMWE_HardcoreSettings.lua:296
+# General/MMMWE_HardcoreSettings.lua:383
 except artifacts, relics, quest, special and ancient items.\n\n	
 
-# General/MMMWE_HardcoreSettings.lua:297
+# General/MMMWE_HardcoreSettings.lua:384
 HARDCORE MODE\n\n	
 
-# General/MMMWE_HardcoreSettings.lua:298
+# General/MMMWE_HardcoreSettings.lua:385
 Saving, loading and quitting to main menu 	
 
-# General/MMMWE_HardcoreSettings.lua:299
+# General/MMMWE_HardcoreSettings.lua:386
 are blocked 	
 
-# General/MMMWE_HardcoreSettings.lua:299
+# General/MMMWE_HardcoreSettings.lua:386
 while enemies are nearby.\n	
 
-# General/MMMWE_HardcoreSettings.lua:301
+# General/MMMWE_HardcoreSettings.lua:388
 It can't be turned off 	
 
-# General/MMMWE_HardcoreSettings.lua:301
+# General/MMMWE_HardcoreSettings.lua:388
 for this party once enabled.\n	
 
-# General/MMMWE_HardcoreSettings.lua:302
+# General/MMMWE_HardcoreSettings.lua:389
 \nEnable Hardcore Mode?	
 
-# General/MMMWE_HardcoreSettings.lua:319
+# General/MMMWE_HardcoreSettings.lua:406
 Confirm	
 
-# General/MMMWE_HardcoreSettings.lua:339
+# General/MMMWE_HardcoreSettings.lua:426
 Cancel	
 
 # General/MMMWE_InventorySort.lua:494 plural, English plural: Party gathered: %d items moved
@@ -2920,19 +2920,19 @@ Shield %d%%
 # Global/MMMWE_HPSPDisplay.lua:1482
 HP/SP overlay 	
 
-# Global/MMMWE_HardcoreMode.lua:100
+# Global/MMMWE_HardcoreMode.lua:101
 Hardcore mode: the party has fallen (%d of %d deaths).\n	
 
-# Global/MMMWE_HardcoreMode.lua:101
+# Global/MMMWE_HardcoreMode.lua:102
 %d items were lost. Special items, artifacts, relics and ancient items were kept.	
 
-# Global/MMMWE_HardcoreMode.lua:112
+# Global/MMMWE_HardcoreMode.lua:113
 You can't save in Hardcore mode when enemies are nearby	
 
-# Global/MMMWE_HardcoreMode.lua:122
+# Global/MMMWE_HardcoreMode.lua:123
 You can't load in Hardcore mode when enemies are nearby	
 
-# Global/MMMWE_HardcoreMode.lua:123
+# Global/MMMWE_HardcoreMode.lua:124
 You can't quit in Hardcore mode when enemies are nearby	
 
 # Global/MMMWE_LegendaryTeachers.lua:34

@@ -934,85 +934,85 @@ The cube! Let me link it to the station... There. Beta-5 knows us now. Its store
 # General/MMMWE_GateStory.lua:59
 Beta-5 hums like a hive now. One day it will reach the Ancients themselves. Until then, we have work to do.	Бета-5 гудит теперь, как улей. Однажды она дотянется до самих Древних. А пока у нас есть работа.
 
-# General/MMMWE_HardcoreSettings.lua:187
+# General/MMMWE_HardcoreSettings.lua:274
 (Hardcore mode is locked for this party)	(режим «Хардкор» закреплён за этим отрядом)
 
-# General/MMMWE_HardcoreSettings.lua:188
+# General/MMMWE_HardcoreSettings.lua:275
 (locked while Hardcore mode is on)	(недоступно, пока включён режим «Хардкор»)
 
-# General/MMMWE_HardcoreSettings.lua:189
-(the first party death deletes all saves)	(первая гибель отряда удаляет все сохранения)
+# General/MMMWE_HardcoreSettings.lua:276
+(the first party death deletes this party's saves)	(первая гибель отряда удаляет его сохранения)
 
-# General/MMMWE_HardcoreSettings.lua:192
+# General/MMMWE_HardcoreSettings.lua:279
 Each party death before the last removes all items	Каждая гибель отряда, кроме последней, отнимает все предметы,
 
-# General/MMMWE_HardcoreSettings.lua:193
+# General/MMMWE_HardcoreSettings.lua:280
 except special items, artifacts, relics and ancient items.	кроме особых предметов, артефактов, реликвий и древних предметов.
 
-# General/MMMWE_HardcoreSettings.lua:197
+# General/MMMWE_HardcoreSettings.lua:284
 Level 50: %s exp, level 100: %s (game: %s, %s)	Уровень 50: %s опыта, уровень 100: %s (игра: %s, %s)
 
-# General/MMMWE_HardcoreSettings.lua:211
+# General/MMMWE_HardcoreSettings.lua:298
 Hardcore mode can't be turned off for this party	Режим «Хардкор» нельзя выключить для этого отряда
 
-# General/MMMWE_HardcoreSettings.lua:232
+# General/MMMWE_HardcoreSettings.lua:319
 Party deaths allowed	Допустимо гибелей отряда
 
-# General/MMMWE_HardcoreSettings.lua:253
+# General/MMMWE_HardcoreSettings.lua:340
 Party deaths so far	Гибелей отряда сейчас
 
-# General/MMMWE_HardcoreSettings.lua:263
+# General/MMMWE_HardcoreSettings.lua:350
 Experience curve	Кривая опыта
 
-# General/MMMWE_HardcoreSettings.lua:290, General/MMMWE_HardcoreSettings.lua:292
-All save files 	Все файлы сохранений 
+# General/MMMWE_HardcoreSettings.lua:377, General/MMMWE_HardcoreSettings.lua:379
+This party's save files 	Файлы сохранений этого отряда 
 
-# General/MMMWE_HardcoreSettings.lua:290, General/MMMWE_HardcoreSettings.lua:292
+# General/MMMWE_HardcoreSettings.lua:377, General/MMMWE_HardcoreSettings.lua:379
 will be deleted 	будут удалены, 
 
-# General/MMMWE_HardcoreSettings.lua:291
+# General/MMMWE_HardcoreSettings.lua:378
 if the entire party is killed.\n\n	если погибнет весь отряд.\n\n
 
-# General/MMMWE_HardcoreSettings.lua:293
+# General/MMMWE_HardcoreSettings.lua:380
 after 	после 
 
-# General/MMMWE_HardcoreSettings.lua:293
+# General/MMMWE_HardcoreSettings.lua:380
  party deaths.\n	 гибелей отряда.\n
 
-# General/MMMWE_HardcoreSettings.lua:294
+# General/MMMWE_HardcoreSettings.lua:381
 Every party death before that 	Каждая гибель отряда до этого 
 
-# General/MMMWE_HardcoreSettings.lua:295
+# General/MMMWE_HardcoreSettings.lua:382
 removes all items 	отнимает все предметы, 
 
-# General/MMMWE_HardcoreSettings.lua:296
+# General/MMMWE_HardcoreSettings.lua:383
 except artifacts, relics, quest, special and ancient items.\n\n	кроме артефактов, реликвий, квестовых, особых и древних предметов.\n\n
 
-# General/MMMWE_HardcoreSettings.lua:297
+# General/MMMWE_HardcoreSettings.lua:384
 HARDCORE MODE\n\n	РЕЖИМ «ХАРДКОР»\n\n
 
-# General/MMMWE_HardcoreSettings.lua:298
+# General/MMMWE_HardcoreSettings.lua:385
 Saving, loading and quitting to main menu 	Сохранение, загрузка и выход в главное меню 
 
-# General/MMMWE_HardcoreSettings.lua:299
+# General/MMMWE_HardcoreSettings.lua:386
 are blocked 	запрещены, 
 
-# General/MMMWE_HardcoreSettings.lua:299
+# General/MMMWE_HardcoreSettings.lua:386
 while enemies are nearby.\n	пока рядом враги.\n
 
-# General/MMMWE_HardcoreSettings.lua:301
+# General/MMMWE_HardcoreSettings.lua:388
 It can't be turned off 	Его нельзя выключить 
 
-# General/MMMWE_HardcoreSettings.lua:301
+# General/MMMWE_HardcoreSettings.lua:388
 for this party once enabled.\n	для этого отряда после включения.\n
 
-# General/MMMWE_HardcoreSettings.lua:302
+# General/MMMWE_HardcoreSettings.lua:389
 \nEnable Hardcore Mode?	\nВключить режим «Хардкор»?
 
-# General/MMMWE_HardcoreSettings.lua:319
+# General/MMMWE_HardcoreSettings.lua:406
 Confirm	Подтвердить
 
-# General/MMMWE_HardcoreSettings.lua:339
+# General/MMMWE_HardcoreSettings.lua:426
 Cancel	Отмена
 
 # General/MMMWE_InventorySort.lua:494 plural, English plural: Party gathered: %d items moved
@@ -2920,19 +2920,19 @@ Shield %d%%	Щит %d%%
 # Global/MMMWE_HPSPDisplay.lua:1482
 HP/SP overlay 	Индикатор HP/SP 
 
-# Global/MMMWE_HardcoreMode.lua:100
+# Global/MMMWE_HardcoreMode.lua:101
 Hardcore mode: the party has fallen (%d of %d deaths).\n	Режим «Хардкор»: отряд пал (гибелей %d из %d).\n
 
-# Global/MMMWE_HardcoreMode.lua:101
+# Global/MMMWE_HardcoreMode.lua:102
 %d items were lost. Special items, artifacts, relics and ancient items were kept.	Потеряно предметов: %d. Особые предметы, артефакты, реликвии и древние предметы сохранены.
 
-# Global/MMMWE_HardcoreMode.lua:112
+# Global/MMMWE_HardcoreMode.lua:113
 You can't save in Hardcore mode when enemies are nearby	В режиме «Хардкор» нельзя сохраняться, когда рядом враги
 
-# Global/MMMWE_HardcoreMode.lua:122
+# Global/MMMWE_HardcoreMode.lua:123
 You can't load in Hardcore mode when enemies are nearby	В режиме «Хардкор» нельзя загружаться, когда рядом враги
 
-# Global/MMMWE_HardcoreMode.lua:123
+# Global/MMMWE_HardcoreMode.lua:124
 You can't quit in Hardcore mode when enemies are nearby	В режиме «Хардкор» нельзя выйти, когда рядом враги
 
 # Global/MMMWE_LegendaryTeachers.lua:34
@@ -2954,6 +2954,8 @@ The %s path in %s costs %d gold. Come back when you have it.	Путь «%s» в навыке 
 %s is now %s in %s.%s	%s теперь — %s в навыке %s.%s
 
 # no longer used
+(the first party death deletes all saves)	(первая гибель отряда удаляет все сохранения)
+All save files 	Все файлы сохранений 
 Dual-Wield and Robe are learned in houses, not at the start	Парное оружие и Мантии изучаются в домах, а не в начале игры
 The signet! Hold still while the Forge reads it... There. It has learned our designs, and it knows whose hand it answers to now.\n\nKeep the ring. You have earned it, and the Forge will honour whatever you wear of its making. My Quartermaster will open the Forge's stores to you - tell him I sent you.	Перстень! Не двигайтесь, пока Кузня его считывает... Вот. Она усвоила наши образцы и знает теперь, чьей руке подчиняется.\n\nОставьте перстень себе. Вы его заслужили, и Кузня будет чтить всякую свою работу, что вы носите. Мой Интендант откроет вам склады Кузни - скажите ему, что вы от меня.
 Forge Outfitter	Снаряжение Кузни
