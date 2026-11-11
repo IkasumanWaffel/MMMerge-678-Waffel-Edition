@@ -141,6 +141,38 @@ local function shown()
 	return true
 end
 
+
+-- (11.11.26) Loading a game again rebuilds the list of loaded sprites, but the SFT frames
+-- of the pictures shown before keep their old sprite numbers, past the end of the new
+-- list: the game crashed drawing the first frame. After every map load the frames of all
+-- the pictures are marked unloaded and loaded again, and the ObjList line goes back to
+-- the first picture.
+local function reloadGroups(names, objName)
+	local frames = Game.SFTBin.Frames
+	local first
+	for k, name in ipairs(names) do
+		local ok, g = pcall(function() return Game.SFTBin:FindGroup(name) end)
+		if ok and g and g >= 0 then
+			first = first or g
+			pcall(function()
+				local i = g
+				repeat
+					local f = frames[i]
+					f.Loaded = false
+					i = i + 1
+				until not f.NotGroupEnd or i >= frames.count
+				Game.SFTBin:LoadGroup(g)
+			end)
+		end
+	end
+	if first and typeIndex then
+		pcall(function()
+			local d = Game.ObjListBin[typeIndex]
+			if d.Name == objName then d.SFTIndex = first end
+		end)
+	end
+end
+
 local function prepareFrames()
 	groups = {}
 	for k, name in ipairs(MOON.Groups) do
@@ -239,6 +271,8 @@ end
 
 function events.AfterLoadMap()
 	removeStray()
+	reloadGroups(MOON.Groups, "Moon")
+	groups, stage, scaledFor = {}, nil, nil
 end
 
 function events.LeaveMap()
