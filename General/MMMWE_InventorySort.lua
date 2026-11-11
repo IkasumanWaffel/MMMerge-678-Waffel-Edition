@@ -419,6 +419,12 @@ local function gatherParty()
 		if dst then
 			sortPlayer(dst)                      -- make room first
 			local dstGrid = readGrid(dst)
+			-- one bottle box per character (MMMWE_Containers.lua): the carrier takes one only if
+			-- it has none, the others stay with their owners
+			local hasBox = false
+			for _, b in ipairs(collect(dst)) do
+				if BOTTLE_BOXES[dst.Items[b.idx].Number] then hasBox = true end
+			end
 			for i = 0, Party.Count - 1 do
 				local src = Party[i]
 				for _, b in ipairs(collect(src)) do
@@ -426,8 +432,10 @@ local function gatherParty()
 					local txt = Game.ItemsTxt[it.Number]
 					if not done[i][b.idx] and txt and rule.match(it, txt) then
 						done[i][b.idx] = true
-						if i ~= dstIndex then
+						local box = BOTTLE_BOXES[it.Number]
+						if i ~= dstIndex and not (box and hasBox) then
 							local slot = moveItem(src, b, dst, dstGrid)
+							if slot and box then hasBox = true end
 							if slot then
 								moved = moved + 1
 								done[dstIndex][slot] = true   -- stays with this carrier
