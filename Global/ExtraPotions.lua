@@ -22,7 +22,9 @@ end
 --       + MASTER_PER x strength (MASTER_CAP at most)
 --   Expert spell potions (Bless, Stoneskin, Heroism): the spell at the Expert rank with
 --       skill strength / 5 (FULL_STRENGTH / 5 at most), ExtraPotions below
---   minor potions (Expert): + MINOR_POWER
+--   minor stat boosts (Expert): + MINOR_POWER
+--   minor resistances (Expert, as Preservation's Spirit): + MINOR_RES_BASE + strength /
+--       MINOR_RES_DIV (MINOR_RES_CAP at most), the time of the Master potions
 --   durations: base + so much per point of strength that MAX_MINUTES (12 hours) is
 --       reached at FULL_STRENGTH (Master potions and the like: 2 hours base, minor ones:
 --       1 hour)
@@ -39,6 +41,7 @@ local MASTER_CAP    = 150
 local MASTER_BASE   = 120      -- minutes
 local MINOR_POWER   = 25
 local MINOR_BASE    = 60       -- minutes
+local MINOR_RES_BASE, MINOR_RES_DIV, MINOR_RES_CAP = 10, 2, 60
 local PURE_DIV      = 4
 local PURE_STAT_MAX = 150
 local PURE_RES_MAX  = 100
@@ -308,14 +311,22 @@ end
 -- rules at the top). A minor potion isn't drunk while a stronger effect of its kind is active (it
 -- would replace it). The Spirit bonus is kept in vars.MMMWE_SpiritPotion[player] =
 -- {Expire, Power} and added by SpellsExtra.lua (the larger of it and Preservation's).
-local function MinorPotion(Target, BuffName, Power)
+local function MinorPotion(Target, BuffName, Power, resistance)
 	local Buff = Target.SpellBuffs[const.PlayerBuff[BuffName]]
-	if Buff.ExpireTime > Game.Time and Buff.Power > MINOR_POWER then
+	local power, time
+	if resistance then
+		local mul = limitMul()
+		power = math.min(MINOR_RES_BASE + math.floor(math.max(Power or 1, 1) / MINOR_RES_DIV), MINOR_RES_CAP * mul)
+		time = potionTime(MASTER_BASE, Power, mul)
+	else
+		power, time = MINOR_POWER, potionTime(MINOR_BASE, Power)
+	end
+	if Buff.ExpireTime > Game.Time and Buff.Power > power then
 		PotionMessage = Tx"A stronger effect of this kind is already active"
 		return -1
 	end
-	Buff.ExpireTime = Game.Time + potionTime(MINOR_BASE, Power)
-	Buff.Power = MINOR_POWER
+	Buff.ExpireTime = Game.Time + time
+	Buff.Power = power
 	Buff.Skill = 1
 	Buff.OverlayId = 0
 end
@@ -325,7 +336,7 @@ for id, name in pairs{[74] = "FireResistance", [75] = "AirResistance", [76] = "W
 		[80] = "TempMight", [81] = "TempIntellect", [82] = "TempPersonality", [83] = "TempEndurance",
 		[84] = "TempSpeed", [85] = "TempAccuracy", [86] = "TempLuck"} do
 	evt.PotionEffects[id] = function(IsDrunk, Target, Power)
-		if IsDrunk then return MinorPotion(Target, name, Power) end
+		if IsDrunk then return MinorPotion(Target, name, Power, id <= 79) end
 	end
 end
 
