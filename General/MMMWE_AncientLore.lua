@@ -12,6 +12,8 @@
 	  1534  Memory Tablet: Contingency        tablet   the Control Center
 	  1535  Navigation Log of the Lincoln     tablet   the Lincoln
 	  1537  Webstation Directory              tablet   the Lincoln
+	  1539  Forge Restart Log                 tablet   Castle Gloaming, after the Dark ending
+	  1540  Anomaly Survey                    tablet     (MMMWE_ForgeStory.lua)
 
 	Their rows in Scroll.txt (revamp.T.lod) hold only a marker, "@MMMWE_LORE <item>": the texts
 	are here, so the language files translate them (Tx), and are written into the message
@@ -37,6 +39,10 @@ local LORE = {
 
 	[1537] = Tx"SPINWARD RIM NETWORK.\n\nWebstation Beta-5: open.\nEnroth surface Gate: offline, parts missing.\nVarn: no signal.\nCron: no signal.\nTerra: no signal.\nXeen: Unification pending.\n\nLink to the Ancients: interrupted. Duration: unknown.",
 
+	[1539] = Tx"FORGE ONE. Restart sequence complete. Power: stable. Material feed: Deyja ore, salvage from the Lincoln.\n\nAvailable designs: 14 stored patterns, Colonial issue.\nNew designs: LOCKED. Command seal required.\n\nAdded below in a hurried hand: Kastore wants the Terran rifles copied. The Forge will not take them. It only remembers what Padish let it make.",
+
+	[1540] = Tx"DIMENSIONAL SCANNER. SURVEY OF ANOMALIES.\n\nThin places found where the boundary between here and elsewhere has worn through. Most lead nowhere we can measure. One leads to Enroth, but not to Enroth as it is now: the readings place it years back.\n\nAt its far end, a known signature: the hull of a VARN-class vessel, buried. The old records call it the Tomb of VARN. The Governor's household travelled with the colonists' ships. If the command seal survived anywhere, it is there.",
+
 	[1538] = Tx"The Bracadan books say the Ancients left. I do not think they did. A thing that is abandoned rusts. These machines wait. The jetpack from Clanker's laboratory still held a charge after a thousand years. The scanners still know where the Gates were.\n\nIf the Ancients are silent, it is because something is in the way, not because they stopped caring. I mean to find out what.\n\n- Tallia Ravenswood",
 }
 MF.AncientLore = LORE
@@ -52,6 +58,7 @@ MF.TalliaArchives = {
 local TABLETS = {
 	["control center"] = {1533, 1534},
 	["the lincoln"]    = {1535, 1537},
+	["castle gloaming"] = {1539, 1540, QBit = 633},   -- the Forge's laboratory, after the Dark ending
 }
 MF.AncientTablets = TABLETS
 
@@ -98,7 +105,7 @@ function events.AfterLoadMap()
 	local ms = Game.MapStats[Map.MapStatsIndex]
 	local name = ms and ms.Name and ms.Name:lower() or ""
 	local list = TABLETS[name]
-	if not list then return end
+	if not list or (list.QBit and not Party.QBits[list.QBit]) then return end
 	vars.MMMWE_AncientLore = vars.MMMWE_AncientLore or {}
 	local placed = vars.MMMWE_AncientLore
 	for _, num in ipairs(list) do

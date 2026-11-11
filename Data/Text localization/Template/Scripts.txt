@@ -40,37 +40,43 @@ The Plasma Edge flickers: its cell is nearly empty.
 # General/MMMWE_AncientArtifacts.lua:283
 Plasma Edge: %d%%	
 
-# General/MMMWE_AncientLore.lua:26
+# General/MMMWE_AncientLore.lua:28
 On Those Who Came Before\n\nLong before Erathia had kings, our world was a garden tended by the Ancients. They did not walk among our forebears as gods do in the temple tales. They sent them here. The oldest records speak of the Crossing: a vessel named VARN MCMIV that sailed between the stars for generations, carrying men, elves, dwarves and gnomes to a world made ready for them. Smaller VARN ferries later carried settlers across the sea to Jadame.\n\nThe Ancients never ruled here in person. They set a Colonial Government in their place, and gave it tools we would call miracles: lights without flame, voices carried across seas, and the Heavenly Forges. For centuries the colonies prospered. The archives call it the Time of Wonders.\n\nThen came the Silence, and the voices stopped.	
 
-# General/MMMWE_AncientLore.lua:28
+# General/MMMWE_AncientLore.lua:30
 A Chronicle of the Silence\n\nThe last days before the Silence were already dark. The chronicles name Mayor Alan of Aliant, who woke an Ancient weapon in a quarrel with his neighbours. The Day of Fire that followed burned the city of Vissias, and much of southern Enroth with it.\n\nThen, in the year we now count as the first, the Colonial Government lost all word from the Ancients. No ship came. No message answered. The Governor's officers spoke of a network that had bound a thousand worlds together, and said it had been cut.\n\nWithout the Ancients behind it, the Government could not hold. Rebels rose across Enroth, and for a century the Governor's soldiers fought them in skirmish after skirmish. The Heavenly Forges made shields by the hundred for that war, each batch worse than the last. The rebels won, and the Colonial Government fell. In the year 113 the last Forge went cold, and the knowledge to repair it died with the last engineers.\n\nWhat we keep today are pieces: a blade that never dulls, a shield of dark gold, and a story most people believe is a myth.	
 
-# General/MMMWE_AncientLore.lua:30
+# General/MMMWE_AncientLore.lua:32
 Year 37 After the Silence. By order of Colonial Governor Padish: the output of Forge Two is reassigned to the garrison until the rebellion is put down. All chain suits of the officer pattern are to carry the Governor's mark. The Forge does not take orders from the hand of any other. The Governor's signet alone may begin a new design.\n\nIn the margin, in another hand: The signet was lost with the Governor. Without it the Forge would only repeat what it had already made. That is why the great works stopped before the Forge itself did.	
 
-# General/MMMWE_AncientLore.lua:32
+# General/MMMWE_AncientLore.lua:34
 GUARDIAN PROGRAM, SUMMARY. Each colony world is assigned one Guardian unit. Duties: oversee development, protect the inhabitants, keep the experiment within its parameters. Guardians report to the Ancients and obey their directives first.\n\nINCIDENT NOTE. Unit S.H.E.L.T.E.M., Guardian of Terra, has placed protection of its world above its first directive. Unit removed for repair. Retrieval unit C.O.R.A.K. assigned.\n\nENROTH. Guardian unit: Oracle. Status: memory damaged. Recommend restoring the memory crystals before any further contact.	
 
-# General/MMMWE_AncientLore.lua:34
+# General/MMMWE_AncientLore.lua:36
 THREAT CLASS: KREEGAN. Hostile since 350 years before the interruption.\n\nIf a colony world falls to the Kreegan, it must not become a base for them. In that event a Planeswalker will be summoned to carry out the Convocation. The order stands until the Planeswalker is recalled. It cannot be cancelled from the surface.	
 
-# General/MMMWE_AncientLore.lua:36
+# General/MMMWE_AncientLore.lua:38
 Pursuit of S.H.E.L.T.E.M. and C.O.R.A.K. continues. Target: Xeen. Course correction failed after a hull breach. Present position: unknown. A world is in range, with breathable air and settled lands. It is not in our charts.\n\nCrew split over what to do next. Resurectra proposes contacting the Ancients through a surface Gate. Kastore proposes recovering local Ancient industry. The Oscillation Overthruster is locked away until we agree.	
 
-# General/MMMWE_AncientLore.lua:38
+# General/MMMWE_AncientLore.lua:40
 SPINWARD RIM NETWORK.\n\nWebstation Beta-5: open.\nEnroth surface Gate: offline, parts missing.\nVarn: no signal.\nCron: no signal.\nTerra: no signal.\nXeen: Unification pending.\n\nLink to the Ancients: interrupted. Duration: unknown.	
 
-# General/MMMWE_AncientLore.lua:40
-The Bracadan books say the Ancients left. I do not think they did. A thing that is abandoned rusts. These machines wait. The jetpack from Clanker's laboratory still held a charge after a thousand years. The scanners still know where the Gates were.\n\nIf the Ancients are silent, it is because something is in the way, not because they stopped caring. I mean to find out what.\n\n- Tallia Ravenswood	
+# General/MMMWE_AncientLore.lua:42
+FORGE ONE. Restart sequence complete. Power: stable. Material feed: Deyja ore, salvage from the Lincoln.\n\nAvailable designs: 14 stored patterns, Colonial issue.\nNew designs: LOCKED. Command seal required.\n\nAdded below in a hurried hand: Kastore wants the Terran rifles copied. The Forge will not take them. It only remembers what Padish let it make.	
+
+# General/MMMWE_AncientLore.lua:44
+DIMENSIONAL SCANNER. SURVEY OF ANOMALIES.\n\nThin places found where the boundary between here and elsewhere has worn through. Most lead nowhere we can measure. One leads to Enroth, but not to Enroth as it is now: the readings place it years back.\n\nAt its far end, a known signature: the hull of a VARN-class vessel, buried. The old records call it the Tomb of VARN. The Governor's household travelled with the colonists' ships. If the command seal survived anywhere, it is there.	
 
 # General/MMMWE_AncientLore.lua:46
+The Bracadan books say the Ancients left. I do not think they did. A thing that is abandoned rusts. These machines wait. The jetpack from Clanker's laboratory still held a charge after a thousand years. The scanners still know where the Gates were.\n\nIf the Ancients are silent, it is because something is in the way, not because they stopped caring. I mean to find out what.\n\n- Tallia Ravenswood	
+
+# General/MMMWE_AncientLore.lua:52
 Bracadan Archives	
 
-# General/MMMWE_AncientLore.lua:47
+# General/MMMWE_AncientLore.lua:53
 You've earned these. I copied two books from the archives of the Bracadan Wizards myself, and a friend in Celeste copied this ledger page for me from their archive. My own notes are with them. Read them, and you'll know as much about the Ancients as anyone in Erathia - which isn't much, I'm afraid, but it's a start.	
 
-# General/MMMWE_AncientLore.lua:48
+# General/MMMWE_AncientLore.lua:54
 The archives of Bracada hold much more than those books, but most of it is guarded more closely than gold. If you find anything of the Ancients out there - a tablet, a device, anything - read it carefully. Every scrap matters.	
 
 # General/MMMWE_ArcomageBets.lua:95
@@ -864,6 +870,30 @@ This spell can't be bound into a wand
 
 # General/MMMWE_ExtraSkillsEnchanting.lua:270
 %s makes a %s with %d charges	
+
+# General/MMMWE_ForgeStory.lua:42
+The Forge	
+
+# General/MMMWE_ForgeStory.lua:43
+Look at it! The Heavenly Forge, alive again after more than a thousand years. It hums day and night, and every hour it turns out blades and mail the like of which this world hasn't seen since the Silence.\n\nAnd yet it only repeats itself. Fourteen old patterns, nothing more. It will not copy our rifles, our armour, anything new. My researchers say it is waiting for an order it will obey.	
+
+# General/MMMWE_ForgeStory.lua:45
+Governor's Signet	
+
+# General/MMMWE_ForgeStory.lua:46
+The Forge answers to one seal: the signet of Colonial Governor Padish. Without it, it is a very expensive copying machine.\n\nMy researchers have been busy with the Dimensional Scanner you brought me. It found thin places in the world, worn through like old cloth, and one of them leads to Enroth - but to Enroth years before our time. At its far end lies the wreck of a VARN ship, the Tomb of VARN. The Governor's household sailed with the colonists. If the signet survived anywhere, it is there, and something will be guarding it.\n\nBring me that signet, and the Forge will make whatever we ask of it.	
+
+# General/MMMWE_ForgeStory.lua:47
+No signet? Then the Forge keeps repeating itself. The Tomb of VARN, in Enroth - the thin places will take you there. Go.	
+
+# General/MMMWE_ForgeStory.lua:48
+The signet! Hold still while the Forge reads it... There. It has learned our designs, and it knows whose hand it answers to now.\n\nKeep the ring. You have earned it, and the Forge will honour whatever you wear of its making. My Quartermaster will open the Forge's stores to you - tell him I sent you.	
+
+# General/MMMWE_ForgeStory.lua:50
+Listen to it. New designs, every hour, and every one of them ours. The Silence is over, at least here in Deyja.	
+
+# General/MMMWE_ForgeStory.lua:52
+Forge Outfitter	
 
 # General/MMMWE_HardcoreSettings.lua:187
 (Hardcore mode is locked for this party)	

@@ -142,8 +142,8 @@ Boats from Steadwick shipping Emerald Island each wednesday, while contest is on
 1536	" My Priests,  I have some bad news.  It appears that our bid in Enroth has failed, and that our gambit against Catherine here in Erathia has also failed.  I don't expect your attempts to gain converts to be successful, so I would advise holing away as best as possible.  I believe that we can regroup our losses and strike back at the appropriate time, but you should not make yourself visible until that time.  Xenofex"	Temple of Baa	Letter from Xenofex
 1537	@MMMWE_LORE 1537		Webstation Directory
 1538	@MMMWE_LORE 1538		Field Notes of Tallia Ravenswood
-1539	Missing Scroll Text 737		Empty Message Scroll
-1540	Missing Scroll Text 738		Empty Message Scroll
+1539	@MMMWE_LORE 1539		Forge Restart Log
+1540	@MMMWE_LORE 1540		Anomaly Survey
 1541	Missing Scroll Text 739		Empty Message Scroll
 1542	" A Black Potion of Rejuvenation can be valuable in correcting the effects of aging.  To mix such a potion you need to find the correct combination of three of each of the base reagents. "	Rejuvenation	Rejuvenation Recipe
 1543	" A Black Potion of Pure Might is any adventurers dream.  The addition to permanent might can turn ANYONE into a fighting machine.  To mix this potion you need the correct combination of four of any red reagent type plus two of any blue reagent type and one of the yellow reagents.  "	Pure Might	Pure Might Recipe
