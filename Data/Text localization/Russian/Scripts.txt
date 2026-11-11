@@ -877,53 +877,47 @@ This spell can't be bound into a wand	Это заклинание нельзя заключить в жезл
 # General/MMMWE_ExtraSkillsEnchanting.lua:270
 %s makes a %s with %d charges	%s делает «%s» с зарядами: %d
 
-# General/MMMWE_ForgeStory.lua:43
+# General/MMMWE_ForgeStory.lua:47
 The Forge	Кузня
 
-# General/MMMWE_ForgeStory.lua:44
+# General/MMMWE_ForgeStory.lua:48
 Look at it! The Heavenly Forge, alive again after more than a thousand years. It hums day and night, and every hour it turns out blades and mail the like of which this world hasn't seen since the Silence.\n\nAnd yet it only repeats itself. Fourteen old patterns, nothing more. It will not copy our rifles, our armour, anything new. My researchers say it is waiting for an order it will obey.	Взгляните на неё! Небесная Кузня, ожившая спустя более тысячи лет. Она гудит днём и ночью, и каждый час выдаёт клинки и кольчуги, каких этот мир не видел со времён Безмолвия.\n\nИ всё же она лишь повторяет себя. Четырнадцать старых шаблонов, не больше. Она не скопирует ни наших ружей, ни нашей брони, ничего нового. Мои исследователи говорят, что она ждёт приказа, которому подчинится.
 
-# General/MMMWE_ForgeStory.lua:46
+# General/MMMWE_ForgeStory.lua:50
 Governor's Signet	Перстень Губернатора
 
-# General/MMMWE_ForgeStory.lua:47
+# General/MMMWE_ForgeStory.lua:51
 The Forge answers to one seal: the signet of Colonial Governor Padish. Without it, it is a very expensive copying machine.\n\nMy researchers have been busy with the Dimensional Scanner you brought me. It found thin places in the world, worn through like old cloth, and one of them leads to Enroth - but to Enroth years before our time. At its far end lies the wreck of a VARN ship, the Tomb of VARN. The Governor's household sailed with the colonists. If the signet survived anywhere, it is there, and something will be guarding it.\n\nBring me that signet, and the Forge will make whatever we ask of it.	Кузня подчиняется лишь одной печати - перстню Колониального Губернатора Падиша. Без него это просто очень дорогая копировальная машина.\n\nМои исследователи потрудились над Пространственным Сканером, что вы мне принесли. Он нашёл в мире тонкие места, протёртые, как ветхая ткань, и одно из них ведёт в Энрот - но в Энрот за годы до нашего времени. На дальнем его конце лежат останки корабля VARN, Гробница VARN. Домочадцы Губернатора плыли вместе с колонистами. Если перстень где-то и уцелел, то там, и что-то наверняка его охраняет.\n\nПринесите мне этот перстень, и Кузня сделает всё, что мы у неё попросим.
 
-# General/MMMWE_ForgeStory.lua:48
+# General/MMMWE_ForgeStory.lua:52
 No signet? Then the Forge keeps repeating itself. The Tomb of VARN, in Enroth - the thin places will take you there. Go.	Перстня нет? Значит, Кузня так и будет повторять себя. Гробница VARN, в Энроте - тонкие места приведут вас туда. Ступайте.
 
-# General/MMMWE_ForgeStory.lua:49
-The signet! Hold still while the Forge reads it... There. It has learned our designs, and it knows whose hand it answers to now.\n\nKeep the ring. You have earned it, and the Forge will honour whatever you wear of its making. My Quartermaster will open the Forge's stores to you - tell him I sent you.	Перстень! Не двигайтесь, пока Кузня его считывает... Вот. Она усвоила наши образцы и знает теперь, чьей руке подчиняется.\n\nОставьте перстень себе. Вы его заслужили, и Кузня будет чтить всякую свою работу, что вы носите. Мой Интендант откроет вам склады Кузни - скажите ему, что вы от меня.
+# General/MMMWE_ForgeStory.lua:53
+The signet! Hold still while the Forge reads it... There. It has learned our designs, and it knows whose hand it answers to now.\n\nKeep the ring. You have earned it, and the Forge will honour whatever you wear of its making. My Quartermaster has taken over the old hostel here in the Pit and opened the Forge's stores in it. Tell him I sent you.	Перстень! Не двигайтесь, пока Кузня его считывает... Вот. Она усвоила наши образцы и знает теперь, чьей руке подчиняется.\n\nОставьте перстень себе. Вы его заслужили, и Кузня будет чтить всякую свою работу, что вы носите. Мой Интендант занял старую гостиницу здесь, в Яме, и открыл в ней склады Кузни. Скажите ему, что вы от меня.
 
-# General/MMMWE_ForgeStory.lua:51
+# General/MMMWE_ForgeStory.lua:55
 Listen to it. New designs, every hour, and every one of them ours. The Silence is over, at least here in Deyja.	Послушайте её. Новые образцы каждый час, и все до единого наши. Безмолвие кончилось - по крайней мере здесь, в Дейе.
 
-# General/MMMWE_ForgeStory.lua:53
-Forge Outfitter	Снаряжение Кузни
-
-# General/MMMWE_GateStory.lua:47
+# General/MMMWE_GateStory.lua:52
 The Gate	Врата
 
-# General/MMMWE_GateStory.lua:48
+# General/MMMWE_GateStory.lua:53
 We did it. The Gate is open, and on the other side is Webstation Beta-5, a station of the Ancients, still holding air after all these centuries. Another C.O.R.A.K. module was waiting for us there. It knows who we are, and it knows a great deal more than it can tell us yet.\n\nBut the station is half asleep. Its stores and fabricators answer to no one from this world, and the line to the Ancients themselves is still silent. One step at a time.	У нас получилось. Врата открыты, а по ту сторону - веб-станция Бета-5, станция Древних, где спустя столько веков всё ещё есть воздух. Там нас ждал ещё один модуль C.O.R.A.K. Он знает, кто мы, и знает куда больше, чем пока может нам рассказать.\n\nНо станция наполовину спит. Её склады и фабрикаторы не подчиняются никому из этого мира, а связь с самими Древними по-прежнему молчит. Шаг за шагом.
 
-# General/MMMWE_GateStory.lua:50
+# General/MMMWE_GateStory.lua:55
 Command Cube	Командный куб
 
-# General/MMMWE_GateStory.lua:51
+# General/MMMWE_GateStory.lua:56
 The station keeps asking for the same thing: a command cube of the Colonial Government. Without one, Beta-5 opens its doors to us and nothing else.\n\nThe Pathfinder Beacon you brought me has been listening ever since. It found thin places in the world, worn through like old cloth, and one of them leads to Enroth - Enroth as it was years ago. Under Free Haven lies the Control Center, the Oracle's own facility. If a command cube survived anywhere on this world, it is there, and the old machines will still be guarding it.\n\nBring it to me, and Beta-5 will wake up for us.	Станция твердит одно и то же: ей нужен командный куб Колониального Правительства. Без него Бета-5 открывает нам двери - и больше ничего.\n\nМаяк-Следопыт, что вы мне принесли, с тех пор не перестаёт слушать. Он нашёл в мире тонкие места, протёртые, как ветхая ткань, и одно из них ведёт в Энрот - в Энрот, каким он был годы назад. Под Фри-Хейвеном лежит Центр Управления, собственный объект Оракула. Если командный куб где-то в этом мире и уцелел, то там, и старые машины до сих пор его стерегут.\n\nПринесите его мне, и Бета-5 проснётся для нас.
 
-# General/MMMWE_GateStory.lua:52
+# General/MMMWE_GateStory.lua:57
 No cube yet? The Control Center under Free Haven, in Enroth - the Beacon's thin places will take you there. Be careful: those machines don't know the war is over.	Куба всё ещё нет? Центр Управления под Фри-Хейвеном, в Энроте - тонкие места Маяка приведут вас туда. Будьте осторожны: те машины не знают, что война окончена.
 
-# General/MMMWE_GateStory.lua:53
-The cube! Let me link it to the station... There. Beta-5 knows us now. Its stores are open, and C.O.R.A.K. has agreed to keep them for us.\n\nKeep the cube - it will serve you better than it would on a shelf. Ask for the station's supplies whenever you need them; I'll make sure the way through the Gate stays open.	Куб! Дайте подключить его к станции... Вот. Теперь Бета-5 нас знает. Её склады открыты, и C.O.R.A.K. согласился хранить их для нас.\n\nОставьте куб себе - вам он послужит лучше, чем на полке. Обращайтесь за припасами станции, когда понадобится; я позабочусь, чтобы путь через Врата оставался открыт.
+# General/MMMWE_GateStory.lua:58
+The cube! Let me link it to the station... There. Beta-5 knows us now. Its stores are open, and C.O.R.A.K. has agreed to keep them for us.\n\nKeep the cube - it will serve you better than it would on a shelf. We've cleared the old hostel here in Celeste for the station's supplies; C.O.R.A.K. keeps it, and I'll make sure the way through the Gate stays open.	Куб! Дайте подключить его к станции... Вот. Теперь Бета-5 нас знает. Её склады открыты, и C.O.R.A.K. согласился хранить их для нас.\n\nОставьте куб себе - вам он послужит лучше, чем на полке. Мы освободили старую гостиницу здесь, в Селесте, под припасы станции; C.O.R.A.K. присматривает за ней, а я позабочусь, чтобы путь через Врата оставался открыт.
 
-# General/MMMWE_GateStory.lua:54
+# General/MMMWE_GateStory.lua:59
 Beta-5 hums like a hive now. One day it will reach the Ancients themselves. Until then, we have work to do.	Бета-5 гудит теперь, как улей. Однажды она дотянется до самих Древних. А пока у нас есть работа.
-
-# General/MMMWE_GateStory.lua:56
-Webstation Supply	Склад веб-станции
 
 # General/MMMWE_HardcoreSettings.lua:187
 (Hardcore mode is locked for this party)	(режим «Хардкор» закреплён за этим отрядом)
@@ -2945,6 +2939,10 @@ The %s path in %s costs %d gold. Come back when you have it.	Путь «%s» в навыке 
 %s is now %s in %s.%s	%s теперь — %s в навыке %s.%s
 
 # no longer used
+The signet! Hold still while the Forge reads it... There. It has learned our designs, and it knows whose hand it answers to now.\n\nKeep the ring. You have earned it, and the Forge will honour whatever you wear of its making. My Quartermaster will open the Forge's stores to you - tell him I sent you.	Перстень! Не двигайтесь, пока Кузня его считывает... Вот. Она усвоила наши образцы и знает теперь, чьей руке подчиняется.\n\nОставьте перстень себе. Вы его заслужили, и Кузня будет чтить всякую свою работу, что вы носите. Мой Интендант откроет вам склады Кузни - скажите ему, что вы от меня.
+Forge Outfitter	Снаряжение Кузни
+The cube! Let me link it to the station... There. Beta-5 knows us now. Its stores are open, and C.O.R.A.K. has agreed to keep them for us.\n\nKeep the cube - it will serve you better than it would on a shelf. Ask for the station's supplies whenever you need them; I'll make sure the way through the Gate stays open.	Куб! Дайте подключить его к станции... Вот. Теперь Бета-5 нас знает. Её склады открыты, и C.O.R.A.K. согласился хранить их для нас.\n\nОставьте куб себе - вам он послужит лучше, чем на полке. Обращайтесь за припасами станции, когда понадобится; я позабочусь, чтобы путь через Врата оставался открыт.
+Webstation Supply	Склад веб-станции
 Abilities (pack leader):	Способности (вожак):
 Abilities:	Способности:
 Type the name; Enter keeps it, Esc drops it	Введите имя; Enter — оставить, Esc — отменить

@@ -9,7 +9,7 @@
 	  - In the Tomb of VARN a guardian droid carries the Signet; it is placed while the quest
 	    is open, the Signet not with the party, once per map fill.
 	  - Kastore takes a look at the Signet and gives it back (QBit 876): his Quartermaster's
-	    Forge Outfitter (house 45, an unused armor shop) sells Heavenly Forge items,
+	    Forge Outfitter (house 45, an unused armor shop, its door one of the Pit's hostels) sells Heavenly Forge items,
 	    blasters and Energy Shields with upgraded boards, and Ancient devices.
 	  - Two Forge tablets lie in Castle Gloaming (MMMWE_AncientLore.lua: 1539, 1540).
 	The topics are in Global/MMMWE_ForgeQuests.lua; the texts here, for the language files.
@@ -23,7 +23,10 @@ local DARK_PATH    = 612          -- QBit "Chose the path of Dark"
 local SIGNET_QUEST = 875          -- QBit: looking for the Signet
 local SIGNET_DONE  = 876          -- QBit: the Forge has read the Signet
 local SIGNET       = 2213
-local OUTFITTER    = 45           -- house
+local OUTFITTER    = 45           -- house (a placeholder armor shop)
+local DOOR_MAP     = "7d26.blv"   -- its door: a hostel of the Pit (Maps/7d26.lua)
+local DOOR_EVENT   = 446
+local DOOR_HOUSE   = 1081
 local GUARDIAN     = 390          -- Assassin Droid
 
 -- what the Outfitter sells (shares of the stock, %): the Heavenly Forge items that aren't
@@ -39,6 +42,7 @@ local STOCK = {
 MF.ForgeStory = {
 	FORGE_DONE = FORGE_DONE, DARK_PATH = DARK_PATH, SIGNET_QUEST = SIGNET_QUEST, SIGNET_DONE = SIGNET_DONE,
 	SIGNET = SIGNET, OUTFITTER = OUTFITTER,
+	DOOR_MAP = DOOR_MAP, DOOR_EVENT = DOOR_EVENT, DOOR_HOUSE = DOOR_HOUSE,
 
 	ForgeTopic = Tx"The Forge",
 	ForgeText = Tx"Look at it! The Heavenly Forge, alive again after more than a thousand years. It hums day and night, and every hour it turns out blades and mail the like of which this world hasn't seen since the Silence.\n\nAnd yet it only repeats itself. Fourteen old patterns, nothing more. It will not copy our rifles, our armour, anything new. My researchers say it is waiting for an order it will obey.",
@@ -46,11 +50,10 @@ MF.ForgeStory = {
 	SignetTopic = Tx"Governor's Signet",
 	SignetGive = Tx"The Forge answers to one seal: the signet of Colonial Governor Padish. Without it, it is a very expensive copying machine.\n\nMy researchers have been busy with the Dimensional Scanner you brought me. It found thin places in the world, worn through like old cloth, and one of them leads to Enroth - but to Enroth years before our time. At its far end lies the wreck of a VARN ship, the Tomb of VARN. The Governor's household sailed with the colonists. If the signet survived anywhere, it is there, and something will be guarding it.\n\nBring me that signet, and the Forge will make whatever we ask of it.",
 	SignetUndone = Tx"No signet? Then the Forge keeps repeating itself. The Tomb of VARN, in Enroth - the thin places will take you there. Go.",
-	SignetDone = Tx"The signet! Hold still while the Forge reads it... There. It has learned our designs, and it knows whose hand it answers to now.\n\nKeep the ring. You have earned it, and the Forge will honour whatever you wear of its making. My Quartermaster will open the Forge's stores to you - tell him I sent you.",
+	SignetDone = Tx"The signet! Hold still while the Forge reads it... There. It has learned our designs, and it knows whose hand it answers to now.\n\nKeep the ring. You have earned it, and the Forge will honour whatever you wear of its making. My Quartermaster has taken over the old hostel here in the Pit and opened the Forge's stores in it. Tell him I sent you.",
 
 	SignetAfter = Tx"Listen to it. New designs, every hour, and every one of them ours. The Silence is over, at least here in Deyja.",
 
-	OutfitterTopic = Tx"Forge Outfitter",
 }
 
 ---------------------------------------------------------------------------
@@ -104,6 +107,29 @@ function events.AfterLoadMap()
 	for _, q in ipairs(MF.AncientQuests) do
 		if q.Map == name then placeGuardian(q) end
 	end
+end
+
+-- the shops' doors: a placeholder hostel of the town opens the shop once the quest is done
+-- (called by the map scripts, Maps/7d26.lua and Maps/7d25.lua); s = MF.ForgeStory or
+-- MF.GateStory, done = its QBit
+local function shopOf(s) return s.OUTFITTER or s.SUPPLY end
+
+function MF.AncientShopDoorHint(s, done)
+	if (Map.Name or ""):lower() ~= s.DOOR_MAP then return end
+	local h = Party.QBits[done] and shopOf(s) or s.DOOR_HOUSE
+	evt.Hint[s.DOOR_EVENT] = Game.Houses[h].Name
+end
+
+function MF.AncientShopDoor(s, done)
+	Game.MapEvtLines:RemoveEvent(s.DOOR_EVENT)
+	evt.Map[s.DOOR_EVENT] = function()
+		if Party.QBits[done] then
+			evt.EnterHouse{shopOf(s)}
+		else
+			evt.EnterHouse{s.DOOR_HOUSE}
+		end
+	end
+	MF.AncientShopDoorHint(s, done)
 end
 
 -- the shops' stock

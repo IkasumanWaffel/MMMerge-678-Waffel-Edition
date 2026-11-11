@@ -877,53 +877,47 @@ This spell can't be bound into a wand
 # General/MMMWE_ExtraSkillsEnchanting.lua:270
 %s makes a %s with %d charges	
 
-# General/MMMWE_ForgeStory.lua:43
+# General/MMMWE_ForgeStory.lua:47
 The Forge	
 
-# General/MMMWE_ForgeStory.lua:44
+# General/MMMWE_ForgeStory.lua:48
 Look at it! The Heavenly Forge, alive again after more than a thousand years. It hums day and night, and every hour it turns out blades and mail the like of which this world hasn't seen since the Silence.\n\nAnd yet it only repeats itself. Fourteen old patterns, nothing more. It will not copy our rifles, our armour, anything new. My researchers say it is waiting for an order it will obey.	
 
-# General/MMMWE_ForgeStory.lua:46
+# General/MMMWE_ForgeStory.lua:50
 Governor's Signet	
 
-# General/MMMWE_ForgeStory.lua:47
+# General/MMMWE_ForgeStory.lua:51
 The Forge answers to one seal: the signet of Colonial Governor Padish. Without it, it is a very expensive copying machine.\n\nMy researchers have been busy with the Dimensional Scanner you brought me. It found thin places in the world, worn through like old cloth, and one of them leads to Enroth - but to Enroth years before our time. At its far end lies the wreck of a VARN ship, the Tomb of VARN. The Governor's household sailed with the colonists. If the signet survived anywhere, it is there, and something will be guarding it.\n\nBring me that signet, and the Forge will make whatever we ask of it.	
 
-# General/MMMWE_ForgeStory.lua:48
+# General/MMMWE_ForgeStory.lua:52
 No signet? Then the Forge keeps repeating itself. The Tomb of VARN, in Enroth - the thin places will take you there. Go.	
 
-# General/MMMWE_ForgeStory.lua:49
-The signet! Hold still while the Forge reads it... There. It has learned our designs, and it knows whose hand it answers to now.\n\nKeep the ring. You have earned it, and the Forge will honour whatever you wear of its making. My Quartermaster will open the Forge's stores to you - tell him I sent you.	
+# General/MMMWE_ForgeStory.lua:53
+The signet! Hold still while the Forge reads it... There. It has learned our designs, and it knows whose hand it answers to now.\n\nKeep the ring. You have earned it, and the Forge will honour whatever you wear of its making. My Quartermaster has taken over the old hostel here in the Pit and opened the Forge's stores in it. Tell him I sent you.	
 
-# General/MMMWE_ForgeStory.lua:51
+# General/MMMWE_ForgeStory.lua:55
 Listen to it. New designs, every hour, and every one of them ours. The Silence is over, at least here in Deyja.	
 
-# General/MMMWE_ForgeStory.lua:53
-Forge Outfitter	
-
-# General/MMMWE_GateStory.lua:47
+# General/MMMWE_GateStory.lua:52
 The Gate	
 
-# General/MMMWE_GateStory.lua:48
+# General/MMMWE_GateStory.lua:53
 We did it. The Gate is open, and on the other side is Webstation Beta-5, a station of the Ancients, still holding air after all these centuries. Another C.O.R.A.K. module was waiting for us there. It knows who we are, and it knows a great deal more than it can tell us yet.\n\nBut the station is half asleep. Its stores and fabricators answer to no one from this world, and the line to the Ancients themselves is still silent. One step at a time.	
 
-# General/MMMWE_GateStory.lua:50
+# General/MMMWE_GateStory.lua:55
 Command Cube	
 
-# General/MMMWE_GateStory.lua:51
+# General/MMMWE_GateStory.lua:56
 The station keeps asking for the same thing: a command cube of the Colonial Government. Without one, Beta-5 opens its doors to us and nothing else.\n\nThe Pathfinder Beacon you brought me has been listening ever since. It found thin places in the world, worn through like old cloth, and one of them leads to Enroth - Enroth as it was years ago. Under Free Haven lies the Control Center, the Oracle's own facility. If a command cube survived anywhere on this world, it is there, and the old machines will still be guarding it.\n\nBring it to me, and Beta-5 will wake up for us.	
 
-# General/MMMWE_GateStory.lua:52
+# General/MMMWE_GateStory.lua:57
 No cube yet? The Control Center under Free Haven, in Enroth - the Beacon's thin places will take you there. Be careful: those machines don't know the war is over.	
 
-# General/MMMWE_GateStory.lua:53
-The cube! Let me link it to the station... There. Beta-5 knows us now. Its stores are open, and C.O.R.A.K. has agreed to keep them for us.\n\nKeep the cube - it will serve you better than it would on a shelf. Ask for the station's supplies whenever you need them; I'll make sure the way through the Gate stays open.	
+# General/MMMWE_GateStory.lua:58
+The cube! Let me link it to the station... There. Beta-5 knows us now. Its stores are open, and C.O.R.A.K. has agreed to keep them for us.\n\nKeep the cube - it will serve you better than it would on a shelf. We've cleared the old hostel here in Celeste for the station's supplies; C.O.R.A.K. keeps it, and I'll make sure the way through the Gate stays open.	
 
-# General/MMMWE_GateStory.lua:54
+# General/MMMWE_GateStory.lua:59
 Beta-5 hums like a hive now. One day it will reach the Ancients themselves. Until then, we have work to do.	
-
-# General/MMMWE_GateStory.lua:56
-Webstation Supply	
 
 # General/MMMWE_HardcoreSettings.lua:187
 (Hardcore mode is locked for this party)	

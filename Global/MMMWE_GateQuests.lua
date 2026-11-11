@@ -31,6 +31,7 @@ Quest{
 	CanShow = lightEnd,
 	Done = function()
 		Party.QBits[G.CUBE_DONE] = true
+		Merge.Functions.AncientShopDoorHint(G, G.CUBE_DONE)
 	end,
 	Texts = {
 		Topic = G.CubeTopic,
@@ -38,18 +39,5 @@ Quest{
 		Undone = G.CubeUndone,
 		Done = G.CubeDone,
 		After = G.CubeAfter,
-	},
-}
-
-Quest{
-	Name = "MMMWE_Gate_Supply",
-	NPC = RESURECTRA,
-	Slot = 5,
-	CanShow = function() return Party.QBits[G.CUBE_DONE] end,
-	Ungive = function()
-		ReloadHouse(G.SUPPLY)
-	end,
-	Texts = {
-		Topic = G.SupplyTopic,
 	},
 }

@@ -29,6 +29,7 @@ Quest{
 	CanShow = function() return Party.QBits[F.FORGE_DONE] and Party.QBits[F.DARK_PATH] end,
 	Done = function()
 		Party.QBits[F.SIGNET_DONE] = true
+		Merge.Functions.AncientShopDoorHint(F, F.SIGNET_DONE)
 	end,
 	Texts = {
 		Topic = F.SignetTopic,
@@ -36,18 +37,5 @@ Quest{
 		Undone = F.SignetUndone,
 		Done = F.SignetDone,
 		After = F.SignetAfter,
-	},
-}
-
-Quest{
-	Name = "MMMWE_Forge_Outfitter",
-	NPC = KASTORE,
-	Slot = 5,
-	CanShow = function() return Party.QBits[F.SIGNET_DONE] end,
-	Ungive = function()
-		ReloadHouse(F.OUTFITTER)
-	end,
-	Texts = {
-		Topic = F.OutfitterTopic,
 	},
 }
