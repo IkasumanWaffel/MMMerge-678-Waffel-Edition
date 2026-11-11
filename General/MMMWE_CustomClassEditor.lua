@@ -307,6 +307,19 @@ local function cycleKit()
 	edit(CC.SetKit(f, idx > 0 and list[idx].Key or nil))
 end
 
+-- the alignment of the base class and its first and neutral promotions (0 good, 5 neutral,
+-- 10 evil); the light and dark promotions are always good and evil
+local function cycleAlignment()
+	if locked() then message(Tx"This class is taken by a character in the game") return end
+	if E.Step > CC.OwnAlignmentSteps then message(Tx"Light promotions are always good, dark ones evil") return end
+	local f = fam()
+	local list, idx = CC.Alignments, 2
+	for i, a in ipairs(list) do if a == (f.Alignment or const.Alignment.Neutral) then idx = i end end
+	local d = Keys.IsPressed(const.Keys.CTRL) and -1 or 1
+	idx = (idx - 1 + d) % #list + 1
+	edit(CC.SetAlignment(f, list[idx]))
+end
+
 local function clickSkill(id)
 	if locked() then message(Tx"This class is taken by a character in the game") return end
 	local f, s = fam(), spec()
@@ -637,6 +650,16 @@ local function build()
 				s.SP == 0 and GREY or WHITE
 		end,
 		Click = cycleStats}
+	-- alignment (base, first and neutral promotions; the light and dark ones are fixed)
+	local AL = const.Alignment
+	local ALIGN_NAMES = {[AL.Good] = Tx"good", [AL.Neutral] = Tx"neutral", [AL.Evil] = Tx"evil"}
+	text{Font = Small, X = 470, Y = 145, W = 156, H = 16,
+		Get = function()
+			local a
+			if E.Step == 4 then a = AL.Good elseif E.Step == 5 then a = AL.Evil else a = fam().Alignment or AL.Neutral end
+			return Tx"Alignment: " .. ALIGN_NAMES[a], E.Step <= CC.OwnAlignmentSteps and WHITE or GREY
+		end,
+		Click = cycleAlignment}
 
 	-- skills: three columns of thirteen (the 36 skills of the game and Dual-Wield, Robe)
 	SKILL_ORDER = {}

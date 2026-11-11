@@ -30,6 +30,9 @@
 	  CustomClass.Kit(f, kit)                   resource kit: "Monk", "Barbarian", "Knight", "Thief",
 	                                            "Archer", "Ranger", "Paladin", "DarkElf", "Minotaur",
 	                                            "Technician", or nil / "none"
+	  CustomClass.Alignment(f, a)               alignment of the base class, the first promotion and
+	                                            the neutral second one: 0 good, 5 neutral, 10 evil
+	                                            (the light and dark promotions stay 0 and 10)
 	  CustomClass.Show(f), CustomClass.List()
 	  CustomClass.Give(player, f, step)         player: party slot 0..4 (default: selected);
 	                                            skills the class can't learn are removed and
@@ -61,6 +64,11 @@ local MAX_TIER = {5, 6, 7, 7, 7}
 local PARENT   = {nil, 1, 2, 2, 2}
 local STEP_OF  = {0, 1, 2, 2, 2}                 -- Class Extra Step
 local ALIGN_OF = {5, 5, 5, 0, 10}                -- Class Extra Alignment (const.Alignment)
+-- the base class, the first promotion and the neutral one take the family's own alignment
+-- (fam.Alignment: 0 good, 5 neutral, 10 evil; for the alignment-tied artifacts and relics)
+local OWN_ALIGNMENT_STEPS = 3
+local AL = const.Alignment                       -- Good 0, Neutral 5, Evil 10 (20_MergeConsts.lua)
+local ALIGNMENTS = {AL.Good, AL.Neutral, AL.Evil}
 local STEP_NAMES = {Tx"base", Tx"first promotion", Tx"neutral", Tx"light", Tx"dark"}
 
 -- {base, per level}
@@ -782,7 +790,7 @@ local function applyClass(id, fam, f, step)
 	Game.ClassesExtra[id] = ce
 	ce.Kind = spec and (FIRST_KIND + f - 1) or 0
 	ce.Step = STEP_OF[step]
-	ce.Alignment = ALIGN_OF[step]
+	ce.Alignment = (spec and step <= OWN_ALIGNMENT_STEPS and fam.Alignment) or ALIGN_OF[step]
 	if MT.SpellsLearning then
 		MT.SpellsLearning[id] = spec and spellsLearning(spec) or nil
 	end
@@ -1209,6 +1217,19 @@ local function kitAllowed(pl, key)
 end
 MF.CustomClassKitAllowed = kitAllowed
 
+local function famSetAlignment(fam, a)
+	a = tonumber(a)
+	if a ~= AL.Good and a ~= AL.Neutral and a ~= AL.Evil then return nil, Tx"alignment: 0 good, 5 neutral, 10 evil" end
+	fam.Alignment = a ~= AL.Neutral and a or nil
+	return true
+end
+
+function CustomClass.Alignment(f, a)
+	local fam = family(f)
+	try(famSetAlignment(fam, a))
+	changed()
+end
+
 local function famSetKit(fam, key)
 	if key ~= nil and not KIT_BY_KEY[key] then return nil, Tx"unknown kit: " .. tostring(key) end
 	fam.Kit = key
@@ -1235,6 +1256,7 @@ local function exportText(fam)
 		"-- Spells: spell numbers 1..99 (11 per school from Fire to Dark).",
 		"return {"}
 	out[#out + 1] = fam.Kit and string.format("\tKit = %q,", fam.Kit) or "\tKit = nil,"
+	if fam.Alignment then out[#out + 1] = string.format("\tAlignment = %d,", fam.Alignment) end
 	local ss = {}
 	for _, id in ipairs(fam.StartSkills or {}) do ss[#ss + 1] = string.format("%q", SKILL_IDS[id]) end
 	out[#out + 1] = "\tStartSkills = {" .. table.concat(ss, ", ") .. "},"
@@ -1277,6 +1299,10 @@ local function importText(text)
 	if t.Kit ~= nil then
 		if not KIT_BY_KEY[t.Kit] then return nil, Tx"unknown kit: " .. tostring(t.Kit) end
 		fam.Kit = t.Kit
+	end
+	if t.Alignment ~= nil then
+		local ok, err = famSetAlignment(fam, t.Alignment)
+		if not ok then return nil, err end
 	end
 	for step = 1, STEPS do
 		local src = t.Steps[step]
@@ -1411,6 +1437,9 @@ MF.CustomClasses = {
 	SetStats = famSetStats,
 	SetSkill = famSetSkill,
 	SetKit = famSetKit,
+	SetAlignment = famSetAlignment,
+	Alignments = ALIGNMENTS,
+	OwnAlignmentSteps = OWN_ALIGNMENT_STEPS,
 	SetSpell = famSetSpell,
 	SpellRank = spellRank,
 	SpellSchool = spellSchool,
