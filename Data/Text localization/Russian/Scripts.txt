@@ -112,10 +112,10 @@ The stake of %d gold is returned	Ставка в %d золота возвращена
 # General/MMMWE_ArcomageBets.lua:168
 You lose the bet of %d gold	Ставка в %d золота проиграна
 
-# General/MMMWE_ArmorEffects.lua:105
+# General/MMMWE_ArmorEffects.lua:109
 %s's chain mail turns the blow aside	Кольчуга (%s) отводит удар
 
-# General/MMMWE_ArmorEffects.lua:132
+# General/MMMWE_ArmorEffects.lua:136
 dodge %+.1f%%, recovery %+d, shrug off %.1f%%, plate reduction %.1f	уклонение %+.1f%%, восстановление %+d, стойкость %.1f%%, снижение латами %.1f
 
 # General/MMMWE_Blasters.lua:76
@@ -2493,6 +2493,51 @@ no shield	нет щита
 
 # General/MMMWE_Shields.lua:275
 %s shield: block %.1f%% (missiles %.1f%%), power %d%%, extra dodge/recovery penalty %d	Щит (%s): блок %.1f%% (снаряды %.1f%%), сила %d%%, доп. штраф уклонения/восстановления %d
+
+# General/MMMWE_SiegeOfHarmondale.lua:98
+A rider in the black of Castle Gloaming reins in beside you, his horse lathered.\n\n"Word from Kastore, my lords! The elves of AvLee and the knights of Erathia have made common cause. Bracada's wizards ride with them, and there are angels from Celeste in the sky over their camps. Their army is marching on Harmondale!\n\nThe Forge is sending what it can, but the castle is yours to hold. Every army they send must be broken - and quickly, before the next one comes."	Всадник в чёрном замка Глоаминг осаживает рядом с вами взмыленного коня.\n\n«Весть от Касторе, милорды! Эльфы Авли и рыцари Эратии заключили союз. С ними едут волшебники Бракады, а над их лагерями в небе - ангелы из Селесты. Их армия идёт на Хармондейл!\n\nКузня пришлёт что сможет, но удержать замок - ваше дело. Каждую армию, что они пошлют, нужно разбить - и быстро, прежде чем придёт следующая.»
+
+# General/MMMWE_SiegeOfHarmondale.lua:99
+The alliance's army has reached Castle Harmondale! (wave %d of %d, %d days to destroy it)	Армия союза подошла к замку Хармондейл! (волна %d из %d, %d дн. на её уничтожение)
+
+# General/MMMWE_SiegeOfHarmondale.lua:100
+The final siege: the whole alliance stands before Castle Harmondale! (%d days to destroy it)	Последняя осада: весь союз стоит у стен замка Хармондейл! (%d дн. на её уничтожение)
+
+# General/MMMWE_SiegeOfHarmondale.lua:101
+The alliance's army at Harmondale is destroyed! Score: Dark side %d, alliance %d	Армия союза у Хармондейла уничтожена! Счёт: Тёмная сторона %d, союз %d
+
+# General/MMMWE_SiegeOfHarmondale.lua:102
+Too late: the alliance's army withdrew from Harmondale on its own terms. Score: Dark side %d, alliance %d	Слишком поздно: армия союза отступила от Хармондейла на своих условиях. Счёт: Тёмная сторона %d, союз %d
+
+# General/MMMWE_SiegeOfHarmondale.lua:103
+The alliance is broken!\n\nTheir last army lies in ruins before Castle Harmondale, and the survivors flee back to Erathia and AvLee. Kastore's laughter rings through the halls of Castle Gloaming: the Forge, and Harmondale, are safe - and the Dark side holds Antagarich's heart.\n\nFinal score: Dark side %d, alliance %d.	Союз сломлен!\n\nЕго последняя армия лежит в руинах у стен замка Хармондейл, а уцелевшие бегут назад в Эратию и Авли. Смех Касторе разносится по залам замка Глоаминг: Кузня и Хармондейл в безопасности, а сердце Антагарича принадлежит Тёмной стороне.\n\nИтоговый счёт: Тёмная сторона %d, союз %d.
+
+# General/MMMWE_SiegeOfHarmondale.lua:104
+Harmondale has fallen.\n\nThe alliance's banners fly over the castle, and Erathia and AvLee celebrate a victory that will be sung of for years. The war is lost.\n\nFinal score: Dark side %d, alliance %d.	Хармондейл пал.\n\nНад замком реют знамёна союза, а Эратия и Авли празднуют победу, о которой будут петь годами. Война проиграна.\n\nИтоговый счёт: Тёмная сторона %d, союз %d.
+
+# General/MMMWE_SiegeOfHarmondale.lua:105
+The war for Harmondale: Dark side %d, alliance %d. Wave %d of %d.%s	Война за Хармондейл: Тёмная сторона %d, союз %d. Волна %d из %d.%s
+
+# General/MMMWE_SiegeOfHarmondale.lua:106
+ The next army is expected in %d days.	 Следующую армию ждут через %d дн.
+
+# General/MMMWE_SiegeOfHarmondale.lua:107
+ An army stands at Castle Harmondale: %d days left to destroy it.	 У замка Хармондейл стоит армия: осталось %d дн., чтобы её уничтожить.
+
+# General/MMMWE_SiegeOfHarmondale.lua:108
+A war party of the alliance!	Боевой отряд союза!
+
+# General/MMMWE_SiegeOfHarmondale.lua:109
+The War	Война
+
+# General/MMMWE_SiegeOfHarmondale.lua:110
+Every army they send is weaker than the last one they lost - or so I tell my officers. Keep Harmondale, and keep it fast: an army left standing for a week is a victory they will boast of.\n\n%s	Каждая армия, что они шлют, слабее той, что они потеряли, - так я говорю своим офицерам. Держите Хармондейл, и держите быстро: армия, простоявшая неделю, - это победа, которой они будут хвастаться.\n\n%s
+
+# General/MMMWE_SiegeOfHarmondale.lua:111
+We won. The alliance will lick its wounds for a generation. Final score: Dark side %d, alliance %d.	Мы победили. Союз будет зализывать раны целое поколение. Итоговый счёт: Тёмная сторона %d, союз %d.
+
+# General/MMMWE_SiegeOfHarmondale.lua:112
+Harmondale is lost, and the Forge with it soon enough, if they press on. Final score: Dark side %d, alliance %d.	Хармондейл потерян, а вскоре и Кузня, если они не остановятся. Итоговый счёт: Тёмная сторона %d, союз %d.
 
 # General/MMMWE_SpellBookInfo.lua:28
 %s: knows it	%s: уже знает

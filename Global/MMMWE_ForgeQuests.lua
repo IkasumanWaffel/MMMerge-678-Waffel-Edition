@@ -39,3 +39,18 @@ Quest{
 		After = F.SignetAfter,
 	},
 }
+
+-- the war for Harmondale (General/MMMWE_SiegeOfHarmondale.lua)
+Quest{
+	Name = "MMMWE_Forge_War",
+	NPC = KASTORE,
+	Slot = 5,
+	CanShow = function() return vars.MMMWE_Siege and vars.MMMWE_Siege.Announced end,
+	Ungive = function()
+		local text = Merge.Functions.SiegeTopicText and Merge.Functions.SiegeTopicText()
+		if text then Message(text) end
+	end,
+	Texts = {
+		Topic = Merge.Functions.SiegeTexts.Topic,
+	},
+}
