@@ -21,6 +21,10 @@
 	  Plate body armor at Grand Master keeps +5% attack delay and a -10% dodge penalty.
 	Blasters are left out of the recovery changes (their recovery is fixed by design).
 
+	Wearing (13.11.26): helms, gauntlets and boots of Leather, Chain or Plate need that skill,
+	like body armor (the Revamp's equip table of 06.11.26 asks only for level 1 of them; hats,
+	crowns, sandals and cestus gauntlets are left as they are).
+
 	Console: Merge.Functions.ArmorEffectsInfo(player)
 --]]
 
@@ -138,6 +142,20 @@ end
 ---------------------------------------------------------------------------
 
 -- Chain: monsters' special effects (the game's "bad things")
+-- helms, gauntlets and boots of an armor skill need the skill (ItemsModifiers.lua: Req 1 =
+-- the item itself)
+local PIECE = {[const.ItemType.Helm - 1] = true, [const.ItemType.Gauntlets - 1] = true,
+	[const.ItemType.Boots - 1] = true}
+local ARMOR_SKILL = {[SK.Leather] = true, [SK.Chain] = true, [SK.Plate] = true}
+
+function events.ItemEquipRequirement(t)
+	if t.Req ~= 1 or not t.Result or not t.Player then return end
+	local txt = Game.ItemsTxt[t.ItemId]
+	if not (txt and PIECE[txt.EquipStat] and ARMOR_SKILL[txt.Skill]) then return end
+	local lvl = SplitSkill(t.Player.Skills[txt.Skill])
+	if (lvl or 0) <= 0 then t.Result = false end
+end
+
 function events.DoBadThingToPlayer(t)
 	if t.Allow and t.Player and MF.ChainShrugsOff(t.Player) then
 		t.Allow = false

@@ -194,14 +194,37 @@ function events.GetAttackDelay(t)
 	end
 end
 
+-- (13.11.26) the stats screen's melee damage range shows the off hand's share too: the off-hand
+-- weapon's own dice and bonus count only by its share (the blow itself: below)
+local function offHandMul(pl)
+	local mul = S.OffHandMul[dwMastery(pl)] or 1
+	if pairedTwoHanded(pl) then mul = mul * S.PairedTwoHandedOffHandMul end
+	return mul
+end
+MF.DualWieldOffHandMul = function(pl) return dualWeapons(pl) and offHandMul(pl) or 1 end
+
+function events.CalcStatBonusByItems(t)
+	local st = const.Stats
+	if t.Stat ~= st.MeleeDamageMin and t.Stat ~= st.MeleeDamageMax then return end
+	local pl = t.Player
+	if not pl then return end
+	local m, e = dualWeapons(pl)
+	if not m then return end
+	local mul = offHandMul(pl)
+	if mul >= 1 then return end
+	local txt = Game.ItemsTxt[e]
+	local n, sides, add = txt.Mod1DiceCount or 0, txt.Mod1DiceSides or 0, txt.Mod2 or 0
+	local dmg = (t.Stat == st.MeleeDamageMin and n or n * sides) + add
+	t.Result = t.Result - floor(dmg * (1 - mul) + 0.5)
+end
+
 -- the off hand's share of a melee blow, by the two weapons' average damage
 function events.CalcDamageToMonster(t)
 	if not t.ByPlayer or not t.Player or not t.Melee or t.IsSecondary then return end
 	if mem.u2[0x51D820] ~= 0 then return end   -- a spell being cast, not a blow
 	local m, e = dualWeapons(t.Player)
 	if not m then return end
-	local mul = S.OffHandMul[dwMastery(t.Player)] or 1
-	if pairedTwoHanded(t.Player) then mul = mul * S.PairedTwoHandedOffHandMul end
+	local mul = offHandMul(t.Player)
 	if mul >= 1 then return end
 	local am, ae = avgDamage(m), avgDamage(e)
 	if am + ae <= 0 then return end
