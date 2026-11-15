@@ -59,7 +59,7 @@ Id	Item id	Notes		X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y
 57	2251	Acolyte's Robe		27	79	46	90	40	112	35	94	46	112
 58	2252	Scholar's Robe		28	78	52	90	40	110	36	94	47	109
 59	2253	Magister's Robe		24	78	46	90	39	110	37	94	48	109
-60	2254	Archmage's Robe		45	76	60	98	46	107	0	0	0	0		
+60	2254	Archmage's Robe		24	78	43	90	39	110	37	94	46	109		
 61	2255	Vestments of the Archmagus		29	57	47	70	27	100	0	0	33	96		
 62	2256	Lichweave Shroud		29	57	47	70	27	100	0	0	33	96		
 
