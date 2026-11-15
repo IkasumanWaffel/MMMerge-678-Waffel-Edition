@@ -78,3 +78,29 @@ def drop_specks(spr, minsize=30):
         thin=(~key)&~ndimage.binary_opening(~key,iterations=1)
         a[small|thin]=(0,252,252)
     return Image.fromarray(a.astype('uint8'))
+
+def fill_cuff(spr, waist_row, side='right', close=5, dark=0.55, lining=4):
+    """the inside of an empty sleeve opening (the game draws the forearm from it)"""
+    a=np.asarray(spr).astype(float)
+    key=(a[...,0]<20)&(a[...,1]>230)&(a[...,2]>230)
+    m=~key; H,W=m.shape
+    ys,xs=np.where(m[:waist_row]); cx=(xs.min()+xs.max())/2; w=xs.max()-xs.min()
+    zone=np.zeros_like(m); zone[:waist_row]=True
+    if side=='right': zone[:, :int(cx+0.15*w)]=False
+    else: zone[:, int(cx-0.15*w):]=False
+    sl=m&zone
+    from scipy.spatial import ConvexHull
+    from PIL import ImageDraw
+    pts=np.argwhere(sl)[:, ::-1]
+    hull=ConvexHull(pts)
+    poly=[tuple(map(float,pts[v])) for v in hull.vertices]
+    hm=Image.new('L',(W,H),0); ImageDraw.Draw(hm).polygon(poly,fill=255)
+    closed=np.asarray(hm)>0
+    hol=closed&~m&zone
+    if hol.any():
+        med=np.median(a[sl],axis=0)
+        d=ndimage.distance_transform_edt(~sl)
+        hol=hol&(d<=lining)
+        f=dark*(0.7+0.3*np.exp(-d/3))
+        a[hol]=(med[None,:]*f[hol][:,None])
+    return Image.fromarray(np.clip(a,0,255).astype('uint8'))

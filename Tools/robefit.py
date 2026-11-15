@@ -97,7 +97,7 @@ def cut(big, base, bod, body_off, armor_off, waist, extra_torso=3, ref=None, tol
     if sh: extra[:max(0,sh[0]-2),:]=False
     M=M|extra
     # hanging side: the body's outline only, above the waist and for hang_rows below it
-    tight=Ac & dilate(Bc,2)
+    tight=dilate(Ac & dilate(Bc,5),3)
     for y in range(min(CH, wy+hang_rows)):
         lim=np.where(Ac[y])[0]
         for x in np.where(M[y] & hang_cols)[0]:
