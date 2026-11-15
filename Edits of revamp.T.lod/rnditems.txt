@@ -2254,7 +2254,7 @@ Item #	Pic File	1	2	3	4	5	6
 2250	robe1	20	15	0	0	0	0	Apprentice's Robe
 2251	robe2	0	10	15	10	0	0	Acolyte's Robe
 2252	robe3	0	0	10	15	10	0	Scholar's Robe
-2253	6leather5	0	0	0	10	15	10	Magister's Robe
+2253	robe4	0	0	0	10	15	10	Magister's Robe
 2254	7item074	0	0	0	0	10	15	Archmage's Robe
 2255	item251	0	0	0	0	0	1	Vestments of the Archmagus
 2256	item337	0	0	0	0	0	1	Lichweave Shroud
