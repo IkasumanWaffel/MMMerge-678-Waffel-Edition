@@ -1,19 +1,23 @@
 Item	Alignment	Classes	Except	Races	NotRaces	Gender	OldTag	Name
 500	NotEvil	-	-	-	-	-	-	Elsenrail
 501	NotGood	-	-	-	-	-	-	Glomenthal
+503	NotGood	-	-	-	-	-	-	Judicious Measure
 504	-	-	-	Minotaur	-	-	Minotaur	Elderaxe
 508	-	-	-	Vampire	-	-	Vampire	Foulfang
 514	-	-	-	DarkElf	-	-	Dark Elf	Glomenmail
 515	-	Knight,Paladin	-	-	-	-	Knight	Supreme Plate
 516	NotEvil	Cleric	-	-	-	-	Cleric	Eclipse
+522	NotEvil	-	-	-	-	-	-	Archangel Wings
 526	NotGood	-	-	-	-	-	-	Hell's Cleaver
-527	NotGood	-	-	-	-	-	-	Spiritslayer
+527	Evil	-	-	-	-	-	-	Spiritslayer
 529	Evil	Sorcerer	-	-	-	-	Necromancer	Blade of Mercy
 532	-	-	-	DarkElf	-	-	Dark Elf	Lightning Crossbow
 545	NotGood	-	-	-	-	-	-	Mournbringer
 550	NotEvil	-	-	-	-	-	-	Runeblade
+1305	NotGood	-	-	-	-	-	-	Corsair
 1309	NotEvil	-	-	-	Undead	-	-	Ghoulsbane
 1310	-	-	-	-	Undead	-	-	Gibbet
+1315	NotGood	-	-	-	-	-	-	Ruler's Ring
 1317	NotGood	-	-	-	-	-	Evil	Ethric's Staff
 1319	NotGood	-	-	-	-	-	Evil	Old Nick
 1323	NotEvil	-	-	-	-	-	Good	Taledon's Helm
@@ -25,7 +29,12 @@ Item	Alignment	Classes	Except	Races	NotRaces	Gender	OldTag	Name
 1336	-	-	-	Dwarf	-	-	Dwarven	Forge Gauntlets
 1337	-	-	-	-	-	Male	Male	Hero's Belt
 1338	-	-	-	-	-	Female	Female	Lady's Escort
+1343	NotGood	-	-	-	-	-	-	Villain's Blade
+1349	NotEvil	-	-	-	-	-	-	Sun Cloak
+1350	NotGood	-	-	-	-	-	-	Moon Cloak
+1352	Evil	-	-	-	-	-	-	Vampire's Cape
 2020	NotGood	-	-	-	-	-	-	Mordred
 2029	NotEvil	-	-	-	-	-	-	Arthur
-2035	NotGood	-	-	-	-	-	-	Hades
+2033	NotEvil	-	-	-	-	-	-	Igraine
+2035	Evil	-	-	-	-	-	-	Hades
 2227	NotEvil	-	-	-	Undead	-	-	Dawnbringer
