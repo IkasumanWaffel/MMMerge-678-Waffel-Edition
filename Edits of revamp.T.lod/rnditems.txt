@@ -2258,7 +2258,7 @@ Item #	Pic File	1	2	3	4	5	6
 2254	robe5	0	0	0	0	10	15	Archmage's Robe
 2255	item251	0	0	0	0	0	1	Vestments of the Archmagus
 2256	robe7	0	0	0	0	0	1	Lichweave Shroud
-2257	7item233	0	0	0	0	0	1	Nightwyrm Staff
+2257	nwyrm	0	0	0	0	0	1	Nightwyrm Staff
 								
 								
 								
