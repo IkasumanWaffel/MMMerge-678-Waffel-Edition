@@ -285,9 +285,9 @@ function GenerateMercenary(t) --RosterId, Class, Level, Skills, Items, Face, Joi
 
 	MF.PlayerAttrsClear(RosterId)
 	Char.Attrs.Race = Game.CharacterPortraits[Char.Face].Race
-	-- FIXME: link with race skill mastery
-	--Char.Attrs.Maturity = MF.DeterminePlayerMaturity(Char)
-	Char.Attrs.Maturity = 0
+	-- the maturity of a player character of the same class (MMMWE 15.11.26; was always 0):
+	-- by the class step, up to Races.MaxMaturity of Data/Tables/ModSettings.txt (2 in the Waffel Edition)
+	Char.Attrs.Maturity = MF.DeterminePlayerMaturity and MF.DeterminePlayerMaturity(Char) or 0
 	MF.SetRaceSpcAttack(RosterId, Char.Attrs.Race, false, true)
 	MF.SetRaceSpcAttack(RosterId, Char.Attrs.Race, true, true)
 

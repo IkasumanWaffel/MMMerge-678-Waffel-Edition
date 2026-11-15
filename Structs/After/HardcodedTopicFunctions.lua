@@ -549,7 +549,9 @@ function events.GameInitialized2()
 		[30] = 0,
 		[91] = 0}
 
-	function CastSpellDirect(SpellId, Skill, Mastery, Caster, Target, Flags, TargetKind)
+	-- Target: the party slot of a character target; TargetRef (MMMWE 15.11.26): the target's
+	-- object reference (index * 8 + kind: 3 a monster, 4 a character), when it isn't that character
+	function CastSpellDirect(SpellId, Skill, Mastery, Caster, Target, Flags, TargetKind, TargetRef)
 		if spells_with_inventory_screen[SpellId] then
 			return
 		end
@@ -573,8 +575,7 @@ function events.GameInitialized2()
 		mem.u2[0x51d824] = Target -- Target - party slot
 		mem.u2[0x51d828] = Flags or 0x8020
 		mem.u2[0x51d82a] = JoinSkill(Skill or 1, Mastery or 0)
-		-- FIXME: should be distinguished from Target
-		mem.u2[0x51d82c] = bit.lshift(Target or 0, 3) + (TargetKind or 4)
+		mem.u2[0x51d82c] = TargetRef or (bit.lshift(Target or 0, 3) + (TargetKind or 4))
 	end
 
 	function CastSpellScroll(SpellId)

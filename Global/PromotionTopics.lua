@@ -2241,7 +2241,10 @@ Quest{
 	CanShow = function() return Party.QBits[785] and Party.QBits[611] end,
 	CheckDone = function() return Party.QBits[532] end,
 	Undone = function()
-		-- FIXME: MM7 had item 999 here
+		-- MM7 showed NPCText 999 ("the weight needs to go in the box in the lower gatehouse")
+		-- after the weight was put into a wrong box. In the merge's Watchtower 6 (7d15.evt) the
+		-- weight is moved by the map's own variables and only QBit 532 (done) is set: neither
+		-- a wrong box nor QBit 568 can be told from here, so 1001 is the reminder
 		--if evt.ForPlayer("All").Cmp("Inventory", ..) then Message(Game.NPCText[999]) else
 		if Party.QBits[568] then
 			Message(Game.NPCText[1000])

@@ -142,9 +142,12 @@ function events.BeforeNewGameAutosave()
 	before_save_game()
 end
 
+-- the maturity a character of this class has when nothing else set it: the class step, up to
+-- Races.MaxMaturity of the mod settings (the promotions that mature a race set it themselves,
+-- PromotionTopics.lua); used for loaded characters without one and for mercenaries
 local function determine_player_maturity(player)
-	-- FIXME
-	return math.min(Game.ClassesExtra[player.Class].Step, MM.Races.MaxMaturity)
+	local ce = Game.ClassesExtra[player.Class]
+	return math.min(ce and ce.Step or 0, MM.Races.MaxMaturity or 0)
 end
 MF.DeterminePlayerMaturity = determine_player_maturity
 

@@ -1938,8 +1938,19 @@ local function SetSpellsExtraHooks()
 	add ecx, 0x1BFC
 	sub dword ptr [ecx], ebx
 	]], 0x491DD9 - 0x491DD1)
-	-- FIXME: Disable MM8Patch hook
-	asmpatch(0x491DAD, "test byte ptr [0xB21867], 1", 0x491DB4 - 0x491DAD)
+	-- Water Walk upkeep: MM8Patch hooks this instruction; the game's own one is put back, as the
+	-- code above takes over (MMMWE 15.11.26: only when it differs, and the log says so)
+	do
+		local orig = {0xF6, 0x05, 0x67, 0x18, 0xB2, 0x00, 0x01}
+		local same = true
+		for k = 1, #orig do
+			if u1[0x491DAD + k - 1] ~= orig[k] then same = false end
+		end
+		if not same then
+			MF.LogInfo("SpellsExtra: the hook at 0x491DAD (MM8Patch, Water Walk) is replaced by the game's own test")
+			asmpatch(0x491DAD, "test byte ptr [0xB21867], 1", 0x491DB4 - 0x491DAD)
+		end
+	end
 	-- Allow caster 0 / player -1 (cthscr, Revamp; merged 06.11.26)
 	mem.prot(true)
 	--   decrease sp
@@ -4532,13 +4543,20 @@ local function SetSpellsExtraHooks()
 	]], 0x42C9B4 - 0x42C9A3)
 	hook(new_code or 0x42C9A3, player_spell_var1)
 	-- Write caster, calc and write damage
-	--   FIXME: spell queue values (spell and caster) are actually signed
+	--   the queue's caster is signed: -1 is a spell without a caster (scrolls, items; MMMWE
+	--   15.11.26: it was read as 65535 and the kills went to a character that doesn't exist)
 	--   TODO: store caster somewhere in Party struct
 	asmpatch(0x42C9F3, [[
 	push eax
-	movzx eax, word ptr [ebx + 2]
+	movsx eax, word ptr [ebx + 2]
+	test eax, eax
+	js @nocaster
 	shl eax, 3
 	or eax, 4
+	jmp @caster
+	@nocaster:
+	xor eax, eax
+	@caster:
 	mov dword ptr []] .. MO.LastArmageddonCaster .. [[], eax
 	mov dword ptr []] .. MO.CalcSpellDamageCaster .. [[], eax
 	push esi

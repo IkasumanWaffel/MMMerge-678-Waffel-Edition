@@ -450,6 +450,45 @@ nop
 test eax, eax
 jg @ack
 jl @nak
+; MMMWE (15.11.26): not applicable if the character already has the condition, or a worse
+; stage of it (Poison 6/8/10, Disease 7/9/11), or sleeps while unconscious
+cmp edx, 0x12
+ja @kinds
+mov eax, dword ptr [ecx + edx*8]
+or eax, dword ptr [ecx + edx*8 + 4]
+jnz @nak
+cmp edx, 6
+jz @p1
+cmp edx, 8
+jz @p2
+cmp edx, 7
+jz @d1
+cmp edx, 9
+jz @d2
+cmp edx, 2
+jnz @kinds
+mov eax, dword ptr [ecx + 0x68]
+or eax, dword ptr [ecx + 0x6C]
+jnz @nak
+jmp @kinds
+@p1:
+mov eax, dword ptr [ecx + 0x40]
+or eax, dword ptr [ecx + 0x44]
+jnz @nak
+@p2:
+mov eax, dword ptr [ecx + 0x50]
+or eax, dword ptr [ecx + 0x54]
+jnz @nak
+jmp @kinds
+@d1:
+mov eax, dword ptr [ecx + 0x48]
+or eax, dword ptr [ecx + 0x4C]
+jnz @nak
+@d2:
+mov eax, dword ptr [ecx + 0x58]
+or eax, dword ptr [ecx + 0x5C]
+jnz @nak
+@kinds:
 cmp edx, 0xE
 jz @dead
 cmp edx, 0xF
@@ -484,7 +523,7 @@ hook(MO.ConditionApplicablePlayer + 2, function(d)
 	d.eax = t.Result
 end)
 
--- FIXME: add all conditions
+-- (15.11.26) ConditionApplicablePlayer above checks the conditions a character already has
 local applicable = StaticAlloc(8)
 -- ecx - condition
 MO.SelectConditionSlot = asmproc([[

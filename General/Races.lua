@@ -295,6 +295,10 @@ local function get_ability_spells(Skill, Mastery)
 end
 MF.GetAbilitySpells = get_ability_spells
 
+local function spellSkill(spell)
+	return math.ceil(spell / 11) + 11
+end
+
 local function get_race_ability_spells(Race, Skill, Mastery, full)
 	local spells
 	if Game.Races[Race] then
@@ -302,8 +306,10 @@ local function get_race_ability_spells(Race, Skill, Mastery, full)
 		for i = start, stop do
 			if Game.Races[Race].Spells[i] then
 				for k, v in pairs(Game.Races[Race].Spells[i]) do
-					-- FIXME: Use GetSpellSkill or smth
-					if v >= (Skill - 12) * 11 and v < (Skill - 11) * 11 then
+					-- the spell's school skill: spells 1..11 are Fire (skill 12), 12..22 Air (13) and so
+					-- on, eleven a school (MMMWE 15.11.26: the old range took the school's first spell
+					-- one too low, its last one not at all)
+					if spellSkill(v) == Skill then
 						spells = spells or {}
 						table.insert(spells, v)
 					end
