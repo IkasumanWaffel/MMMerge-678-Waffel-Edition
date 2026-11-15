@@ -152,7 +152,8 @@ P.RobeThreatMul = 0.5
 function MF.LegendaryThreatMult(pl)
 	if not MF.IsLegendary(pl, 42) then return 1 end
 	local slot = pl.ItemArmor
-	if slot > 0 and not pl.Items[slot].Broken and pl.Items[slot].Number > 0 then return 1 end
+	if slot > 0 and not pl.Items[slot].Broken and pl.Items[slot].Number > 0
+			and not (MF.IsRobe and MF.IsRobe(pl.Items[slot].Number)) then return 1 end   -- a robe counts as clothes
 	return P.RobeThreatMul
 end
 passive(SK.Stealing, Tx"Phantom", Tx"stealing from shops costs no reputation, and corpses give double gold")

@@ -55,6 +55,13 @@ Id	Item id	Notes		X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y
 53	2041	Apollo		43	81	60	97	45	110	41	98	49	112		
 54	2042	Zeus		23	73	32	91	31	104	0	88	35	113
 55	2223	Sentinel Frame		31	73	39	89	37	103	35	95	45	110		
+56	2250	Apprentice's Robe		46	73	60	97	37	103	0	0	40	110
+57	2251	Acolyte's Robe		46	73	56	91	37	103	0	0	40	110
+58	2252	Scholar's Robe		46	73	57	97	37	103	0	0	40	110
+59	2253	Magister's Robe		46	73	60	97	37	103	0	0	40	110
+60	2254	Archmage's Robe		45	76	60	98	46	107	0	0	0	0		
+61	2255	Vestments of the Archmagus		29	57	47	70	27	100	0	0	33	96		
+62	2256	Lichweave Shroud		29	57	47	70	27	100	0	0	33	96		
 
 		Helms	Complex												
 1	109	Helm	x	87	28	73	41	74	44	77	42	72	67		
@@ -68,7 +75,7 @@ Id	Item id	Notes		X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y
 9	520	Drogg's Helm	x	77	6	68	26	64	47	61	17	62	44		
 10	521	Crown of Final Dominion	x	81	0	67	-5	0	0	77	12	65	40		
 11	536	Lucky Hat		78	14	66	30	54	52	74	35	62	48		
-12	891	Horned Helm	x	77	8	69	33	74	44	62	22	62	44
+12	891	Horned Helm	x	77	8	68	30	74	44	62	22	62	44
 13	892	Conscript's Helm	x	78	8	67	29	74	44	62	22	62	47
 14	893	Full Helm	x	77	27	66	38	74	44	56	37	62	60
 15	894	Phynaxian Helm	x	79	28	67	38	74	44	56	37	62	68

@@ -11,6 +11,7 @@
 	  Alignment    NotGood (neutral and evil classes), NotEvil (good and neutral), Good, Evil
 	               (that alignment only)
 	  Classes      class families (const.ClassKind names: Knight, Paladin, Cleric, Sorcerer...)
+	               or second-promotion branches (MasterMonk, Ninja: MF.ClassBranch, 15.11.26)
 	  Except       class families the alignment rule doesn't bar (Twilight: Thief)
 	  Races        Human, Elf, DarkElf, Dwarf, Goblin, Minotaur, Troll, Vampire, Undead
 	  NotRaces     the same names: who can't wear it (the undead and the undead-slaying weapons)
@@ -48,7 +49,10 @@ local CLASS_NAMES = {
 	Thief = {Tx"Thief", Tx"Thieves"}, Barbarian = {Tx"Barbarian", Tx"Barbarians"},
 	Vampire = {Tx"Vampire", Tx"Vampires"}, Sorcerer = {Tx"Sorcerer", Tx"Sorcerers"},
 	Technician = {Tx"Technician", Tx"Technicians"}, Peasant = {Tx"Peasant", Tx"Peasants"},
+	MasterMonk = {Tx"Master Monk", Tx"Master Monks"}, Ninja = {Tx"Ninja", Tx"Ninjas"},
 }
+-- second-promotion branches usable in the Classes column (MF.ClassBranch, MMMWE_Resources.lua)
+local BRANCHES = {MasterMonk = true, Ninja = true}
 local RACE_NAMES = {
 	Human = Tx"Human", Elf = Tx"Elven", DarkElf = Tx"Dark Elf", Dwarf = Tx"Dwarven",
 	Goblin = Tx"Goblin", Minotaur = Tx"Minotaur", Troll = Tx"Troll", Vampire = Tx"Vampire",
@@ -104,7 +108,7 @@ local function load()
 					NotRaces = list(w[6]), Gender = (w[7] ~= "-" and w[7] ~= "") and w[7] or nil,
 					OldTag = (w[8] and w[8] ~= "-" and w[8] ~= "") and w[8] or nil, Name = w[9]}
 				for _, k in ipairs(r.Classes) do
-					if not const.ClassKind[k] then MF.LogWarning("[ArtifactRestrictions] item %d: unknown class %s", id, k) end
+					if not const.ClassKind[k] and not BRANCHES[k] then MF.LogWarning("[ArtifactRestrictions] item %d: unknown class %s", id, k) end
 				end
 				for _, k in ipairs(r.Except) do
 					if not const.ClassKind[k] then MF.LogWarning("[ArtifactRestrictions] item %d: unknown class %s", id, k) end
@@ -155,9 +159,13 @@ local function raceIs(pl, name)
 	return r.Kind == const.RaceKind[name]
 end
 
-local function inKinds(kind, names)
+local function inKinds(kind, names, pl)
 	for _, n in ipairs(names) do
-		if const.ClassKind[n] == kind then return true end
+		if BRANCHES[n] then
+			if pl and MF.ClassBranch and MF.ClassBranch(pl) == n then return true end
+		elseif const.ClassKind[n] == kind then
+			return true
+		end
 	end
 	return false
 end
@@ -165,9 +173,9 @@ end
 -- true if the character can wear the item by its row
 local function allowed(pl, r)
 	local kind = classKind(pl)
-	if #r.Classes > 0 and not inKinds(kind, r.Classes) then return false end
+	if #r.Classes > 0 and not inKinds(kind, r.Classes, pl) then return false end
 	local a = r.Alignment
-	if a and not (#r.Except > 0 and inKinds(kind, r.Except)) then
+	if a and not (#r.Except > 0 and inKinds(kind, r.Except, pl)) then
 		local al = alignment(pl)
 		if a == "NotGood" and al == AL.Good then return false end
 		if a == "NotEvil" and al == AL.Evil then return false end

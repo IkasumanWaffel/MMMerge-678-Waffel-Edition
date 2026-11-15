@@ -118,175 +118,187 @@ You lose the bet of %d gold	Ставка в %d золота проиграна
 # General/MMMWE_ArmorEffects.lua:136
 dodge %+.1f%%, recovery %+d, shrug off %.1f%%, plate reduction %.1f	уклонение %+.1f%%, восстановление %+d, стойкость %.1f%%, снижение латами %.1f
 
-# General/MMMWE_ArtifactRestrictions.lua:43, General/MMMWE_Resources.lua:458
+# General/MMMWE_ArtifactRestrictions.lua:44, General/MMMWE_Resources.lua:458
 Archer	Лучник
 
-# General/MMMWE_ArtifactRestrictions.lua:43
+# General/MMMWE_ArtifactRestrictions.lua:44
 Archers	Лучники
 
-# General/MMMWE_ArtifactRestrictions.lua:43
+# General/MMMWE_ArtifactRestrictions.lua:44
 Cleric	Клирик
 
-# General/MMMWE_ArtifactRestrictions.lua:43
+# General/MMMWE_ArtifactRestrictions.lua:44
 Clerics	Клирики
 
-# General/MMMWE_ArtifactRestrictions.lua:44
+# General/MMMWE_ArtifactRestrictions.lua:45
 Deerslayer	Зверобой
 
-# General/MMMWE_ArtifactRestrictions.lua:44
+# General/MMMWE_ArtifactRestrictions.lua:45
 Deerslayers	Зверобои
 
-# General/MMMWE_ArtifactRestrictions.lua:44, General/MMMWE_Resources.lua:452
+# General/MMMWE_ArtifactRestrictions.lua:45, General/MMMWE_Resources.lua:452
 Dragon	Дракон
 
-# General/MMMWE_ArtifactRestrictions.lua:44
+# General/MMMWE_ArtifactRestrictions.lua:45
 Dragons	Драконы
 
-# General/MMMWE_ArtifactRestrictions.lua:45
+# General/MMMWE_ArtifactRestrictions.lua:46
 Druid	Друид
 
-# General/MMMWE_ArtifactRestrictions.lua:45
+# General/MMMWE_ArtifactRestrictions.lua:46
 Druids	Друиды
 
-# General/MMMWE_ArtifactRestrictions.lua:45, General/MMMWE_Resources.lua:185, General/MMMWE_Resources.lua:190, General/MMMWE_Resources.lua:447
+# General/MMMWE_ArtifactRestrictions.lua:46, General/MMMWE_Resources.lua:185, General/MMMWE_Resources.lua:190, General/MMMWE_Resources.lua:447
 Knight	Рыцарь
 
-# General/MMMWE_ArtifactRestrictions.lua:45
+# General/MMMWE_ArtifactRestrictions.lua:46
 Knights	Рыцари
 
-# General/MMMWE_ArtifactRestrictions.lua:46, General/MMMWE_ArtifactRestrictions.lua:54, General/MMMWE_Resources.lua:318, General/MMMWE_Resources.lua:462
+# General/MMMWE_ArtifactRestrictions.lua:47, General/MMMWE_ArtifactRestrictions.lua:58, General/MMMWE_Resources.lua:318, General/MMMWE_Resources.lua:462
 Minotaur	Минотавр
 
-# General/MMMWE_ArtifactRestrictions.lua:46
+# General/MMMWE_ArtifactRestrictions.lua:47
 Minotaurs	Минотавры
 
-# General/MMMWE_ArtifactRestrictions.lua:46, General/MMMWE_Resources.lua:212, General/MMMWE_Resources.lua:217, General/MMMWE_Resources.lua:450
+# General/MMMWE_ArtifactRestrictions.lua:47, General/MMMWE_Resources.lua:212, General/MMMWE_Resources.lua:217, General/MMMWE_Resources.lua:450
 Monk	Монах
 
-# General/MMMWE_ArtifactRestrictions.lua:46
+# General/MMMWE_ArtifactRestrictions.lua:47
 Monks	Монахи
 
-# General/MMMWE_ArtifactRestrictions.lua:47, General/MMMWE_Resources.lua:449
+# General/MMMWE_ArtifactRestrictions.lua:48, General/MMMWE_Resources.lua:449
 Paladin	Паладин
 
-# General/MMMWE_ArtifactRestrictions.lua:47
+# General/MMMWE_ArtifactRestrictions.lua:48
 Paladins	Паладины
 
-# General/MMMWE_ArtifactRestrictions.lua:47, General/MMMWE_Resources.lua:460
+# General/MMMWE_ArtifactRestrictions.lua:48, General/MMMWE_Resources.lua:460
 Ranger	Следопыт
 
-# General/MMMWE_ArtifactRestrictions.lua:47
+# General/MMMWE_ArtifactRestrictions.lua:48
 Rangers	Следопыты
 
-# General/MMMWE_ArtifactRestrictions.lua:48, General/MMMWE_Resources.lua:244, General/MMMWE_Resources.lua:455
+# General/MMMWE_ArtifactRestrictions.lua:49, General/MMMWE_Resources.lua:244, General/MMMWE_Resources.lua:455
 Thief	Вор
 
-# General/MMMWE_ArtifactRestrictions.lua:48
+# General/MMMWE_ArtifactRestrictions.lua:49
 Thieves	Воры
 
-# General/MMMWE_ArtifactRestrictions.lua:48, General/MMMWE_Resources.lua:163, General/MMMWE_Resources.lua:445
+# General/MMMWE_ArtifactRestrictions.lua:49, General/MMMWE_Resources.lua:163, General/MMMWE_Resources.lua:445
 Barbarian	Варвар
 
-# General/MMMWE_ArtifactRestrictions.lua:48
+# General/MMMWE_ArtifactRestrictions.lua:49
 Barbarians	Варвары
 
-# General/MMMWE_ArtifactRestrictions.lua:49, General/MMMWE_ArtifactRestrictions.lua:54
+# General/MMMWE_ArtifactRestrictions.lua:50, General/MMMWE_ArtifactRestrictions.lua:58
 Vampire	Вампир
 
-# General/MMMWE_ArtifactRestrictions.lua:49
+# General/MMMWE_ArtifactRestrictions.lua:50
 Vampires	Вампиры
 
-# General/MMMWE_ArtifactRestrictions.lua:49
+# General/MMMWE_ArtifactRestrictions.lua:50
 Sorcerer	Чародей
 
-# General/MMMWE_ArtifactRestrictions.lua:49
+# General/MMMWE_ArtifactRestrictions.lua:50
 Sorcerers	Чародеи
 
-# General/MMMWE_ArtifactRestrictions.lua:50, General/MMMWE_Resources.lua:261, General/MMMWE_Resources.lua:266, General/MMMWE_Resources.lua:453
+# General/MMMWE_ArtifactRestrictions.lua:51, General/MMMWE_Resources.lua:261, General/MMMWE_Resources.lua:266, General/MMMWE_Resources.lua:453
 Technician	Техник
 
-# General/MMMWE_ArtifactRestrictions.lua:50
+# General/MMMWE_ArtifactRestrictions.lua:51
 Technicians	Техники
 
-# General/MMMWE_ArtifactRestrictions.lua:50
+# General/MMMWE_ArtifactRestrictions.lua:51
 Peasant	Крестьянин
 
-# General/MMMWE_ArtifactRestrictions.lua:50
+# General/MMMWE_ArtifactRestrictions.lua:51
 Peasants	Крестьяне
 
-# General/MMMWE_ArtifactRestrictions.lua:53
+# General/MMMWE_ArtifactRestrictions.lua:52, General/MMMWE_Resources.lua:227
+Master Monk	Мастер-монах
+
+# General/MMMWE_ArtifactRestrictions.lua:52
+Master Monks	Мастера-монахи
+
+# General/MMMWE_ArtifactRestrictions.lua:52, General/MMMWE_Resources.lua:232, General/MMMWE_Resources.lua:237
+Ninja	Ниндзя
+
+# General/MMMWE_ArtifactRestrictions.lua:52
+Ninjas	Ниндзя
+
+# General/MMMWE_ArtifactRestrictions.lua:57
 Human	Человек
 
-# General/MMMWE_ArtifactRestrictions.lua:53
+# General/MMMWE_ArtifactRestrictions.lua:57
 Elven	Эльф
 
-# General/MMMWE_ArtifactRestrictions.lua:53, General/MMMWE_CustomClasses.lua:99, General/MMMWE_Resources.lua:459
+# General/MMMWE_ArtifactRestrictions.lua:57, General/MMMWE_CustomClasses.lua:99, General/MMMWE_Resources.lua:459
 Dark Elf	Тёмный эльф
 
-# General/MMMWE_ArtifactRestrictions.lua:53
+# General/MMMWE_ArtifactRestrictions.lua:57
 Dwarven	Гном
 
-# General/MMMWE_ArtifactRestrictions.lua:54
+# General/MMMWE_ArtifactRestrictions.lua:58
 Goblin	Гоблин
 
-# General/MMMWE_ArtifactRestrictions.lua:54
+# General/MMMWE_ArtifactRestrictions.lua:58
 Troll	Тролль
 
-# General/MMMWE_ArtifactRestrictions.lua:55
+# General/MMMWE_ArtifactRestrictions.lua:59
 Undead	Нежить
 
-# General/MMMWE_ArtifactRestrictions.lua:58
+# General/MMMWE_ArtifactRestrictions.lua:62
 Not for the undead	Не для нежити
 
-# General/MMMWE_ArtifactRestrictions.lua:58
+# General/MMMWE_ArtifactRestrictions.lua:62
 Not for humans	Не для людей
 
-# General/MMMWE_ArtifactRestrictions.lua:58
+# General/MMMWE_ArtifactRestrictions.lua:62
 Not for elves	Не для эльфов
 
-# General/MMMWE_ArtifactRestrictions.lua:59
+# General/MMMWE_ArtifactRestrictions.lua:63
 Not for dark elves	Не для тёмных эльфов
 
-# General/MMMWE_ArtifactRestrictions.lua:59
+# General/MMMWE_ArtifactRestrictions.lua:63
 Not for dwarves	Не для гномов
 
-# General/MMMWE_ArtifactRestrictions.lua:59
+# General/MMMWE_ArtifactRestrictions.lua:63
 Not for goblins	Не для гоблинов
 
-# General/MMMWE_ArtifactRestrictions.lua:60
+# General/MMMWE_ArtifactRestrictions.lua:64
 Not for minotaurs	Не для минотавров
 
-# General/MMMWE_ArtifactRestrictions.lua:60
+# General/MMMWE_ArtifactRestrictions.lua:64
 Not for trolls	Не для троллей
 
-# General/MMMWE_ArtifactRestrictions.lua:60
+# General/MMMWE_ArtifactRestrictions.lua:64
 Not for vampires	Не для вампиров
 
-# General/MMMWE_ArtifactRestrictions.lua:63
+# General/MMMWE_ArtifactRestrictions.lua:67
 Not for the good	Не для добрых
 
-# General/MMMWE_ArtifactRestrictions.lua:63
+# General/MMMWE_ArtifactRestrictions.lua:67
 Not for the evil	Не для злых
 
-# General/MMMWE_ArtifactRestrictions.lua:63
+# General/MMMWE_ArtifactRestrictions.lua:67
 Good	Только для добрых
 
-# General/MMMWE_ArtifactRestrictions.lua:64
+# General/MMMWE_ArtifactRestrictions.lua:68
 Evil	Только для злых
 
-# General/MMMWE_ArtifactRestrictions.lua:67
+# General/MMMWE_ArtifactRestrictions.lua:71
 Male	Мужчина
 
-# General/MMMWE_ArtifactRestrictions.lua:67
+# General/MMMWE_ArtifactRestrictions.lua:71
 Female	Женщина
 
-# General/MMMWE_ArtifactRestrictions.lua:209
+# General/MMMWE_ArtifactRestrictions.lua:217
  or 	 или 
 
-# General/MMMWE_ArtifactRestrictions.lua:223
+# General/MMMWE_ArtifactRestrictions.lua:231
  (%s excepted)	 (кроме: %s)
 
-# General/MMMWE_ArtifactRestrictions.lua:301
+# General/MMMWE_ArtifactRestrictions.lua:309
  The undead suffer no loss of resistance.	 Нежить не теряет сопротивлений.
 
 # General/MMMWE_Blasters.lua:76
@@ -995,7 +1007,7 @@ Robe	Мантия
 Fighting with a weapon in each hand. Any weapon in the off hand needs this skill (the Blaster skill still rules a second blaster pistol). With a weapon in each hand the skill adds to Attack: -10 plus 1 per point of skill. Below Master the off hand hits weaker and the attacks are slower; a Master wields two weapons as one would a single weapon; a Grand Master can hold a two-handed weapon in each hand.	Бой с оружием в каждой руке. Любое оружие в левой руке требует этого навыка (второй бластерный пистолет по-прежнему зависит от навыка Бластер). С оружием в каждой руке навык прибавляет к Атаке: -10 плюс 1 за очко навыка. Ниже Мастера левая рука бьёт слабее, а атаки медленнее; Мастер владеет двумя клинками так же, как одним; Грандмастер может держать двуручное оружие в каждой руке.
 
 # General/MMMWE_ExtraSkills.lua:58
-The art of fighting and casting in robes and plain clothes instead of armor. Works while no body armor is worn (and in robes, when there are robes).	Искусство сражаться и колдовать в мантии и простой одежде вместо доспехов. Действует, пока не надета броня (и в мантиях, если они есть).
+The art of fighting and casting in robes and plain clothes instead of armor. Works while no body armor is worn, or a robe; robes can only be worn with this skill. Robes give little armor of their own but carry spell points and the casters' stats.	Искусство сражаться и колдовать в мантии и простой одежде вместо доспехов. Действует, пока не надета броня или надета мантия; мантии можно носить только с этим навыком. Мантии дают мало брони, зато несут ману и характеристики заклинателей.
 
 # General/MMMWE_ExtraSkills.lua:59
 The craft of binding spells into wands, a caster's sidearm for when the spell points run out. Wands cast their spells at the Enchanting skill and rank of the one who uses them (the game's own wands: skill 8, Novice). A gem right-clicked on a wand refills it; a gem right-clicked on a blank wand sets it in, and a spell scroll right-clicked on a blank wand with a gem makes a wand of that spell: the dearer the gem, the more charges. Wands of spells cast on characters (healing, cures, flight and the like) are used by clicking a portrait with the wand.	Искусство заключать заклинания в жезлы — запасное оружие заклинателя на случай, когда кончилась мана. Жезлы творят свои заклинания с навыком и рангом Зачарования того, кто ими пользуется (жезлы самой игры: навык 8, Новичок). Самоцвет, щёлкнутый правой кнопкой по жезлу, заряжает его; самоцвет, щёлкнутый по заготовке жезла, вставляется в неё, а свиток заклинания, щёлкнутый по заготовке с самоцветом, делает жезл этого заклинания: чем дороже самоцвет, тем больше зарядов. Жезлами заклинаний для персонажей (лечение, исцеления, полёт и подобное) пользуются, щёлкая жезлом по портрету.
@@ -1004,7 +1016,7 @@ The craft of binding spells into wands, a caster's sidearm for when the spell po
 Weapons of any kind in the off hand. Off-hand damage halved, recovery +20%	Любое оружие в левой руке. Урон левой рукой вдвое меньше, восстановление +20%
 
 # General/MMMWE_ExtraSkills.lua:63
-+1 AC per 2 skill points	+1 КБ за 2 очка навыка
++1 AC per skill point (Master: 1.5, Grand Master: 2)	+1 КБ за очко навыка (Мастер: 1,5, Грандмастер: 2)
 
 # General/MMMWE_ExtraSkills.lua:64
 Wands cast at the Enchanting skill (at least 8), Novice rank	Жезлы творят заклинания с навыком Зачарования (не меньше 8), ранг Новичка
@@ -1537,46 +1549,46 @@ Living Wands	Живые жезлы
 # General/MMMWE_LegendaryPassives.lua:148
 the party's wands regain a charge every hour, up to their most	жезлы отряда восстанавливают по заряду каждый час, до наибольшего числа
 
-# General/MMMWE_LegendaryPassives.lua:158
+# General/MMMWE_LegendaryPassives.lua:159
 Phantom	Фантом
 
-# General/MMMWE_LegendaryPassives.lua:158
+# General/MMMWE_LegendaryPassives.lua:159
 stealing from shops costs no reputation, and corpses give double gold	кражи в лавках не портят репутацию, и с тел выпадает вдвое больше золота
 
-# General/MMMWE_LegendaryPassives.lua:159
+# General/MMMWE_LegendaryPassives.lua:160
 Philosopher's Stone	Философский камень
 
-# General/MMMWE_LegendaryPassives.lua:159
+# General/MMMWE_LegendaryPassives.lua:160
 potions brewed from reagents are 50% stronger, and the party's potions have twice the limits: up to 24 hours and twice the most power (permanent potions excepted)	зелья из реагентов на 50% сильнее, а у зелий отряда вдвое выше пределы: до 24 часов и вдвое большая наибольшая сила (кроме зелий с постоянным действием)
 
-# General/MMMWE_LegendaryPassives.lua:160
+# General/MMMWE_LegendaryPassives.lua:161
 Sage	Мудрец
 
-# General/MMMWE_LegendaryPassives.lua:160
+# General/MMMWE_LegendaryPassives.lua:161
 the whole party gains 10% more experience	весь отряд получает на 10% больше опыта
 
-# General/MMMWE_LegendaryPassives.lua:550
+# General/MMMWE_LegendaryPassives.lua:551
 %s disarms the trap	%s обезвреживает ловушку
 
-# General/MMMWE_LegendaryPassives.lua:550
+# General/MMMWE_LegendaryPassives.lua:551
 %s sidesteps the trap	%s уходит от ловушки
 
-# General/MMMWE_LegendaryPassives.lua:584
+# General/MMMWE_LegendaryPassives.lua:585
 %s evades the attack	%s уклоняется от атаки
 
-# General/MMMWE_LegendaryPassives.lua:587
+# General/MMMWE_LegendaryPassives.lua:588
 %s blocks it with the shield	%s отражает щитом
 
-# General/MMMWE_LegendaryPassives.lua:591
+# General/MMMWE_LegendaryPassives.lua:592
 %s slips aside	%s ускользает в сторону
 
-# General/MMMWE_LegendaryPassives.lua:596
+# General/MMMWE_LegendaryPassives.lua:597
 %s parries and strikes back!	%s парирует и бьёт в ответ!
 
-# General/MMMWE_LegendaryPassives.lua:688
+# General/MMMWE_LegendaryPassives.lua:689
 %s cleaves through!	%s рассекает насквозь!
 
-# General/MMMWE_LegendaryPassives.lua:723
+# General/MMMWE_LegendaryPassives.lua:724
 %s refuses to fall!	%s не желает падать!
 
 # General/MMMWE_Main.lua:2984 plural, English plural: Holds %d items
@@ -1717,7 +1729,7 @@ Tech mastery (%d/3) is insufficient to use this function	Владение техникой (%d/3
 # General/MMMWE_Main.lua:4063
 Flight mode activated	Режим полёта включён
 
-# General/MMMWE_MonkBranches.lua:148
+# General/MMMWE_MonkBranches.lua:151
 %s seizes the opening!	%s пользуется брешью в защите!
 
 # General/MMMWE_MonsterAbilities.lua:51
@@ -2117,13 +2129,10 @@ Recovery of one attack	Восстановление как после одной атаки
 Iron Body	Железное тело
 
 # General/MMMWE_Resources.lua:226
-The monk hardens his body against blows: less physical damage taken for a while. Master Monk, always: Diamond Body (immune to the poison and disease of monsters' attacks, +1 to Fire, Air, Water, Earth, Mind, Body and Spirit resistance per 2 points of Meditation) and Ki strikes (bare-handed blows add 1% of their damage per point of Unarmed, at most 25%, as the element of Fire, Air, Water and Earth the target resists least).	Монах закаляет тело против ударов: на время получает меньше физического урона. Мастер-монах, всегда: Алмазное тело (иммунитет к яду и болезням от атак монстров, +1 к сопротивлению Огню, Воздуху, Воде, Земле, Разуму, Телу и Духу за 2 очка Медитации) и удары Ци (удары голыми руками добавляют 1% своего урона за очко Рукопашного боя, не больше 25%, стихией Огня, Воздуха, Воды или Земли — той, которой цель сопротивляется хуже всего).
+The monk hardens his body against blows: less physical damage taken for a while. Master Monk, always: Diamond Body (immune to the poison and disease of monsters' attacks, +1 to Fire, Air, Water, Earth, Mind, Body and Spirit resistance per 2 points of Meditation) and Ki strikes (bare-handed blows add 1% of their damage per point of Unarmed, at most 25%, as Light damage).	Монах закаляет тело против ударов: на время получает меньше физического урона. Мастер-монах, всегда: Алмазное тело (иммунитет к яду и болезням от атак монстров, +1 к сопротивлению Огню, Воздуху, Воде, Земле, Разуму, Телу и Духу за 2 очка Медитации) и удары Ци (удары голыми руками добавляют 1% своего урона за очко Рукопашного боя, не больше 25%, уроном Светом).
 
 # General/MMMWE_Resources.lua:227
 -20% physical damage taken	-20% получаемого физического урона
-
-# General/MMMWE_Resources.lua:227
-Master Monk	Мастер-монах
 
 # General/MMMWE_Resources.lua:227, General/MMMWE_Resources.lua:323
 Lasts 5 minutes	Длится 5 минут
@@ -2132,13 +2141,10 @@ Lasts 5 minutes	Длится 5 минут
 Vanish	Исчезновение
 
 # General/MMMWE_Resources.lua:231
-The ninja slips out of sight: monsters lose track of him and attack the others, until he strikes again. His first blow out of hiding tries to stun the target. Ninja, always: with Dodging he can dodge area spells (at half his dodge chance), and bare-handed he may follow up a party member's melee hit with a blow of his own (0.5% per point of Unarmed, at most 25%, 60% damage).	Ниндзя скрывается из виду: монстры теряют его и нападают на других, пока он снова не ударит. Его первый удар из укрытия пытается оглушить цель. Ниндзя, всегда: с Уклонением он может уклоняться от заклинаний по площади (с половиной своего шанса уклонения), а голыми руками может поддержать удар товарища в ближнем бою своим ударом (0,5% за очко Рукопашного боя, не больше 25%, 60% урона).
+The ninja slips out of sight: monsters lose track of him and attack the others, until he strikes again. His first blow out of hiding tries to stun the target. Ninja, always: with Dodging he can dodge area spells (at half his dodge chance), bare-handed he may follow up a party member's melee hit with a blow of his own (0.5% per point of Unarmed, at most 25%, 60% damage), and Ki strikes (bare-handed blows add 1% of their damage per point of Unarmed, at most 25%, as Dark damage).	Ниндзя скрывается из виду: монстры теряют его и нападают на других, пока он снова не ударит. Его первый удар из укрытия пытается оглушить цель. Ниндзя, всегда: с Уклонением он может уклоняться от заклинаний по площади (с половиной своего шанса уклонения), голыми руками может поддержать удар товарища в ближнем бою своим ударом (0,5% за очко Рукопашного боя, не больше 25%, 60% урона), и удары Ци (удары голыми руками добавляют 1% своего урона за очко Рукопашного боя, не больше 25%, уроном Тьмой).
 
 # General/MMMWE_Resources.lua:232
 Monsters don't pick the ninja as their target	Монстры не выбирают ниндзя целью
-
-# General/MMMWE_Resources.lua:232, General/MMMWE_Resources.lua:237
-Ninja	Ниндзя
 
 # General/MMMWE_Resources.lua:232
 Lasts 2 minutes; ends when the ninja strikes, with a stunning blow	Длится 2 минуты; заканчивается, когда ниндзя бьёт, — оглушающим ударом
@@ -3212,6 +3218,10 @@ The %s path in %s costs %d gold. Come back when you have it.	Путь «%s» в навыке 
 %s is now %s in %s.%s	%s теперь — %s в навыке %s.%s
 
 # no longer used
+The art of fighting and casting in robes and plain clothes instead of armor. Works while no body armor is worn (and in robes, when there are robes).	Искусство сражаться и колдовать в мантии и простой одежде вместо доспехов. Действует, пока не надета броня (и в мантиях, если они есть).
++1 AC per 2 skill points	+1 КБ за 2 очка навыка
+The monk hardens his body against blows: less physical damage taken for a while. Master Monk, always: Diamond Body (immune to the poison and disease of monsters' attacks, +1 to Fire, Air, Water, Earth, Mind, Body and Spirit resistance per 2 points of Meditation) and Ki strikes (bare-handed blows add 1% of their damage per point of Unarmed, at most 25%, as the element of Fire, Air, Water and Earth the target resists least).	Монах закаляет тело против ударов: на время получает меньше физического урона. Мастер-монах, всегда: Алмазное тело (иммунитет к яду и болезням от атак монстров, +1 к сопротивлению Огню, Воздуху, Воде, Земле, Разуму, Телу и Духу за 2 очка Медитации) и удары Ци (удары голыми руками добавляют 1% своего урона за очко Рукопашного боя, не больше 25%, стихией Огня, Воздуха, Воды или Земли — той, которой цель сопротивляется хуже всего).
+The ninja slips out of sight: monsters lose track of him and attack the others, until he strikes again. His first blow out of hiding tries to stun the target. Ninja, always: with Dodging he can dodge area spells (at half his dodge chance), and bare-handed he may follow up a party member's melee hit with a blow of his own (0.5% per point of Unarmed, at most 25%, 60% damage).	Ниндзя скрывается из виду: монстры теряют его и нападают на других, пока он снова не ударит. Его первый удар из укрытия пытается оглушить цель. Ниндзя, всегда: с Уклонением он может уклоняться от заклинаний по площади (с половиной своего шанса уклонения), а голыми руками может поддержать удар товарища в ближнем бою своим ударом (0,5% за очко Рукопашного боя, не больше 25%, 60% урона).
 (the first party death deletes all saves)	(первая гибель отряда удаляет все сохранения)
 All save files 	Все файлы сохранений 
 Dual-Wield and Robe are learned in houses, not at the start	Парное оружие и Мантии изучаются в домах, а не в начале игры

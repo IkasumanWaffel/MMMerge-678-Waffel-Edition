@@ -15,8 +15,9 @@
 	    Master, Grand Master: no penalties
 	    A two-handed weapon in each hand (Grand Master): off hand 75%, recovery +20%; none
 	      for a Legendary Dual-Wield
-	Robe (42), while no body armor is worn (robe items will count too):
-	    Novice: +1 AC per 2 skill points
+	Robe (42), while no body armor is worn or a robe is (15.11.26: robes, items 2250-2256,
+	  Items.txt Skill Group Misc, ItemSubtypes 42; wearing one needs the Robe skill):
+	    Novice: +1 AC per skill point (Master 1.5, Grand Master 2; it was 1 per 2 points)
 	    Expert: spell recovery 1% faster per skill point
 	    Master: spells cost 10% less SP
 	    Grand Master: +1 to every magic resistance per skill point
@@ -42,7 +43,7 @@ local S = {
 	-- Legendary Dual-Wield (MMMWE_LegendaryPassives.lua)
 	PairedTwoHandedOffHandMul = 0.75,
 	PairedTwoHandedDelayMul   = 1.2,
-	RobeACPer  = 0.5,         -- AC per skill point (Novice+)
+	RobeACPer  = {[0] = 0, 1, 1, 1.5, 2},   -- AC per skill point by rank (15.11.26; was 0.5)
 	RobeRecoveryPer = 0.01,   -- spell recovery per point (Expert+)
 	RobeSPMul  = 0.9,         -- Master+
 	RobeResPer = 1,           -- resistances per point (Grand Master)
@@ -56,11 +57,29 @@ local function skill(pl, id)
 	return lvl or 0, mas or 0
 end
 
+-- robes (15.11.26): body armor of the Robe skill, worn as clothes
+local ROBES = {[2250] = 1, [2251] = 2, [2252] = 3, [2253] = 4, [2254] = 5, [2255] = 6, [2256] = 7}
+MF.Robes = ROBES
+function MF.IsRobe(num) return ROBES[num] ~= nil end
+
 local function itemNum(pl, slot)
 	if slot <= 0 then return end
 	local it = pl.Items[slot]
 	if it.Number <= 0 or it.Broken then return end
 	return it.Number
+end
+
+-- no body armor, or a robe: the Robe skill works
+function MF.RobeClothed(pl)
+	local num = itemNum(pl, pl.ItemArmor)
+	return not num or ROBES[num] ~= nil
+end
+
+-- a robe needs the Robe skill (ItemsExtra.txt EquipReq "1" lets everyone else through)
+function events.ItemEquipRequirement(t)
+	if t.Req ~= 1 or not t.Player or not ROBES[t.ItemId] then return end
+	local _, mas = skill(t.Player, ROBE)
+	t.Result = mas >= 1
 end
 
 local function isWeapon(num)
@@ -168,8 +187,8 @@ function events.CalcStatBonusBySkills(t)
 		end
 	elseif t.Stat == const.Stats.ArmorClass then
 		local lvl, mas = skill(pl, ROBE)
-		if mas >= 1 and not itemNum(pl, pl.ItemArmor) then
-			t.Result = t.Result + floor(lvl * S.RobeACPer)
+		if mas >= 1 and MF.RobeClothed(pl) then
+			t.Result = t.Result + floor(lvl * (S.RobeACPer[mas] or 1))
 		end
 	else
 		local res = {[const.Stats.FireResistance] = 1, [const.Stats.AirResistance] = 1,
@@ -178,7 +197,7 @@ function events.CalcStatBonusBySkills(t)
 			[const.Stats.SpiritResistance or -1] = 1}
 		if res[t.Stat] then
 			local lvl, mas = skill(pl, ROBE)
-			if mas >= 4 and not itemNum(pl, pl.ItemArmor) then
+			if mas >= 4 and MF.RobeClothed(pl) then
 				t.Result = t.Result + floor(lvl * S.RobeResPer)
 			end
 		end
@@ -238,7 +257,7 @@ end
 function events.SpellCostRecovery(t)
 	if t.Spell >= 133 then return end
 	local pl = Party[max(0, t.Caster - 35)]   -- as SpellsExtra.lua finds the caster
-	if not pl or itemNum(pl, pl.ItemArmor) then return end
+	if not pl or not MF.RobeClothed(pl) then return end
 	local lvl, mas = skill(pl, ROBE)
 	if mas >= 2 then
 		t.Recovery = floor(t.Recovery * max(0.5, 1 - lvl * S.RobeRecoveryPer) + 0.5)

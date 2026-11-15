@@ -1143,6 +1143,25 @@ GetBonusList(2211).Stats = {	[const.Stats.Speed] = 20}
 -- Mountain's Heart (relic)
 GetBonusList(2212).Stats = {	[const.Stats.Might] = 40, [const.Stats.Endurance] = 40, [const.Stats.EarthResistance] = 30,
 								[const.Stats.Speed] = -20, [const.Stats.Accuracy] = -20}
+-- Robes (15.11.26; the Robe skill and the wearing rule: MMMWE_ExtraSkillsEffects.lua)
+do
+	local S = const.Stats
+	local function res(v)
+		return {[S.FireResistance] = v, [S.AirResistance] = v, [S.WaterResistance] = v,
+			[S.EarthResistance] = v, [S.MindResistance] = v, [S.BodyResistance] = v,
+			[S.SpiritResistance] = v}
+	end
+	GetBonusList(2250).Stats = {[S.SP] = 5}                                                    -- Apprentice's Robe
+	GetBonusList(2251).Stats = {[S.SP] = 10}                                                   -- Acolyte's Robe
+	GetBonusList(2252).Stats = {[S.SP] = 15, [S.Intellect] = 5, [S.Personality] = 5}           -- Scholar's Robe
+	GetBonusList(2253).Stats = {[S.SP] = 20, [S.Intellect] = 10, [S.Personality] = 10}         -- Magister's Robe
+	local t = res(10); t[S.SP], t[S.Intellect], t[S.Personality] = 30, 15, 15
+	GetBonusList(2254).Stats = t                                                               -- Archmage's Robe
+	t = res(20); t[S.SP], t[S.Intellect], t[S.Personality] = 50, 25, 25
+	GetBonusList(2255).Stats = t                                                               -- Vestments of the Archmagus (artifact)
+	GetBonusList(2256).Stats = {[S.SP] = 80, [S.Intellect] = 40, [S.Personality] = 40,        -- Lichweave Shroud (relic)
+		[S.DarkResistance] = 40, [S.Endurance] = -40, [S.LightResistance] = -30}
+end
 -- Warhammers and the Warscythe of 07.11.26 (their on-hit effects are at the end)
 -- Rimefall
 GetBonusList(2225).Stats = {	[const.Stats.Endurance] = 25, [const.Stats.WaterResistance] = 30}

@@ -19,7 +19,7 @@
 	Artifacts and relics (bonuses in ExtraArtifacts.lua): Fists of the Four Winds, Palms of
 	Serenity, Shadowgrip (artifacts), Mountain's Heart (relic).
 
-	MF.QueueElementalHit(pi, mi, dmg, kind) is also used by the Master Monk's Ki strikes
+	MF.QueueElementalHit(pi, mi, dmg, kind) is also used by the monks' Ki strikes
 	(MMMWE_MonkBranches.lua).
 --]]
 
@@ -45,7 +45,7 @@ local CESTUS = {
 	[2207] = {},                                          -- Mithril Cestus
 	[2208] = {Kind = D.Fire,  Dice = {2, 6}},             -- Dragonbone Cestus
 	[2209] = {Kind = "least", Dice = {2, 6}},             -- Fists of the Four Winds (artifact)
-	[2210] = {Kind = D.Mind,  Dice = {2, 6}},             -- Palms of Serenity (artifact)
+	[2210] = {Kind = D.Light, Dice = {2, 6}},             -- Palms of Serenity (artifact; Light since 15.11.26, was Mind)
 	[2211] = {Kind = D.Dark,  Dice = {2, 6}},             -- Shadowgrip (artifact)
 	[2212] = {Kind = D.Earth, Dice = {3, 6}},             -- Mountain's Heart (relic)
 	[2215] = {Kind = D.Energy, Dice = {2, 8}},            -- Servo Gauntlets (MMMWE_AncientArtifacts.lua)

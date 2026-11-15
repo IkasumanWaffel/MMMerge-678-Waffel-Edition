@@ -41,3 +41,4 @@ Id	Name	MainSkill	TwoHand	Right	Left	Missile	Armor	Helm	Belt	Cloak	Gauntlets	Boo
 39	Heavy Boots	-1										x
 40	Ring	-1											x
 41	Amulet	-1												x
+42	Robe	-1					x

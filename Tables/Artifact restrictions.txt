@@ -38,3 +38,5 @@ Item	Alignment	Classes	Except	Races	NotRaces	Gender	OldTag	Name
 2033	NotEvil	-	-	-	-	-	-	Igraine
 2035	Evil	-	-	-	-	-	-	Hades
 2227	NotEvil	-	-	-	Undead	-	-	Dawnbringer
+2210	-	MasterMonk	-	-	-	-	-	Palms of Serenity
+2211	-	Ninja	-	-	-	-	-	Shadowgrip

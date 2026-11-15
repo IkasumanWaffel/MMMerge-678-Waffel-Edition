@@ -11,16 +11,16 @@
 	  Diamond Body: immune to poison and disease from monsters' attacks (DoBadThingToPlayer),
 	  +1 to Fire, Air, Water, Earth, Mind, Body and Spirit resistance per DiamondResPer
 	  points of Meditation (base resistance, GetRaceClassResistance of Resistances.lua).
-	  Ki strikes (01.11.26, after the D&D Way of the Four Elements): each bare-handed melee
-	  blow also deals KiStrikePerSkill % per point of Unarmed (at most KiStrikeCap %) of its
-	  physical damage as the element of Fire, Air, Water and Earth the target resists least,
-	  through that resistance (MF.QueueElementalHit, MMMWE_Cestus.lua), so monsters immune to
-	  physical damage still take it.
+	  Ki strikes (01.11.26; 15.11.26 Light): each bare-handed melee blow also deals
+	  KiStrikePerSkill % per point of Unarmed (at most KiStrikeCap %) of its physical damage
+	  as Light, through the Light resistance (MF.DealElementalHit, MMMWE_Cestus.lua), so
+	  monsters immune to physical damage still take it.
 	  Iron Body (Ki) and Pressure points (Grand Master Unarmed) are elsewhere.
 
 	Ninja
 	  Evasion: with Dodging, area spells can be dodged at half the dodge chance
 	  (MF.NinjaEvasion, used by events.CalcDamageToPlayer of MMMWE_Main.lua).
+	  Ki strikes (15.11.26): as the Master Monk's, but Dark.
 	  Opportunist: when another party member hits a monster in melee, a bare-handed ninja
 	  may follow up at once: chance = Unarmed skill x OpportunistPerSkill %, at most
 	  OpportunistCap %, at OpportunistDamage of a blow's damage (MF.QueueCounterAttack).
@@ -86,9 +86,12 @@ function events.Tick()
 	MF.MissedPlayer = nil
 end
 
--- Ki strikes
+-- Ki strikes: Light for the Master Monk, Dark for the Ninja (15.11.26; they were the element
+-- of Fire, Air, Water and Earth the target resists least)
+local KI_KIND = {MasterMonk = const.Damage.Light, Ninja = const.Damage.Dark}
+function MF.KiStrikeKind(pl) return KI_KIND[branch(pl) or ""] end
 function MF.KiStrikeShare(pl)
-	if branch(pl) ~= "MasterMonk" or not (MF.IsBareHanded and MF.IsBareHanded(pl)) then return 0 end
+	if not MF.KiStrikeKind(pl) or not (MF.IsBareHanded and MF.IsBareHanded(pl)) then return 0 end
 	local S = SplitSkill(pl:GetSkill(const.Skills.Unarmed))
 	return math.min(B.KiStrikeCap, S * B.KiStrikePerSkill) / 100
 end
@@ -98,14 +101,14 @@ function events.CalcDamageToMonster(t)
 	if t.DamageKind ~= const.Damage.Phys or not t.PlayerIndex or not t.MonsterIndex then return end
 	if MF.BlasterSpecs and MF.BlasterSpecs.Forced then return end
 	local pl, mon = t.Player, t.Monster
-	if not pl or not mon or not MF.QueueElementalHit or not MF.LeastResistedElement then return end
-	local share = MF.KiStrikeShare(pl)
+	if not pl or not mon or not MF.QueueElementalHit then return end
+	local share, kind = MF.KiStrikeShare(pl), MF.KiStrikeKind(pl)
 	local dmg = math.floor((t.Damage or 0) * share + 0.5)
-	if dmg > 0 then
+	if dmg > 0 and kind then
 		if MF.DealElementalHit then
-			MF.DealElementalHit(t, dmg, MF.LeastResistedElement(mon))   -- within the blow (08.11.26)
+			MF.DealElementalHit(t, dmg, kind)   -- within the blow (08.11.26)
 		else
-			MF.QueueElementalHit(t.PlayerIndex, t.MonsterIndex, dmg, MF.LeastResistedElement(mon))
+			MF.QueueElementalHit(t.PlayerIndex, t.MonsterIndex, dmg, kind)
 		end
 	end
 end
