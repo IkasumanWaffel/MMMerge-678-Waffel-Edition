@@ -1588,7 +1588,7 @@ ArrowProjectiles[1312] = 3030
 --------------------------------
 ---- On-hit item effects (only weapons)
 
--- A monster's Z is at its feet: aim at the middle of its body (MMMWE 15.11.26, was a FIXME)
+-- A monster's Z is at its feet: aim at the middle of its body (MMMWE 15.11.26)
 local function CastSpellTowardsMonster(Spell, Skill, Mastery, Monster)
 	local mz = Monster.Z + floor((Monster.BodyHeight or 100) / 2)
 	local dist_c = spell_distance / sqrt((Monster.X - Party.X) ^ 2 +

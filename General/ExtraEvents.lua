@@ -1100,7 +1100,8 @@ local function EnoughSP(spell_id, Player)
 	return Player.SP >= required, required, pl_skill, pl_mastery
 end
 
--- FIXME
+-- switched off on purpose (15.11.26): a target ref on player selection and Interrupted
+-- by curse (50%), copied from the original game; untested, kept for reference
 --[=[
 -- make target ref upon player selection aswell.
 mem.asmpatch(0x430b28, [[

@@ -1715,7 +1715,7 @@ local function SetSpellsExtraHooks()
 	jmp absolute 0x47316C
 	@end:
 	]])
-	-- FIXME: move to buffs?
+	-- (the Fly upkeep stays with the game's code rather than the buff system: it works, 15.11.26)
 	-- Allow caster 0 / player -1 (cthscr, Revamp; merged 06.11.26)
 	mem.prot(true)
 	--   decrease sp
@@ -5050,7 +5050,7 @@ local function SetSpellsExtraHooks()
 	@end:
 	cmp eax, 0x1EF
 	]])
-	-- FIXME: get rid of evt.MoveToMap
+	-- Town Portal changes the map with evt.MoveToMap: it works, kept on purpose (15.11.26)
 	hook((new_code or 0x42EE99) + 0xB, function(d)
 		if d.eax < 1 or not TownPortalControls.Sets[MV.Continent]
 				or not TownPortalControls.Sets[MV.Continent][d.eax] then

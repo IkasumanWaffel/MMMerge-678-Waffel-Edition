@@ -189,7 +189,8 @@ mem.i2[0x4FD9D0 + 2 * 2] = 213 -- 212	-- 213
 mem.i2[0x4FD9D0 + 3 * 2] = 308	-- 308
 mem.i2[0x4FD9D0 + 4 * 2] = 405 -- 404	-- 405
 
--- FIXME: spellbuffs
+-- spell buff icons under the portraits: their X positions are the fixed table at 0x4FD9D0
+-- above, not the layout settings (kept so on purpose, 15.11.26)
 mem.asmpatch(0x4A7650, "mov dword ptr [ebp - 4], 0")
 mem.asmpatch(0x4A76B4, [[
 push dword ptr []] .. (UISetsParams + 28) .. [[]
