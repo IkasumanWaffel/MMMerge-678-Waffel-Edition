@@ -306,17 +306,17 @@
 304	2	Temple	2	58	Sanctum	Maricia	Healer	1247	0	0	0	25	1		0	0 - standart		1	24	0	0	0	0
 305	3	Temple	3	29	House of Healing	Meaglan	Healer	1120	0	0	0	30	1.5		0	1 - subtract rep		1	24	0	0	0	0
 306	4	Temple	5	58	Sacred Steel	Laudra	Healer	1247	0	0	0	30	1.5		0	2 - make zombies		1	24	0	0	0	0
-307	5	Temple	6	72	Cathedral of Night	Evania	Healer	1099	0	0	0	40	1.5		0	3 - both		1	24	0	0	0	0
+307	5	Temple	6	72	Cathedral of Night	Evania	Healer	1099	0	0	0	40	1.5		1	3 - both		1	24	0	0	0	0
 308	6	Temple	35	45	The Shaman	Wyx	Healer	1078	0	0	0	40	1.5		0			1	24	0	0	0	0
 309	7	Temple	13	95	The Blessed Sea	Enid	Healer	1171	0	0	0	50	2		0			1	24	0	0	0	0
 310	8	Temple	62	212	Healer's Tent	Lauren	Healer	0510	0	0	0	10	1		0			1	24	0	0	0	0
 311	9	Temple	63	366	WelNin Cathedral	Linzie	Healer	1516	0	0	0	25	1		0			1	24	0	0	0	0
 312	10	Temple	64	366	House of Solace	Tolbert	Healer	1516	0	0	0	30	1.5		0			1	24	0	0	0	0
 313	11	Temple	65	217	Nature's Remedies	Johnathan	Healer	0523	0	0	0	30	1.5		0			1	24	0	0	0	0
-314	12	Temple	66	213	Temple of Dark	Armhin	Healer	0506	0	0	0	40	1.5		2			13	12	0	0	0	0
+314	12	Temple	66	213	Temple of Dark	Armhin	Healer	0506	0	0	0	40	1.5		3			13	12	0	0	0	0
 315	13	Temple	67	215	Temple of Light	Reginald	Healer	0505	0	0	0	40	1.5		0			1	24	0	0	0	0
 316	14	Temple	68	215	Temple of Light	Bethyn	Healer	0505	0	0	0	50	2		0			1	24	0	0	0	0
-317	15	Temple	69	213	Temple of Dark	Zevah	Healer	0506	0	0	0	50	2		2			13	12	0	0	0	0
+317	15	Temple	69	213	Temple of Dark	Zevah	Healer	0506	0	0	0	50	2		3			13	12	0	0	0	0
 318	16	Temple	71	216	Offerings and Blessings	Murray	Healer	1523	0	0	0	99.99	2.5		2			13	12	0	0	0	0
 319	17	Temple	74	366	The Order of Tatalia	Theresa	Healer	1516	0	0	0	30	1.5		0			1	24	0	0	0	0
 320	18	Temple	75	217	Temple of Tranquility	Simon	Healer	0523	0	0	0	30	1.5		0			1	24	0	0	0	0

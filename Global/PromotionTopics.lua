@@ -1357,7 +1357,7 @@ Quest{
 	CanShow = function() return Party.QBits[794] and Party.QBits[612] end,
 	Done = function()
 		Party.QBits[796] = true
-		evt[0].Subtract("Reputation", 10)
+		evt[0].Add("Reputation", 10)	-- (15.11.26) the dark side's favour: bad repute (was Subtract 10)
 		evt.All.Add("Awards", 135)	-- "Retrieved the Perfect Bow and returned it to Steagal Snick"
 	end,
 	Texts = {
@@ -1501,7 +1501,7 @@ Quest{
 	CheckDone = function() return Party.QBits[575] end,
 	Done = function()
 		Party.QBits[1006] = true
-		evt[0].Subtract("Reputation", 10)
+		evt[0].Add("Reputation", 10)	-- (15.11.26) the dark side's favour: bad repute (was Subtract 10)
 		evt.All.Add("Awards", 141)	-- "Defaced the Altar of Good in the Temple of the Sun"
 	end,
 	Texts = {
@@ -1626,7 +1626,7 @@ Quest{
 	Done = function()
 		Party.QBits[1012] = true
 		Party.QBits[739] = false
-		evt[0].Subtract("Reputation", 10)
+		evt[0].Add("Reputation", 10)	-- (15.11.26) the dark side's favour: bad repute (was Subtract 10)
 		MF.NPCFollowerAdd(396)
 		evt.All.Add("Awards", 144)	-- "Retrieved the dragon egg for Tor Anwyn"
 	end,
@@ -1908,7 +1908,7 @@ Quest{
 	Done = function()
 		Party.QBits[793] = true
 		Party.QBits[727] = false
-		evt[0].Subtract("Reputation", 10)
+		evt[0].Add("Reputation", 10)	-- (15.11.26) the dark side's favour: bad repute (was Subtract 10)
 		evt.All.Add("Awards", 129)	-- "Deciphered the code in the School of Sorcery"
 	end,
 	Texts = {
@@ -2113,7 +2113,7 @@ Quest{
 	CheckDone = function() return evt.Cmp("MontersHunted", 50000) end,
 	Done = function()
 		Party.QBits[1003] = true
-		evt[0].Subtract("Reputation", 10)
+		evt[0].Add("Reputation", 10)	-- (15.11.26) the dark side's favour: bad repute (was Subtract 10)
 		evt.All.Add("Awards", 132)	-- "Collected 10,000 gold worth of bounties from the Bounty Hunts for Ebednezer Sower"
 	end,
 	Texts = {
@@ -2450,7 +2450,7 @@ Quest{
 	end,
 	Done = function()
 		Party.QBits[1009] = true
-		evt[0].Subtract("Reputation", 10)
+		evt[0].Add("Reputation", 10)	-- (15.11.26) the dark side's favour: bad repute (was Subtract 10)
 		evt.All.Add("Awards", 147)	-- "Retrieved the lich jars from the Proving Grounds"
 	end,
 	Texts = {
@@ -2664,7 +2664,7 @@ Quest{
 	CanShow = || Party.QBits[630] and Party.QBits[868],
 	Done = function()
 		Party.QBits[874] = true
-		evt[0].Subtract("Reputation", 10)
+		evt[0].Add("Reputation", 10)	-- (15.11.26) the dark side's favour: bad repute (was Subtract 10)
 		evt.All.Add("Awards", 262)	-- "Retrieved the Dimensional Scanner and Pathfinder Beacon and returned them to Kastore"
 	end,
 	Texts = {
