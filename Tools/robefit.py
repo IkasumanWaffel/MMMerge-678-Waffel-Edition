@@ -37,7 +37,7 @@ def downscale(big, s=4):
     num=(a*f[...,None]).reshape(h,s,w,s,3).sum(axis=(1,3)); den=f.reshape(h,s,w,s).sum(axis=(1,3))
     rgb=num/np.maximum(den,1)[...,None]
     return rgb, den/(s*s)
-def cut(big, base, bod, body_off, armor_off, waist, extra_torso=3, ref=None, tol=22):
+def cut(big, base, bod, body_off, armor_off, waist, extra_torso=3, ref=None, tol=22, hang='left', hang_rows=40, out_room=6):
     rgb,alpha=downscale(big)
     same=None
     if ref is not None:
@@ -82,6 +82,34 @@ def cut(big, base, bod, body_off, armor_off, waist, extra_torso=3, ref=None, tol
     M=(ndimage.binary_fill_holes(Mc) & (alpha>=0.5)) | M
     M[:max(0,(sh[0]-2) if sh else 0),:]=False
     M[hem:,:]=False
+    # the two arms: the hanging arm is drawn by the game on its own, so the robe keeps to the
+    # body there; the outstretched arm's sleeve may droop below the cuirass's outline
+    core=Ac & dilate(Bc,2)
+    cy=[y for y in range(wy) if core[y].sum()>=20]
+    yc=cy[len(cy)//3] if cy else wy//2
+    row=np.where(core[yc])[0]; cxx=(row.min()+row.max())/2; tw=row.max()-row.min()
+    cols=np.arange(CW)
+    hang_cols=(cols < cxx-0.15*tw) if hang=='left' else (cols > cxx+0.15*tw)
+    out_cols=~hang_cols & ((cols > cxx+0.15*tw) if hang=='left' else (cols < cxx-0.15*tw))
+    # outstretched side: more room below the arm
+    extra=dilate(Ac,out_room) & fgm
+    extra[wy:,:]=False; extra[:, ~out_cols]=False
+    if sh: extra[:max(0,sh[0]-2),:]=False
+    M=M|extra
+    # hanging side: the body's outline only, above the waist and for hang_rows below it
+    tight=Ac & dilate(Bc,2)
+    for y in range(min(CH, wy+hang_rows)):
+        lim=np.where(Ac[y])[0]
+        for x in np.where(M[y] & hang_cols)[0]:
+            if y<wy:
+                if not tight[y,x]: M[y,x]=False
+            elif len(lim) and ((hang=='left' and x<lim.min()-2) or (hang=='right' and x>lim.max()+2)):
+                M[y,x]=False
+    lab,n=ndimage.label(M)
+    if n>1:
+        sizes=ndimage.sum(M,lab,range(1,n+1))
+        M=np.isin(lab,[i+1 for i,v in enumerate(sizes) if v>=40])
+    M=ndimage.binary_opening(M,iterations=1)|(M&ndimage.binary_erosion(M,iterations=1))
     # the sprite's own frame (it may reach beyond the cuirass's): bounding box of the robe
     ys,xs=np.where(M)
     x0,x1,y0,y1=xs.min(),xs.max()+1,ys.min(),ys.max()+1

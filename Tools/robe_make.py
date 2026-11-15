@@ -6,9 +6,9 @@ def comp(bod,bx,by,armor,ax,ay,W=200,H=400):
         a=np.asarray(im.convert('RGB')).astype(int); k=keymask(im.convert('RGB'))
         c.alpha_composite(Image.fromarray(np.dstack([a,(k*255)]).astype('uint8'),'RGBA'),(x,y))
     return c
-def make(aligned, ref, base, bod, body_off, armor_off, waist, side='right', dark=0.55):
+def make(aligned, ref, base, bod, body_off, armor_off, waist, side='right', dark=0.55, **kw):
     big=Image.open(aligned); refim=Image.open(ref).convert('RGB')
-    rgb,M,box,Bc,wy=cut(big,base,bod,body_off,armor_off,waist,ref=refim)
+    rgb,M,box,Bc,wy=cut(big,base,bod,body_off,armor_off,waist,ref=refim,hang=('left' if side=='right' else 'right'),**kw)
     rgb,M=fill_sleeve_hollow(rgb,M,Bc,wy,side,dark=dark)
     rgb=shade_sleeve(rgb,M,Bc,wy,side)
     ys,xs=np.where(M); box=(int(xs.min()),int(ys.min()),int(xs.max()+1),int(ys.max()+1))
@@ -35,3 +35,46 @@ def drop_skin(spr, minsize=6, side='left', frac=0.22):
         kill=ndimage.binary_dilation(kill,iterations=1)&~key
         out[kill]=(0,252,252)
     return Image.fromarray(out.astype('uint8'))
+
+
+def drop_fur(spr, waist_row, rb=28, rg=5, minsize=4):
+    """a furred doll (minotaur): the generated fur of the neck and the hand above the sash"""
+    a=np.asarray(spr).astype(int); r,g,b=a[...,0],a[...,1],a[...,2]
+    key=(r<20)&(g>230)&(b>230)
+    fur=(~key)&(r-b>rb)&(r>g+rg)
+    fur[max(0,waist_row-3):,:]=False
+    lab,n=ndimage.label(fur)
+    out=a.copy()
+    if n:
+        sizes=ndimage.sum(fur,lab,range(1,n+1))
+        kill=np.isin(lab,[i+1 for i,v in enumerate(sizes) if v>=minsize])
+        kill=ndimage.binary_dilation(kill,iterations=1)&~key
+        kill[max(0,waist_row-3):,:]=False
+        # the rest of the hand around it: darker than the cloth
+        lum=a.sum(axis=2)
+        robe=(~key)&(~kill)
+        med=np.median(lum[robe]) if robe.any() else 300
+        near=ndimage.binary_dilation(kill,iterations=4)&(lum<0.72*med)&~key
+        near[max(0,waist_row-3):,:]=False
+        kill=kill|near
+        out[kill]=(0,252,252)
+    # holes left inside the cloth: painted over from around
+    import cv2
+    k2=(out[...,0]<20)&(out[...,1]>230)&(out[...,2]>230)
+    holes=ndimage.binary_fill_holes(~k2)&k2
+    if holes.any():
+        img=out.astype('uint8')
+        out=cv2.inpaint(img,holes.astype('uint8')*255,3,cv2.INPAINT_TELEA).astype(int)
+    return Image.fromarray(out.astype('uint8'))
+
+def drop_specks(spr, minsize=30):
+    a=np.asarray(spr).astype(int)
+    key=(a[...,0]<20)&(a[...,1]>230)&(a[...,2]>230)
+    lab,n=ndimage.label(~key)
+    if n>1:
+        sizes=ndimage.sum(~key,lab,range(1,n+1))
+        small=np.isin(lab,[i+1 for i,v in enumerate(sizes) if v<minsize])
+        # thin bits hanging off the robe: an opening removes them
+        thin=(~key)&~ndimage.binary_opening(~key,iterations=1)
+        a[small|thin]=(0,252,252)
+    return Image.fromarray(a.astype('uint8'))
