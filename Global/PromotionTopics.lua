@@ -684,7 +684,7 @@ Quest{
 	end,
 	CheckDone = function() return Party.QBits[1283] end,
 	Done = function()
-		evt[0].Add("Reputation", -50)
+		evt[0].Add("Reputation", -5)
 		Party.QBits[1273] = true
 		evt.All.Add("Awards", 186)	-- "Got Knight's nomination"
 		Game.NPC[792].EventA = 1380
@@ -708,7 +708,7 @@ Quest{
 	Exp = 40000,
 	CanShow = function() return Party.QBits[1273] end,
 	Done = function()
-		evt[0].Add("Reputation", -100)
+		evt[0].Add("Reputation", -10)
 		Party.QBits[1211] = false
 		Party.QBits[1274] = true
 		evt.All.Add("Awards", 187)	-- "Defeated the Warlord"
@@ -742,7 +742,7 @@ Quest{
 	end,
 	CheckDone = function() return Party.QBits[1260] end,
 	Done = function()
-		evt[0].Add("Reputation", -50)
+		evt[0].Add("Reputation", -5)
 		Party.QBits[1271] = true
 		evt.All.Add("Awards", 184)	-- "Drank from the Fountain of Magic"
 	end,
@@ -795,7 +795,7 @@ Quest{
 	Exp = 30000,
 	CanShow = function() return Party.QBits[1271] end,
 	Done = function()
-		evt[0].Add("Reputation", -100)
+		evt[0].Add("Reputation", -10)
 		Party.QBits[1210] = false
 		Party.QBits[1272] = true
 		evt.All.Add("Awards", 185)	-- "Retrieved the Crystal of Terrax"
@@ -823,7 +823,7 @@ Quest{
 	KeepQuestItem = true,
 	Exp = 15000,
 	Done = function()
-		evt[0].Add("Reputation", -50)
+		evt[0].Add("Reputation", -5)
 		Party.QBits[1279] = true
 		evt.All.Add("Awards", 192)	-- "Retrieved the key to the Dragon Towers"
 	end,
@@ -869,7 +869,7 @@ Quest{
 		Message(Game.NPCText[1805] .. HintLine)
 	end,
 	Done = function()
-		evt[0].Add("Reputation", -100)
+		evt[0].Add("Reputation", -10)
 		Party.QBits[1213] = false
 		evt.ForPlayer("All").Subtract("Inventory", 2106)
 		Party.QBits[1280] = true
@@ -950,7 +950,7 @@ Quest{
 	Exp = 15000,
 	CheckDone = function() return Party.QBits[1130] end,
 	Done = function()
-		evt[0].Add("Reputation", -50)
+		evt[0].Add("Reputation", -5)
 		Party.QBits[1275] = true
 		evt.All.Add("Awards", 188)	-- "Repaired Temple Stone in Free Haven"
 	end,
@@ -1014,7 +1014,7 @@ Quest{
 		end
 	end,
 	Done = function()
-		evt[0].Add("Reputation", -100)
+		evt[0].Add("Reputation", -10)
 		Party.QBits[1276] = true
 		evt.All.Add("Awards", 189)	-- "Brought Sacred Chalice to Temple Stone"
 	end,
@@ -1081,7 +1081,7 @@ Quest{
 	Done = function()
 		Party.QBits[1277] = true
 		Party.QBits[1197] = true
-		evt[0].Add("Reputation", -50)
+		evt[0].Add("Reputation", -5)
 		evt.All.Add("Awards", 190)	-- "Visited the Altar of the Sun"
 		--MF.ShowAwardAnimation()
 	end,
@@ -1141,7 +1141,7 @@ Quest{
 	Done = function()
 		Party.QBits[1278] = true
 		Party.QBits[1198] = true
-		evt[0].Add("Reputation", -100)
+		evt[0].Add("Reputation", -10)
 		evt.All.Add("Awards", 191)	-- "Visited the Altar of the Moon"
 		--MF.ShowAwardAnimation()
 	end,
@@ -1176,7 +1176,7 @@ Quest{
 		return NPCFollowers.NPCInGroup(796)
 	end,
 	Done = function()
-		evt[0].Add("Reputation", -50)
+		evt[0].Add("Reputation", -5)
 		Party.QBits[1269] = true
 		NPCFollowers.Remove(796)
 		evt.All.Add("Awards", 182)	-- "Rescued a Damsel in Distress"
@@ -1201,7 +1201,7 @@ Quest{
 	QuestItem = 2075,
 	CanShow = function() return Party.QBits[1269] end,
 	Done = function()
-		evt[0].Add("Reputation", -100)
+		evt[0].Add("Reputation", -10)
 		Party.QBits[1270] = true
 		evt.All.Add("Awards", 183)	-- "Slayed Longfang Witherhide"
 	end,

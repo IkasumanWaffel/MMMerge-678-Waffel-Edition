@@ -25,7 +25,8 @@ evt.map[82] = function() evt.EnterHouse{1607} end
 
 function events.AfterLoadMap()
 	if Map.Vars[1] < 1 and Party.QBits[535] == true then
-		Party.Reputation = Party.Reputation - 10
+		evt.ForPlayer(0)
+		evt.Subtract("Reputation", 10)	-- (15.11.26) stored by Reputation.lua; a direct write was lost at the next recount
 		Map.Vars[1] = 1 
 	end
 end

@@ -47,7 +47,7 @@ local function AddBountyHuntReward(Gold, NoGold)
 		evt.Add{"Gold", Gold}
 	end
 	evt.Add{"MontersHunted", Gold}
-	evt.Subtract{"Reputation", math.ceil(Gold/2000)}
+	evt.Subtract{"Reputation", math.min(3, math.ceil(Gold/5000))}	-- (15.11.26) 1 to 3 on the Antagarich scale (was Gold/2000)
 end
 BountyHuntFunctions.AddBountyHuntReward = AddBountyHuntReward
 

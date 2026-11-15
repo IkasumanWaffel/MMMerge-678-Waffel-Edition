@@ -12,7 +12,7 @@ for i = 61, 63 do
 			if Answer == string.lower(evt.str[22]) or Answer == string.lower(evt.str[23]) then
 				evt.Set{"MapVar" .. i - 52, 1}
 				evt.GiveItem {6, i == 61 and 35 or i == 62 and 36 or i == 63 and 39 or 0, 0}
-				evt.Add{"Reputation", 200}
+				evt.Add{"Reputation", 5}	-- (15.11.26) the Antagarich scale (was 200)
 			end
 		end
 	end

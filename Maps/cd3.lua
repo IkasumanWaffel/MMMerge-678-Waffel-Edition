@@ -32,11 +32,7 @@ evt.Map[27] = function()
 		evt.Set("MainCondition", 0)
 		evt.Add("HasFullHP", 0)
 		evt.Add("HasFullSP", 0)
-		if MM and MF.GtSettingNum(MM.MM6MultibyteReputationBug, 0) then
-			evt.Subtract("ReputationIs", 500 % 256)
-		else
-			evt.Subtract("ReputationIs", 500)
-		end
+		evt.Subtract("ReputationIs", 10)	-- (15.11.26) the Antagarich scale (was 500, MM6's)
 	else
 		Game.ShowStatusText(evt.str[13])
 	end

@@ -376,9 +376,35 @@ local function reputation_set(value, source, scope, target)
 	end
 end
 
+---------------------------------------
+-- (15.11.26, Waffel Edition) one scale on all continents, the one of Antagarich (ranks at
+-- 5, 10, 15, 20, 25 either way): Enroth and Jadame keep one value for the continent (as in
+-- MM6 and MM8), Antagarich one for each map (MM7); Data/Tables/Reputation.txt.
+-- On the dark side's maps (DARK_MAPS) bad repute counts as good and good as bad: the party's
+-- stored value stays the same, the value the game sees there is turned around.
+local DARK_MAPS = {
+	["out06.odm"] = true, ["d19.blv"] = true,                          -- Jadame: Shadowspire, Necromancers' Guild
+	["7out05.odm"] = true, ["7d26.blv"] = true, ["t04.blv"] = true,    -- Antagarich: Deyja, The Pit, Hall of the Pit,
+	["t02.blv"] = true, ["d03.blv"] = true, ["d04.blv"] = true,        --   Temple of the Dark, Castle Gloaming, Temple of Baa
+	["6t1.blv"] = true, ["6t6.blv"] = true, ["6t7.blv"] = true,        -- Enroth: the Temples of Baa,
+	["cd3.blv"] = true,                                                --   Castle Kriegspire
+}
+MF.ReputationDarkMaps = DARK_MAPS
+local function dark_map()
+	return DARK_MAPS[string.lower(Map.Name or "")] or false
+end
+MF.ReputationDarkMap = dark_map
+
+-- the daily fading (15.11.26): bad repute fades by 1 point every BadDays days down to
+-- BadFloor, good repute by 1 point every GoodDays days up to GoodFloor; in between it stays
+local DECAY = {BadDays = 14, BadFloor = 5, GoodDays = 28, GoodFloor = -5}
+local reputation_decay   -- below (the daily fading)
+MF.ReputationDecay = DECAY
+
 local function reputation_recalc(save)
 	local src = MT.Reputation.Maps[MV.Map] or MT.Reputation.Continents[MV.Continent]
 	if not src.UseRep then return end
+	local sign = dark_map() and -1 or 1
 	local m1 = src.RepMap or 0
 	local m2 = src.RepCont or 0
 	local m3 = src.RepWorld or 0
@@ -389,13 +415,13 @@ local function reputation_recalc(save)
 	local r3 = vars.GlobalReputation.Worlds[MV.World]
 	local old = reputation_read()
 	if not r1 and m1 > 0.5 and src.MapGain > 0.5 then
-		r1 = old
+		r1 = old * sign
 		vars.GlobalReputation.Maps[MV.Map] = r1
 	end
 	-- set to 0 if nil?
 	local res = m1 * (r1 or 0) + m2 * (r2 or 0) + m3 * (r3 or 0)
 	local lb, lu = src.LimBot, src.LimUp
-	res = ceil(max(min(res, lu), lb))
+	res = ceil(max(min(res, lu), lb)) * sign
 	if save then
 		reputation_write(res)
 	end
@@ -953,23 +979,8 @@ function events.MonsterKilled(mon, monIndex, defaultHandler, killer)
 			return
 		end
 
-		if not rep_set.UseRep then return end
-		-- Increase Reputation if monster is bounty hunt target.
-		local BH = vars.BountyHunt and vars.BountyHunt[Map.Name]
-		if BH and not BH.Done and BH.MonId == mon.Id then
-			local Reward = math.floor(mon.Level/20)
-
-			if evt.Cmp{"Reputation", -20} then
-				evt.Subtract{"Reputation", Reward}
-			end
-
-			-- Let party adjust global reputation by BH quests.
-			if ContRep > -5 then
-				vars.GlobalReputation.Continents[CurCont] = ContRep - 1
-			end
-
-			return
-		end
+		-- (15.11.26) the bounty's reputation is given when the reward is claimed (BountyHunt.lua);
+		-- the kill-time bonus here never ran (BountyHunt.lua marks the hunt done first)
 
 	end
 
@@ -1018,7 +1029,31 @@ function events.LeaveMap()
 	--StoreReputation()
 end
 
+-- (15.11.26) saves of the old scales: Enroth's continent value / 40; Jadame's continent value
+-- held a fifth of every change, so / 8 (the map and world shares are dropped); Antagarich
+-- stays as it was
+local function convert_old_reputation()
+	if not vars or vars.ReputationScale == 25 then return end
+	local GR = vars.GlobalReputation
+	if GR then
+		local function clamp(v) return max(-50, min(50, v)) end
+		GR.Continents = GR.Continents or {}
+		if GR.Continents[3] then GR.Continents[3] = clamp(GR.Continents[3] / 40) end
+		if GR.Continents[1] then GR.Continents[1] = clamp(GR.Continents[1] / 8) end
+		GR.Maps = GR.Maps or {}
+		for k in pairs(GR.Maps) do
+			local c = MF.GetContinent and MF.GetContinent(k)
+			if c == 1 or c == 3 then GR.Maps[k] = nil end
+		end
+		GR.Worlds = {}
+	end
+	vars.ReputationScale = 25
+	vars.ReputationDecayDay = floor(Game.Time / const.Day)
+end
+
 function events.LoadMap()
+	convert_old_reputation()
+	reputation_decay()
 	reputation_recalc(true)
 end
 
@@ -1287,148 +1322,36 @@ local function calc_dec_reputation(rep, dec_mult, dec_flat, dec_min, lim_bot, li
 end
 MF.CalcDecRep = calc_dec_reputation
 
-function events.NewDay(t)
-	if t.Type == 1 or t.Type == 2 then
-		--Log(Merge.Log.Info, "%s: dec reputation", LogId)
-		local days = t.GameDay - t.PrevGameDay
-		for k, rep in pairs(vars.GlobalReputation.Worlds) do
-			--Log(Merge.Log.Info, "%s: dec reputation: world %d - %s", LogId, k, tostring(rep) or "nil")
-			v1 = MT.Reputation.Worlds[k]
-			local dec1_mult, dec_flat, dec_min
-			if t.Type == 1 then
-				dec1_mult = v1.WorldDecMult
-				dec_flat = v1.WorldDecFlat
-				dec_min = v1.WorldDecMin
-			elseif t.Type == 2 then
-				dec1_mult = v1.WorldDec2Mult or 0
-				dec_flat = v1.WorldDec2Flat or 0
-				dec_min = v1.WorldDec2Min or 0
-			end
-			--Log(Merge.Log.Info, "dec_rep: world; %f, %f, %f", dec1_mult, dec_flat, dec_min)
-			if not rep then
-				-- Skip
-				--Log(Merge.Log.Info, "%s: dec reputation: skip world %d: no rep", LogId, k)
-			elseif dec_mult == 0 and dec_flat == 0 then
-				-- Skip
-				--Log(Merge.Log.Info, "%s: dec reputation: skip world %d: no dec", LogId, k)
-			elseif v1.WorldDecLimUp and rep > v1.WorldDecLimUp
-					or v1.WorldDecLimBot and rep < v1.WorldDecLimBot then
-				local old = rep
-				rep = calc_dec_reputation(rep, dec1_mult, dec_flat, dec_min,
-					v1.WorldDecLimBot, v1.WorldDecLimUp, days)
-				vars.GlobalReputation.Worlds[k] = rep
-				--Log(Merge.Log.Info, "%s: dec reputation: world %d: %f to %f", LogId, k, old, rep)
-			else
-				--Log(Merge.Log.Info, "%s: dec reputation: skip world %d: no need", LogId, k)
-			end
-		end
-		for k, rep in pairs(vars.GlobalReputation.Continents) do
-			--Log(Merge.Log.Info, "%s: dec reputation: cont %d - %s", LogId, k, tostring(rep) or "nil")
-			v = MT.Reputation.Continents[k]
-			local dec_mult, dec_flat, dec_min
-			if t.Type == 1 then
-				dec_mult = v.ContDecMult or 0
-				dec_flat = v.ContDecFlat or 0
-				dec_min = v.ContDecMin or 0
-			elseif t.Type == 2 then
-				dec_mult = v.ContDec2Mult or 0
-				dec_flat = v.ContDec2Flat or 0
-				dec_min = v.ContDec2Min or 0
-			end
-			--Log(Merge.Log.Info, "dec_rep: cont; %f, %f, %f", dec_mult, dec_flat, dec_min)
-			if not rep then
-				-- Skip
-				--Log(Merge.Log.Info, "%s: dec reputation: skip cont %d: no rep", LogId, k)
-			elseif dec_mult == 0 and dec_flat == 0 then
-				-- Skip
-				--Log(Merge.Log.Info, "%s: dec reputation: skip cont %d: no dec", LogId, k)
-			elseif v.ContDecLimUp and rep > v.ContDecLimUp
-					or v.ContDecLimBot and rep < v.ContDecLimBot then
-				local old = rep
-				rep = calc_dec_reputation(rep, dec_mult, dec_flat, dec_min,
-					v.ContDecLimBot, v.ContDecLimUp, days)
-				vars.GlobalReputation.Continents[k] = rep
-				--Log(Merge.Log.Info, "%s: dec reputation: cont %d: %f to %f", LogId, k, old, rep)
-			else
-				--Log(Merge.Log.Info, "%s: dec reputation: skip cont %d: no need", LogId, k)
-			end
-		end
-		for k, rep in pairs(vars.GlobalReputation.Maps) do
-			--Log(Merge.Log.Info, "%s: dec reputation: map %d - %s", LogId, k, tostring(rep) or "nil")
-			v = MT.Reputation.Maps[k] or MT.Reputation.Continents[MF.GetContinent(k)]
-			local dec_mult, dec_flat, dec_min
-			if t.Type == 1 then
-				dec_mult = v.MapDecMult or 0
-				dec_flat = v.MapDecFlat or 0
-				dec_min = v.MapDecMin or 0
-			elseif t.Type == 2 then
-				dec_mult = v.MapDec2Mult or 0
-				dec_flat = v.MapDec2Flat or 0
-				dec_min = v.MapDec2Min or 0
-			end
-			--Log(Merge.Log.Info, "dec_rep: map; %f, %f, %f", dec_mult, dec_flat, dec_min)
-			if not rep then
-				-- Skip
-				--Log(Merge.Log.Info, "%s: dec reputation: skip map %d: no rep", LogId, k)
-			elseif dec_mult == 0 and dec_flat == 0 then
-				-- Skip
-				--Log(Merge.Log.Info, "%s: dec reputation: skip map %d: no dec", LogId, k)
-			elseif v.MapDecLimUp and rep > v.MapDecLimUp
-					or v.MapDecLimBot and rep < v.MapDecLimBot then
-				local old = rep
-				rep = calc_dec_reputation(rep, dec_mult, dec_flat, dec_min,
-					v.MapDecLimBot, v.MapDecLimUp, days)
-				vars.GlobalReputation.Maps[k] = rep
-				--Log(Merge.Log.Info, "%s: dec reputation: map %d: %f to %f", LogId, k, old, rep)
-			else
-				--Log(Merge.Log.Info, "%s: dec reputation: skip map %d: no need", LogId, k)
-			end
-		end
-		--[[
-		if rep_set.UseRep then
-			StoreReputation()
-		end
-		for k, v in pairs(MT.Reputation.Continents) do
-			if v.UseRep and (v.DecMult or v.DecFlat) then
-				local cur_rep = vars.GlobalReputation.Continents[k]
-				if cur_rep and cur_rep ~= 0 then
-					for i = 1, t.GameDay - t.PrevGameDay do
-						if cur_rep == 0 then
-							break
-						end
-						local prev_rep = cur_rep
-						if v.DecFlat then
-							-- TODO: add skills and followers modifiers
-							if cur_rep > v.DecFlat then
-								cur_rep = cur_rep - v.DecFlat
-							elseif cur_rep < -v.DecFlat then
-								cur_rep = cur_rep - v.DecFlat
-							else
-								cur_rep = 0
-							end
-						end
-						if v.DecMult and cur_rep ~= 0 then
-							-- TODO: add skills and followers modifiers
-							cur_rep = cur_rep * (1 - v.DecMult)
-						end
-						if v.DecMin and abs(prev_rep - cur_rep) < v.DecMin then
-							if prev_rep > v.DecMin then
-								cur_rep = prev_rep - v.DecMin
-							elseif prev_rep < -v.DecMin then
-								cur_rep = prev_rep + v.DecMin
-							else
-								cur_rep = 0
-							end
-						end
-					end
-					vars.GlobalReputation.Continents[k] = cur_rep
-					evt.Set("Reputation", ceil(cur_rep))
-				end
-			end
-		end
-		]]
-		reputation_recalc(true)
+-- (15.11.26) the daily fading of DECAY, for every day passed however it passed (walking,
+-- resting, travelling); the old per-table decay (MF.CalcDecRep) is no longer used here
+local function decay_value(rep, days)
+	if not rep then return rep end
+	if rep > DECAY.BadFloor then
+		rep = max(DECAY.BadFloor, rep - days / DECAY.BadDays)
+	elseif rep < DECAY.GoodFloor then
+		rep = min(DECAY.GoodFloor, rep + days / DECAY.GoodDays)
 	end
+	return rep
+end
+
+reputation_decay = function()
+	if not vars or not vars.GlobalReputation then return end
+	local today = floor(Game.Time / const.Day)
+	local last = vars.ReputationDecayDay
+	vars.ReputationDecayDay = today
+	if not last or today <= last then return end
+	local days = today - last
+	local GR = vars.GlobalReputation
+	for _, tbl in ipairs{GR.Maps or {}, GR.Continents or {}} do
+		for k, rep in pairs(tbl) do
+			tbl[k] = decay_value(rep, days)
+		end
+	end
+	reputation_recalc(true)
+end
+
+function events.NewDay(t)
+	reputation_decay()
 end
 
 function events.GameInitialized2()

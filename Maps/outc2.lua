@@ -48,7 +48,7 @@ local function RevealSilverTongue()
 		evt.ShowMovie{0, 0, "citytrtr"}
 		evt.MoveNPC{1089, 0}
 		evt.Subtract{"Inventory", 2122}
-		evt.Add{"ReputationIs", 20}
+		evt.Add{"ReputationIs", 2}	-- (15.11.26) the Antagarich scale (was 20)
 		evt.Set{"QBits", 1192}
 		evt.Subtract{"QBits", 1225}
 		evt.All.Add("Awards", 177)	-- "Exposed the Traitor on the High Council"
