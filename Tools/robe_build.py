@@ -15,21 +15,21 @@ def build(k, gen_path, opts):
     big,best=fit(gen_path,REF+reff,None,bod,boff,base,aoff,waist)
     al=f'gen_{opts["tag"]}_{k}_x4.png'; big.save(al)
     W=aoff[1]+waist   # canvas row of the sash
-    spr,box=make(al,REF+reff,base,bod,boff,aoff,waist,hang_rows=0)
+    spr,box=make(al,REF+reff,base,bod,boff,aoff,waist,hang_rows=0,tol=opts.get('tol',22))
     box=[int(x) for x in box]
     blue=opts.get('drop_blue',True); notch=opts.get('dark_notch',True)
     if k=='m':
         spr=cleanup(spr,W-box[1],open_it=1,drop_blue=blue)
     elif k=='f':
-        spr=drop_specks(drop_skin(spr)); spr=cleanup(spr,W-box[1],open_it=2,drop_blue=blue)
+        spr=drop_specks(drop_skin(spr) if opts.get('skin',True) else spr); spr=cleanup(spr,W-box[1],open_it=2,drop_blue=blue)
         spr=diagonal_side(spr,W-box[1])
     elif k=='t2':
-        spr=drop_specks(drop_fur(spr,W-box[1])); spr=cut_at_elbow(spr,box,bod,boff,W); spr=drop_specks(spr,10)
+        spr=drop_specks(drop_fur(spr,W-box[1]) if opts.get('fur',True) else spr); spr=cut_at_elbow(spr,box,bod,boff,W); spr=drop_specks(spr,10)
         a=np.asarray(spr); kk=(a[...,0]<20)&(a[...,1]>230)&(a[...,2]>230); ys,xs=np.where(~kk)
         spr=spr.crop((xs.min(),ys.min(),xs.max()+1,ys.max()+1)); box=[box[0]+int(xs.min()),box[1]+int(ys.min())]
         spr=cleanup(spr,W-box[1],open_it=1,drop_blue=blue)
     else:
-        spr=drop_specks(drop_fur(spr,W-box[1])); spr=cut_at_elbow(spr,box,bod,boff,W)
+        spr=drop_specks(drop_fur(spr,W-box[1]) if opts.get('fur',True) else spr); spr=cut_at_elbow(spr,box,bod,boff,W)
         spr=cleanup(spr,W-box[1],open_it=1,close=8,drop_blue=blue)
         spr=cover_side(spr,box,bod,boff,W,recolor=opts.get('recolor',True)); spr=drop_specks(spr,10)
     spr=smooth_outline(spr,dark_notch=notch)
