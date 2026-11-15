@@ -104,3 +104,35 @@ def fill_cuff(spr, waist_row, side='right', close=5, dark=0.55, lining=4):
         f=dark*(0.7+0.3*np.exp(-d/3))
         a[hol]=(med[None,:]*f[hol][:,None])
     return Image.fromarray(np.clip(a,0,255).astype('uint8'))
+
+def cut_at_elbow(spr, box, bod, body_off, waist_canvas, side='right', margin=1):
+    """dolls whose body ends at the elbow (the game draws the forearms on their own): the
+    outstretched sleeve ends there too"""
+    a=np.asarray(spr).astype(int)
+    key=(a[...,0]<20)&(a[...,1]>230)&(a[...,2]>230)
+    Bm=keymask(get(bod)); x0,y0=box[0],box[1]
+    H,W=key.shape
+    # the body in sprite coordinates
+    B=np.zeros((H,W),bool); bh,bw=Bm.shape; dx=body_off[0]-x0; dy=body_off[1]-y0
+    for y in range(bh):
+        yy=y+dy
+        if 0<=yy<H:
+            xs=np.where(Bm[y])[0]+dx; xs=xs[(xs>=0)&(xs<W)]; B[yy,xs]=True
+    ys,xs=np.where(~key[:max(1,waist_canvas-y0)]); cx=(xs.min()+xs.max())/2; w=xs.max()-xs.min()
+    cols=np.arange(W)
+    zone=(cols>cx+0.25*w) if side=='right' else (cols<cx-0.25*w)
+    # the elbow: the lowest row of the body's arm in that zone above the waist
+    rows=[y for y in range(min(H,waist_canvas-y0)) if (B[y]&zone).any()]
+    if not rows: return spr
+    elbow=max(rows)+margin
+    for y in range(elbow,min(H,waist_canvas-y0)):
+        a[y,zone]=(0,252,252)
+    # the new edge a little darker, as the inside of the sleeve
+    key2=(a[...,0]<20)&(a[...,1]>230)&(a[...,2]>230)
+    for x in np.where(zone)[0]:
+        col=np.where(~key2[:elbow,x])[0]
+        if len(col) and col.max()>=elbow-3:
+            for k,f in enumerate((0.55,0.7,0.85)):
+                y=elbow-1-k
+                if y>=0 and not key2[y,x]: a[y,x]=(a[y,x]*f).astype(int)
+    return Image.fromarray(a.astype('uint8'))
