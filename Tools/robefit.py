@@ -102,8 +102,15 @@ def shade_sleeve(rgb, M, Bc, wy, side='right', reach=9, under=5):
     edge=sleeve & ndimage.binary_dilation(arm, iterations=1)
     if edge.any():
         d=ndimage.distance_transform_edt(~edge)
-        f=np.clip(0.3+0.7*(d/reach)**1.3,0.3,1.0)
+        f=np.clip(0.6+0.4*(d/reach)**1.3,0.6,1.0)
         rgb[sleeve]*=f[sleeve][:,None]
+    # nothing near the opening darker than a shadow of the robe's own colour
+    if edge.any():
+        med=np.median(rgb[sleeve],axis=0)
+        near=sleeve&(d<6)
+        floor=med*0.42
+        low=near&(rgb.sum(axis=2)<floor.sum())
+        rgb[low]=floor
     # underside: the lowest rows of the sleeve in each column
     for x in range(W):
         col=np.where(sleeve[:,x])[0]
@@ -111,7 +118,7 @@ def shade_sleeve(rgb, M, Bc, wy, side='right', reach=9, under=5):
             bottom=col.max()
             for k in range(under):
                 y=bottom-k
-                if y>=0 and sleeve[y,x]: rgb[y,x]*=0.42+0.13*k
+                if y>=0 and sleeve[y,x]: rgb[y,x]*=0.62+0.09*k
     return rgb
 
 def sprite(rgb, M, box):
