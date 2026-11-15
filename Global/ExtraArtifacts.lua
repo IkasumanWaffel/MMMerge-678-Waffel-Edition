@@ -432,7 +432,7 @@ end
 -- Additional item Special Bonuses
 -- Scope: item
 local ItemSpcBonuses = {}
--- MMMWE (15.11.26): the slaying bonuses in these lists are read by MMMWE_Slaying.lua
+-- MMMWE (15.11.26): the lists are open to other scripts
 Merge.Functions.ArtifactSpcBonuses = ItemSpcBonuses
 
 function events.ItemHasBonus2(t)

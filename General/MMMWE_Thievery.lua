@@ -12,7 +12,11 @@
 --]]
 
 local MF = Merge.Functions
+local Tx = Merge.Functions.Text
 local floor = math.floor
+
+-- the shop text of Stealing.lua (Ctrl + right click on an item), translatable here
+MF.StealChanceText = Tx"Chance to steal this item is %d percent."
 
 local BONUS     = 35
 local DISARM    = 10

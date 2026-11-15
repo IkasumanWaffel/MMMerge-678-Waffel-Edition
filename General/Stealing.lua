@@ -16,6 +16,41 @@ local base_fine = MS and MS.Stealing and MS.Stealing.BaseFine or 50
 local stolen_this_session
 local MonstersSource
 
+-- MMMWE (15.11.26): shop theft by the item's worth
+--   difficulty = max(ID/Rep/St, ceil(sqrt(value) / 2)) + WARINESS for every theft of this visit
+--   (about 5 at 100 gold, 16 at 1000, 50 at 10000, 87 at 30000; before: value / 100, 50 at most)
+--   a success costs 1 reputation up to 1000 gold, 2 up to 10000, 3 above; caught: one more;
+--   caught: the fine is what was stolen this visit + the item's price + the base fine
+local WARINESS = 10
+local stolen_count = 0
+local session_house
+
+local function newSession(house)
+	session_house = house
+	stolen_this_session = 0
+	stolen_count = 0
+end
+
+local function checkSession()
+	local house = GetCurrentHouse and GetCurrentHouse()
+	if house ~= session_house then newSession(house) end
+end
+
+local function stealDifficulty(item_txt)
+	local value = item_txt.Value
+	local d = value > 0 and ceil(math.sqrt(value) / 2) or 0
+	return max(item_txt.IdRepSt, d) + stolen_count * WARINESS
+end
+
+local function theftReputation(value)
+	return value <= 1000 and 1 or value <= 10000 and 2 or 3
+end
+
+local function chanceText(pct)
+	local fmt = MF.StealChanceText or "Chance to steal this item is %d percent."
+	return strformat(fmt, pct)
+end
+
 function GetStealingTotalSkill(player)
 	local result, mastery = SplitSkill(player:GetSkill(const.Skills.Stealing))
 	if result > 0 then
@@ -54,60 +89,55 @@ local function SetStealingHooks()
 		if Keys.IsPressed(const.Keys.CTRL) then
 			local item_ptr = d.esi
 			local item_txt = Game.ItemsTxt[u4[item_ptr]]
-			local value = item_txt.Value
 			local player = Party:GetCurrentPlayer()
 			local stealing = GetStealingTotalSkill(player)
-			local bound = item_txt.IdRepSt > 0 and item_txt.IdRepSt
-			or value > 0 and min(ceil(value / 100), 50) or 0
-			d.ecx = mem_cstring(string.format("Chance to steal this item is %d percent.", math.max(stealing - bound, 0)))		
+			checkSession()
+			local bound = stealDifficulty(item_txt)
+			d.ecx = mem_cstring(chanceText(math.max(stealing - bound, 0)))
 		end
 	end)
 	mem.autohook2(0x4b4a56, function(d)			-- magic guild
 		if Keys.IsPressed(const.Keys.CTRL) then
 			local item_ptr = d.esi
 			local item_txt = Game.ItemsTxt[u4[item_ptr]]
-			local value = item_txt.Value
 			local player = Party:GetCurrentPlayer()
 			local stealing = GetStealingTotalSkill(player)
-			local bound = item_txt.IdRepSt > 0 and item_txt.IdRepSt
-			or value > 0 and min(ceil(value / 100), 50) or 0
-			d.ecx = mem_cstring(string.format("Chance to steal this item is %d percent.", math.max(stealing - bound, 0)))	
+			checkSession()
+			local bound = stealDifficulty(item_txt)
+			d.ecx = mem_cstring(chanceText(math.max(stealing - bound, 0)))
 		end
 	end)
 	mem.autohook2(0x4b804b, function(d)			-- weapon shop
 		if Keys.IsPressed(const.Keys.CTRL) then
 			local item_ptr = d.esi
 			local item_txt = Game.ItemsTxt[u4[item_ptr]]
-			local value = item_txt.Value
 			local player = Party:GetCurrentPlayer()
 			local stealing = GetStealingTotalSkill(player)
-			local bound = item_txt.IdRepSt > 0 and item_txt.IdRepSt
-			or value > 0 and min(ceil(value / 100), 50) or 0
-			d.ecx = mem_cstring(string.format("Chance to steal this item is %d percent.", math.max(stealing - bound, 0)))	
+			checkSession()
+			local bound = stealDifficulty(item_txt)
+			d.ecx = mem_cstring(chanceText(math.max(stealing - bound, 0)))
 		end
 	end)
 	mem.autohook2(0x4b8c78, function(d)			-- alchemy shop
 		if Keys.IsPressed(const.Keys.CTRL) then
 			local item_ptr = d.esi
 			local item_txt = Game.ItemsTxt[u4[item_ptr]]
-			local value = item_txt.Value
 			local player = Party:GetCurrentPlayer()
 			local stealing = GetStealingTotalSkill(player)
-			local bound = item_txt.IdRepSt > 0 and item_txt.IdRepSt
-			or value > 0 and min(ceil(value / 100), 50) or 0
-			d.ecx = mem_cstring(string.format("Chance to steal this item is %d percent.", math.max(stealing - bound, 0)))	
+			checkSession()
+			local bound = stealDifficulty(item_txt)
+			d.ecx = mem_cstring(chanceText(math.max(stealing - bound, 0)))
 		end
 	end)
 	mem.autohook2(0x4b9857, function(d)			-- armor shop
 		if Keys.IsPressed(const.Keys.CTRL) then
 			local item_ptr = d.esi
 			local item_txt = Game.ItemsTxt[u4[item_ptr]]
-			local value = item_txt.Value
 			local player = Party:GetCurrentPlayer()
 			local stealing = GetStealingTotalSkill(player)
-			local bound = item_txt.IdRepSt > 0 and item_txt.IdRepSt
-			or value > 0 and min(ceil(value / 100), 50) or 0
-			d.ecx = mem_cstring(string.format("Chance to steal this item is %d percent.", math.max(stealing - bound, 0)))	
+			checkSession()
+			local bound = stealDifficulty(item_txt)
+			d.ecx = mem_cstring(chanceText(math.max(stealing - bound, 0)))
 		end
 	end)
 	
@@ -125,9 +155,9 @@ local function SetStealingHooks()
 		local result
 		local item_ptr = d.esi
 		local item_txt = Game.ItemsTxt[u4[item_ptr]]
+		checkSession()
 		local stealing = GetStealingTotalSkill(player)
-		local bound = item_txt.IdRepSt > 0 and item_txt.IdRepSt
-			or value > 0 and min(ceil(value / 100), 50) or 0
+		local bound = stealDifficulty(item_txt)
 		if stealing - bound > 0 then
 			-- Try to steal
 			local rnd = random(100)--random(stealing + 1) - 1
@@ -143,6 +173,7 @@ local function SetStealingHooks()
 					player.Items[item].Stolen = 1
 					-- FIXME
 					stolen_this_session = (stolen_this_session or 0) + value
+					stolen_count = stolen_count + 1
 					-- Clear shop item
 					Game.NeedRedraw = 1
 					mem.call(0x403135, 1, item_ptr)
@@ -150,7 +181,7 @@ local function SetStealingHooks()
 					-- Face Animation: 0x4BBD25
 					player:ShowFaceAnimation(8, 0)
 					-- Successful stealing
-					if not (MF.LegendaryNoTheftReputation and MF.LegendaryNoTheftReputation(player)) then evt[0].Add{"Reputation", 1} end
+					if not (MF.LegendaryNoTheftReputation and MF.LegendaryNoTheftReputation(player)) then evt[0].Add{"Reputation", theftReputation(value)} end
 					result = 2
 				else
 					-- Unsuccessful stealing: no room in inventory
@@ -183,7 +214,7 @@ local function SetStealingHooks()
 				Party.SpellBuffs[11].OverlayId=0
 				Party.SpellBuffs[11].Power=0
 				Party.SpellBuffs[11].Skill=0
-				if not (MF.LegendaryNoTheftReputation and MF.LegendaryNoTheftReputation(player)) then evt[0].Add{"Reputation", 2} end
+				if not (MF.LegendaryNoTheftReputation and MF.LegendaryNoTheftReputation(player)) then evt[0].Add{"Reputation", theftReputation(value) + 1} end
 				-- FIXME: StatusText isn't shown in shops
 				--Message(strformat(Game.GlobalTxt[376], player.Name))
 				result = result + 2
@@ -191,7 +222,7 @@ local function SetStealingHooks()
 				Game.ShowStatusText(strformat(Game.GlobalTxt[376], player.Name))
 				local write_pos = GetHouseWritePos(GetCurrentHouse())
 				Game.ShopTheftExpireTime[write_pos] = Game.Time + ban_days * const.Day
-				Party.Fine = Party.Fine + (stolen_this_session or 0) + base_fine
+				Party.Fine = Party.Fine + (stolen_this_session or 0) + value + base_fine
 			else
 				if not (MF.LegendaryNoTheftReputation and MF.LegendaryNoTheftReputation(player)) then evt[0].Add{"Reputation", 1} end
 				-- FIXME: StatusText isn't shown in shops
@@ -388,10 +419,10 @@ function events.WindowMessage(t)
 	end
 end
 
--- FIXME: doesn't work for Magic Guilds
+-- (MMMWE 15.11.26: the session also starts anew when the house differs, magic guilds too)
 function events.OnEnterShop(t)
 	MF.LogInfo("%s: OnEnterShop", LogId)
-	stolen_this_session = 0
+	newSession(GetCurrentHouse and GetCurrentHouse())
 end
 
 function events.GameInitialized2()

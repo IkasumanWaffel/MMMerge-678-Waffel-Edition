@@ -2761,6 +2761,9 @@ laser %d at %d, %d, %d
 # General/MMMWE_Sun.lua:395
 no laser made	
 
+# General/MMMWE_Thievery.lua:19
+Chance to steal this item is %d percent.	
+
 # General/MMMWE_Threat.lua:148
 Monsters prefer characters in heavier armor. The percent is this character's share 	
 

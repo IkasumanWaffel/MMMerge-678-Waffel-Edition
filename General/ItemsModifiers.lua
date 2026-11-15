@@ -861,8 +861,20 @@ local function SetItemsModifiersHooks()
 	mov ecx, ebx
 	call absolute 0x436542
 	test eax, eax
-	jz @end
+	jz @construct
 	mov eax, 0x4E
+	mov edx, ebx
+	call absolute ]] .. NewCode .. [[;
+	test eax, eax
+	jnz absolute 0x48C824
+	; MMMWE (15.11.26): Construct Slaying (special bonus 146, monster kind 20)
+	@construct:
+	mov edx, 0x14
+	mov ecx, ebx
+	call absolute 0x436542
+	test eax, eax
+	jz @end
+	mov eax, 0x92
 	mov edx, ebx
 	call absolute ]] .. NewCode .. [[;
 	test eax, eax
@@ -993,8 +1005,20 @@ local function SetItemsModifiersHooks()
 	mov ecx, esi
 	call absolute 0x436542
 	test eax, eax
-	jz @end
+	jz @construct
 	mov eax, 0x4E
+	mov edx, esi
+	call absolute ]] .. NewCode .. [[;
+	test eax, eax
+	jnz absolute 0x48C93E
+	; MMMWE (15.11.26): Construct Slaying (special bonus 146, monster kind 20)
+	@construct:
+	mov edx, 0x14
+	mov ecx, esi
+	call absolute 0x436542
+	test eax, eax
+	jz @end
+	mov eax, 0x92
 	mov edx, esi
 	call absolute ]] .. NewCode .. [[;
 	test eax, eax
@@ -1136,8 +1160,19 @@ local function SetItemsModifiersHooks()
 	mov ecx, dword ptr [ebp+8]
 	call absolute 0x436542
 	test eax, eax
-	jz @end
+	jz @construct
 	mov eax, 0x4E
+	call absolute ]] .. NewCode .. [[;
+	test eax, eax
+	jnz absolute 0x48CB94
+	; MMMWE (15.11.26): Construct Slaying (special bonus 146, monster kind 20)
+	@construct:
+	mov edx, 0x14
+	mov ecx, dword ptr [ebp+8]
+	call absolute 0x436542
+	test eax, eax
+	jz @end
+	mov eax, 0x92
 	call absolute ]] .. NewCode .. [[;
 	test eax, eax
 	jnz absolute 0x48CB94

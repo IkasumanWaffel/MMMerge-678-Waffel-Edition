@@ -1,92 +1,133 @@
 --[[
-	MMMWE_Slaying.lua — the "Slaying" enchantments, double damage against a kind of monster (15.11.26)
+	MMMWE_Slaying.lua — the "Slaying" enchantments double the whole hit of their weapon (15.11.26)
 
-	The game checked the slaying enchantments inside its weapon damage (CalcMeleeDamage
-	0x48C759 for each hand, CalcRangedDamage 0x48CB07 for the bow), and only four of them:
-	Undead, Ogre, Dragon (the main hand only) and Elemental, and only in an item's own
-	enchantment. Demon, Elf, Goblin, Dwarf and Human Slaying did nothing, nor did the slaying
-	bonuses of the artifacts (Gibbet, Ghoulsbane, Justice, Old Nick, Elfbane, Conan ...).
+	The checks themselves are the Revamp's (General/ItemsModifiers.lua, CalcMeleeDamage
+	0x48C810 / 0x48C92A for each hand, CalcRangedDamage 0x48CB80 for the bow): a weapon whose
+	enchantment or artifact bonus (event ItemHasBonus2) fits the target's kind gets its dice
+	damage doubled. The kinds:
+	  39 Ogre, 40 Dragon, 63 Elemental, 64 Undead, 65 Titan (Of David), 74 Demon, 75 Elf,
+	  76 Goblin, 77 Dwarf, 78 Human, 79 Sea monsters (of Sea Hunting), 146 Construct (new)
+	as Game.IsMonsterOfKind sees them (the Monster Kinds table and the Type and ExtraType
+	columns of "Bolster - monsters.txt").
 
-	Now the three checks are made here, the same for the main hand, the off hand and the bow:
-	the weapon's dice damage is doubled (MUL) if any slaying bonus of the weapon fits the
-	target - its enchantment (item.Bonus2), its artifact bonuses (ItemSpcBonuses of
-	Global/ExtraArtifacts.lua) or its own (EXTRA below). One doubling, however many fit.
-	The kinds are those of Game.IsMonsterOfKind: the Monster Kinds table and the Type and
-	ExtraType columns of "Bolster - monsters.txt".
-
-	A temporary slaying enchantment (the Slaying potion) is seen too: MMMWE_ConcurrentEnchantments
-	puts it into Bonus2 for the duration of the damage calls.
+	Added here:
+	  * the doubling marks which weapon slew; at the end of CalcMeleeDamage the Might, skill
+	    and other bonus damage the game adds to the weapons is doubled too, by the share of
+	    the slaying weapon (one hand of two weapons: that hand's share of the bonus); the bow
+	    also doubles its Grand Master skill bonus. MUL is the multiplier (the game's own 2)
+	  * EXTRA: weapons that slay by their descriptions (Ebonest, Sword of Whistlebone)
 --]]
 
 local MF = Merge.Functions
-local MK = const.MonsterKind
-local u4, i4 = mem.u4, mem.i4
+local u1, u2, i4 = mem.u1, mem.u2, mem.i4
+local floor = math.floor
 
 local MUL = 2
 
--- special bonus (SPCITEMS number) -> monster kind
-local SLAY = {
-	[39] = MK.Ogre,       -- of Ogre Slaying
-	[40] = MK.Dragon,     -- of Dragon Slaying
-	[63] = MK.Elemental,  -- of Elemental Slaying
-	[64] = MK.Undead,     -- of Undead Slaying
-	[74] = MK.Demon,      -- of Demon Slaying
-	[75] = MK.Elf,        -- of Elf Slaying
-	[76] = MK.Goblin,     -- of Goblin Slaying
-	[77] = MK.Dwarf,      -- of Dwarf Slaying
-	[78] = MK.Human,      -- of Human Slaying
-}
-MF.SlayingKinds = SLAY
-
--- items that slay by themselves (the game's own: Judicious Measure, Wyrm Spitter; the dragon
--- hunters' weapons whose descriptions say so)
 local EXTRA = {
-	[503] = {39},   -- Judicious Measure
-	[506] = {40},   -- Wyrm Spitter
-	[539] = {40},   -- Ebonest
-	[540] = {40},   -- Sword of Whistlebone
+	[539] = {40},   -- Ebonest: Dragon Slaying
+	[540] = {40},   -- Sword of Whistlebone: Dragon Slaying
 }
 
-local function isKind(monId, kind)
-	return kind and Game.IsMonsterOfKind(monId, kind) ~= 0
-end
-
--- true if the item (its record at ptr) slays the monster (its MONSTERS.TXT id)
-local function slays(ptr, monId)
-	if not ptr or ptr == 0 or not monId or monId <= 0 then return false end
-	local num, b2 = i4[ptr], i4[ptr + 0xC]
-	if isKind(monId, SLAY[b2]) then return true end
-	local lists = {EXTRA[num], MF.ArtifactSpcBonuses and MF.ArtifactSpcBonuses[num]}
-	for _, l in ipairs(lists) do
-		for _, b in ipairs(l or {}) do
-			if isKind(monId, SLAY[b]) then return true end
+function events.ItemHasBonus2(t)
+	local l = EXTRA[t.ItemId]
+	if l then
+		for _, b in ipairs(l) do
+			if b == t.Bonus2 then t.Result = 1 end
 		end
 	end
-	return false
-end
-MF.ItemSlaysMonster = function(item, monId)
-	return slays(item and item["?ptr"], monId)
 end
 
--- one check site of the game: the item pointer, the damage register, where to go on
-local function site(addr, itemReg, dmgReg, continue)
-	-- the site begins with "mov eax, [reg + 0xC]; cmp eax, 0x40" (6 bytes)
-	if u4[addr] ~= 0x830C478B and u4[addr] ~= 0x830C458B then
-		MF.LogWarning("[Slaying] unexpected code at 0x%X, the game's own check stays", addr)
-		return
-	end
-	mem.autohook(addr, function(d)
-		local ok, res = pcall(slays, d[itemReg], d.ecx)
-		if ok and res then
-			d[dmgReg] = d[dmgReg] * MUL
-		elseif not ok then
-			MF.LogWarning("[Slaying] %s", tostring(res))
+-- the marks: [F] main hand, [F+1] off hand, [F+2] bow
+local F = mem.StaticAlloc(4)
+mem.u4[F] = 0
+
+local function findNops(p, len)
+	for i = p, p + (len or 64) do
+		if u1[i] == 0x90 and u1[i+1] == 0x90 and u1[i+2] == 0x90 and u1[i+3] == 0x90 and u1[i+4] == 0x90 then
+			return i
 		end
-		d:push(continue)
-		return true
-	end, 6)
+	end
 end
 
-site(0x48C810, "ebp", "esi", 0x48C868)   -- CalcMeleeDamage, main hand
-site(0x48C92A, "ebp", "ebx", 0x48C971)   -- CalcMeleeDamage, off hand
-site(0x48CB80, "edi", "esi", 0x48CBCC)   -- CalcRangedDamage, the bow
+local function install()
+	-- the doublings of ItemsModifiers jump here: mark the weapon
+	mem.asmpatch(0x48C824, string.format([[
+	shl esi, 1
+	mov byte [%d], 1
+	jmp absolute 0x48C868
+	]], F), 5)
+	mem.asmpatch(0x48C93E, string.format([[
+	shl ebx, 1
+	mov byte [%d], 1
+	jmp absolute 0x48C971
+	]], F + 1), 5)
+	mem.asmpatch(0x48CB94, string.format([[
+	shl esi, 1
+	mov byte [%d], 1
+	jmp absolute 0x48CBCC
+	]], F + 2), 5)
+
+	-- CalcMeleeDamage's end (esi: weapons + bonus, [esp+0x14] / [esp+0x18]: the two hands)
+	local p = mem.asmpatch(0x48C9EB, string.format([[
+	cmp word [%d], 0
+	jz @std
+	mov eax, [esp+0x14]
+	mov edx, [esp+0x18]
+	nop
+	nop
+	nop
+	nop
+	nop
+	mov word [%d], 0
+	@std:
+	xor eax, eax
+	inc eax
+	cmp esi, eax
+	]], F, F), 5)
+	local h = p and findNops(p)
+	if h then
+		mem.hook(h, function(d)
+			local main, off = u1[F] ~= 0, u1[F + 1] ~= 0
+			local a, b = d.eax, d.edx
+			local weapons = a + b
+			local bonus = d.esi - weapons
+			if bonus > 0 and weapons > 0 then
+				local share = (main and a or 0) + (off and b or 0)
+				d.esi = d.esi + floor(bonus * share / weapons * (MUL - 1))
+			end
+		end)
+	else
+		MF.LogWarning("[Slaying] the melee bonus hook wasn't placed")
+	end
+
+	-- CalcRangedDamage after the dice (ebx: the player): the Grand Master bow bonus once more
+	p = mem.asmpatch(0x48CBCC, string.format([[
+	cmp byte [%d], 0
+	jz @std
+	nop
+	nop
+	nop
+	nop
+	nop
+	mov byte [%d], 0
+	@std:
+	add ebx, 0x382
+	]], F + 2, F + 2), 6)
+	h = p and findNops(p)
+	if h then
+		mem.hook(h, function(d)
+			local pl = MF.GetPlayerFromPtr and MF.GetPlayerFromPtr(d.ebx)
+			if not pl then return end
+			local s, m = SplitSkill(pl:GetSkill(const.Skills.Bow))
+			if m >= 4 then d.esi = d.esi + s * (MUL - 1) end
+		end)
+	else
+		MF.LogWarning("[Slaying] the ranged bonus hook wasn't placed")
+	end
+end
+
+function events.GameInitialized2()
+	local ok, err = pcall(install)
+	if not ok then MF.LogWarning("[Slaying] %s", tostring(err)) end
+end

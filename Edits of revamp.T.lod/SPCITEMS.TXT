@@ -66,7 +66,7 @@ Increased Weapon speed.	Swift	10	10	10	0	0	0	0	0	0	0	0	0	X 2	B	(-20) pts on weap
 +3 ID Item and ID Monster skills.	of Identifying	0	0	0	0	0	0	2	2	0	2	4	6	1500	A	+3 to ID Monster and ID Item skill
 Double Damage vs. Elementals.	Elemental Slaying	8	8	8	0	0	0	0	0	0	0	0	0	x2	A	"x2 damage vs Fire, Earth, Water, and Air elementals"
 Double Damage vs. Undead.	Undead Slaying	8	8	8	0	0	0	0	0	0	0	0	0	x2	B	"x2 damage on Liches, Vampires, Zombies, Skeletons, Ghosts, and Wights"
-Double Damage vs. Titans.	Of David	0	0	0	0	0	0	0	0	0	0	0	0	x2	A	x2 damage on all Titans
+Double Damage vs. Titans.	Of David	2	2	2	0	0	0	0	0	0	0	0	0	x2	A	x2 damage on all Titans
 Regenerate Spell points and Hit points over time.	of Plenty	0	0	0	4	0	2	4	4	2	0	4	4	2500	C	"Regenerate 1 hp/x and 1 sp/x while walking, etc."
 Adds 5 points of Body damage and +2 Disarm skill.	Assassins'	8	8	8	0	0	0	0	0	0	0	0	0	1000	B	(5) pois damage and +2 Disarm skill
 Adds 6-8 points of Cold damage and +5 Armor Class.	Barbarians'	8	8	8	0	0	0	0	0	0	0	0	0	1500	C	(6-8) cold damage and +5 AC
@@ -75,12 +75,12 @@ Adds 6-8 points of Cold damage and +5 Armor Class.	Barbarians'	8	8	8	0	0	0	0	0	0
 Prevents damage from drowning.	of Water Walking	0	0	0	2	2	2	2	2	0	6	2	2	1500	C	Character with item takes no damage from drowning
 Prevents damage from falling.	of Feather Falling	0	0	0	2	0	0	2	2	0	2	6	2	1000	B	Character with item takes no damage from falling
 Throws sparks into enemy.	of Sparking	0	0	0	0	0	0	0	0	0	0	0	0	x2	B	Throws sparks into enemy.
-Double damage vs. Demons.	Demon Slaying	2	2	0	0	0	0	0	0	0	0	0	0	x2	A	"x2 damage vs all Demons."
-Double Damage vs. Elves.	Elf Slaying	0	0	0	0	0	0	0	0	0	0	0	0	x2	A	"x2 damage on all Elf Archers, Elf Spearmen, Elf peasants (male and female)."
-Double Damage vs. Goblins.	Goblin Slaying	0	0	0	0	0	0	0	0	0	0	0	0	x2	A	"x2 damage on all Goblins."
-Double Damage vs. Dwarves.	Dwarf Slaying	0	0	0	0	0	0	0	0	0	0	0	0	x2	A	"x2 damage on all Dwarves."
-Double Damage vs. Humans.	Human Slaying	0	0	0	0	0	0	0	0	0	0	0	0	x2	A	"x2 damage on all Humans."
-Double Damage vs. Sea Monsters.	of Sea Hunting	0	0	0	0	0	0	0	0	0	0	0	0	x2	A	"x2 damage on all Swimming monsters."
+Double damage vs. Demons.	Demon Slaying	4	4	4	0	0	0	0	0	0	0	0	0	x2	A	"x2 damage vs all Demons."
+Double Damage vs. Elves.	Elf Slaying	4	4	4	0	0	0	0	0	0	0	0	0	x2	A	"x2 damage on all Elf Archers, Elf Spearmen, Elf peasants (male and female)."
+Double Damage vs. Goblins.	Goblin Slaying	4	4	4	0	0	0	0	0	0	0	0	0	x2	A	"x2 damage on all Goblins."
+Double Damage vs. Dwarves.	Dwarf Slaying	2	2	2	0	0	0	0	0	0	0	0	0	x2	A	"x2 damage on all Dwarves."
+Double Damage vs. Humans.	Human Slaying	2	2	2	0	0	0	0	0	0	0	0	0	x2	B	"x2 damage on all Humans."
+Double Damage vs. Sea Monsters.	of Sea Hunting	2	2	2	0	0	0	0	0	0	0	0	0	x2	A	"x2 damage on all Swimming monsters."
 Adds 10-20 points of Fire damage.	of Fire Strike	2	2	2	0	0	0	0	0	0	0	0	0	2500	D	(10-20) Fire damage
 Adds 10-20 points of Air damage.	of Air Strike	2	2	2	0	0	0	0	0	0	0	0	0	2500	D	(10-20) Air damage
 Adds 10-20 points of Water damage.	of Water Strike	2	2	2	0	0	0	0	0	0	0	0	0	2500	D	(10-20) Water damage
@@ -147,8 +147,9 @@ Increases Learning Mastery	of Learning Mastery	0	0	0	0	0	0	2	2	0	0	2	2	3000	D	In
 +15 to Self Resistances	of Self Repel	0	0	0	4	4	4	0	4	0	0	4	4	1500	C	+15 to Spirit, Mind and Body resistances
 +15 to Light and Dark Resistances	of Mirrored Path Repel	0	0	0	4	4	4	0	4	0	0	4	4	1500	C	+15 to Light and Dark Resistances
 +5% to Crit Chance and +25% to Crit Damage	of Lethal Strike	2	2	2	0	0	0	2	0	2	0	2	2	3000	D	+5% to Crit Chance and +25% to Crit Damage
+Double Damage vs. Constructs.	Construct Slaying	4	4	4	0	0	0	0	0	0	0	0	0	x2	B	"x2 damage on all Constructs (golems, gargoyles, droids and the like)." MMMWE 15.11.26
 		
-		264	264	266	164	152	150	182	228	92	80	250	248			
+		286	286	290	164	152	150	182	228	92	80	250	248			
 		
 Treasure Level	If treasure Level = 3 add all A and B															
 A= 3 to 4	If treasure Level = 4 add all A and B and C
