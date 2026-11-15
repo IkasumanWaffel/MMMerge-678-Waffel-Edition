@@ -432,6 +432,8 @@ end
 -- Additional item Special Bonuses
 -- Scope: item
 local ItemSpcBonuses = {}
+-- MMMWE (15.11.26): the slaying bonuses in these lists are read by MMMWE_Slaying.lua
+Merge.Functions.ArtifactSpcBonuses = ItemSpcBonuses
 
 function events.ItemHasBonus2(t)
 	local Bonuses = ItemSpcBonuses[t.ItemId]
@@ -1661,8 +1663,8 @@ OnHitEffects[2021] = {
 OnHitEffects[2023] = {
 	Add			= 10,
 	Special = function(t)
-		local montype = Game.Bolster.Monsters[t.Monster.Id].Type
-		if	montype == const.MonsterKind.Dragon then
+		-- MMMWE (15.11.26): the monster's every kind, as the slaying enchantments see it
+		if Game.IsMonsterOfKind(t.Monster.Id, const.MonsterKind.Dragon) ~= 0 then
 			t.Result = t.Result*2
 		end
 	end}

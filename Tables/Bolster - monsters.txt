@@ -33,9 +33,9 @@
 31	Ogre Brawler	Ogre		Neutral		Strength	0	-	-	-	-	-	-			300
 32	Ogre Warrior	Ogre		Neutral		Strength	0	-	-	-	-	-	-			300
 33	Ogre Warleader	Ogre		Neutral		Strength	Body	-	-	x	-	-	-			300
-34	Animalist	0		Neutral	M	Strength	Water	-	-	x	-	-	-			225
-35	Shapeshifter	0		Neutral	M	Strength	Water	-	-	x	-	-	-			225
-36	Lycanthrope	0		Neutral	M	Strength	Water	-	x	x	-	-	-			225
+34	Animalist	Human		Neutral	M	Strength	Water	-	-	x	-	-	-			225
+35	Shapeshifter	Human		Neutral	M	Strength	Water	-	-	x	-	-	-			225
+36	Lycanthrope	Human		Neutral	M	Strength	Water	-	x	x	-	-	-			225
 37	Ratman	Creature		Neutral		Strength	0	-	-	-	-	-	-			225
 38	Wererat	Creature		Neutral		Strength	0	-	-	-	-	-	-			225
 39	Greater Wererat	Creature		Neutral		Strength	0	-	-	-	-	-	-			225
@@ -300,15 +300,15 @@
 298	Medusa	Creature		Neutral		Strength	Self	-	x	-	-	-	-			225
 299	Queen Medusa	Creature		Neutral		Strength	Self	-	x	x	-	-	-			225
 300	Empress Medusa	Creature		Neutral		Strength	Self	-	x	x	-	-	-			225
-301	Minotaur	Creature		Neutral		Strength	Self	-	-	-	x	-	-			225
-302	Minotaur Headsman	Creature		Neutral		Strength	Self	-	-	x	x	-	-			225
-303	Minotaur Lord	Creature		Neutral		Strength	Self	-	-	x	x	-	-			225
+301	Minotaur	Minotaur		Neutral		Strength	Self	-	-	-	x	-	-			225
+302	Minotaur Headsman	Minotaur		Neutral		Strength	Self	-	-	x	x	-	-			225
+303	Minotaur Lord	Minotaur		Neutral		Strength	Self	-	-	x	x	-	-			225
 304	Monk	Human		Neutral	M	Strength	Self	-	-	-	-	-	-			225
 305	Initiate	Human		Neutral	M	Strength	Self	-	-	x	-	-	-			225
 306	Master	Human		Neutral	M	Strength	Self	-	-	x	-	-	-			225
-307	Necromancer	0		Dark	F	Magic	Dark	-	x	x	-	-	-			225
-308	Speaker for the Dead	0		Dark	F	Magic	Dark	-	x	x	-	-	-			225
-309	Queen of the Dead	0		Dark	F	Magic	Dark	-	x	x	-	-	-			225
+307	Necromancer	Human		Dark	F	Magic	Dark	-	x	x	-	-	-			225
+308	Speaker for the Dead	Human		Dark	F	Magic	Dark	-	x	x	-	-	-			225
+309	Queen of the Dead	Human		Dark	F	Magic	Dark	-	x	x	-	-	-			225
 310	Emerald Ooze	Creature		Neutral		Strength	0	-	-	-	-	-	-			225
 311	Sapphire Ooze	Creature		Neutral		Strength	0	-	-	-	-	x	-			225
 312	Bloodstone Ooze	Creature		Neutral		Strength	0	-	-	-	-	x	-			225
@@ -579,9 +579,9 @@
 577	Peasant	Human	Peasant,NoArena	Peasant	M	Wimpy	0	x	-	-	-	-	-			225
 578	Peasant	Human	Peasant,NoArena	Peasant	M	Wimpy	0	x	-	-	-	-	-			225
 579	Peasant	Human	Peasant,NoArena	Peasant	M	Wimpy	0	x	-	-	-	-	-			225
-580	Minotaur	Creature		Neutral		Strength	0	-	-	-	-	-	-			225
-581	Minotaur Mage	Creature		Neutral		Strength	Body	-	x	x	-	-	-			225
-582	Minotaur King	Creature		Neutral		Strength	Body	-	-	x	-	-	-			225
+580	Minotaur	Minotaur		Neutral		Strength	0	-	-	-	-	-	-			225
+581	Minotaur Mage	Minotaur		Neutral		Strength	Body	-	x	x	-	-	-			225
+582	Minotaur King	Minotaur		Neutral		Strength	Body	-	-	x	-	-	-			225
 583	Novice Monk	Human		Neutral	M	Strength	Self	-	-	x	-	-	-			225
 584	Initiate Monk	Human		Neutral	M	Strength	Self	-	-	x	-	-	-			225
 585	Master Monk	Human		Neutral	M	Strength	Self	-	-	x	-	-	-			225
@@ -600,12 +600,12 @@
 598	Peasant	Human	Peasant,NoArena	Peasant	F	Wimpy	0	x	-	-	-	-	-			225
 599	Peasant	Human	Peasant,NoArena	Peasant	F	Wimpy	0	x	-	-	-	-	-			225
 600	Peasant	Human	Peasant,NoArena	Peasant	F	Wimpy	0	x	-	-	-	-	-			225
-601	Cutpurse	0		Neutral	F	Speed	0	-	-	-	-	-	-			225
-602	Bounty Hunter	0		Neutral	F	Speed	0	-	-	-	-	-	-			225
-603	Assassin	0		Neutral	F	Speed	0	-	-	-	-	-	-			225
-604	Cannibal	0		Neutral	F	Strength	0	-	-	-	-	-	-			225
-605	Head Hunter	0		Neutral	F	Strength	0	-	-	-	-	-	-			225
-606	Witch Doctor	0		Neutral	F	Strength	0	-	x	-	-	-	-			225
+601	Cutpurse	Human		Neutral	F	Speed	0	-	-	-	-	-	-			225
+602	Bounty Hunter	Human		Neutral	F	Speed	0	-	-	-	-	-	-			225
+603	Assassin	Human		Neutral	F	Speed	0	-	-	-	-	-	-			225
+604	Cannibal	Human		Neutral	F	Strength	0	-	-	-	-	-	-			225
+605	Head Hunter	Human		Neutral	F	Strength	0	-	-	-	-	-	-			225
+606	Witch Doctor	Human		Neutral	F	Strength	0	-	x	-	-	-	-			225
 607	Peasant	Human	Peasant,NoArena	Peasant	M	Wimpy	0	x	-	-	-	-	-			225
 608	Peasant	Human	Peasant,NoArena	Peasant	M	Wimpy	0	x	-	-	-	-	-			225
 609	Peasant	Human	Peasant,NoArena	Peasant	M	Wimpy	0	x	-	-	-	-	-			225
@@ -615,9 +615,9 @@
 613	Follower of Baa	Human		Dark	M	Strength	0	-	-	-	-	-	-			225
 614	Mystic of Baa	Human		Dark	M	Strength	Spirit	-	x	x	-	-	-			225
 615	Fanatic of Baa	Human		Dark	M	Strength	Spirit	-	x	x	-	-	-			225
-616	Cannibal	0		Neutral	M	Strength	0	-	-	-	-	-	-			225
-617	Head Hunter	0		Neutral	M	Strength	0	-	-	-	-	-	-			225
-618	Witch Doctor	0		Neutral	M	Strength	0	-	-	-	-	-	-			225
+616	Cannibal	Human		Neutral	M	Strength	0	-	-	-	-	-	-			225
+617	Head Hunter	Human		Neutral	M	Strength	0	-	-	-	-	-	-			225
+618	Witch Doctor	Human		Neutral	M	Strength	0	-	-	-	-	-	-			225
 619	Common Rat	Creature		Neutral		Speed	0	-	-	-	x	-	-			225
 620	Large Rat	Creature		Neutral		Speed	0	-	-	-	x	-	-			225
 621	Giant Rat	Creature		Neutral		Speed	0	-	-	-	x	-	-			225
@@ -645,10 +645,10 @@
 643	Wolfman	Creature		Neutral		Strength	0	-	-	-	-	-	-			225
 644	Werewolf	Creature		Neutral		Strength	0	-	-	-	-	-	-			225
 645	Greater Werewolf	Creature		Neutral		Strength	0	-	-	-	-	-	-			225
-646	Demon Queen	Immobile	NoArena	Dark		Endurance	0	x	x	-	-	-	-			225
+646	Demon Queen	Immobile	Demon,NoArena	Dark		Endurance	0	x	x	-	-	-	-			225
 647	Reactor	Immobile	NoArena	Neutral		Endurance	0	x	x	-	-	-	-			225
 648	Reactor	Immobile	NoArena	Neutral		Endurance	0	x	x	-	-	-	-			225
-649	Cactus	Demon		Neutral		Speed	0	x	-	-	-	-	-			225
-650	Cactus	Demon		Neutral		Speed	0	x	-	-	-	-	-			225
-651	Cactus	Demon		Neutral		Speed	0	x	-	-	-	-	-			225
+649	Cactus	Creature		Neutral		Speed	0	x	-	-	-	-	-			225
+650	Cactus	Creature		Neutral		Speed	0	x	-	-	-	-	-			225
+651	Cactus	Creature		Neutral		Speed	0	x	-	-	-	-	-			225
 																
