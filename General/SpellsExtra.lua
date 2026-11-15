@@ -838,8 +838,13 @@ local function SetSpellsExtraHooks()
 		else
 			t.Chance = 100
 		end
+		local level = t.Level
 		events.call("SpellFailCheck", t)
 		d.edi = t.Chance
+		-- (15.11.26) a handler may raise the cast's skill level (a wild surge, MMMWE_WildMagic.lua)
+		if t.Level ~= level and t.Level and t.Level > 0 then
+			u4[d.ebp - 0x3C] = t.Level
+		end
 	end)
 
 	new_code = asmpatch(0x42630D, [[

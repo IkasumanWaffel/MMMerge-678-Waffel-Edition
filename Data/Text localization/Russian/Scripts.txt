@@ -2806,6 +2806,66 @@ Threat %d%%	Угроза %d%%
 # General/MMMWE_UnarmedGM.lua:127
 %s strikes again!	%s бьёт ещё раз!
 
+# General/MMMWE_WildMagic.lua:164
+Sparks and colours burst from %s's hands	%s: с рук срываются разноцветные искры
+
+# General/MMMWE_WildMagic.lua:175
+%s's spell rebounds on %s!	%s: заклинание отражается и бьёт по союзнику (%s)!
+
+# General/MMMWE_WildMagic.lua:179
+%s feels strangely tipsy	%s: странное опьянение
+
+# General/MMMWE_WildMagic.lua:183
+%s falls into a magical slumber	%s: магический сон
+
+# General/MMMWE_WildMagic.lua:187
+%s ages a year in an instant	%s: мгновенно стареет на год
+
+# General/MMMWE_WildMagic.lua:193
+Gold coins rain on the party! (+%d)	На отряд сыплется золото! (+%d)
+
+# General/MMMWE_WildMagic.lua:197
+Some of the party's gold vanishes! (-%d)	Часть золота отряда исчезает! (-%d)
+
+# General/MMMWE_WildMagic.lua:202
+%s's spell points well up	%s: мана восполняется до предела
+
+# General/MMMWE_WildMagic.lua:211
+%s's spell tears open a rift!	%s: заклинание открывает разлом!
+
+# General/MMMWE_WildMagic.lua:216
+Some of the party's food turns to dust	Часть еды отряда обращается в прах
+
+# General/MMMWE_WildMagic.lua:239
+Wild magic! %s loses control of the spell	Дикая магия! %s: заклинание выходит из-под контроля
+
+# General/MMMWE_WildMagic.lua:243, General/MMMWE_WildMagic.lua:367
+%s's spell backfires!	%s: заклинание обращается против мага!
+
+# General/MMMWE_WildMagic.lua:277, General/MMMWE_WildMagic.lua:394
+%s's spell surges with wild magic!	%s: всплеск дикой магии усиливает заклинание!
+
+# General/MMMWE_WildMagic.lua:332
+%s burns out its magic	%s: магия выгорает
+
+# General/MMMWE_WildMagic.lua:343
+%s's spell rebounds on its allies	%s: заклинание бьёт по своим
+
+# General/MMMWE_WildMagic.lua:347
+%s wanders off in a daze	%s: бродит в замешательстве
+
+# General/MMMWE_WildMagic.lua:351
+%s draws strength from the wild magic	%s: черпает силы из дикой магии
+
+# General/MMMWE_WildMagic.lua:355
+%s is healed by the wild magic	%s: дикая магия исцеляет раны
+
+# General/MMMWE_WildMagic.lua:358
+%s's spell bursts into harmless sparks	%s: заклинание рассыпается безвредными искрами
+
+# General/MMMWE_WildMagic.lua:405
+%s's spell fizzles	%s: заклинание срывается
+
 # Global/MMMWE_CombatLog.lua:232
 %s hits %s for %s damage	%s бьёт %s: %s урона
 

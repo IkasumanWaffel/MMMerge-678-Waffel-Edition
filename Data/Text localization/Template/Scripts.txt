@@ -2806,6 +2806,66 @@ Threat %d%%
 # General/MMMWE_UnarmedGM.lua:127
 %s strikes again!	
 
+# General/MMMWE_WildMagic.lua:164
+Sparks and colours burst from %s's hands	
+
+# General/MMMWE_WildMagic.lua:175
+%s's spell rebounds on %s!	
+
+# General/MMMWE_WildMagic.lua:179
+%s feels strangely tipsy	
+
+# General/MMMWE_WildMagic.lua:183
+%s falls into a magical slumber	
+
+# General/MMMWE_WildMagic.lua:187
+%s ages a year in an instant	
+
+# General/MMMWE_WildMagic.lua:193
+Gold coins rain on the party! (+%d)	
+
+# General/MMMWE_WildMagic.lua:197
+Some of the party's gold vanishes! (-%d)	
+
+# General/MMMWE_WildMagic.lua:202
+%s's spell points well up	
+
+# General/MMMWE_WildMagic.lua:211
+%s's spell tears open a rift!	
+
+# General/MMMWE_WildMagic.lua:216
+Some of the party's food turns to dust	
+
+# General/MMMWE_WildMagic.lua:239
+Wild magic! %s loses control of the spell	
+
+# General/MMMWE_WildMagic.lua:243, General/MMMWE_WildMagic.lua:367
+%s's spell backfires!	
+
+# General/MMMWE_WildMagic.lua:277, General/MMMWE_WildMagic.lua:394
+%s's spell surges with wild magic!	
+
+# General/MMMWE_WildMagic.lua:332
+%s burns out its magic	
+
+# General/MMMWE_WildMagic.lua:343
+%s's spell rebounds on its allies	
+
+# General/MMMWE_WildMagic.lua:347
+%s wanders off in a daze	
+
+# General/MMMWE_WildMagic.lua:351
+%s draws strength from the wild magic	
+
+# General/MMMWE_WildMagic.lua:355
+%s is healed by the wild magic	
+
+# General/MMMWE_WildMagic.lua:358
+%s's spell bursts into harmless sparks	
+
+# General/MMMWE_WildMagic.lua:405
+%s's spell fizzles	
+
 # Global/MMMWE_CombatLog.lua:232
 %s hits %s for %s damage	
 
