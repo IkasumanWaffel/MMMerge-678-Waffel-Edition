@@ -55,7 +55,7 @@ Id	Item id	Notes		X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y
 53	2041	Apollo		43	81	60	97	45	110	41	98	49	112		
 54	2042	Zeus		23	73	32	91	31	104	0	88	35	113
 55	2223	Sentinel Frame		31	73	39	89	37	103	35	95	45	110		
-56	2250	Apprentice's Robe		46	73	60	97	37	103	0	0	40	110
+56	2250	Apprentice's Robe		16	78	60	97	37	103	0	0	40	110
 57	2251	Acolyte's Robe		46	73	56	91	37	103	0	0	40	110
 58	2252	Scholar's Robe		46	73	57	97	37	103	0	0	40	110
 59	2253	Magister's Robe		46	73	60	97	37	103	0	0	40	110
