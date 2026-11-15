@@ -36,7 +36,7 @@ Increases effect of all Light spells.	of Light Magic	0	0	0	0	0	0	0	0	0	0	4	4	200
 Increases effect of all Mind spells.	of Mind Magic	0	0	0	0	0	0	0	0	0	0	4	4	2000	D	50% increase of spell effect and duration
 Increases effect of all Spirit spells.	of Spirit Magic	0	0	0	0	0	0	0	0	0	0	4	4	2000	D	50% increase of spell effect and duration
 Increases effect of all Water spells.	of Water Magic	0	0	0	0	0	0	0	0	0	0	4	4	2000	D	50% increase of spell effect and duration
-Increases chance of Disarming.	of Thievery	0	0	0	0	0	0	0	0	0	0	0	0	2000	B	double chance to perform lockpick and steal skill
+Disarm Traps +10, Stealing +5, 15% more gold found.	of Thievery	0	0	0	0	0	0	0	0	0	0	0	0	2000	B	Disarm Traps +10, Stealing +5, 15% more gold found (MMMWE_Thievery.lua)
 Half damage from all missile attacks.	of Shielding	0	0	0	10	12	0	0	8	0	0	2	2	1000	B	(1/2)dmg from all missle attacks (not cumulative)
 Regenerate Hit points over time.	of Regeneration	0	0	0	4	0	0	4	4	0	0	4	4	1000	B	"Regenerate 1hp/x while walking, etc"
 Regenerate Spell points over time.	of Mana	0	0	0	4	0	4	4	4	4	0	4	4	1000	B	"Regenerate 1sp/x while walking, etc"

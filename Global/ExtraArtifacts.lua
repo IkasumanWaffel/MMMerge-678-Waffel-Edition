@@ -1189,8 +1189,7 @@ GetBonusList(1328).Skills =	{	[const.Skills.Bow] = 5}
 								[const.Skills.Water] = 5,
 								[const.Skills.Earth] = 5}
 ]]
--- Hades
-GetBonusList(2035).Skills =	{	[const.Skills.DisarmTraps] = 10}
+-- Hades: Disarm Traps +10 now comes with its "of Thievery" bonus (MMMWE_Thievery.lua)
 
 -- Energy Shield: 30.10.26 no Meditation bonus, regeneration or resistances any more; the
 -- shield has its own capacity (MMMWE_EnergyShield.lua)
@@ -1565,6 +1564,8 @@ ItemSpcBonuses[2025] = {3, 59}
 --ItemSpcBonuses[2028] = {36}
 -- Pendragon
 ItemSpcBonuses[2030] = {35}
+-- Hades (MMMWE 15.11.26: "Thievery" as on Pendragon)
+ItemSpcBonuses[2035] = {35}
 -- Artemis
 --ItemSpcBonuses[2040] = {24}
 -- Aegis

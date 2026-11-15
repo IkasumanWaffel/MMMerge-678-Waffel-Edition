@@ -21,9 +21,9 @@ function GetStealingTotalSkill(player)
 	if result > 0 then
 		local level = SplitSkill(player.Skills[const.Skills.Stealing])
 		result = result + level * select(mastery, 0, 1, 2, 4)
-		if player:HasItemBonus(35) > 0 then
-			-- Has 'of Thievery' bonus
-			result = result * 2
+		-- MMMWE (15.11.26): 'of Thievery' adds skill points (MMMWE_Thievery.lua) instead of doubling
+		if Merge.Functions.ThieveryStealing then
+			result = result + Merge.Functions.ThieveryStealing(player)
 		end
 		result = result + select(mastery, 25, 30, 35, 40)
 	end
