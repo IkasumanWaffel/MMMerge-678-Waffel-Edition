@@ -231,3 +231,49 @@ def cover_side(spr, box, bod, body_off, waist_canvas, side='right'):
     if fill.any(): img=cv2.inpaint(img,fill.astype('uint8')*255,4,cv2.INPAINT_TELEA)
     out=np.where(M2[...,None],img,np.array([0,252,252])).astype('uint8')
     return Image.fromarray(out)
+
+def smooth_outline(spr, sigma=1.4, thr=0.5, dark_notch=True):
+    """stair steps and nicks of the outline: the mask is blurred and traced again; pixels it
+    adds take the colour of the cloth next to them"""
+    import cv2
+    a=np.asarray(spr).astype(np.uint8)
+    key=(a[...,0]<20)&(a[...,1]>230)&(a[...,2]>230)
+    M=~key
+    pad=6
+    Mp=np.pad(M.astype(float),pad)
+    Ms=ndimage.gaussian_filter(Mp,sigma)[pad:-pad,pad:-pad]>thr
+    Ms=ndimage.binary_fill_holes(Ms)
+    lab,n=ndimage.label(Ms)
+    if n>1:
+        sizes=ndimage.sum(Ms,lab,range(1,n+1)); Ms=lab==(1+int(np.argmax(sizes)))
+    add=Ms&~M
+    img=np.where(M[...,None],a,0).astype(np.uint8)
+    if add.any():
+        img=cv2.inpaint(img,add.astype(np.uint8)*255,3,cv2.INPAINT_TELEA)
+    if dark_notch:
+        # near-black specks on the outline (notches of shadow): the cloth's colour
+        lum=img.astype(int).sum(axis=2)
+        med=np.median(lum[Ms]) if Ms.any() else 300
+        edge=Ms&ndimage.binary_dilation(~Ms,iterations=2)
+        blk=edge&(lum<0.35*med)
+        if blk.any():
+            img=cv2.inpaint(img,blk.astype(np.uint8)*255,3,cv2.INPAINT_TELEA)
+    out=np.where(Ms[...,None],img,np.array([0,252,252],np.uint8)).astype(np.uint8)
+    return Image.fromarray(out)
+
+def diagonal_side(spr, waist_row, side='left', up=14, down=45):
+    """the hanging arm's side between the armpit and the skirt: cut along a straight line
+    from the body's edge above to the skirt's edge below (no steps, no cuff)"""
+    a=np.asarray(spr).copy()
+    key=(a[...,0]<20)&(a[...,1]>230)&(a[...,2]>230); M=~key; H,W=M.shape
+    r1=max(0,waist_row-up); r2=min(H-1,waist_row+down)
+    def edge(r):
+        xs=np.where(M[r])[0]
+        return (xs.min() if side=='left' else xs.max()) if len(xs) else None
+    e1,e2=edge(r1),edge(r2)
+    if e1 is None or e2 is None: return spr
+    for y in range(r1,r2+1):
+        t=(y-r1)/(r2-r1); lim=e1+(e2-e1)*t
+        if side=='left': a[y,:max(0,int(np.floor(lim)))]=(0,252,252)
+        else: a[y,int(np.ceil(lim))+1:]=(0,252,252)
+    return Image.fromarray(a)
