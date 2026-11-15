@@ -136,3 +136,45 @@ def cut_at_elbow(spr, box, bod, body_off, waist_canvas, side='right', margin=1):
                 y=elbow-1-k
                 if y>=0 and not key2[y,x]: a[y,x]=(a[y,x]*f).astype(int)
     return Image.fromarray(a.astype('uint8'))
+
+def cleanup(spr, waist_row, drop_blue=True, close=4, open_it=2):
+    """final pass: loose specks and slivers, holes under the arms, cuirass-blue leftovers,
+    the cyan fringe of the generated picture's background"""
+    import cv2
+    a=np.asarray(spr).astype(int)
+    key=(a[...,0]<20)&(a[...,1]>230)&(a[...,2]>230)
+    M=~key
+    # 1) the robe is the main body: slivers narrower than ~5 px that hang off it go
+    core=ndimage.binary_opening(M,iterations=open_it)
+    lab,n=ndimage.label(core)
+    if n:
+        sizes=ndimage.sum(core,lab,range(1,n+1)); core=lab==(1+int(np.argmax(sizes)))
+    M=ndimage.binary_dilation(core,iterations=open_it+1)&M
+    # 2) holes between the sleeves and the body (above the sash): closed and painted over
+    up=np.zeros_like(M); up[:waist_row]=True
+    closed=ndimage.binary_fill_holes(ndimage.binary_closing(M,structure=np.ones((3,3)),iterations=close))
+    add=closed&~M&up
+    paint=add.copy()
+    # 3) bluish leftovers of the cuirass (the robe has no blue)
+    if drop_blue:
+        blue=M&(a[...,2]>a[...,0]+18)&(a[...,2]>a[...,1]+8)
+        paint|=blue
+    M=M|add
+    img=np.where(M[...,None],a,0).astype('uint8')
+    if paint.any():
+        img=cv2.inpaint(img,paint.astype('uint8')*255,3,cv2.INPAINT_TELEA)
+    a=img.astype(int)
+    # 4) the cyan fringe: edge pixels tinted toward cyan take their inner neighbours' colour
+    edge=M&ndimage.binary_dilation(~M,iterations=1)
+    for it in range(2):
+        tint=edge&((a[...,1]-a[...,0]>12)&(a[...,2]-a[...,0]>12))
+        if not tint.any(): break
+        inner=M&~tint
+        for y,x in zip(*np.where(tint)):
+            y0,y1,x0,x1=max(0,y-2),y+3,max(0,x-2),x+3
+            nb=inner[y0:y1,x0:x1]
+            if nb.any(): a[y,x]=a[y0:y1,x0:x1][nb].mean(axis=0)
+            else: M[y,x]=False
+        edge=M&ndimage.binary_dilation(~M,iterations=1)
+    out=np.where(M[...,None],a,np.array([0,252,252])).astype('uint8')
+    return Image.fromarray(out)
