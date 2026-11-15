@@ -9,7 +9,7 @@ def fit(gen_path, ref_path, canvas, body, body_off, base, armor_off, waist, scal
     best=None
     rf=np.asarray(ref).astype(float)
     # register on the head: rows above the armor
-    hy0,hy1=(body_off[1])*scale, (armor_off[1]+10)*scale
+    hy0,hy1=(body_off[1])*scale, max(armor_off[1]+10, body_off[1]+45)*scale
     for sc in np.arange(0.96,1.045,0.01):
         gs=g.resize((int(W4*sc),int(H4*sc)),Image.LANCZOS)
         ga=np.asarray(gs).astype(float)

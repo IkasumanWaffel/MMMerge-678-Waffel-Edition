@@ -127,6 +127,13 @@ def cut_at_elbow(spr, box, bod, body_off, waist_canvas, side='right', margin=1):
     elbow=max(rows)+margin
     for y in range(elbow,min(H,waist_canvas-y0)):
         a[y,zone]=(0,252,252)
+    # an arm held out sideways: the sleeve ends where the body's arm ends
+    armx=np.where((B&zone[None,:]).any(axis=0))[0]
+    if len(armx):
+        endx=(armx.max()+margin+2) if side=='right' else (armx.min()-margin-2)
+        for y in range(min(H,waist_canvas-y0)):
+            if side=='right': a[y,endx+1:]=np.where(zone[endx+1:,None], (0,252,252), a[y,endx+1:])
+            else: a[y,:max(0,endx)]=np.where(zone[:max(0,endx),None], (0,252,252), a[y,:max(0,endx)])
     # the new edge a little darker, as the inside of the sleeve
     key2=(a[...,0]<20)&(a[...,1]>230)&(a[...,2]>230)
     for x in np.where(zone)[0]:
@@ -177,4 +184,50 @@ def cleanup(spr, waist_row, drop_blue=True, close=4, open_it=2):
             else: M[y,x]=False
         edge=M&ndimage.binary_dilation(~M,iterations=1)
     out=np.where(M[...,None],a,np.array([0,252,252])).astype('uint8')
+    return Image.fromarray(out)
+
+def cover_side(spr, box, bod, body_off, waist_canvas, side='right'):
+    """the doll's own side showing between the outstretched sleeve and the sash: cloth;
+    bright spike tips left at the cuff: gone"""
+    import cv2
+    a=np.asarray(spr).astype(int)
+    key=(a[...,0]<20)&(a[...,1]>230)&(a[...,2]>230); M=~key; H,W=M.shape
+    Bm=keymask(get(bod)); x0,y0=box[0],box[1]
+    B=np.zeros((H,W),bool); bh,bw=Bm.shape; dx=body_off[0]-x0; dy=body_off[1]-y0
+    for y in range(bh):
+        yy=y+dy
+        if 0<=yy<H:
+            xs=np.where(Bm[y])[0]+dx; xs=xs[(xs>=0)&(xs<W)]; B[yy,xs]=True
+    wy=waist_canvas-y0
+    ys,xs=np.where(M[:wy]); cx=(xs.min()+xs.max())/2; w=xs.max()-xs.min()
+    cols=np.arange(W); zone=(cols>cx-0.05*w) if side=='right' else (cols<cx+0.05*w)
+    show=B&~M; show[wy:]=False; show[:, ~zone]=False
+    # only below the sleeve: rows under the lowest sleeve pixel of each column
+    fill=np.zeros_like(show)
+    for x in np.where(show.any(axis=0))[0]:
+        top=np.where(M[:wy,x])[0]
+        if len(top):
+            fill[:wy,x]=show[:wy,x]&(np.arange(wy)>top.min())
+    fill=ndimage.binary_dilation(fill,iterations=1)&~M
+    fill[wy:]=False
+    # bright spike tips at the cuff end only (the last few columns of the sleeve)
+    lum=a.sum(axis=2)
+    if M.any():
+        xs_s=np.where((M[:wy]&zone[None,:]).any(axis=0))[0]
+        if len(xs_s):
+            endz=np.zeros_like(M)
+            if side=='right': endz[:wy, xs_s.max()-6:]=True
+            else: endz[:wy, :xs_s.min()+7]=True
+            bright=M&endz&(lum>np.percentile(lum[M],97))
+            a[bright]=(0,252,252); M=M&~bright
+    # cloth greener or bluer than the robe on that side (cuirass leftovers): repainted
+    off=M&((a[...,1]>a[...,0]+3)|(a[...,2]>a[...,0]+5)); off[wy:]=False; off[:, ~zone]=False
+    off=ndimage.binary_dilation(off,iterations=1)&M
+    off[wy:]=False
+    fill=fill|off
+    M2=M|fill
+    img=np.where(M2[...,None],a,0).astype('uint8')
+    img[fill]=0
+    if fill.any(): img=cv2.inpaint(img,fill.astype('uint8')*255,4,cv2.INPAINT_TELEA)
+    out=np.where(M2[...,None],img,np.array([0,252,252])).astype('uint8')
     return Image.fromarray(out)
