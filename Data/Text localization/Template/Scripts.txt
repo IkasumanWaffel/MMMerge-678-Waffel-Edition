@@ -925,6 +925,12 @@ Light resistance is drained
 # General/MMMWE_Drains.lua:228
 %s is drained	
 
+# General/MMMWE_EnchantItem.lua:264
+The ritual is flawed: %s	
+
+# General/MMMWE_EnchantItem.lua:268
+The ritual fails and the item breaks!	
+
 # General/MMMWE_EnchantScaling.lua:132
  Scales with weapon skill.	
 

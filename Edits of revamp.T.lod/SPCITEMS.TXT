@@ -155,6 +155,12 @@ A chance to slay a summoned monster with one blow.	of Banishing	2	2	2	0	0	0	0	0	
 Each blow opens the target to further physical blows.	of Sundering	1	4	0	0	0	0	0	0	0	0	0	0	1500	C	+5% physical damage taken per stack, 3 stacks, 10 s (MMMWE 15.11.26)
 Wands cast at +2 skill; weapon blows restore spell points.	Arcane	0	2	0	0	0	0	0	0	0	0	2	2	1500	C	+2 wand skill, 5% of weapon damage as SP (MMMWE 15.11.26)
 Returns 10% of melee damage to the attacker.	of Retribution	0	0	0	4	4	0	0	0	0	0	0	0	1500	C	10% of melee damage taken back to the attacker (MMMWE 15.11.26)
+The item wears out twice as fast.	Brittle	0	0	0	0	0	0	0	0	0	0	0	0	0	A	wear x2 - a flaw of a failed Enchant Item ritual, never in loot (MMMWE 15.11.26)
+-10 Luck; monsters single out the bearer more often.	Ill-omened	0	0	0	0	0	0	0	0	0	0	0	0	0	A	-10 Luck, threat x1.25 - a flaw of a failed Enchant Item ritual, never in loot (MMMWE 15.11.26)
+Drains a spell point every five minutes.	Draining	0	0	0	0	0	0	0	0	0	0	0	0	0	A	-1 SP / 5 min - a flaw of a failed Enchant Item ritual, never in loot (MMMWE 15.11.26)
+Weapons: slower recovery; other items: -5 Accuracy.	Unsteady	0	0	0	0	0	0	0	0	0	0	0	0	0	A	+5 recovery or -5 Accuracy - a flaw of a failed Enchant Item ritual, never in loot (MMMWE 15.11.26)
+-5 to all resistances.	Cursed	0	0	0	0	0	0	0	0	0	0	0	0	0	A	-5 all resistances - a flaw of a failed Enchant Item ritual, never in loot (MMMWE 15.11.26)
+The bearer gains less from healing.	Shadowed	0	0	0	0	0	0	0	0	0	0	0	0	0	A	healing x0.9 - a flaw of a failed Enchant Item ritual, never in loot (MMMWE 15.11.26)
 		
 		293	298	296	170	158	152	184	232	92	82	256	254			
 		
