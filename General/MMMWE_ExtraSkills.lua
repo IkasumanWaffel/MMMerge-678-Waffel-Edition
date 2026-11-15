@@ -55,7 +55,7 @@ local EXTRA = {
 	},
 	Descriptions = {
 		[41] = Tx"Fighting with a weapon in each hand. Any weapon in the off hand needs this skill (the Blaster skill still rules a second blaster pistol). With a weapon in each hand the skill adds to Attack: -10 plus 1 per point of skill. Below Master the off hand hits weaker and the attacks are slower; a Master wields two weapons as one would a single weapon; a Grand Master can hold a two-handed weapon in each hand.",
-		[42] = Tx"The art of fighting and casting in robes and plain clothes instead of armor. Works while no body armor is worn, or a robe; robes can only be worn with this skill. Robes give little armor of their own but carry spell points and the casters' stats.",
+		[42] = Tx"The art of fighting and casting in robes and plain clothes instead of armor. Works while no body armor is worn, or a robe; robes can only be worn with this skill. Robes give little armor of their own but carry spell points and the casters' stats. Worn with no other armor (a hat, a crown, a cloak or a shield are fine), a robe makes Stone Skin half again as strong.",
 		[43] = Tx"The craft of binding spells into wands, a caster's sidearm for when the spell points run out. Wands cast their spells at the Enchanting skill and rank of the one who uses them (the game's own wands: skill 8, Novice). A gem right-clicked on a wand refills it; a gem right-clicked on a blank wand sets it in, and a spell scroll right-clicked on a blank wand with a gem makes a wand of that spell: the dearer the gem, the more charges. Wands of spells cast on characters (healing, cures, flight and the like) are used by clicking a portrait with the wand.",
 	},
 	Normal = {

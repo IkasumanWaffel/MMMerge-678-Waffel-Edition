@@ -47,6 +47,8 @@ local S = {
 	RobeRecoveryPer = 0.01,   -- spell recovery per point (Expert+)
 	RobeSPMul  = 0.9,         -- Master+
 	RobeResPer = 1,           -- resistances per point (Grand Master)
+	RobeStoneskinMul = 1.5,   -- Stone Skin's physical resistance in a robe and no other armor (15.11.26)
+	RobeStoneskinCap = 0.75,  -- ... but never above this
 }
 MF.DualWieldRobeSettings = S
 
@@ -73,6 +75,38 @@ end
 function MF.RobeClothed(pl)
 	local num = itemNum(pl, pl.ItemArmor)
 	return not num or ROBES[num] ~= nil
+end
+
+-- a robe and no other armor: no gauntlets, belt or boots, and in the helm slot only a hat or
+-- a crown (ItemSubtypes 32, 33); a cloak and a shield do not count. Stone Skin then gives
+-- RobeStoneskinMul times its physical resistance (15.11.26). Stone Skin's power is armor class
+-- sized so that an unarmored character gets the spell's resistance p:
+-- damage x (205 - h) / (210 - h + AC), AC = (210p - 5) / (1 - p)  (SpellsExtra.lua, MMMWE_Main.lua)
+local HEADWEAR = {[32] = true, [33] = true}
+local function subtype(num)
+	local mt = Merge.Tables; local e = mt and mt.ItemsExtra and mt.ItemsExtra[num]
+	return e and e.Subtype or 0
+end
+function MF.RobeOnlyArmor(pl)
+	local num = itemNum(pl, pl.ItemArmor)
+	if not num or not ROBES[num] then return false end
+	if itemNum(pl, pl.ItemGauntlets) or itemNum(pl, pl.ItemBelt) or itemNum(pl, pl.ItemBoots) then
+		return false
+	end
+	local helm = itemNum(pl, pl.ItemHelm)
+	return not helm or HEADWEAR[subtype(helm)] == true
+end
+local function acOf(p) return (210 * p - 5) / (1 - p) end
+local function resOf(ac) return (ac + 5) / (ac + 210) end
+function MF.RobeStoneskinExtra(pl)
+	local b = pl.SpellBuffs[const.PlayerBuff.Stoneskin]
+	if not b or b.ExpireTime <= Game.Time or b.Power <= 0 or not MF.RobeOnlyArmor(pl) then return 0 end
+	local p = math.min(S.RobeStoneskinCap, resOf(b.Power) * S.RobeStoneskinMul)
+	return math.max(0, math.ceil(acOf(p) - b.Power))
+end
+function events.CalcStatBonusByMagic(t)
+	if t.Stat ~= const.Stats.ArmorClass or not t.Player then return end
+	t.Result = t.Result + MF.RobeStoneskinExtra(t.Player)
 end
 
 -- a robe needs the Robe skill (ItemsExtra.txt EquipReq "1" lets everyone else through)
