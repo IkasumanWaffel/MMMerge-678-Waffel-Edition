@@ -37,7 +37,7 @@ def downscale(big, s=4):
     num=(a*f[...,None]).reshape(h,s,w,s,3).sum(axis=(1,3)); den=f.reshape(h,s,w,s).sum(axis=(1,3))
     rgb=num/np.maximum(den,1)[...,None]
     return rgb, den/(s*s)
-def cut(big, base, bod, body_off, armor_off, waist, extra_torso=3, ref=None, tol=22, hang='left', hang_rows=40, out_room=6):
+def cut(big, base, bod, body_off, armor_off, waist, extra_torso=3, ref=None, tol=22, hang='left', hang_rows=40, out_room=6, same_from=None):
     rgb,alpha=downscale(big)
     same=None
     if ref is not None:
@@ -49,6 +49,7 @@ def cut(big, base, bod, body_off, armor_off, waist, extra_torso=3, ref=None, tol
         # the sash lies where the cuirass's belt was: never taken for a copy of it
         _wy=armor_off[1]+waist
         same[max(0,_wy-10):_wy+16,:]=False
+        if same_from is not None: same[:same_from,:]=False
         lab,n=ndimage.label(ndimage.binary_opening(same, iterations=1))
         if n:
             sizes=ndimage.sum(same,lab,range(1,n+1))

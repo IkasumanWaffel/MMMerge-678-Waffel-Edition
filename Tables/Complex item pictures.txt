@@ -61,7 +61,7 @@ Id	Item id	Notes		X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y
 59	2253	Magister's Robe		24	78	46	90	39	110	37	94	48	109
 60	2254	Archmage's Robe		24	78	43	90	39	110	37	94	46	109		
 61	2255	Vestments of the Archmagus		29	57	47	70	27	100	0	0	33	96		
-62	2256	Lichweave Shroud		29	57	47	70	27	100	0	0	33	96		
+62	2256	Lichweave Shroud		26	78	52	90	39	110	35	94	42	109		
 
 		Helms	Complex												
 1	109	Helm	x	87	28	73	41	74	44	77	42	72	67		

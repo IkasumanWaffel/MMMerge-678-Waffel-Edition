@@ -15,7 +15,7 @@ def build(k, gen_path, opts):
     big,best=fit(gen_path,REF+reff,None,bod,boff,base,aoff,waist)
     al=f'gen_{opts["tag"]}_{k}_x4.png'; big.save(al)
     W=aoff[1]+waist   # canvas row of the sash
-    spr,box=make(al,REF+reff,base,bod,boff,aoff,waist,hang_rows=0,tol=opts.get('tol',22))
+    spr,box=make(al,REF+reff,base,bod,boff,aoff,waist,hang_rows=0,tol=opts.get('tol',22),same_from=(None if opts.get('same_below') is None else int((aoff[1]+waist+opts['same_below']))))
     box=[int(x) for x in box]
     blue=opts.get('drop_blue',True); notch=opts.get('dark_notch',True)
     if k=='m':
