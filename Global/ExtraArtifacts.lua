@@ -1162,6 +1162,10 @@ do
 	GetBonusList(2256).Stats = {[S.SP] = 80, [S.Intellect] = 40, [S.Personality] = 40,        -- Lichweave Shroud (relic)
 		[S.DarkResistance] = 40, [S.Endurance] = -40, [S.LightResistance] = -30}
 end
+-- Nightwyrm Staff (relic of 15.11.26, the Lichweave Shroud's companion; the set bonus: MMMWE_Nightwyrm.lua)
+GetBonusList(2257).Stats = {	[const.Stats.Intellect] = 40, [const.Stats.DarkResistance] = 30,
+								[const.Stats.Personality] = -30, [const.Stats.BodyResistance] = -30}
+GetBonusList(2257).SpellBonus =	{[const.Skills.Dark] = true}
 -- Warhammers and the Warscythe of 07.11.26 (their on-hit effects are at the end)
 -- Rimefall
 GetBonusList(2225).Stats = {	[const.Stats.Endurance] = 25, [const.Stats.WaterResistance] = 30}
@@ -1785,6 +1789,11 @@ OnHitEffects[2227] = {
 		end
 	end}
 -- Warscythe: Energy damage, and the blow may arc to the nearest foe
+-- Nightwyrm Staff
+OnHitEffects[2257] = {
+	DamageKind	= const.Damage.Dark,
+	Add			= 15}
+
 OnHitEffects[2228] = {
 	DamageKind	= const.Damage.Energy,
 	Add			= 20,

@@ -1572,3 +1572,4 @@ Id	Note	Subtype	MatGroup	EquipReq	Equip2Req	Equip3Req	ContF	QCont	LostQBit	Start
 2254	Archmage's Robe	42		1			2,2,2
 2255	Vestments of the Archmagus	42		1			2,2,2
 2256	Lichweave Shroud	42		1			2,2,2
+2257	Nightwyrm Staff	17		B1			1,1,3
