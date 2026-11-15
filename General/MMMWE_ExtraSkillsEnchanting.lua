@@ -72,8 +72,10 @@ end
 -- the skill and rank a character's wands cast at
 local function wandSkill(pl)
 	local s, m = enchanting(pl)
-	if m <= 0 then return BASE_SKILL, 1 end
-	return max(s, BASE_SKILL), min(m, 4)
+	-- (15.11.26) an Arcane item adds to the wands' skill (MMMWE_NewEnchantments.lua)
+	local arcane = MF.ArcaneWandBonus and MF.ArcaneWandBonus(pl) or 0
+	if m <= 0 then return BASE_SKILL + arcane, 1 end
+	return max(s, BASE_SKILL) + arcane, min(m, 4)
 end
 MF.WandSkill = wandSkill
 

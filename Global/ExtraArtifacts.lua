@@ -104,7 +104,7 @@ function events.ItemGenerated(t)
 end
 
 function events.ArtifactGenerated(t)
-	-- FIXME?
+	-- an artifact not found yet; when all are found, a gem (items 177..186) instead
 	local cArts = GetNotFoundArts()
 	local orig_id = t.ItemId
 	if #cArts == 0 then
@@ -209,7 +209,7 @@ local MiscItemsEffects = {}
 
 -- Checks if player has an item in Inventory
 local function PlayerHasItem(player, item_num)
-	-- FIXME: check for item status?
+	-- (any copy in the backpack or worn, broken ones too)
 	if mem.call(0x43C0DA, 2, item_num, player["?ptr"], 0) % 256 == 1 then
 		return true
 	else
@@ -225,6 +225,11 @@ local function PartyHasItem(item_num)
 	end
 	return false
 end
+
+local PB = const.PartyBuff
+local ResistPartyBuffs = {[PB.AirResistance] = true, [PB.BodyResistance] = true,
+	[PB.EarthResistance] = true, [PB.FireResistance] = true, [PB.MindResistance] = true,
+	[PB.WaterResistance] = true}
 
 local function SetBuffs()
 
@@ -245,8 +250,9 @@ local function SetBuffs()
 				Buff.ExpireTime = Game.Time + TimerPeriod + const.Minute
 				Buff.Bits = 0
 				Buff.Caster = 50
-				-- FIXME: true for Resistances only
-				Buff.Power = skill * mas
+				-- the resistance buffs keep their amount in Power (skill x mastery); the other
+				-- party buffs (Shield, Wizard Eye, Water Walk, Feather Fall...) the skill (MMMWE 15.11.26)
+				Buff.Power = ResistPartyBuffs[k] and skill * mas or skill
 				Buff.Skill = mas
 				Buff.OverlayId = 0
 			end
@@ -1582,16 +1588,16 @@ ArrowProjectiles[1312] = 3030
 --------------------------------
 ---- On-hit item effects (only weapons)
 
--- FIXME: Monster positions seems to be a corner of the sprite.
---     Should be increased by half of the sprite size.
+-- A monster's Z is at its feet: aim at the middle of its body (MMMWE 15.11.26, was a FIXME)
 local function CastSpellTowardsMonster(Spell, Skill, Mastery, Monster)
+	local mz = Monster.Z + floor((Monster.BodyHeight or 100) / 2)
 	local dist_c = spell_distance / sqrt((Monster.X - Party.X) ^ 2 +
-		(Monster.Y - Party.Y) ^ 2 + (Monster.Z - Party.Z) ^ 2)
+		(Monster.Y - Party.Y) ^ 2 + (mz - Party.Z) ^ 2)
 	 evt.CastSpell(Spell, Mastery, Skill,
 		Monster.X - floor((Monster.X - Party.X) * dist_c),
 		Monster.Y - floor((Monster.Y - Party.Y) * dist_c),
-		Monster.Z - floor((Monster.Z - Party.Z) * dist_c),
-		Monster.X, Monster.Y, Monster.Z)
+		mz - floor((mz - Party.Z) * dist_c),
+		Monster.X, Monster.Y, mz)
 end
 -- Mournbringer
 OnHitEffects[545] = {

@@ -320,7 +320,7 @@ local function ProcessBolsterTxt()
 		for line in LineIt do
 			local Words = string.split(line, "\t")
 			if Words[1] and tonumber(Words[1]) then
-				-- FIXME: check NameId
+				-- by map and monster index (the monster's NameId isn't compared)
 				local map_id = tonumber(Words[2])
 				local idx = tonumber(Words[4])
 				MT.MapMonstersTxt[map_id] = MT.MapMonstersTxt[map_id] or {}
@@ -844,7 +844,7 @@ local function PrepareMapMon(mon, MapSettings, SpcMonId)
 
 end
 
--- FIXME: change "i"
+-- i: a MONSTERS.TXT id, or a table of ids (MonTable); OnlyThis: just that id; SpcMonId: a special monster
 local function PrepareTxtMon(i, PartyLevel, MapSettings, OnlyThis, SpcMonId)
 	if not Game.UseMonsterBolster or not TxtLocalized or PartyLevel < 0 or MapSettings.Type == 0 then
 		return
@@ -1019,7 +1019,7 @@ local function PrepareTxtMon(i, PartyLevel, MapSettings, OnlyThis, SpcMonId)
 
 		-- Move speed
 
-		-- FIXME?
+		-- MoveSpeed (an upvalue) is what the formulas see as env.MoveSpeed (ProcessFormula)
 		MoveSpeed = src.MoveSpeed
 		dst.MoveSpeed = ProcessFormula(MonKind, "MoveSpeed", src.MoveSpeed, ftype)
 
@@ -1030,7 +1030,7 @@ local function PrepareTxtMon(i, PartyLevel, MapSettings, OnlyThis, SpcMonId)
 			dst.Attack2.Missile 		= BolStep > 2 and (MonSettings.Magic == 0 and 1 or 6) or 0
 			dst.Attack2.Type 			= dst.Attack1.Type
 
-			-- FIXME
+			-- the new ranged attack hits as hard as the (already bolstered) melee attack
 			MaxDamage = GetMaxDamage(dst.Attack1)
 			SetAttackMaxDamage(dst.Attack2, MaxDamage)
 		end

@@ -338,6 +338,10 @@ local function pips(st, spec)
 	return "[" .. s .. "]"
 end
 
+-- (15.11.26) a Disruptor of this tier and more slays constructs (MF.BlasterSlays below)
+local SLAY_DISRUPTOR = 2
+local CONSTRUCT = 20
+
 -- the "Charges" line of a blaster's card (a format string: % doubled)
 function MF.BlasterCardText(ch, cell)
 	local st = view(ch, cell)
@@ -351,6 +355,13 @@ function MF.BlasterCardText(ch, cell)
 		SPEC_SHORT[1], pips(st, 1), SPEC_SHORT[2], pips(st, 2),
 		SPEC_SHORT[3], pips(st, 3), SPEC_SHORT[4], pips(st, 4),
 		st.Count, lim, st.Work, floor(st.Cell / 2))
+	.. (st.Tiers[3] >= SLAY_DISRUPTOR and Tx"\nDisruptor: double damage against constructs" or "")
+end
+
+-- (15.11.26) a Disruptor of tier SLAY_DISRUPTOR and more slays constructs: double damage
+function MF.BlasterSlays(gun, mon)
+	if not gun or not mon or Game.IsMonsterOfKind(mon.Id, CONSTRUCT) == 0 then return false end
+	return view(gun.Charges, gun.MaxCharges).Tiers[3] >= SLAY_DISRUPTOR
 end
 
 function MF.BlasterCardDamageMult(ch, num)

@@ -1834,6 +1834,8 @@ local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 				if MF.BlasterShotDamageMul then
 					t.Result = round(t.Result * MF.BlasterShotDamageMul(Pl, gun))
 				end
+				-- (15.11.26) a Disruptor of tier 2+ slays constructs (MMMWE_Blasters.lua)
+				if MF.BlasterSlays and MF.BlasterSlays(gun, t.Monster) then t.Result = t.Result * 2 end
 				-- the rifle's piercing bolt (from Master): a share of this hit on a neighbour
 				if MF.BlasterPierce then MF.BlasterPierce(Pl, t.Monster, t.Result) end
 

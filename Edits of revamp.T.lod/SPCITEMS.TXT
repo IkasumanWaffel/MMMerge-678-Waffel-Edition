@@ -148,8 +148,15 @@ Increases Learning Mastery	of Learning Mastery	0	0	0	0	0	0	2	2	0	0	2	2	3000	D	In
 +15 to Light and Dark Resistances	of Mirrored Path Repel	0	0	0	4	4	4	0	4	0	0	4	4	1500	C	+15 to Light and Dark Resistances
 +5% to Crit Chance and +25% to Crit Damage	of Lethal Strike	2	2	2	0	0	0	2	0	2	0	2	2	3000	D	+5% to Crit Chance and +25% to Crit Damage
 Double Damage vs. Constructs.	Construct Slaying	4	4	4	0	0	0	0	0	0	0	0	0	x2	B	"x2 damage on all Constructs (golems, gargoyles, droids and the like)." MMMWE 15.11.26
+Double Damage vs. Creatures.	of Pack Hunting	4	4	4	0	0	0	0	0	0	0	0	0	x2	B	x2 damage on all creatures (beasts, spiders, rats and the like) (MMMWE 15.11.26)
+Half damage from the undead and demons.	of the Exorcist	0	0	0	2	2	2	0	2	0	0	2	2	1500	C	half damage taken from undead and demons (MMMWE 15.11.26)
+A chance to slay a summoned monster with one blow.	of Banishing	2	2	2	0	0	0	0	0	0	0	0	0	2000	C	5% of hits slay a summoned monster (MMMWE 15.11.26)
++5 Perception skill and 10% more gold found.	Hunter's	0	0	0	0	0	0	2	2	0	2	2	2	1000	B	Perception +5, gold found x1.1 (MMMWE 15.11.26)
+Each blow opens the target to further physical blows.	of Sundering	1	4	0	0	0	0	0	0	0	0	0	0	1500	C	+5% physical damage taken per stack, 3 stacks, 10 s (MMMWE 15.11.26)
+Wands cast at +2 skill; weapon blows restore spell points.	Arcane	0	2	0	0	0	0	0	0	0	0	2	2	1500	C	+2 wand skill, 5% of weapon damage as SP (MMMWE 15.11.26)
+Returns 10% of melee damage to the attacker.	of Retribution	0	0	0	4	4	0	0	0	0	0	0	0	1500	C	10% of melee damage taken back to the attacker (MMMWE 15.11.26)
 		
-		286	286	290	164	152	150	182	228	92	80	250	248			
+		293	298	296	170	158	152	184	232	92	82	256	254			
 		
 Treasure Level	If treasure Level = 3 add all A and B															
 A= 3 to 4	If treasure Level = 4 add all A and B and C

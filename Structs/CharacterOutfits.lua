@@ -723,9 +723,8 @@ local function ProcessPortraitsTable()
 	mov edx, eax
 	pop eax
 	sub eax, edx
-	jns @f1 ; FIXME: compare with spc_minimal_cooldown
-	xor eax, eax ; FIXME
-	jmp @part2
+	jns @f1 ; a Speed bonus larger than the cooldown leaves none
+	xor eax, eax ; (MMMWE 15.11.26: the cooldown is written as "now", as for the other cooldown below)
 	@f1:
 	mov ecx, eax
 	call absolute ]] .. MO.Recv2Time .. [[;
@@ -776,7 +775,7 @@ local function ProcessPortraitsTable()
 	mov edx, eax
 	pop eax
 	sub eax, edx
-	jns @f2 ; FIXME: compare with spc_minimal_cooldown
+	jns @f2 ; a Speed bonus larger than the cooldown leaves none
 	xor eax, eax
 	@f2:
 	mov ecx, eax

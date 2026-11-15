@@ -235,14 +235,14 @@ function events.GameInitialized2()
 		local CurRace	= GetCharRace(Party[0])
 		local CurFace	= Party[0].Face
 
-		-- FIXME: HACK
-		-- force zombie to undead by majaczek
+		-- Settings: Character.ForceZombieToUndeadRace = 1 makes a zombie portrait an undead one
+		-- (by majaczek; the portrait table itself is changed)
 		if (Merge.Settings.Character.ForceZombieToUndeadRace == 1)
 			and (CurRace == const.Race.Zombie) then
 			CurRace = const.Race.Undead
 			Game.CharacterPortraits[Party[0].Face].Race = CurRace
 		end
-		-- endof FIXME
+		-- (end of the zombie to undead setting)
 
 		CurClass = CurClass + Step
 		if Step == 0 then

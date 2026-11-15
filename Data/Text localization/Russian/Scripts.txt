@@ -298,7 +298,7 @@ Capacitor	Конденсатор
 # General/MMMWE_Blasters.lua:76
 Disruptor	Разрядник
 
-# General/MMMWE_Blasters.lua:76, General/MMMWE_Blasters.lua:1092
+# General/MMMWE_Blasters.lua:76, General/MMMWE_Blasters.lua:1103
 Power cell	Энергоячейка
 
 # General/MMMWE_Blasters.lua:79
@@ -316,184 +316,187 @@ Capacity	Ёмкость
 # General/MMMWE_Blasters.lua:253
 energy shield	энергощит
 
-# General/MMMWE_Blasters.lua:350
+# General/MMMWE_Blasters.lua:354
 %s %s  %s %s\n%s %s  %s %s\nUpgrades: %d/%d   Work: %d%%%%\nCharge: %d%%%%	%s %s  %s %s\n%s %s  %s %s\nУлучшения: %d/%d   Работа: %d%%%%\nЗаряд: %d%%%%
 
-# General/MMMWE_Blasters.lua:370
+# General/MMMWE_Blasters.lua:358
+\nDisruptor: double damage against constructs	\nДизраптор: двойной урон по конструктам
+
+# General/MMMWE_Blasters.lua:381
 %s %s  %s %s\n%s %s  %s %s\nUpgrades: %d/%d   Work: %d%%%%\nCharge: %d%%%%%s	%s %s  %s %s\n%s %s  %s %s\nУлучшения: %d/%d   Работа: %d%%%%\nЗаряд: %d%%%%%s
 
-# General/MMMWE_Blasters.lua:377
+# General/MMMWE_Blasters.lua:388
 Board: empty	Плата: пусто
 
-# General/MMMWE_Blasters.lua:379
+# General/MMMWE_Blasters.lua:390
 Board: %s %d, %s %d, %s %d, %s %d   Work: %d%%%%	Плата: %s %d, %s %d, %s %d, %s %d   Работа: %d%%%%
 
-# General/MMMWE_Blasters.lua:423
+# General/MMMWE_Blasters.lua:434
 Stalt can't be refined any further.	Стальт нельзя очистить ещё сильнее.
 
-# General/MMMWE_Blasters.lua:427
+# General/MMMWE_Blasters.lua:438
 Smelting %s needs Repair %d (%s), %s has %d (%s).	Плавка (%s) требует Ремонта %d (%s), у %s — %d (%s).
 
-# General/MMMWE_Blasters.lua:428, General/MMMWE_Blasters.lua:429, General/MMMWE_Blasters.lua:465, General/MMMWE_Blasters.lua:508, General/MMMWE_Blasters.lua:541, General/MMMWE_Blasters.lua:598, General/MMMWE_CustomClasses.lua:145, General/MMMWE_CustomClasses.lua:522, General/MMMWE_SpellBookInfo.lua:19, Global/MMMWE_ExtraSkillTeachers.lua:45
+# General/MMMWE_Blasters.lua:439, General/MMMWE_Blasters.lua:440, General/MMMWE_Blasters.lua:476, General/MMMWE_Blasters.lua:519, General/MMMWE_Blasters.lua:552, General/MMMWE_Blasters.lua:609, General/MMMWE_CustomClasses.lua:145, General/MMMWE_CustomClasses.lua:522, General/MMMWE_SpellBookInfo.lua:19, Global/MMMWE_ExtraSkillTeachers.lua:45
 Novice	Новичок
 
-# General/MMMWE_Blasters.lua:428, General/MMMWE_Blasters.lua:429, General/MMMWE_Blasters.lua:465, General/MMMWE_Blasters.lua:508, General/MMMWE_Blasters.lua:541, General/MMMWE_Blasters.lua:598, General/MMMWE_CustomClasses.lua:145, General/MMMWE_CustomClasses.lua:522, General/MMMWE_SpellBookInfo.lua:19, Global/MMMWE_ExtraSkillTeachers.lua:45, Global/MMMWE_ExtraSkillTeachers.lua:46
+# General/MMMWE_Blasters.lua:439, General/MMMWE_Blasters.lua:440, General/MMMWE_Blasters.lua:476, General/MMMWE_Blasters.lua:519, General/MMMWE_Blasters.lua:552, General/MMMWE_Blasters.lua:609, General/MMMWE_CustomClasses.lua:145, General/MMMWE_CustomClasses.lua:522, General/MMMWE_SpellBookInfo.lua:19, Global/MMMWE_ExtraSkillTeachers.lua:45, Global/MMMWE_ExtraSkillTeachers.lua:46
 Expert	Эксперт
 
-# General/MMMWE_Blasters.lua:428, General/MMMWE_Blasters.lua:429, General/MMMWE_Blasters.lua:465, General/MMMWE_Blasters.lua:508, General/MMMWE_Blasters.lua:541, General/MMMWE_Blasters.lua:598, General/MMMWE_CustomClasses.lua:145, General/MMMWE_CustomClasses.lua:522, General/MMMWE_SpellBookInfo.lua:19, Global/MMMWE_ExtraSkillTeachers.lua:45, Global/MMMWE_ExtraSkillTeachers.lua:46
+# General/MMMWE_Blasters.lua:439, General/MMMWE_Blasters.lua:440, General/MMMWE_Blasters.lua:476, General/MMMWE_Blasters.lua:519, General/MMMWE_Blasters.lua:552, General/MMMWE_Blasters.lua:609, General/MMMWE_CustomClasses.lua:145, General/MMMWE_CustomClasses.lua:522, General/MMMWE_SpellBookInfo.lua:19, Global/MMMWE_ExtraSkillTeachers.lua:45, Global/MMMWE_ExtraSkillTeachers.lua:46
 Master	Мастер
 
-# General/MMMWE_Blasters.lua:428, General/MMMWE_Blasters.lua:429, General/MMMWE_Blasters.lua:465, General/MMMWE_Blasters.lua:508, General/MMMWE_Blasters.lua:541, General/MMMWE_Blasters.lua:598, General/MMMWE_CustomClasses.lua:145, General/MMMWE_CustomClasses.lua:522, General/MMMWE_SpellBookInfo.lua:19, Global/MMMWE_ExtraSkillTeachers.lua:45, Global/MMMWE_ExtraSkillTeachers.lua:46
+# General/MMMWE_Blasters.lua:439, General/MMMWE_Blasters.lua:440, General/MMMWE_Blasters.lua:476, General/MMMWE_Blasters.lua:519, General/MMMWE_Blasters.lua:552, General/MMMWE_Blasters.lua:609, General/MMMWE_CustomClasses.lua:145, General/MMMWE_CustomClasses.lua:522, General/MMMWE_SpellBookInfo.lua:19, Global/MMMWE_ExtraSkillTeachers.lua:45, Global/MMMWE_ExtraSkillTeachers.lua:46
 Grand Master	Грандмастер
 
-# General/MMMWE_Blasters.lua:429, General/MMMWE_CustomClassEditor.lua:637
+# General/MMMWE_Blasters.lua:440, General/MMMWE_CustomClassEditor.lua:637
 none	нет
 
-# General/MMMWE_Blasters.lua:434
+# General/MMMWE_Blasters.lua:445
 Smelting needs a second piece of %s ore in %s's backpack.	Для плавки нужен второй кусок руды (%s) в рюкзаке: %s.
 
-# General/MMMWE_Blasters.lua:438
+# General/MMMWE_Blasters.lua:449
 %s smelts two pieces into %s ore.	%s сплавляет два куска в руду: %s.
 
-# General/MMMWE_Blasters.lua:447, General/MMMWE_Blasters.lua:485
+# General/MMMWE_Blasters.lua:458, General/MMMWE_Blasters.lua:496
 Its board was sealed by the Heavenly Forge: it can't be upgraded.	Её плата запечатана Небесной кузней: улучшить нельзя.
 
-# General/MMMWE_Blasters.lua:448, General/MMMWE_Blasters.lua:487
+# General/MMMWE_Blasters.lua:459, General/MMMWE_Blasters.lua:498
 The blaster is broken.	Бластер сломан.
 
-# General/MMMWE_Blasters.lua:453
+# General/MMMWE_Blasters.lua:464
 This blaster is fully upgraded.	Этот бластер улучшен полностью.
 
-# General/MMMWE_Blasters.lua:455
+# General/MMMWE_Blasters.lua:466
 %s's Blaster mastery allows %d upgrades on a gun.	Владение бластером (%s) позволяет %d улучшений на оружии.
 
-# General/MMMWE_Blasters.lua:457
+# General/MMMWE_Blasters.lua:468
 The work is done. Install a gem to finish the upgrade.	Работа закончена. Вставьте самоцвет, чтобы завершить улучшение.
 
-# General/MMMWE_Blasters.lua:460
+# General/MMMWE_Blasters.lua:471
 This upgrade needs %s ore or better.	Для этого улучшения нужна руда не хуже: %s.
 
-# General/MMMWE_Blasters.lua:464
+# General/MMMWE_Blasters.lua:475
 Working %s ore needs Repair %d (%s).	Обработка руды (%s) требует Ремонта %d (%s).
 
-# General/MMMWE_Blasters.lua:471
+# General/MMMWE_Blasters.lua:482
 Work on the %s: %d%%	Работа над: %s — %d%%
 
-# General/MMMWE_Blasters.lua:486
+# General/MMMWE_Blasters.lua:497
 Hold a blaster in the main hand or wear an energy shield to install a gem.	Возьмите бластер в правую руку или наденьте энергощит, чтобы вставить самоцвет.
 
-# General/MMMWE_Blasters.lua:491
+# General/MMMWE_Blasters.lua:502
 This %s is fully upgraded.	Это устройство (%s) улучшено полностью.
 
-# General/MMMWE_Blasters.lua:493
+# General/MMMWE_Blasters.lua:504
 %s's Blaster mastery allows %d upgrades on a %s.	Владение бластером (%s) позволяет %d улучшений: %s.
 
-# General/MMMWE_Blasters.lua:497
+# General/MMMWE_Blasters.lua:508
 %s is already at tier 4.	%s уже на 4-м уровне.
 
-# General/MMMWE_Blasters.lua:499
+# General/MMMWE_Blasters.lua:510
 Work on the %s first: %d/100 (use ore).	Сначала работа над: %s — %d/100 (используйте руду).
 
-# General/MMMWE_Blasters.lua:503
+# General/MMMWE_Blasters.lua:514
 %s tier %d needs a gem worth %d or more.	%s уровня %d требует самоцвета ценой от %d.
 
-# General/MMMWE_Blasters.lua:507
+# General/MMMWE_Blasters.lua:518
 %s tier %d needs Repair at %s.	%s уровня %d требует Ремонта: %s.
 
-# General/MMMWE_Blasters.lua:517
+# General/MMMWE_Blasters.lua:528
 %s tier %d installed%s	%s уровня %d установлен%s
 
-# General/MMMWE_Blasters.lua:517
+# General/MMMWE_Blasters.lua:528
  - Fine work!	 — Отличная работа!
 
-# General/MMMWE_Blasters.lua:531
+# General/MMMWE_Blasters.lua:542
 Hold a blaster in the main hand (or wear an energy shield) to use the toolkit.	Возьмите бластер в правую руку (или наденьте энергощит), чтобы пользоваться набором инструментов.
 
-# General/MMMWE_Blasters.lua:532
+# General/MMMWE_Blasters.lua:543
 Its board was sealed by the Heavenly Forge: the toolkit can't open it.	Её плата запечатана Небесной кузней: набор инструментов её не откроет.
 
-# General/MMMWE_Blasters.lua:536
+# General/MMMWE_Blasters.lua:547
 There is no upgrade to remove.	Снимать нечего: улучшений нет.
 
-# General/MMMWE_Blasters.lua:540
+# General/MMMWE_Blasters.lua:551
 Removing %s tier %d needs Repair at %s.	Снятие (%s, уровень %d) требует Ремонта: %s.
 
-# General/MMMWE_Blasters.lua:547
+# General/MMMWE_Blasters.lua:558
 %s tier %d removed. The gem is lost.	%s уровня %d снят. Самоцвет утрачен.
 
-# General/MMMWE_Blasters.lua:551
+# General/MMMWE_Blasters.lua:562
 The toolkit moves boards between blasters only (Ctrl: remove the shield's last upgrade).	Набор инструментов переносит платы только между бластерами (Ctrl: снять последнее улучшение щита).
 
-# General/MMMWE_Blasters.lua:554
+# General/MMMWE_Blasters.lua:565
 The toolkit already holds a board.	В наборе инструментов уже есть плата.
 
-# General/MMMWE_Blasters.lua:559
+# General/MMMWE_Blasters.lua:570
 The upgrades are dismounted into the toolkit.	Улучшения сняты в набор инструментов.
 
-# General/MMMWE_Blasters.lua:568
+# General/MMMWE_Blasters.lua:579
 The upgrades are mounted onto the blaster.	Улучшения установлены на бластер.
 
-# General/MMMWE_Blasters.lua:571
+# General/MMMWE_Blasters.lua:582
 Neither the blaster nor the toolkit holds any upgrades.	Ни на бластере, ни в наборе нет улучшений.
 
-# General/MMMWE_Blasters.lua:589
+# General/MMMWE_Blasters.lua:600
 \n\nBlaster or shield upgrade: any spec up to tier %d (no key Emitter / Nova, Shift Capacitor / Recharge rate, Ctrl Disruptor / Recharge delay, Ctrl+Shift Power cell / Capacity).	\n\nУлучшение бластера или щита: любой параметр до уровня %d (без клавиши — Излучатель / Нова, Shift — Конденсатор / Скорость подзарядки, Ctrl — Разрядник / Задержка подзарядки, Ctrl+Shift — Энергоячейка / Ёмкость).
 
-# General/MMMWE_Blasters.lua:592
+# General/MMMWE_Blasters.lua:603
 \n\nUpgrade up to tier %d: %s on a blaster, %s on an energy shield.	\n\nУлучшение до уровня %d: %s на бластере, %s на энергощите.
 
-# General/MMMWE_Blasters.lua:597
+# General/MMMWE_Blasters.lua:608
 \n\nBlaster and shield upgrade work (needs Repair %d, %s).	\n\nРабота над улучшением бластера или щита (нужен Ремонт %d, %s).
 
-# General/MMMWE_Blasters.lua:599
+# General/MMMWE_Blasters.lua:610
  Two pieces can be smelted into %s ore.	 Два куска можно сплавить в руду: %s.
 
-# General/MMMWE_Blasters.lua:675
+# General/MMMWE_Blasters.lua:686
 %s's %s: power cell low (%d%%)	%s, %s: энергоячейка почти пуста (%d%%)
 
-# General/MMMWE_Blasters.lua:677
+# General/MMMWE_Blasters.lua:688
 %s's %s: power cell empty	%s, %s: энергоячейка пуста
 
-# General/MMMWE_Blasters.lua:835
+# General/MMMWE_Blasters.lua:846
 %s puts the left-hand blaster into the backpack	%s убирает бластер из левой руки в рюкзак
 
-# General/MMMWE_Blasters.lua:838
+# General/MMMWE_Blasters.lua:849
 %s has no room in the backpack for the left-hand blaster	У %s нет места в рюкзаке для бластера из левой руки
 
-# General/MMMWE_Blasters.lua:993
+# General/MMMWE_Blasters.lua:1004
 %s's blaster is out of power - %s bashes with it	Бластер (%s) разряжен — %s бьёт им
 
-# General/MMMWE_Blasters.lua:995
+# General/MMMWE_Blasters.lua:1006
 %s's blaster is out of power	Бластер (%s) разряжен
 
-# General/MMMWE_Blasters.lua:1011
+# General/MMMWE_Blasters.lua:1022
 right-hand blaster	бластер в правой руке
 
-# General/MMMWE_Blasters.lua:1019
+# General/MMMWE_Blasters.lua:1030
 left-hand blaster	бластер в левой руке
 
-# General/MMMWE_Blasters.lua:1092
+# General/MMMWE_Blasters.lua:1103
 Shield charge	Заряд щита
 
-# General/MMMWE_Blasters.lua:1202
+# General/MMMWE_Blasters.lua:1213
 %s put in stock (place %d of %d)	%s — в продаже (место %d из %d)
 
-# General/MMMWE_Blasters.lua:1229
+# General/MMMWE_Blasters.lua:1240
 Shop refilled: house %s, type %s	Лавка пополнена: дом %s, тип %s
 
-# General/MMMWE_Blasters.lua:1244
+# General/MMMWE_Blasters.lua:1255
 Weapon shop refilled: house %d, stock %s (%d changed)	Оружейная лавка пополнена: дом %d, товар %s (изменено %d)
 
-# General/MMMWE_Blasters.lua:1267
+# General/MMMWE_Blasters.lua:1278
 shop ore test off	проверка руды в лавках выключена
 
-# General/MMMWE_Blasters.lua:1272
+# General/MMMWE_Blasters.lua:1283
 shop ore test on: enter a blacksmith	проверка руды в лавках включена: зайдите к кузнецу
 
-# General/MMMWE_Blasters.lua:1279
+# General/MMMWE_Blasters.lua:1290
 no blaster in the main hand	в правой руке нет бластера
 
-# General/MMMWE_Blasters.lua:1283
+# General/MMMWE_Blasters.lua:1294
 %s: E%d C%d D%d P%d (levels %.1f/%.1f/%.1f/%.1f), order %s, work %d, cell %.1f%%, recovery %d, shots per cell %d	%s: E%d C%d D%d P%d (уровни %.1f/%.1f/%.1f/%.1f), порядок %s, работа %d, ячейка %.1f%%, восстановление %d, выстрелов на ячейку %d
 
 # General/MMMWE_Chests.lua:113 plural, English plural: %s spots %d hidden items!
@@ -610,10 +613,10 @@ click to buy one	щёлкните, чтобы купить
 # General/MMMWE_CustomClassEditor.lua:644
 %s, %d pts	%s, %d оч.
 
-# General/MMMWE_CustomClassEditor.lua:650, General/MMMWE_CustomClasses.lua:530, General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3465
+# General/MMMWE_CustomClassEditor.lua:650, General/MMMWE_CustomClasses.lua:530, General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3467
 Intellect	Интеллект
 
-# General/MMMWE_CustomClassEditor.lua:650, General/MMMWE_CustomClasses.lua:530, General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3465
+# General/MMMWE_CustomClassEditor.lua:650, General/MMMWE_CustomClasses.lua:530, General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3467
 Personality	Сила духа
 
 # General/MMMWE_CustomClassEditor.lua:650
@@ -883,19 +886,19 @@ can't read 	не удаётся прочитать
 # General/MMMWE_DamageKinds.lua:209
 Sla %d%%\nPie %d%%\nBlu %d%%	Руб %d%%\nКол %d%%\nДроб %d%%
 
-# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3465
+# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3467
 Might	Сила
 
-# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3465
+# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3467
 Endurance	Выносливость
 
-# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3465
+# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3467
 Accuracy	Меткость
 
-# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3465
+# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3467
 Speed	Скорость
 
-# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3465
+# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3467
 Luck	Удача
 
 # General/MMMWE_Drains.lua:168
@@ -1027,37 +1030,37 @@ A two-handed weapon may be held in each hand; two of them: off-hand damage 75%, 
 # General/MMMWE_ExtraSkills.lua:79
 Wands cast at Grand Master rank; a use costs no charge one time in four; refilling loses nothing	Жезлы творят заклинания с рангом Грандмастера; каждое четвёртое применение не тратит заряда; при зарядке ничего не теряется
 
-# General/MMMWE_ExtraSkillsEnchanting.lua:154
+# General/MMMWE_ExtraSkillsEnchanting.lua:156
 The wand has no charges left	В жезле не осталось зарядов
 
-# General/MMMWE_ExtraSkillsEnchanting.lua:166
+# General/MMMWE_ExtraSkillsEnchanting.lua:168
 The wand crumbles to dust	Жезл рассыпается в прах
 
-# General/MMMWE_ExtraSkillsEnchanting.lua:230, General/MMMWE_ExtraSkillsEnchanting.lua:255
+# General/MMMWE_ExtraSkillsEnchanting.lua:232, General/MMMWE_ExtraSkillsEnchanting.lua:257
 Making wands takes a Master of Enchanting	Чтобы делать жезлы, нужен Мастер зачарования
 
-# General/MMMWE_ExtraSkillsEnchanting.lua:231
+# General/MMMWE_ExtraSkillsEnchanting.lua:233
 The blank wand has a gem already	В заготовке жезла уже есть самоцвет
 
-# General/MMMWE_ExtraSkillsEnchanting.lua:235
+# General/MMMWE_ExtraSkillsEnchanting.lua:237
 %s sets the %s in the blank wand	%s вставляет «%s» в заготовку жезла
 
-# General/MMMWE_ExtraSkillsEnchanting.lua:241
+# General/MMMWE_ExtraSkillsEnchanting.lua:243
 Refilling wands takes an Expert in Enchanting	Чтобы заряжать жезлы, нужен Эксперт зачарования
 
-# General/MMMWE_ExtraSkillsEnchanting.lua:244
+# General/MMMWE_ExtraSkillsEnchanting.lua:246
 The wand is full	Жезл заряжен полностью
 
-# General/MMMWE_ExtraSkillsEnchanting.lua:249
+# General/MMMWE_ExtraSkillsEnchanting.lua:251
 %s refills the %s: %d charges	%s заряжает «%s»: зарядов — %d
 
-# General/MMMWE_ExtraSkillsEnchanting.lua:258
+# General/MMMWE_ExtraSkillsEnchanting.lua:260
 Set a gem in the blank wand first	Сначала вставьте в заготовку жезла самоцвет
 
-# General/MMMWE_ExtraSkillsEnchanting.lua:261
+# General/MMMWE_ExtraSkillsEnchanting.lua:263
 This spell can't be bound into a wand	Это заклинание нельзя заключить в жезл
 
-# General/MMMWE_ExtraSkillsEnchanting.lua:270
+# General/MMMWE_ExtraSkillsEnchanting.lua:272
 %s makes a %s with %d charges	%s делает «%s» с зарядами: %d
 
 # General/MMMWE_ForgeStory.lua:47
@@ -1570,7 +1573,7 @@ the whole party gains 10% more experience	весь отряд получает на 10% больше опыт
 # General/MMMWE_LegendaryPassives.lua:723
 %s refuses to fall!	%s не желает падать!
 
-# General/MMMWE_Main.lua:2982 plural, English plural: Holds %d items
+# General/MMMWE_Main.lua:2984 plural, English plural: Holds %d items
 Holds %d item	Внутри %d предмет|Внутри %d предмета|Внутри %d предметов
 
 # General/MMMWE_Main.lua:683
@@ -1585,127 +1588,127 @@ Dead	мёртв
 # General/MMMWE_Main.lua:1067
 %s loses %d %s from being %s	%s теряет %d (%s): %s
 
-# General/MMMWE_Main.lua:1875
+# General/MMMWE_Main.lua:1877
 %s eradicates %s	%s стирает в прах: %s
 
-# General/MMMWE_Main.lua:2079
+# General/MMMWE_Main.lua:2081
 %s dodges and strikes back!	%s уклоняется и бьёт в ответ!
 
-# General/MMMWE_Main.lua:2351
+# General/MMMWE_Main.lua:2353
 %s's shadow clone takes the blow!	Теневой двойник (%s) принимает удар!
 
-# General/MMMWE_Main.lua:2353
+# General/MMMWE_Main.lua:2355
 %s evades the attack!	%s уклоняется от атаки!
 
-# General/MMMWE_Main.lua:2534
+# General/MMMWE_Main.lua:2536
 %s dodges the attack!	%s увёртывается от атаки!
 
-# General/MMMWE_Main.lua:2537
+# General/MMMWE_Main.lua:2539
 %s takes %d %s damage (%d negated, %.1f%%)	%s получает %d урона (%s) (поглощено %d, %.1f%%)
 
-# General/MMMWE_Main.lua:2906, General/MMMWE_Main.lua:2909
+# General/MMMWE_Main.lua:2908, General/MMMWE_Main.lua:2911
 Type: %s \nDurability: %s	Тип: %s \nПрочность: %s
 
-# General/MMMWE_Main.lua:2911
+# General/MMMWE_Main.lua:2913
 Type: %s	Тип: %s
 
-# General/MMMWE_Main.lua:2917, General/MMMWE_Main.lua:2923
+# General/MMMWE_Main.lua:2919, General/MMMWE_Main.lua:2925
 %s: +%lu	%s: +%lu
 
-# General/MMMWE_Main.lua:2932
+# General/MMMWE_Main.lua:2934
 Armor: +%d   Block Power: %d%s (%s)	Броня: +%d   Сила блока: %d%s (%s)
 
-# General/MMMWE_Main.lua:2955
+# General/MMMWE_Main.lua:2957
 \nParry Power: %d%s	\nСила парирования: %d%s
 
-# General/MMMWE_Main.lua:2958, General/MMMWE_Main.lua:3042, General/MMMWE_Main.lua:3044, General/MMMWE_Main.lua:3048
+# General/MMMWE_Main.lua:2960, General/MMMWE_Main.lua:3044, General/MMMWE_Main.lua:3046, General/MMMWE_Main.lua:3050
 %s: +%d   %s: %dd%d	%s: +%d   %s: %dd%d
 
-# General/MMMWE_Main.lua:2967, General/MMMWE_Main.lua:3001
+# General/MMMWE_Main.lua:2969, General/MMMWE_Main.lua:3003
 %s: %lu	%s: %lu
 
-# General/MMMWE_Main.lua:2972
+# General/MMMWE_Main.lua:2974
 Steel: %d Siertal: %d Phylt: %d	Сталь: %d Сиертал: %d Филт: %d
 
-# General/MMMWE_Main.lua:2975
+# General/MMMWE_Main.lua:2977
 Kergar: %d Erudine: %d Stalt: %d	Кергар: %d Эрудин: %d Стальт: %d
 
-# General/MMMWE_Main.lua:2979
+# General/MMMWE_Main.lua:2981
 Bottles: %d	Бутылки: %d
 
-# General/MMMWE_Main.lua:2990
+# General/MMMWE_Main.lua:2992
 Ant: %d Jad: %d	Ант: %d Джад: %d
 
-# General/MMMWE_Main.lua:2993
+# General/MMMWE_Main.lua:2995
 Charges: %d of %d	Зарядов: %d из %d
 
-# General/MMMWE_Main.lua:2996
+# General/MMMWE_Main.lua:2998
 Gem: %s	Самоцвет: %s
 
-# General/MMMWE_Main.lua:2996
+# General/MMMWE_Main.lua:2998
 No gem set	Самоцвет не вставлен
 
-# General/MMMWE_Main.lua:2998
+# General/MMMWE_Main.lua:3000
 Enr: %d Ant: %d Jad: %d	Энр: %d Ант: %d Джад: %d
 
-# General/MMMWE_Main.lua:3017
+# General/MMMWE_Main.lua:3019
 Shoot: +%d    Damage: %d-%d	Стрельба: +%d    Урон: %d-%d
 
-# General/MMMWE_Main.lua:3225
+# General/MMMWE_Main.lua:3227
 Armor Class	Класс брони
 
-# General/MMMWE_Main.lua:3226
+# General/MMMWE_Main.lua:3228
 Condition (replaced by HR and Phys Res)	Состояние (заменено на HR и физ. сопр.)
 
-# General/MMMWE_Main.lua:3227
+# General/MMMWE_Main.lua:3229
 Quick spell (replaced by resistances and chances; 4 px higher for the Sla/Pie/Blu line)	Быстрое заклинание (заменено сопротивлениями и шансами; на 4 пикс. выше для строки Руб/Кол/Дроб)
 
-# General/MMMWE_Main.lua:3229
+# General/MMMWE_Main.lua:3231
 Melee damage	Урон в ближнем бою
 
-# General/MMMWE_Main.lua:3231
+# General/MMMWE_Main.lua:3233
 Ranged damage	Урон в дальнем бою
 
-# General/MMMWE_Main.lua:3234
+# General/MMMWE_Main.lua:3236
 Fire res	Сопр. огню
 
-# General/MMMWE_Main.lua:3235
+# General/MMMWE_Main.lua:3237
 Air res	Сопр. воздуху
 
-# General/MMMWE_Main.lua:3236
+# General/MMMWE_Main.lua:3238
 Water res	Сопр. воде
 
-# General/MMMWE_Main.lua:3237
+# General/MMMWE_Main.lua:3239
 Earth res	Сопр. земле
 
-# General/MMMWE_Main.lua:3238
+# General/MMMWE_Main.lua:3240
 Mind res	Сопр. разуму
 
-# General/MMMWE_Main.lua:3239
+# General/MMMWE_Main.lua:3241
 Body res	Сопр. телу
 
-# General/MMMWE_Main.lua:3988
+# General/MMMWE_Main.lua:3990
 Flight mode active. Remaining charge: %3.1f%%	Режим полёта включён. Остаток заряда: %3.1f%%
 
-# General/MMMWE_Main.lua:3992
+# General/MMMWE_Main.lua:3994
 WARNING! Low charge: %3.1f%%	ВНИМАНИЕ! Низкий заряд: %3.1f%%
 
-# General/MMMWE_Main.lua:3995
+# General/MMMWE_Main.lua:3997
 WARNING! Flight mode terminates in 5 minutes!	ВНИМАНИЕ! Режим полёта отключится через 5 минут!
 
-# General/MMMWE_Main.lua:4013
+# General/MMMWE_Main.lua:4015
 Tech mastery (%d/2) is insufficient to use this function	Владение техникой (%d/2) недостаточно для этой функции
 
-# General/MMMWE_Main.lua:4023
+# General/MMMWE_Main.lua:4025
 Remaining charge: %3.1f%%.	Остаток заряда: %3.1f%%.
 
-# General/MMMWE_Main.lua:4025, General/MMMWE_Main.lua:4049
+# General/MMMWE_Main.lua:4027, General/MMMWE_Main.lua:4051
 Device charge CRITICAL! Operation aborted	Заряд устройства КРИТИЧЕСКИЙ! Операция прервана
 
-# General/MMMWE_Main.lua:4043
+# General/MMMWE_Main.lua:4045
 Tech mastery (%d/3) is insufficient to use this function	Владение техникой (%d/3) недостаточно для этой функции
 
-# General/MMMWE_Main.lua:4061
+# General/MMMWE_Main.lua:4063
 Flight mode activated	Режим полёта включён
 
 # General/MMMWE_MonkBranches.lua:148
@@ -1809,6 +1812,9 @@ below the horizon	за горизонтом
 
 # General/MMMWE_Moon.lua:316
 ; skyline %.1f degrees	; линия горизонта %.1f градусов
+
+# General/MMMWE_NewEnchantments.lua:117
+%s banishes %s	%s изгоняет: %s
 
 # General/MMMWE_OverlaySettings.lua:42
 -- Waffel Edition overlay font sizes (the Extra Settings menu writes this file)\n	-- Waffel Edition overlay font sizes (the Extra Settings menu writes this file)\n

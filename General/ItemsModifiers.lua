@@ -202,28 +202,30 @@ local function ProcessItemsExtraFiles()
 		end
 		io.close(txt_table)
 	end
-	-- FIXME: replace magic number 8
-	MO.ItemSubtypes = StaticAlloc(8 * (subtype_max + 1))
+	-- one subtype record: i2 (unused), i2 MainSkill, u4 Flags (GetItemMainSkill / IsItemTwoHand
+	-- below shift the subtype by 3, so the size must stay 8)
+	local SUBTYPE_SIZE = 8
+	MO.ItemSubtypes = StaticAlloc(SUBTYPE_SIZE * (subtype_max + 1))
 	MT.ItemSubtypes = {}
 	for num = 0, subtype_max do
 		if item_subtypes[num] then
-			i2[MO.ItemSubtypes + 8 * num + 2] = item_subtypes[num].MainSkill
-			u4[MO.ItemSubtypes + 8 * num + 4] = item_subtypes[num].Flags
+			i2[MO.ItemSubtypes + SUBTYPE_SIZE * num + 2] = item_subtypes[num].MainSkill
+			u4[MO.ItemSubtypes + SUBTYPE_SIZE * num + 4] = item_subtypes[num].Flags
 		else
-			i2[MO.ItemSubtypes + 8 * num + 2] = -1
-			u4[MO.ItemSubtypes + 8 * num + 4] = 0
+			i2[MO.ItemSubtypes + SUBTYPE_SIZE * num + 2] = -1
+			u4[MO.ItemSubtypes + SUBTYPE_SIZE * num + 4] = 0
 		end
 		MT.ItemSubtypes[num] = {}
 		setmetatable(MT.ItemSubtypes[num], {
 			__index = function(tbl, key)
 				if item_subtype_fields_offsets[key] then
-					return mem[item_subtype_fields_types[key]][MO.ItemSubtypes + num * 8
+					return mem[item_subtype_fields_types[key]][MO.ItemSubtypes + num * SUBTYPE_SIZE
 						+ item_subtype_fields_offsets[key]]
 				end
 			end,
 			__newindex = function(tbl, key, value)
 				if item_subtype_fields_offsets[key] then
-					mem[item_subtype_fields_types[key]][MO.ItemSubtypes + num * 8
+					mem[item_subtype_fields_types[key]][MO.ItemSubtypes + num * SUBTYPE_SIZE
 						+ item_subtype_fields_offsets[key]] = value
 				else
 					rawset(tbl, key, value)
@@ -873,8 +875,20 @@ local function SetItemsModifiersHooks()
 	mov ecx, ebx
 	call absolute 0x436542
 	test eax, eax
-	jz @end
+	jz @pack
 	mov eax, 0x92
+	mov edx, ebx
+	call absolute ]] .. NewCode .. [[;
+	test eax, eax
+	jnz absolute 0x48C824
+	; MMMWE (15.11.26): of Pack Hunting (special bonus 147, monster kind 19: creatures)
+	@pack:
+	mov edx, 0x13
+	mov ecx, ebx
+	call absolute 0x436542
+	test eax, eax
+	jz @end
+	mov eax, 0x93
 	mov edx, ebx
 	call absolute ]] .. NewCode .. [[;
 	test eax, eax
@@ -1017,8 +1031,20 @@ local function SetItemsModifiersHooks()
 	mov ecx, esi
 	call absolute 0x436542
 	test eax, eax
-	jz @end
+	jz @pack
 	mov eax, 0x92
+	mov edx, esi
+	call absolute ]] .. NewCode .. [[;
+	test eax, eax
+	jnz absolute 0x48C93E
+	; MMMWE (15.11.26): of Pack Hunting (special bonus 147, monster kind 19: creatures)
+	@pack:
+	mov edx, 0x13
+	mov ecx, esi
+	call absolute 0x436542
+	test eax, eax
+	jz @end
+	mov eax, 0x93
 	mov edx, esi
 	call absolute ]] .. NewCode .. [[;
 	test eax, eax
@@ -1171,8 +1197,19 @@ local function SetItemsModifiersHooks()
 	mov ecx, dword ptr [ebp+8]
 	call absolute 0x436542
 	test eax, eax
-	jz @end
+	jz @pack
 	mov eax, 0x92
+	call absolute ]] .. NewCode .. [[;
+	test eax, eax
+	jnz absolute 0x48CB94
+	; MMMWE (15.11.26): of Pack Hunting (special bonus 147, monster kind 19: creatures)
+	@pack:
+	mov edx, 0x13
+	mov ecx, dword ptr [ebp+8]
+	call absolute 0x436542
+	test eax, eax
+	jz @end
+	mov eax, 0x93
 	call absolute ]] .. NewCode .. [[;
 	test eax, eax
 	jnz absolute 0x48CB94

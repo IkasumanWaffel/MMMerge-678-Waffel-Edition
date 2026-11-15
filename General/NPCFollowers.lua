@@ -641,13 +641,13 @@ local function NPCWillSpeak(npc)
 	local cFame	= NPCFollowers.GetPartyFame()
 	NPCExtra.Alignment = NPCExtra.Alignment or (math.random(1,2) == 1 and "G" or "E")
 
-	-- FIXME
+	-- a good follower won't join a party of bad repute, an evil one a party of good repute
 	if (NPCExtra.Alignment == "G" and rep_rank > 0 + rep_rank_shift)
 			or (NPCExtra.Alignment == "E" and rep_rank < -1) then
 		return false, "Rep"
 	end
 
-	-- FIXME
+	-- the personality asks for that much repute, good or bad (TradeMult: the reputation settings)
 	if math.abs(cRep) * (rep_set.TradeMult or 1) < PersSet.ReqRep then
 		return false, "LowRep"
 	end

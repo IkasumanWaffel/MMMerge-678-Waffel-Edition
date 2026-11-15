@@ -171,7 +171,7 @@ local function SetStealingHooks()
 					mem.copy(d.edi + 0x484 + item * 36, item_ptr, 36)
 					player.Items[item].Identified = 1
 					player.Items[item].Stolen = 1
-					-- FIXME
+					-- (the visit's loot and count: checkSession / newSession above)
 					stolen_this_session = (stolen_this_session or 0) + value
 					stolen_count = stolen_count + 1
 					-- Clear shop item
@@ -215,17 +215,16 @@ local function SetStealingHooks()
 				Party.SpellBuffs[11].Power=0
 				Party.SpellBuffs[11].Skill=0
 				if not (MF.LegendaryNoTheftReputation and MF.LegendaryNoTheftReputation(player)) then evt[0].Add{"Reputation", theftReputation(value) + 1} end
-				-- FIXME: StatusText isn't shown in shops
-				--Message(strformat(Game.GlobalTxt[376], player.Name))
 				result = result + 2
 				player:ShowFaceAnimation(9, 0)
-				Game.ShowStatusText(strformat(Game.GlobalTxt[376], player.Name))
+				-- the status line isn't drawn in houses: a message, as for an unnoticed failure (MMMWE 15.11.26)
+				Message(strformat(Game.GlobalTxt[376], player.Name))
 				local write_pos = GetHouseWritePos(GetCurrentHouse())
 				Game.ShopTheftExpireTime[write_pos] = Game.Time + ban_days * const.Day
 				Party.Fine = Party.Fine + (stolen_this_session or 0) + value + base_fine
 			else
 				if not (MF.LegendaryNoTheftReputation and MF.LegendaryNoTheftReputation(player)) then evt[0].Add{"Reputation", 1} end
-				-- FIXME: StatusText isn't shown in shops
+				-- (a message: the status line isn't drawn in houses)
 				Message(strformat(Game.GlobalTxt[377], player.Name))
 				player:ShowFaceAnimation(9, 0)
 			end

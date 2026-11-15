@@ -28,7 +28,7 @@ local D = const.Damage
 local floor, max, min, random = math.floor, math.max, math.min, math.random
 
 local C = {
-	SpecialChance = {[3] = 10, [4] = 20, [5] = 30, [6] = 50},   -- % for an elemental enchantment
+	SpecialChance = {[3] = 5, [4] = 10, [5] = 15, [6] = 25},   -- % for an elemental enchantment (halved 15.11.26, as rnditems.txt)
 	-- enchantment ranks (SPCITEMS.TXT Lvl A..D = 1..4) by treasure level
 	RankByStrength = {[3] = {1, 1}, [4] = {1, 2}, [5] = {2, 3}, [6] = {3, 4}},
 }

@@ -598,7 +598,7 @@ local function LoadUI(i)
 	mem.i4[0x4F39C0 + 3 * 4] = New.Char3X + New.SPBarXOffset - 1
 	mem.i4[0x4F39C0 + 4 * 4] = New.Char4X + New.SPBarXOffset - 1
 
-	mem.prot(true) -- FIXME: why is it protected?
+	mem.prot(true) -- 0x4E89C4 (the armory X positions) is in the read-only data section of the exe
 	mem.i4[0x4E89C4 + 0 * 4] = New.ArmoryX1
 	mem.i4[0x4E89C4 + 1 * 4] = New.ArmoryX2
 	mem.i4[0x4E89C4 + 2 * 4] = New.ArmoryX3

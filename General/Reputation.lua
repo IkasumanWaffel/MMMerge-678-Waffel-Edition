@@ -382,7 +382,7 @@ local function reputation_recalc(save)
 	local m1 = src.RepMap or 0
 	local m2 = src.RepCont or 0
 	local m3 = src.RepWorld or 0
-	-- FIXME
+	-- saved games made before map reputation existed have no Maps table
 	vars.GlobalReputation.Maps = vars.GlobalReputation.Maps or {}
 	local r1 = vars.GlobalReputation.Maps[MV.Map]
 	local r2 = vars.GlobalReputation.Continents[MV.Continent]
