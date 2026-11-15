@@ -37,11 +37,11 @@ def drop_skin(spr, minsize=6, side='left', frac=0.22):
     return Image.fromarray(out.astype('uint8'))
 
 
-def drop_fur(spr, waist_row, rb=28, rg=5, minsize=4):
+def drop_fur(spr, waist_row, rb=28, rg=5, minsize=4, gmax=130):
     """a furred doll (minotaur): the generated fur of the neck and the hand above the sash"""
     a=np.asarray(spr).astype(int); r,g,b=a[...,0],a[...,1],a[...,2]
     key=(r<20)&(g>230)&(b>230)
-    fur=(~key)&(r-b>rb)&(r>g+rg)
+    fur=(~key)&(r-b>rb)&(r>g+rg)&(g<gmax)
     fur[max(0,waist_row-3):,:]=False
     lab,n=ndimage.label(fur)
     out=a.copy()
@@ -186,7 +186,7 @@ def cleanup(spr, waist_row, drop_blue=True, close=4, open_it=2):
     out=np.where(M[...,None],a,np.array([0,252,252])).astype('uint8')
     return Image.fromarray(out)
 
-def cover_side(spr, box, bod, body_off, waist_canvas, side='right'):
+def cover_side(spr, box, bod, body_off, waist_canvas, side='right', recolor=True):
     """the doll's own side showing between the outstretched sleeve and the sash: cloth;
     bright spike tips left at the cuff: gone"""
     import cv2
@@ -222,6 +222,7 @@ def cover_side(spr, box, bod, body_off, waist_canvas, side='right'):
             a[bright]=(0,252,252); M=M&~bright
     # cloth greener or bluer than the robe on that side (cuirass leftovers): repainted
     off=M&((a[...,1]>a[...,0]+3)|(a[...,2]>a[...,0]+5)); off[wy:]=False; off[:, ~zone]=False
+    if not recolor: off[:]=False
     off=ndimage.binary_dilation(off,iterations=1)&M
     off[wy:]=False
     fill=fill|off

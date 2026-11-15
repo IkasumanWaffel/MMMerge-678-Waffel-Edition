@@ -46,6 +46,9 @@ def cut(big, base, bod, body_off, armor_off, waist, extra_torso=3, ref=None, tol
     CH,CW=alpha.shape
     fgm=alpha>=0.75
     if same is not None:
+        # the sash lies where the cuirass's belt was: never taken for a copy of it
+        _wy=armor_off[1]+waist
+        same[max(0,_wy-10):_wy+16,:]=False
         lab,n=ndimage.label(ndimage.binary_opening(same, iterations=1))
         if n:
             sizes=ndimage.sum(same,lab,range(1,n+1))
