@@ -94,7 +94,8 @@ local function addExtraLoot(id)
 
 	local pl, s, m = bestPerception()
 	if not pl then return end
-	local chance = math.min(LOOT.MaxChance, LOOT.BaseChance + LOOT.ChancePerPoint * s)
+	local chance = math.min(LOOT.MaxChance, LOOT.BaseChance + LOOT.ChancePerPoint * s
+		+ (MF.LuckFindBonus and MF.LuckFindBonus(pl) or 0))                -- MMMWE_Luck.lua
 	local level = treasureLevel() - 1 + math.floor(s / LOOT.PointsPerLevel) + (m >= 4 and 1 or 0)
 	level = math.max(1, math.min(6, level))
 
@@ -142,6 +143,7 @@ function events.GetDisarmTrapTotalSkill(t)
 		success = prev[2]
 	else
 		local chance = 50 + DISARM.PerPoint * (t.Result - need)
+			+ (MF.LuckDisarmBonus and MF.LuckDisarmBonus(t.Player) or 0)   -- MMMWE_Luck.lua
 		chance = math.max(DISARM.Min, math.min(DISARM.Max, chance))
 		success = math.random(100) <= chance
 		lastRoll[key] = {Game.Time, success}

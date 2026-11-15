@@ -178,7 +178,9 @@ local function enchant(caster, target, it, rank, skill, chance)
 	local q = quality(txt)
 	local ench = enchanting(caster)
 	local legend = isLegendary(caster, WATER)
-	chance = chance - C.TIER_PENALTY * tier(q) + ench
+	local luckChance, luckFlaw = 0, 0
+	if MF.LuckEnchantBonus then luckChance, luckFlaw = MF.LuckEnchantBonus(caster) end   -- MMMWE_Luck.lua
+	chance = chance - C.TIER_PENALTY * tier(q) + ench + luckChance
 	if random(100) > chance then
 		if q > skill + C.BREAK_GAP and random(100) <= C.BREAK_CHANCE then
 			it.Broken = true
@@ -217,7 +219,7 @@ local function enchant(caster, target, it, rank, skill, chance)
 	if usedGem and gemSlot then removeItem(caster, gemSlot) end
 
 	-- a flawed ritual
-	local flawChance = legend and 0 or (C.FLAW_BASE + C.FLAW_PER * max(0, q - skill) - ench)
+	local flawChance = legend and 0 or (C.FLAW_BASE + C.FLAW_PER * max(0, q - skill) - ench - luckFlaw)
 	local flaw
 	if flawChance > 0 and random(100) <= flawChance then
 		if special then

@@ -499,7 +499,7 @@ no blaster in the main hand
 # General/MMMWE_Blasters.lua:1294
 %s: E%d C%d D%d P%d (levels %.1f/%.1f/%.1f/%.1f), order %s, work %d, cell %.1f%%, recovery %d, shots per cell %d	
 
-# General/MMMWE_Chests.lua:113 plural, English plural: %s spots %d hidden items!
+# General/MMMWE_Chests.lua:114 plural, English plural: %s spots %d hidden items!
 %s spots %d hidden item!	
 
 # General/MMMWE_ConcurrentEnchantments.lua:695
@@ -925,10 +925,10 @@ Light resistance is drained
 # General/MMMWE_Drains.lua:228
 %s is drained	
 
-# General/MMMWE_EnchantItem.lua:264
+# General/MMMWE_EnchantItem.lua:266
 The ritual is flawed: %s	
 
-# General/MMMWE_EnchantItem.lua:268
+# General/MMMWE_EnchantItem.lua:270
 The ritual fails and the item breaks!	
 
 # General/MMMWE_EnchantScaling.lua:132

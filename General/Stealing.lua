@@ -61,6 +61,10 @@ function GetStealingTotalSkill(player)
 			result = result + Merge.Functions.ThieveryStealing(player)
 		end
 		result = result + select(mastery, 25, 30, 35, 40)
+		-- (MMMWE 15.11.26) a mild Luck bonus (MMMWE_Luck.lua)
+		if Merge.Functions.LuckStealBonus then
+			result = result + Merge.Functions.LuckStealBonus(player)
+		end
 	end
 	return result 
 end

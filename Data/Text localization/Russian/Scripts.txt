@@ -499,7 +499,7 @@ no blaster in the main hand	в правой руке нет бластера
 # General/MMMWE_Blasters.lua:1294
 %s: E%d C%d D%d P%d (levels %.1f/%.1f/%.1f/%.1f), order %s, work %d, cell %.1f%%, recovery %d, shots per cell %d	%s: E%d C%d D%d P%d (уровни %.1f/%.1f/%.1f/%.1f), порядок %s, работа %d, ячейка %.1f%%, восстановление %d, выстрелов на ячейку %d
 
-# General/MMMWE_Chests.lua:113 plural, English plural: %s spots %d hidden items!
+# General/MMMWE_Chests.lua:114 plural, English plural: %s spots %d hidden items!
 %s spots %d hidden item!	%s замечает %d спрятанный предмет!|%s замечает %d спрятанных предмета!|%s замечает %d спрятанных предметов!
 
 # General/MMMWE_ConcurrentEnchantments.lua:695
@@ -925,10 +925,10 @@ Light resistance is drained	сопротивление свету ослаблено
 # General/MMMWE_Drains.lua:228
 %s is drained	%s: ослаблено
 
-# General/MMMWE_EnchantItem.lua:264
+# General/MMMWE_EnchantItem.lua:266
 The ritual is flawed: %s	Ритуал прошёл с изъяном: %s
 
-# General/MMMWE_EnchantItem.lua:268
+# General/MMMWE_EnchantItem.lua:270
 The ritual fails and the item breaks!	Ритуал не удался, и предмет сломался!
 
 # General/MMMWE_EnchantScaling.lua:132
