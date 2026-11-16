@@ -106,7 +106,7 @@ Id	Item id	Notes		X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y
 40	2044	Odin	x	88	26	73	43	64	61	75	52	74	70		
 41	2214	VARN Officer's Visor	x	75	22	59	34	51	41	62	31	62	61		
 42	2224	Neural Crown	x	81	0	67	-5	0	0	77	12	65	40		
-43	2258	Hat of the Archmagus	x	76	17	65	37	60	45	58	41	66	66	
+43	2258	Hat of the Archmagus	x	74	11	63	30	58	40	56	35	64	60	
 
 		Belts	Complex												
 1	117	Leather Belt	x	64	147	68	151	55	194	58	182	61	190		
