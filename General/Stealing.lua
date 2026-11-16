@@ -18,6 +18,7 @@ local MonstersSource
 
 -- MMMWE (15.11.26): shop theft by the item's worth
 --   difficulty = max(ID/Rep/St, ceil(sqrt(value) / 2)) + WARINESS for every theft of this visit
+--   (value: the item's worth with its enchantments, 17.11.26)
 --   (about 5 at 100 gold, 16 at 1000, 50 at 10000, 87 at 30000; before: value / 100, 50 at most)
 --   a success costs 1 reputation up to 1000 gold, 2 up to 10000, 3 above; caught: one more;
 --   caught: the fine is what was stolen this visit + the item's price + the base fine
@@ -36,8 +37,15 @@ local function checkSession()
 	if house ~= session_house then newSession(house) end
 end
 
-local function stealDifficulty(item_txt)
-	local value = item_txt.Value
+-- (17.11.26) value: the item's own worth with its enchantments (the shop item at item_ptr);
+-- Items.txt's base value when it can't be read
+local function itemValue(item_ptr, item_txt)
+	local ok, v = pcall(function() return structs.Item:new(item_ptr):GetValue() end)
+	return ok and type(v) == "number" and v > 0 and v or item_txt.Value
+end
+
+local function stealDifficulty(item_txt, item_ptr)
+	local value = item_ptr and itemValue(item_ptr, item_txt) or item_txt.Value
 	local d = value > 0 and ceil(math.sqrt(value) / 2) or 0
 	return max(item_txt.IdRepSt, d) + stolen_count * WARINESS
 end
@@ -96,7 +104,7 @@ local function SetStealingHooks()
 			local player = Party:GetCurrentPlayer()
 			local stealing = GetStealingTotalSkill(player)
 			checkSession()
-			local bound = stealDifficulty(item_txt)
+			local bound = stealDifficulty(item_txt, item_ptr)
 			d.ecx = mem_cstring(chanceText(math.max(stealing - bound, 0)))
 		end
 	end)
@@ -107,7 +115,7 @@ local function SetStealingHooks()
 			local player = Party:GetCurrentPlayer()
 			local stealing = GetStealingTotalSkill(player)
 			checkSession()
-			local bound = stealDifficulty(item_txt)
+			local bound = stealDifficulty(item_txt, item_ptr)
 			d.ecx = mem_cstring(chanceText(math.max(stealing - bound, 0)))
 		end
 	end)
@@ -118,7 +126,7 @@ local function SetStealingHooks()
 			local player = Party:GetCurrentPlayer()
 			local stealing = GetStealingTotalSkill(player)
 			checkSession()
-			local bound = stealDifficulty(item_txt)
+			local bound = stealDifficulty(item_txt, item_ptr)
 			d.ecx = mem_cstring(chanceText(math.max(stealing - bound, 0)))
 		end
 	end)
@@ -129,7 +137,7 @@ local function SetStealingHooks()
 			local player = Party:GetCurrentPlayer()
 			local stealing = GetStealingTotalSkill(player)
 			checkSession()
-			local bound = stealDifficulty(item_txt)
+			local bound = stealDifficulty(item_txt, item_ptr)
 			d.ecx = mem_cstring(chanceText(math.max(stealing - bound, 0)))
 		end
 	end)
@@ -140,7 +148,7 @@ local function SetStealingHooks()
 			local player = Party:GetCurrentPlayer()
 			local stealing = GetStealingTotalSkill(player)
 			checkSession()
-			local bound = stealDifficulty(item_txt)
+			local bound = stealDifficulty(item_txt, item_ptr)
 			d.ecx = mem_cstring(chanceText(math.max(stealing - bound, 0)))
 		end
 	end)
@@ -161,7 +169,7 @@ local function SetStealingHooks()
 		local item_txt = Game.ItemsTxt[u4[item_ptr]]
 		checkSession()
 		local stealing = GetStealingTotalSkill(player)
-		local bound = stealDifficulty(item_txt)
+		local bound = stealDifficulty(item_txt, item_ptr)
 		if stealing - bound > 0 then
 			-- Try to steal
 			local rnd = random(100)--random(stealing + 1) - 1
