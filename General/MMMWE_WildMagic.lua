@@ -48,7 +48,7 @@ local W = {
 	MONSTER_DMG_TIER = 8,              -- tier x 8 + skill x 2 + 1d10
 	MONSTER_BUFF_TIME = 3,             -- minutes per tier
 	MESSAGE_RANGE = 5000,              -- monster messages within this distance of the party
-	MAX_LEVEL = 63,                    -- (17.11.26) a skill level has 6 bits; above it spills into the mastery bits (crash)
+	MAX_LEVEL = 255,                   -- the skill level limit (RemoveSkillValueLimits.lua: 0xFF, mastery from bit 10)
 }
 MF.WildMagicSettings = W
 
