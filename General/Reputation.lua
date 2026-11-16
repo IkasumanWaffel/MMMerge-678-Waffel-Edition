@@ -397,7 +397,7 @@ MF.ReputationDarkMap = dark_map
 
 -- the daily fading (15.11.26): bad repute fades by 1 point every BadDays days down to
 -- BadFloor, good repute by 1 point every GoodDays days up to GoodFloor; in between it stays
-local DECAY = {BadDays = 14, BadFloor = 5, GoodDays = 28, GoodFloor = -5}
+local DECAY = {BadDays = 28, BadFloor = 5, GoodDays = 56, GoodFloor = -5}   -- (16.11.26: twice as slow)
 local reputation_decay   -- below (the daily fading)
 MF.ReputationDecay = DECAY
 
@@ -640,6 +640,23 @@ hook(NewCode, function(d)
 	events.call("GetReputationRankStr", t)
 	d.eax = t.Ptr
 end)
+
+---------------------------------------
+-- (16.11.26) the party screen's Reputation line on a dark map: the game uses the turned-around value
+-- there (the evil repute counts as good), the line shows the party's own one, so an evil temple's
+-- donations read as notorious (red) while they count as good in the dark lands
+local DisplayReputation = asmproc([[
+call absolute 0x47603F
+nop
+nop
+nop
+nop
+nop
+retn]])
+hook(DisplayReputation + 5, function(d)
+	if dark_map() then d.eax = -d.eax end
+end)
+asmpatch(0x41AB72, "call absolute " .. DisplayReputation)
 
 ---------------------------------------
 -- Temple Donation events
@@ -1324,14 +1341,23 @@ MF.CalcDecRep = calc_dec_reputation
 
 -- (15.11.26) the daily fading of DECAY, for every day passed however it passed (walking,
 -- resting, travelling); the old per-table decay (MF.CalcDecRep) is no longer used here
-local function decay_value(rep, days)
+-- (16.11.26) on a dark map's own value (Antagarich keeps one per map) the evil repute is the good
+-- one there: it fades at the good repute's rate and the other way round
+local function decay_value(rep, days, dark)
 	if not rep then return rep end
+	local badDays, goodDays = DECAY.BadDays, DECAY.GoodDays
+	if dark then badDays, goodDays = goodDays, badDays end
 	if rep > DECAY.BadFloor then
-		rep = max(DECAY.BadFloor, rep - days / DECAY.BadDays)
+		rep = max(DECAY.BadFloor, rep - days / badDays)
 	elseif rep < DECAY.GoodFloor then
-		rep = min(DECAY.GoodFloor, rep + days / DECAY.GoodDays)
+		rep = min(DECAY.GoodFloor, rep + days / goodDays)
 	end
 	return rep
+end
+
+local function darkMapIndex(k)
+	local ok, name = pcall(function() return Game.MapStats[k].FileName end)
+	return ok and name and DARK_MAPS[string.lower(name)] or false
 end
 
 reputation_decay = function()
@@ -1342,10 +1368,11 @@ reputation_decay = function()
 	if not last or today <= last then return end
 	local days = today - last
 	local GR = vars.GlobalReputation
-	for _, tbl in ipairs{GR.Maps or {}, GR.Continents or {}} do
-		for k, rep in pairs(tbl) do
-			tbl[k] = decay_value(rep, days)
-		end
+	for k, rep in pairs(GR.Maps or {}) do
+		GR.Maps[k] = decay_value(rep, days, darkMapIndex(k))
+	end
+	for k, rep in pairs(GR.Continents or {}) do
+		GR.Continents[k] = decay_value(rep, days)
 	end
 	reputation_recalc(true)
 end
