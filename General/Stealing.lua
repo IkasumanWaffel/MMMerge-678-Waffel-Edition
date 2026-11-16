@@ -17,7 +17,8 @@ local stolen_this_session
 local MonstersSource
 
 -- MMMWE (15.11.26): shop theft by the item's worth
---   difficulty = max(ID/Rep/St, ceil(sqrt(value) / 2)) + WARINESS for every theft of this visit
+--   difficulty = ceil(sqrt(value) / 2) + WARINESS for every theft of this visit (17.11.26: the
+--   ID/Rep/St floor dropped, the price alone decides)
 --   (value: the item's worth with its enchantments, 17.11.26)
 --   (about 5 at 100 gold, 16 at 1000, 50 at 10000, 87 at 30000; before: value / 100, 50 at most)
 --   a success costs 1 reputation up to 1000 gold, 2 up to 10000, 3 above; caught: one more;
@@ -47,7 +48,7 @@ end
 local function stealDifficulty(item_txt, item_ptr)
 	local value = item_ptr and itemValue(item_ptr, item_txt) or item_txt.Value
 	local d = value > 0 and ceil(math.sqrt(value) / 2) or 0
-	return max(item_txt.IdRepSt, d) + stolen_count * WARINESS
+	return d + stolen_count * WARINESS   -- (17.11.26) by the price only, no ID/Rep/St floor
 end
 
 local function theftReputation(value)
