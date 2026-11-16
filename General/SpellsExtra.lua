@@ -811,6 +811,7 @@ local function SetSpellsExtraHooks()
 	nop
 	cmp edi, edx
 	pop edi
+	mov edi, dword ptr [ebp - 0x3C]
 	]], 0x426307 - 0x4262EC)
 	hook((new_code or 0x4262EC) + 0x35, function(d)
 		local t = {Spell = d.ecx, Roll = d.edx, Cursed = d.eax > 0,
@@ -840,11 +841,10 @@ local function SetSpellsExtraHooks()
 		events.call("SpellFailCheck", t)
 		d.edi = t.Chance
 		-- (15.11.26) a handler may raise the cast's skill level (a wild surge, MMMWE_WildMagic.lua)
-		-- the cast routine keeps the skill level in [ebp-0x3C] and in edi; edi is pushed by the patch
-		-- above and popped right after this hook, so its saved copy is at [esp] (16.11.26)
+		-- (17.11.26) the cast routine keeps the skill level in edi too: the patch above reloads it
+		-- from [ebp-0x3C] after the check (a write to the stack here hit a return address: a crash)
 		if t.Level ~= level and t.Level and t.Level > 0 then
 			u4[d.ebp - 0x3C] = t.Level
-			u4[d.esp] = t.Level
 		end
 	end)
 
