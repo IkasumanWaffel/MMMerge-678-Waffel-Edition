@@ -2900,7 +2900,7 @@ local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 	
 	-- 5 = Bow (bows and crossbows now have durability too)
 	local WItemSkills = {[0] = true, [1] = true, [2] = true, [3] = true, [4] = true, [5] = true, [6] = true, [8] = true}
-	local AItemSkills = {[9] = true, [10] = true, [11] = true}
+	local AItemSkills = {[9] = true, [10] = true, [11] = true, [33] = true, [42] = true}
 	
 	function DefineDurabilityString(ItNumber)
 		local item = Game.ItemsTxt[ItNumber]
@@ -3804,7 +3804,9 @@ local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 				and not (blkCond >= const.Condition.Paralyzed and blkCond <= const.Condition.Eradicated) then
 			local sS, sM = SplitSkill(Pl:GetSkill(const.Skills.Shield))
 			local offNum = getItemNum(Pl, offSlot)
-			BlockC = math.min(MF.ShieldBlockChance(offNum, sS, math.max(sM, 1)) * curseMult, 100)   -- MMMWE_Shields.lua
+			local blk = MF.ShieldBlockChance(offNum, sS, math.max(sM, 1))   -- MMMWE_Shields.lua
+			if MF.StanceDefendBonus then blk = blk + MF.StanceDefendBonus(Pl) end   -- Defensive stance (MMMWE_Resources.lua)
+			BlockC = math.min(blk * curseMult, 100)
 		end
 
 		local DodgeC = calcDodgeChanceUI(Pl, Pl.ItemArmor, Pl.ItemExtraHand) * curseMult

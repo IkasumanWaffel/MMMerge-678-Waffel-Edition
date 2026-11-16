@@ -224,17 +224,20 @@ function events.CalcStatBonusBySkills(t)
 		if mas >= 1 and MF.RobeClothed(pl) then
 			t.Result = t.Result + floor(lvl * (S.RobeACPer[mas] or 1))
 		end
-	else
-		local res = {[const.Stats.FireResistance] = 1, [const.Stats.AirResistance] = 1,
-			[const.Stats.WaterResistance] = 1, [const.Stats.EarthResistance] = 1,
-			[const.Stats.MindResistance] = 1, [const.Stats.BodyResistance] = 1,
-			[const.Stats.SpiritResistance or -1] = 1}
-		if res[t.Stat] then
-			local lvl, mas = skill(pl, ROBE)
-			if mas >= 4 and MF.RobeClothed(pl) then
-				t.Result = t.Result + floor(lvl * S.RobeResPer)
-			end
-		end
+	end
+end
+
+-- Grand Master Robe: Fire, Air, Water, Earth, Spirit, Mind and Body resistance (16.11.26: through
+-- GetRaceClassResistance, as Diamond Body does; the game never asks CalcStatBonusBySkills for them)
+local ROBE_RES = {[0] = true, [1] = true, [2] = true, [3] = true, [6] = true, [7] = true, [8] = true}
+function MF.RobeResBonus(pl)
+	local lvl, mas = skill(pl, ROBE)
+	if mas >= 4 and MF.RobeClothed(pl) then return floor(lvl * S.RobeResPer) end
+	return 0
+end
+function events.GetRaceClassResistance(t)
+	if t.Player and ROBE_RES[t.Resistance] then
+		t.Result = t.Result + MF.RobeResBonus(t.Player)
 	end
 end
 

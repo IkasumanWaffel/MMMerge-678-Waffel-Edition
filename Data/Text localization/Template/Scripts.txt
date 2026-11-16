@@ -1705,28 +1705,28 @@ Mind res
 # General/MMMWE_Main.lua:3241
 Body res	
 
-# General/MMMWE_Main.lua:3990
+# General/MMMWE_Main.lua:3992
 Flight mode active. Remaining charge: %3.1f%%	
 
-# General/MMMWE_Main.lua:3994
+# General/MMMWE_Main.lua:3996
 WARNING! Low charge: %3.1f%%	
 
-# General/MMMWE_Main.lua:3997
+# General/MMMWE_Main.lua:3999
 WARNING! Flight mode terminates in 5 minutes!	
 
-# General/MMMWE_Main.lua:4015
+# General/MMMWE_Main.lua:4017
 Tech mastery (%d/2) is insufficient to use this function	
 
-# General/MMMWE_Main.lua:4025
+# General/MMMWE_Main.lua:4027
 Remaining charge: %3.1f%%.	
 
-# General/MMMWE_Main.lua:4027, General/MMMWE_Main.lua:4051
+# General/MMMWE_Main.lua:4029, General/MMMWE_Main.lua:4053
 Device charge CRITICAL! Operation aborted	
 
-# General/MMMWE_Main.lua:4045
+# General/MMMWE_Main.lua:4047
 Tech mastery (%d/3) is insufficient to use this function	
 
-# General/MMMWE_Main.lua:4063
+# General/MMMWE_Main.lua:4065
 Flight mode activated	
 
 # General/MMMWE_MonkBranches.lua:151
@@ -2812,64 +2812,88 @@ Threat %d%%
 # General/MMMWE_UnarmedGM.lua:127
 %s strikes again!	
 
-# General/MMMWE_WildMagic.lua:164
+# General/MMMWE_WildMagic.lua:167
 Sparks and colours burst from %s's hands	
 
-# General/MMMWE_WildMagic.lua:175
-%s's spell rebounds on %s!	
+# General/MMMWE_WildMagic.lua:178
+%s's spell rebounds on %s! (%d damage)	
 
-# General/MMMWE_WildMagic.lua:179
+# General/MMMWE_WildMagic.lua:182
 %s feels strangely tipsy	
 
-# General/MMMWE_WildMagic.lua:183
+# General/MMMWE_WildMagic.lua:186
 %s falls into a magical slumber	
 
-# General/MMMWE_WildMagic.lua:187
+# General/MMMWE_WildMagic.lua:190
 %s ages a year in an instant	
 
-# General/MMMWE_WildMagic.lua:193
+# General/MMMWE_WildMagic.lua:196
 Gold coins rain on the party! (+%d)	
 
-# General/MMMWE_WildMagic.lua:197
+# General/MMMWE_WildMagic.lua:200
 Some of the party's gold vanishes! (-%d)	
 
-# General/MMMWE_WildMagic.lua:202
+# General/MMMWE_WildMagic.lua:205
 %s's spell points well up	
 
-# General/MMMWE_WildMagic.lua:211
+# General/MMMWE_WildMagic.lua:214
 %s's spell tears open a rift!	
 
-# General/MMMWE_WildMagic.lua:216
+# General/MMMWE_WildMagic.lua:219
 Some of the party's food turns to dust	
 
-# General/MMMWE_WildMagic.lua:239
+# General/MMMWE_WildMagic.lua:242
 Wild magic! %s loses control of the spell	
 
-# General/MMMWE_WildMagic.lua:243, General/MMMWE_WildMagic.lua:367
-%s's spell backfires!	
+# General/MMMWE_WildMagic.lua:250
+%s's spell backfires! (%d damage)	
 
-# General/MMMWE_WildMagic.lua:277, General/MMMWE_WildMagic.lua:394
-%s's spell surges with wild magic!	
+# General/MMMWE_WildMagic.lua:253
+%s's spell backfires! (cursed for %d minutes)	
 
-# General/MMMWE_WildMagic.lua:332
+# General/MMMWE_WildMagic.lua:256
+%s's spell backfires! (%s for %d minutes)	
+
+# General/MMMWE_WildMagic.lua:256
+insane	
+
+# General/MMMWE_WildMagic.lua:256
+afraid	
+
+# General/MMMWE_WildMagic.lua:261
+%s's spell backfires! (-%d spell points)	
+
+# General/MMMWE_WildMagic.lua:265
+%s's spell backfires! (%d damage, -%d Luck for %d minutes)	
+
+# General/MMMWE_WildMagic.lua:282
+%s's spell surges with wild magic! (+%d spell points back)	
+
+# General/MMMWE_WildMagic.lua:286, General/MMMWE_WildMagic.lua:405
+%s's spell surges with wild magic! (skill %d -> %d)	
+
+# General/MMMWE_WildMagic.lua:342
 %s burns out its magic	
 
-# General/MMMWE_WildMagic.lua:343
+# General/MMMWE_WildMagic.lua:353
 %s's spell rebounds on its allies	
 
-# General/MMMWE_WildMagic.lua:347
+# General/MMMWE_WildMagic.lua:357
 %s wanders off in a daze	
 
-# General/MMMWE_WildMagic.lua:351
+# General/MMMWE_WildMagic.lua:361
 %s draws strength from the wild magic	
 
-# General/MMMWE_WildMagic.lua:355
+# General/MMMWE_WildMagic.lua:365
 %s is healed by the wild magic	
 
-# General/MMMWE_WildMagic.lua:358
+# General/MMMWE_WildMagic.lua:368
 %s's spell bursts into harmless sparks	
 
-# General/MMMWE_WildMagic.lua:405
+# General/MMMWE_WildMagic.lua:377
+%s's spell backfires!	
+
+# General/MMMWE_WildMagic.lua:416
 %s's spell fizzles	
 
 # Global/MMMWE_CombatLog.lua:232

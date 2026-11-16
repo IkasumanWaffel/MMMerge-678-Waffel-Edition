@@ -542,33 +542,31 @@ local function SetSpellsExtraHooks()
 		local MS, MM = SplitSkill(Pl:GetSkill(math.floor(SpellNum / 11 - 1 / 11) + 12))
 		MM = math.max(MM, 1)
 
-		-- Spell mastery (1-4) by spell index in magic school
-		local idx = (SpellNum - 1) % 11
-		local rank
-		if idx < 4 then
-			rank = 1
-		elseif idx < 7 then
-			rank = 2
-		elseif idx < 10 then
-			rank = 3
-		else
-			rank = 4
+		-- (16.11.26) the same numbers as a real cast: the success chance from SpellsExtra.txt (as the
+		-- Spell fail check below), the cost and recovery through the SpellCostRecovery handlers (Robe,
+		-- legendary passives) and then the skill scaling and Haste of MO.SpellCostRecovery's hook
+		local castCh = 100
+		local SE = MT.SpellsExtra and MT.SpellsExtra[SpellNum]
+		if SE then
+			local cursed = Pl.Conditions[const.Condition.Cursed] > 0
+			castCh = math.min((SE.ChanceBase[MM] or 100) + (SE.ChanceFactor[MM] or 0) * MS,
+				cursed and (SE.ChanceCursed[MM] or 50) or (SE.ChanceMax[MM] or 100))
+			castCh = math.max(0, math.min(100, castCh))
 		end
 
-		local baseChance = 100 - rank * 20
-		local castCh
-
-		if Pl.Conditions[const.Condition.Cursed] > 0 then
-			castCh = (4 - rank) * 10 + 5 * MM
-		elseif rank == 1 then
-			castCh = math.min(baseChance + MS * MM, 100)
-		else
-			castCh = math.min(baseChance + MS * MM, math.min(baseChance + 20 * MM, 100))
+		local slot = 0
+		for i = 0, Party.count - 1 do
+			if Party[i]:GetIndex() == Pl:GetIndex() then slot = i break end
 		end
-
-		local ManaCost = Game.Spells[SpellNum].SpellPoints[MM] * (1 + SpellCostFactor(SpellNum) * MS * MM)
-		local BaseDelay = Game.Spells[SpellNum].Delay[MM]
-		local SpellRecovery = math.max(30, BaseDelay - BaseDelay*0.01*MS + BaseDelay*0.01*CalcSpellDelay(Pl, SpellNum))
+		local t = {Spell = SpellNum, SkillMastery = MM, Caster = slot + 35,
+			Cost = Game.Spells[SpellNum].SpellPoints[MM], Recovery = Game.Spells[SpellNum].Delay[MM]}
+		events.call("SpellCostRecovery", t)
+		local ManaCost = t.Cost * (1 + SpellCostFactor(SpellNum) * MS * MM)
+		local rec = t.Recovery - t.Recovery*0.01*MS + t.Recovery*0.01*CalcSpellDelay(Pl, SpellNum)
+		if Pl.SpellBuffs[const.PlayerBuff.Haste].ExpireTime > 0 or Party.SpellBuffs[const.PartyBuff.Haste].ExpireTime > 0 then
+			rec = rec * (1 - 0.01 * (MF.RecoverySettings and MF.RecoverySettings.HastePct or 25))
+		end
+		local SpellRecovery = math.floor(math.max(30, rec))
 
 		-- class resources (MMMWE_Resources.lua): the cost in the resource (Ki: a fifth)
 		local costName, cost = "SP", ManaCost
@@ -842,8 +840,11 @@ local function SetSpellsExtraHooks()
 		events.call("SpellFailCheck", t)
 		d.edi = t.Chance
 		-- (15.11.26) a handler may raise the cast's skill level (a wild surge, MMMWE_WildMagic.lua)
+		-- the cast routine keeps the skill level in [ebp-0x3C] and in edi; edi is pushed by the patch
+		-- above and popped right after this hook, so its saved copy is at [esp] (16.11.26)
 		if t.Level ~= level and t.Level and t.Level > 0 then
 			u4[d.ebp - 0x3C] = t.Level
+			u4[d.esp] = t.Level
 		end
 	end)
 

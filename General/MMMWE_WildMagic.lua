@@ -32,6 +32,7 @@
 --]]
 
 local MF = Merge.Functions
+local Tx = MF.Text
 local floor, ceil, max, min, random, sqrt = math.floor, math.ceil, math.max, math.min, math.random, math.sqrt
 local C, D = const.Condition, const.Damage
 local MB = const.MonsterBuff
@@ -135,12 +136,14 @@ end
 
 -- damage of an element; out of Hardcore mode it leaves at least 1 HP
 local function hurt(pl, dmg, kind)
-	if dmg <= 0 or pl.Conditions[C.Dead] ~= 0 or pl.Conditions[C.Eradicated] ~= 0 then return end
+	if dmg <= 0 or pl.Conditions[C.Dead] ~= 0 or pl.Conditions[C.Eradicated] ~= 0 then return 0 end
 	if not hardcore() then
 		dmg = min(dmg, pl.HP - 1)       -- resistances can only lower it
-		if dmg <= 0 then return end
+		if dmg <= 0 then return 0 end
 	end
+	local before = pl.HP
 	pl:DoDamage(dmg, kind)
+	return max(0, before - pl.HP)       -- what was lost after resistances
 end
 
 local function backfireDamage(tr)
@@ -171,8 +174,8 @@ local playerTable = {
 			if p ~= pl and p:IsConscious() then others[#others + 1] = p end
 		end
 		local target = #others > 0 and others[random(#others)] or pl
-		hurt(target, backfireDamage(tr), SCHOOL_DAMAGE[school(spell)])
-		say(Tx"%s's spell rebounds on %s!", pl.Name, target.Name)
+		local lost = hurt(target, backfireDamage(tr), SCHOOL_DAMAGE[school(spell)])
+		say(Tx"%s's spell rebounds on %s! (%d damage)", pl.Name, target.Name, lost)
 	end},
 	{w = 2, f = function(pl, spell, tr)
 		timedCondition(pl, C.Drunk, tr * W.COND_TIME)
@@ -240,21 +243,26 @@ local function playerBackfire(pl, spell, mastery)
 		pick(playerTable).f(pl, spell, tr)
 		return
 	end
-	say(Tx"%s's spell backfires!", pl.Name)
 	local minutes = tr * W.COND_TIME
 	if sc <= 4 or sc == 7 then
-		hurt(pl, backfireDamage(tr), SCHOOL_DAMAGE[sc])
+		local lost = hurt(pl, backfireDamage(tr), SCHOOL_DAMAGE[sc])
 		if sc == 7 then timedCondition(pl, tr >= 4 and C.Poison1 or C.Weak, minutes) end
+		say(Tx"%s's spell backfires! (%d damage)", pl.Name, lost)
 	elseif sc == 5 then
 		timedCondition(pl, C.Cursed, minutes)
+		say(Tx"%s's spell backfires! (cursed for %d minutes)", pl.Name, minutes)
 	elseif sc == 6 then
 		timedCondition(pl, tr >= 4 and C.Insane or C.Afraid, minutes)
+		say(Tx"%s's spell backfires! (%s for %d minutes)", pl.Name, tr >= 4 and Tx"insane" or Tx"afraid", minutes)
 	elseif sc == 8 then
 		local cost = Game.Spells[spell].SpellPoints[max(1, mastery)] or 0
-		pl.SP = max(0, pl.SP - ceil(cost / 2))
+		local drained = min(pl.SP, ceil(cost / 2))
+		pl.SP = pl.SP - drained
+		say(Tx"%s's spell backfires! (-%d spell points)", pl.Name, drained)
 	else
-		hurt(pl, backfireDamage(tr), D.Dark)
+		local lost = hurt(pl, backfireDamage(tr), D.Dark)
 		darkDrain(pl, minutes)
+		say(Tx"%s's spell backfires! (%d damage, -%d Luck for %d minutes)", pl.Name, lost, -W.DARK_LUCK, minutes)
 	end
 end
 
@@ -271,10 +279,12 @@ function events.SpellFailCheck(t)
 		if REFUND[spell] then
 			local cost = Game.Spells[spell].SpellPoints[max(1, t.Mastery)] or 0
 			pl.SP = pl.SP + floor(cost / 2)
+			say(Tx"%s's spell surges with wild magic! (+%d spell points back)", pl.Name, floor(cost / 2))
 		else
+			local was = t.Level
 			t.Level = max(t.Level + W.SURGE_MIN, floor(t.Level * W.SURGE_LEVEL))
+			say(Tx"%s's spell surges with wild magic! (skill %d -> %d)", pl.Name, was, t.Level)
 		end
-		say(Tx"%s's spell surges with wild magic!", pl.Name)
 		pl:ShowFaceAnimation(const.FaceAnimation.LearnSpell)
 		return
 	end
@@ -298,8 +308,8 @@ local function nearParty(mon)
 	return sqrt(dx*dx + dy*dy + dz*dz) <= W.MESSAGE_RANGE
 end
 
-local function monSay(mon, fmt)
-	if nearParty(mon) then say(fmt, monName(mon)) end
+local function monSay(mon, fmt, ...)
+	if nearParty(mon) then say(fmt, monName(mon), ...) end
 end
 
 local function buffed(mon, b)
@@ -391,8 +401,9 @@ function events.MonsterCastSpell(t)
 	if r <= chance then
 		if NO_SURGE[spell] or REFUND[spell] then return end
 		if roll(W.SURGE_BASE + (100 - chance) / W.SURGE_RISK) then
-			monSay(mon, Tx"%s's spell surges with wild magic!")
-			t.CallDefault(nil, JoinSkill(max(skill + W.SURGE_MIN, floor(skill * W.SURGE_LEVEL)), mastery))
+			local surged = max(skill + W.SURGE_MIN, floor(skill * W.SURGE_LEVEL))
+			monSay(mon, Tx"%s's spell surges with wild magic! (skill %d -> %d)", skill, surged)
+			t.CallDefault(nil, JoinSkill(surged, mastery))
 		end
 		return
 	end
