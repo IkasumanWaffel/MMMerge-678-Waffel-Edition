@@ -87,6 +87,12 @@ local function subtype(num)
 	local mt = Merge.Tables; local e = mt and mt.ItemsExtra and mt.ItemsExtra[num]
 	return e and e.Subtype or 0
 end
+-- (16.11.26) most hats and crowns leave ItemsExtra's Subtype empty: their unidentified name tells
+local function isHeadwear(num)
+	if HEADWEAR[subtype(num)] then return true end
+	local n = string.lower(Game.ItemsTxt[num].NotIdentifiedName or "")
+	return n:find("hat") ~= nil or n:find("cap") ~= nil or n:find("crown") ~= nil
+end
 function MF.RobeOnlyArmor(pl)
 	local num = itemNum(pl, pl.ItemArmor)
 	if not num or not ROBES[num] then return false end
@@ -94,7 +100,7 @@ function MF.RobeOnlyArmor(pl)
 		return false
 	end
 	local helm = itemNum(pl, pl.ItemHelm)
-	return not helm or HEADWEAR[subtype(helm)] == true
+	return not helm or isHeadwear(helm)
 end
 local function acOf(p) return (210 * p - 5) / (1 - p) end
 local function resOf(ac) return (ac + 5) / (ac + 210) end

@@ -1166,6 +1166,9 @@ end
 GetBonusList(2257).Stats = {	[const.Stats.Intellect] = 40, [const.Stats.DarkResistance] = 30,
 								[const.Stats.Personality] = -30, [const.Stats.BodyResistance] = -30}
 GetBonusList(2257).SpellBonus =	{[const.Skills.Dark] = true}
+-- Hat of the Archmagus (artifact of 16.11.26, the Vestments' companion; the set bonus: MMMWE_ArchmagusSet.lua)
+GetBonusList(2258).Stats = {	[const.Stats.Intellect] = 20, [const.Stats.Personality] = 20,
+								[const.Stats.MindResistance] = 20}
 -- Warhammers and the Warscythe of 07.11.26 (their on-hit effects are at the end)
 -- Rimefall
 GetBonusList(2225).Stats = {	[const.Stats.Endurance] = 25, [const.Stats.WaterResistance] = 30}
