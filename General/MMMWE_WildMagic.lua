@@ -48,6 +48,7 @@ local W = {
 	MONSTER_DMG_TIER = 8,              -- tier x 8 + skill x 2 + 1d10
 	MONSTER_BUFF_TIME = 3,             -- minutes per tier
 	MESSAGE_RANGE = 5000,              -- monster messages within this distance of the party
+	MAX_LEVEL = 63,                    -- (17.11.26) a skill level has 6 bits; above it spills into the mastery bits (crash)
 }
 MF.WildMagicSettings = W
 
@@ -282,7 +283,7 @@ function events.SpellFailCheck(t)
 			say(Tx"%s's spell surges with wild magic! (+%d spell points back)", pl.Name, floor(cost / 2))
 		else
 			local was = t.Level
-			t.Level = max(t.Level + W.SURGE_MIN, floor(t.Level * W.SURGE_LEVEL))
+			t.Level = min(W.MAX_LEVEL, max(t.Level + W.SURGE_MIN, floor(t.Level * W.SURGE_LEVEL)))
 			say(Tx"%s's spell surges with wild magic! (skill %d -> %d)", pl.Name, was, t.Level)
 		end
 		pl:ShowFaceAnimation(const.FaceAnimation.LearnSpell)
@@ -401,7 +402,7 @@ function events.MonsterCastSpell(t)
 	if r <= chance then
 		if NO_SURGE[spell] or REFUND[spell] then return end
 		if roll(W.SURGE_BASE + (100 - chance) / W.SURGE_RISK) then
-			local surged = max(skill + W.SURGE_MIN, floor(skill * W.SURGE_LEVEL))
+			local surged = min(W.MAX_LEVEL, max(skill + W.SURGE_MIN, floor(skill * W.SURGE_LEVEL)))
 			monSay(mon, Tx"%s's spell surges with wild magic! (skill %d -> %d)", skill, surged)
 			t.CallDefault(nil, JoinSkill(surged, mastery))
 		end
