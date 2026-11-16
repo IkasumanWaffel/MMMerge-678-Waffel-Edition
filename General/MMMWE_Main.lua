@@ -2901,12 +2901,15 @@ local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 	-- 5 = Bow (bows and crossbows now have durability too)
 	local WItemSkills = {[0] = true, [1] = true, [2] = true, [3] = true, [4] = true, [5] = true, [6] = true, [8] = true}
 	local AItemSkills = {[9] = true, [10] = true, [11] = true, [33] = true, [42] = true}
+	local ArmorSlotWears = {[3] = true, [5] = true, [6] = true, [8] = true, [9] = true}
 	
 	function DefineDurabilityString(ItNumber)
 		local item = Game.ItemsTxt[ItNumber]
 		if WItemSkills[item.Skill] then
 			return cachedCstring(string.format(Tx"Type: %s \nDurability: %s", EqType, durLine(ItNumber)))
-		elseif AItemSkills[item.Skill] then
+		-- (16.11.26) every piece that wears (MMMWE_ItemDurability.lua groups them by slot: body armor,
+		-- helm, belt, gauntlets, boots), not only Leather / Chain / Plate: robes, hats, crowns too
+		elseif AItemSkills[item.Skill] or ArmorSlotWears[item.EquipStat] then
 			local divisor = item.EquipStat == 3 and 1 or 2
 			return cachedCstring(string.format(Tx"Type: %s \nDurability: %s", EqType, durLine(ItNumber, divisor)))
 		end
