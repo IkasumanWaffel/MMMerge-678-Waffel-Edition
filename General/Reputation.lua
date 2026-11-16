@@ -386,6 +386,7 @@ local DARK_MAPS = {
 	["out06.odm"] = true, ["d19.blv"] = true,                          -- Jadame: Shadowspire, Necromancers' Guild
 	["7out05.odm"] = true, ["7d26.blv"] = true, ["t04.blv"] = true,    -- Antagarich: Deyja, The Pit, Hall of the Pit,
 	["t02.blv"] = true, ["d03.blv"] = true, ["d04.blv"] = true,        --   Temple of the Dark, Castle Gloaming, Temple of Baa
+	["out10.odm"] = true,                                             --   Mount Nighon, the warlocks' land (16.11.26)
 	["6t1.blv"] = true, ["6t6.blv"] = true, ["6t7.blv"] = true,        -- Enroth: the Temples of Baa,
 	["cd3.blv"] = true,                                                --   Castle Kriegspire
 }
