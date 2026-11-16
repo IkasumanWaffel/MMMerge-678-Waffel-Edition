@@ -19,7 +19,7 @@ Item	Alignment	Classes	Except	Races	NotRaces	Gender	OldTag	Name
 1310	-	-	-	-	Undead	-	-	Gibbet
 1315	NotGood	-	-	-	-	-	-	Ruler's Ring
 1317	NotGood	-	-	-	-	-	Evil	Ethric's Staff
-1319	NotGood	-	-	-	-	-	Evil	Old Nick
+1319	Evil	-	-	-	-	-	-	Old Nick
 1323	NotEvil	-	-	-	-	-	Good	Taledon's Helm
 1327	NotGood	-	Thief	-	-	-	Evil	Twilight
 1329	NotEvil	-	-	-	Undead	-	Good	Justice
