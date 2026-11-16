@@ -48,7 +48,7 @@ end
 
 local function chanceText(pct)
 	local fmt = MF.StealChanceText or "Chance to steal this item is %d percent."
-	return strformat(fmt, pct)
+	return strformat(fmt, min(100, max(0, pct)))   -- (17.11.26) the roll is 1-100: never above 100
 end
 
 function GetStealingTotalSkill(player)
