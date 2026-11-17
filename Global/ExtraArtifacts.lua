@@ -1169,6 +1169,8 @@ GetBonusList(2257).SpellBonus =	{[const.Skills.Dark] = true}
 -- Hat of the Archmagus (artifact of 16.11.26, the Vestments' companion; the set bonus: MMMWE_ArchmagusSet.lua)
 GetBonusList(2258).Stats = {	[const.Stats.Intellect] = 20, [const.Stats.Personality] = 20,
 								[const.Stats.MindResistance] = 20}
+-- Leathers of the Road Warrior (artifact of 17.11.26; the damage cut and the Tomb of VARN: MMMWE_RoadWarrior.lua)
+GetBonusList(2259).Stats = {	[const.Stats.ArmorClass] = 15, [const.Stats.Endurance] = 20, [const.Stats.Speed] = 15}
 -- Warhammers and the Warscythe of 07.11.26 (their on-hit effects are at the end)
 -- Rimefall
 GetBonusList(2225).Stats = {	[const.Stats.Endurance] = 25, [const.Stats.WaterResistance] = 30}

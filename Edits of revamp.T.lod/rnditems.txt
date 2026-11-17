@@ -2260,6 +2260,7 @@ Item #	Pic File	1	2	3	4	5	6
 2256	robe7	0	0	0	0	0	1	Lichweave Shroud
 2257	nwyrm	0	0	0	0	0	1	Nightwyrm Staff
 2258	archhat	0	0	0	0	0	1	Hat of the Archmagus
+2259	7item234	0	0	0	0	0	0	Leathers of the Road Warrior
 								
 								
 								
