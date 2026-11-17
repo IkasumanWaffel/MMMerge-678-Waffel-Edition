@@ -41,10 +41,13 @@ for n,f in src.items():
           if best is None or iou>best[0]: best=(iou,ox,oy,s)
     _,ox,oy,s=best
     g,cov=down(ox-P*s,oy-P*s,s,w+2*P,h+2*P)
-    r,gg,b=g[...,0],g[...,1],g[...,2]; gfg=cov>0.5
+    r,gg,b=g[...,0],g[...,1],g[...,2]; gfg=(cov>0.5)|((cov>0.2)&(r>110)&(gg>0.74*r)&(b<0.66*r))
     YY,XX=np.mgrid[0:h+2*P,0:w+2*P]; gx=ox-P*s+(XX+.5)*s; gy=oy-P*s+(YY+.5)*s
+    if n in globals().get('FRAME_CUT',{}): gx,gy=XX-P+.5,YY-P+.5
     hs=CUT[n](gx,gy)
     outm=gfg&hs
+    if 'SKIN' in globals(): outm&=~SKIN(g,LN[n](gx,gy))
+    lab,k=nd.label(outm); sz=nd.sum(outm,lab,range(1,k+1)); outm=lab==(np.argmax(sz)+1)
     orange=(b<0.55*gg)&(r>80)&(r-b>55)
     if n in BANDW: orange=orange|(LN[n](gx,gy)<BANDW[n])
     band=orange&outm
@@ -57,7 +60,7 @@ for n,f in src.items():
         for c in range(3):
             g[...,c][mask]=np.interp(lum[mask],src+np.arange(21)*1e-6,np.quantile(ref[:,c],q))
     claw=outm&~band&(g[...,1]>0.72*g[...,0])&(lum<140) if CLAWS else np.zeros_like(outm)
-    remap(outm&~band&~claw,REF_GLOVE); remap(band,REF_BAND)
+    if globals().get('RECOL',True): remap(outm&~band&~claw,REF_GLOVE); remap(band,REF_BAND)
     if claw.any():
         t=np.clip((lum[claw]-lum[claw].min())/max(1,np.ptp(lum[claw])),0,1)[:,None]
         g[claw]=np.array([30,24,19])*(1-t)+np.array([100,86,66])*t
