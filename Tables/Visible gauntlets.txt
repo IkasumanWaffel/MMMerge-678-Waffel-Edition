@@ -49,6 +49,11 @@ Item	Doll type	Pose	X	Y	Notes
 127	3	LHd	610	213	Leather Gloves
 127	3	LHu	606	213	Leather Gloves
 127	3	LHo	609	213	Leather Gloves
+127	4	RHd	483	210	Leather Gloves
+127	4	RHu	483	183	Leather Gloves
+127	4	LHd	596	218	Leather Gloves
+127	4	LHu	597	218	Leather Gloves
+127	4	LHo	599	217	Leather Gloves
 915	0	LHo	598	170	Dragon Hide Gauntlets
 2206	1	RHu	508	159	Stone Cestus
 2206	1	LHd	590	186	Stone Cestus
