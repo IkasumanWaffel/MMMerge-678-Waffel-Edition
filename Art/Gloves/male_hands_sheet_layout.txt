@@ -1,0 +1,6 @@
+scale 8, cyan bg; boxes in original pixels (name, x, y, w, h)
+lhu 12 27 26 54
+rhu 52 42 44 25
+rhd 110 12 42 85
+lhd 166 28 27 52
+lho 207 23 32 62
