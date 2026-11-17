@@ -22,6 +22,7 @@ def down(ox,oy,s,w,h):
             fg=~isbg(blk); cov[y,x]=fg.mean()
             out[y,x]=blk[fg].mean(0) if fg.any() else (0,255,255)
     return out,cov
+if 'PRE' in dir(): PRE(G)
 REF=np.concatenate([np.array(Image.open(f'/tmp/glv/g_{p}.png').convert('RGB')).reshape(-1,3) for p in ['lhu','rhu','rhd','lho']]).astype(float)
 REF=REF[~((REF[:,0]<20)&(REF[:,1]>230))]
 isb=(REF[:,0]>110)&(REF[:,0]-REF[:,2]>60)&(REF[:,1]>55)
@@ -55,7 +56,11 @@ for n,f in src.items():
         q=np.linspace(0,1,21); src=np.quantile(lum[mask],q)
         for c in range(3):
             g[...,c][mask]=np.interp(lum[mask],src+np.arange(21)*1e-6,np.quantile(ref[:,c],q))
-    remap(outm&~band,REF_GLOVE); remap(band,REF_BAND)
+    claw=outm&~band&(g[...,1]>0.72*g[...,0])&(lum<140) if CLAWS else np.zeros_like(outm)
+    remap(outm&~band&~claw,REF_GLOVE); remap(band,REF_BAND)
+    if claw.any():
+        t=np.clip((lum[claw]-lum[claw].min())/max(1,np.ptp(lum[claw])),0,1)[:,None]
+        g[claw]=np.array([30,24,19])*(1-t)+np.array([100,86,66])*t
     out=np.where(outm[...,None],g,(0,255,255))
     oc=out; mc=outm; yy,xx=np.nonzero(mc)
     x0,x1,y0,y1=xx.min(),xx.max()+1,yy.min(),yy.max()+1
