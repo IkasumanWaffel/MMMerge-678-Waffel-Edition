@@ -45,7 +45,7 @@ for n,f in src.items():
     YY,XX=np.mgrid[0:h+2*P,0:w+2*P]; gx=ox-P*s+(XX+.5)*s; gy=oy-P*s+(YY+.5)*s
     hs=CUT[n](gx,gy)
     outm=gfg&hs
-    orange=(r>140)&(r-b>100)
+    orange=(b<0.55*gg)&(r>80)&(r-b>55)
     if n in BANDW: orange=orange|(LN[n](gx,gy)<BANDW[n])
     band=orange&outm
     lab,k=nd.label(outm); sz=nd.sum(outm,lab,range(1,k+1)); outm=lab==(np.argmax(sz)+1)
