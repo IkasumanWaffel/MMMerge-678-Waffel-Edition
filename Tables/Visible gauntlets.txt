@@ -64,6 +64,11 @@ Item	Doll type	Pose	X	Y	Notes
 914	1	LHd	595	197	Silver Mesh Gauntlets
 914	1	LHu	595	194	Silver Mesh Gauntlets
 914	1	LHo	582	199	Silver Mesh Gauntlets
+914	2	RHd	480	205	Silver Mesh Gauntlets
+914	2	RHu	477	186	Silver Mesh Gauntlets
+914	2	LHd	594	213	Silver Mesh Gauntlets
+914	2	LHu	593	217	Silver Mesh Gauntlets
+914	2	LHo	592	217	Silver Mesh Gauntlets
 915	0	LHo	598	170	Dragon Hide Gauntlets
 2206	1	RHu	508	159	Stone Cestus
 2206	1	LHd	590	186	Stone Cestus
