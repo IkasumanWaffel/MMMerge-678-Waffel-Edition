@@ -441,6 +441,21 @@ local function ProcessPortraitsTable()
 
 	---- Pictures
 
+	-- (19.11.26) portraits past 127 (the zombie versions): the game reads the face
+	-- index (player +0x353) as a signed byte in places; make every such read unsigned
+	-- (movsx r32, byte [r32+0x353] -> movzx)
+	do
+		local u1, u4 = mem.u1, mem.u4
+		mem.IgnoreProtection(true)
+		for a = 0x401000, 0x4E0000 do
+			if u1[a] == 0x0F and u1[a+1] == 0xBE and u4[a+3] == 0x353 then
+				local m = u1[a+2]
+				if m >= 0x80 and m < 0xC0 and m % 8 ~= 4 then u1[a+1] = 0xB6 end
+			end
+		end
+		mem.IgnoreProtection(false)
+	end
+
 	-- Player:GetSex() correction
 
 	hook(0x48f5e5, function(d)
@@ -620,7 +635,7 @@ local function ProcessPortraitsTable()
 	mem.u1[0x501db3] = 0
 	mem.nop(0x4c82eb, 1)
 	asmpatch(0x4c82e4, [[
-	movsx eax, byte [ds:eax+0x353]
+	movzx eax, byte [ds:eax+0x353]
 	imul eax, eax, ]] .. LineSize .. [[;
 	add eax, ]] .. PortraitsTablePtr .. [[;
 	movsx eax, word [ds:eax+0x3d];]])
@@ -1005,7 +1020,7 @@ local function ProcessPortraitsTable()
 				0x4903fd, 0x490414, 0x49042b, 0x490442, 0x490459, 0x48f87d, 0x48f6eb}
 
 	local NewCode = asmproc([[
-	movsx eax, byte [ds:ecx+0x353]
+	movzx eax, byte [ds:ecx+0x353]
 	imul eax, eax, ]] .. LineSize .. [[;
 	add eax, ]] .. PortraitsTablePtr .. [[;
 	movsx eax, byte [ds:eax+0x3f];
@@ -1095,7 +1110,7 @@ local function ProcessDollTypesTable()
 	----
 
 	local CheckItem = asmproc([[
-	movsx eax, byte [ds:ebx+0x353]; Portrait, ecx - item
+	movzx eax, byte [ds:ebx+0x353]; Portrait, ecx - item
 	nop;memhook here
 	nop
 	nop
