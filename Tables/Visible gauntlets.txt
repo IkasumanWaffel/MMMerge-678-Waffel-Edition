@@ -54,6 +54,11 @@ Item	Doll type	Pose	X	Y	Notes
 127	4	LHd	596	218	Leather Gloves
 127	4	LHu	597	218	Leather Gloves
 127	4	LHo	599	217	Leather Gloves
+913	0	RHd	493	180	Steel Gauntlets
+913	0	RHu	494	141	Steel Gauntlets
+913	0	LHd	600	178	Steel Gauntlets
+913	0	LHu	605	175	Steel Gauntlets
+913	0	LHo	605	175	Steel Gauntlets
 914	0	RHd	495	172	Silver Mesh Gauntlets
 914	0	RHu	494	141	Silver Mesh Gauntlets
 914	0	LHd	599	178	Silver Mesh Gauntlets
