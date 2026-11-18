@@ -478,28 +478,64 @@ local SCREENS
 local TextCount = 0
 -- (18.11.26) right-click tooltips: the texts that have a Tip function (skills, spells, items)
 local Tips = {}
-local TIP_Y, TIP_W = 60, 300
--- the tooltip under the mouse (text, x) or nil; worked out again only when the mouse or the
--- right button changes, since every text asks for it to hide under the tooltip
+-- (the box is drawn after everything else, in FGInterfaceUpd, with the skills' font, the text
+-- left-aligned and wrapped here). It spans the panel, above the row under the mouse when there
+-- is room, below it otherwise; the game keeps a tooltip above y 352.
+local TIP_X, TIP_W, TIP_TOP, TIP_BOTTOM = 16, 608, 58, 352
+local TIP_PAD_X, TIP_PAD_Y = 20, 17
+local function fontLine(fnt)
+	local h = mem.u1[fnt + 5]
+	return (h >= 6 and h <= 30) and h or 12
+end
+local function charWidth(fnt, c)
+	local p = fnt + 0x20 + c * 12
+	local w = mem.i4[p] + mem.i4[p + 4] + mem.i4[p + 8]
+	return (w > 0 and w < 40) and w or 7
+end
+-- the text broken into lines no wider than the box
+local function wrap(fnt, text, maxW)
+	local out = {}
+	for para in (text .. "\n"):gmatch("(.-)\n") do
+		local line, lw = "", 0
+		for word in para:gmatch("%S+") do
+			local ww = 0
+			for k = 1, #word do ww = ww + charWidth(fnt, word:byte(k)) end
+			local sp = line ~= "" and charWidth(fnt, 32) or 0
+			if line ~= "" and lw + sp + ww > maxW then
+				out[#out + 1] = line
+				line, lw = word, ww
+			else
+				line, lw = line .. (line ~= "" and " " or "") .. word, lw + sp + ww
+			end
+		end
+		out[#out + 1] = line
+	end
+	return out
+end
+-- the tooltip under the mouse: lines, x, y, h or nil; worked out again only when the mouse moves
 local TipCache = {}
-local function tipNow()
+local function tipNow(fnt)
 	if not Keys.IsPressed(const.Keys.RBUTTON) then TipCache.Key = nil return end
 	local mx, my = Mouse.X, Mouse.Y
 	local key = mx * 10000 + my
-	if TipCache.Key == key and TipCache.Clock and os.clock() - TipCache.Clock < 0.25 then
-		return TipCache.Text, TipCache.X
-	end
-	TipCache.Key, TipCache.Clock, TipCache.Text, TipCache.X = key, os.clock(), nil, nil
+	if TipCache.Key == key then return TipCache.Lines, TipCache.X, TipCache.Y, TipCache.H end
+	TipCache.Key, TipCache.Lines = key, nil
 	for _, t in ipairs(Tips) do
 		if mx >= t.X and mx < t.X + t.W and my >= t.Y and my < t.Y + t.H then
 			local ok, tip = pcall(t.Tip)
 			if ok and tip and tip ~= "" then
-				TipCache.Text, TipCache.X = tip, mx < 320 and 330 or 10
+				local lines = wrap(fnt, tip, TIP_W - 2 * TIP_PAD_X)
+				local h = #lines * fontLine(fnt) + 2 * TIP_PAD_Y
+				local y
+				if t.Y - 4 - TIP_TOP >= h then y = t.Y - 4 - h                    -- room above the row
+				elseif TIP_BOTTOM - (t.Y + t.H + 4) >= h then y = t.Y + t.H + 4   -- room below
+				else y = t.Y >= 260 and TIP_TOP or math.max(TIP_TOP, TIP_BOTTOM - h) end
+				TipCache.Lines, TipCache.X, TipCache.Y, TipCache.H = lines, TIP_X, y, h
 			end
 			break
 		end
 	end
-	return TipCache.Text, TipCache.X
+	return TipCache.Lines, TipCache.X, TipCache.Y, TipCache.H
 end
 local function text(t)
 	TextCount = TextCount + 1
@@ -510,8 +546,6 @@ local function text(t)
 		ColorStd = WHITE, ColorMouseOver = HOVER,
 		Condition = function(self)
 			if not shown() then return false end
-			local tip, tx = tipNow()   -- texts under the tooltip are not drawn
-			if tip and t.X + t.W > tx and t.X < tx + TIP_W and t.Y + (t.H or 14) > TIP_Y then return false end
 			local s, c = t.Get()
 			if not s then return false end
 			self.Text = s
@@ -890,16 +924,16 @@ local function build()
 	button{Up = "c_ok_up", Down = "c_ok_dn", Over = "c_ok_ht", X = 546, Y = 440,
 		Click = function() done() end}
 
-	-- right-click tooltips, drawn last: on the half of the screen away from the mouse
-	local tipEl = CustomUI.CreateText{
-		Text = "tip", X = 0, Y = 0, Width = 1, Height = 1, Layer = 0, Screen = SCREENS,
-		Condition = function()
-			if not shown() then return false end
-			local tip, tx = tipNow()
-			if tip then CustomUI.ShowTooltip(tip, tx, TIP_Y, TIP_W) end
-			return false
-		end}
-	Mine[tipEl] = true
+	-- right-click tooltips: drawn after all the elements (texts are drawn in no set order)
+	local TipFont = Skill
+	function events.FGInterfaceUpd()
+		if not E.Open or not shown() then return end
+		local lines, x, y = tipNow(TipFont)
+		if not lines then return end
+		CustomUI.ShowTooltip(string.rep(" \n", #lines - 1) .. " ", x, y, TIP_W, TipFont)
+		CustomUI.ShowText(table.concat(lines, "\n"), TipFont, x + TIP_PAD_X, y + TIP_PAD_Y, nil,
+			TIP_W - 2 * TIP_PAD_X + 8, #lines * fontLine(TipFont) + 8, nil, nil, nil, nil, true)
+	end
 
 	-- entry on the creation screen
 	local entry = CustomUI.CreateButton{
