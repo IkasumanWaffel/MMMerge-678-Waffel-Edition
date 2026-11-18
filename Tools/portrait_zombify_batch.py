@@ -20,7 +20,7 @@ for p in P:
     for i in range(1,57):
         im=frame(p,i)
         if im is None: continue
-        z=zf(rgb(im),seed=p['id']+1,mode=mode,decay=1.0,eyes=EYES[p['id']],ref=lum1)
+        z=zf(rgb(im),seed=p['id']+1,mode=mode,decay=1.0,eyes=None,ref=lum1)
         z.save(f"/tmp/zom/out/z{p['pre']}{i:02d}.png")
     for k,n in p['pics'].items():
         if n.lower()=='none' or n.lower() in done: continue
