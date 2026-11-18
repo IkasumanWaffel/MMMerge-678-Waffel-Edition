@@ -328,3 +328,108 @@ function events.Tick()
 		end
 	end
 end
+
+---------------------------------------------------------------------------
+-- (19.11.26) the wand quickslot: one attack wand per character, fired by a hotkey
+-- (Keybinds page: "WAND", F9 by default). Bound in the inventory: the wand on the mouse,
+-- the key pressed (the key with the mouse empty clears the slot). Fired by the active
+-- character only, from his or her own backpack: the wand goes through the game's own wand
+-- attack (aim, charges, Enchanting skill and rank, recovery) for that one shot.
+---------------------------------------------------------------------------
+
+local WandShot   -- {Player, Old main hand, Item index, ticks}
+
+local function attackWand(num)
+	local t = Game.ItemsTxt[num]
+	return t and t.EquipStat == WAND_EQUIP and not SUPPORT[num]
+end
+
+local function equippedIndex(pl, k)
+	for e = 0, 15 do
+		if pl.EquippedItems[e] == k then return true end
+	end
+	return false
+end
+
+local function fireWandSlot()
+	if Game.Paused or Game.CurrentScreen ~= 0 or WandShot then return end
+	local slot = MF.GetCurrentPlayer and MF.GetCurrentPlayer() or Game.CurrentPlayer
+	if not slot or slot < 0 or slot >= Party.count then return end
+	local pl = Party[slot]
+	local num = pl.Attrs and pl.Attrs.WandSlot
+	if not num or num == 0 then
+		say(string.format(Tx"%s has no wand in the quickslot", pl.Name))
+		return
+	end
+	if not Game.TurnBased and pl.RecoveryDelay > 0 then return end
+	local found
+	for k = 1, 138 do
+		local it = pl.Items[k]
+		if it.Number == num and it.Charges > 0 and not it.Broken and not equippedIndex(pl, k) then
+			found = k
+			break
+		end
+	end
+	if not found then
+		say(string.format(Tx"%s has no charged %s", pl.Name, Game.ItemsTxt[num].Name))
+		return
+	end
+	WandShot = {Player = pl, Old = pl.ItemMainHand, Index = found, Ticks = 0}
+	pl.ItemMainHand = found
+	DoGameAction(23, 0, 0)   -- the attack: with a wand in the main hand, the game fires it
+end
+
+-- the shot done (the recovery begun) or given up: the weapon back in the main hand; a wand
+-- used up is taken out of the backpack too
+local function finishWandShot()
+	local s = WandShot
+	WandShot = nil
+	local pl = s.Player
+	pl.ItemMainHand = s.Old
+	if pl.Items[s.Index].Number == 0 then
+		for c = 0, 125 do
+			local v = pl.Inventory[c]
+			if v == s.Index then
+				pl.Inventory[c] = 0
+				for c2 = 0, 125 do
+					if pl.Inventory[c2] == -(1 + c) then pl.Inventory[c2] = 0 end
+				end
+			end
+		end
+	end
+end
+
+function events.Tick()
+	if not WandShot then return end
+	local s = WandShot
+	s.Ticks = s.Ticks + 1
+	if s.Player.RecoveryDelay > 0 or s.Ticks > 20 then
+		local ok, err = pcall(finishWandShot)
+		if not ok then WandShot = nil; log("wand slot: %s", tostring(err)) end
+	end
+end
+
+local WandKey = MF.RegisterExtraKeyBind and MF.RegisterExtraKeyBind({DefKey = 120, RegValue = "xkey_wand",
+	Label = "WAND", Action = fireWandSlot})
+
+-- binding: in the inventory, the key with an attack wand on the mouse
+function events.KeyDown(t)
+	if Game.CurrentScreen ~= const.Screens.Inventory or not WandKey then return end
+	local kb = Merge.Tables.ExtraKeyBinds[WandKey]
+	if not kb or kb.Key == 0 or t.Key ~= kb.Key then return end
+	t.Handled = true
+	local slot = Game.CurrentPlayer
+	if not slot or slot < 0 or slot >= Party.count then return end
+	local pl = Party[slot]
+	pl.Attrs.WandSlot = pl.Attrs.WandSlot or 0
+	local num = Mouse.Item.Number
+	if num ~= 0 and attackWand(num) then
+		pl.Attrs.WandSlot = num
+		say(string.format(Tx"%s: %s in the wand quickslot", pl.Name, Game.ItemsTxt[num].Name))
+	elseif num == 0 then
+		pl.Attrs.WandSlot = 0
+		say(string.format(Tx"%s: the wand quickslot is empty", pl.Name))
+	else
+		say(Tx"Only a wand of an attack spell goes into the wand quickslot")
+	end
+end

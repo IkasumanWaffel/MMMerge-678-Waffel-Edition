@@ -3284,3 +3284,8 @@ Value: %d gold	÷ена: %d золотых
 %s has recovered from the disease	%s: болезнь отступила
 %s is free of the zombie infection	%s избавлен(а) от зомби-заразы
 %s has turned into a zombie	%s превратилс€(-ась) в зомби
+%s has no wand in the quickslot	%s: в €чейке дл€ жезла пусто
+%s has no charged %s	%s: нет зар€женного предмета Ђ%sї
+%s: %s in the wand quickslot	%s: Ђ%sї в €чейке дл€ жезла
+%s: the wand quickslot is empty	%s: €чейка дл€ жезла очищена
+Only a wand of an attack spell goes into the wand quickslot	¬ €чейку дл€ жезла кладЄтс€ только жезл атакующего заклинани€
