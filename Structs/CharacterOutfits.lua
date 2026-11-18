@@ -551,7 +551,7 @@ local function ProcessPortraitsTable()
 	asmpatch(0x43385e, [[
 	@rep:
 	cmp byte [ds:eax], ]] .. PortraitsCount - 1 .. [[;
-	jge @cle
+	jae @cle
 
 	inc byte [ds:eax]
 	jmp @nex
@@ -566,6 +566,7 @@ local function ProcessPortraitsTable()
 	cmp byte [ds:ecx+]] .. PortraitsTablePtr .. [[], 1
 	jnz @rep]])
 
+	-- (19.11.26) unsigned: more than 128 portraits (the zombie versions)
 	mem.nop(0x433924, 2)
 	asmpatch(0x433926, [[
 	jmp @rep
@@ -573,8 +574,9 @@ local function ProcessPortraitsTable()
 	mov byte [ds:eax], ]] .. PortraitsCount .. [[;
 
 	@rep:
+	cmp byte [ds:eax], 0
+	je @cle
 	dec byte [ds:eax]
-	js @cle
 
 	movzx ecx, byte [ds:eax]
 	imul ecx, ecx, ]] .. LineSize .. [[;
