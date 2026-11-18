@@ -584,6 +584,8 @@ function events.GameInitialized2()
 				else
 					Available = table.find(RaceByContinent[CurCont], v.Race) ~= nil and not table.find(PortraitsExceptions[CurCont], i)
 				end
+				-- (19.11.26) the zombie versions of the portraits ("z" face prefix) are never offered
+				if string.lower(v.FacePrefix):sub(1, 1) == "z" then Available = false end
 				v.AvailableAtStart = Available and 1 or 0
 			end
 		end
