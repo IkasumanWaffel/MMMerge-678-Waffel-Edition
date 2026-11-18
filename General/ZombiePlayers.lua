@@ -38,53 +38,173 @@ function events.GameInitialized2()
 	end
 
 	---- Make Zombies immune to some diseases and mental conditions.
+	-- (18.11.26) by the bad thing's own numbers (const.MonsterBonus): the old list held
+	-- condition numbers, which made zombies immune to Poison 2 and Curse instead of
+	-- Disease 2 and Afraid
+	local MB = const.MonsterBonus
 	local ZombieImmunities = {
-		const.Condition.Asleep,
-		const.Condition.Disease3,
-		const.Condition.Disease2,
-		const.Condition.Disease1,
-		const.Condition.Insane,
-		const.Condition.Drunk,
-		const.Condition.Afraid,
-		const.Condition.Weak
+		[MB.Asleep] = true, [MB.Disease1] = true, [MB.Disease2] = true, [MB.Disease3] = true,
+		[MB.Insane] = true, [MB.Drunk] = true, [MB.Afraid] = true, [MB.Weak] = true,
 	}
-	
-	local InfectionTimers = {}
-	function events.DoBadThingToPlayer(t)
-		local ZombieNPC = {154, 155, 156, 427, 428, 429}
-		local Infections = {9, 10, 11}
-		local Thing = t.Thing
-		local Monster = t.Monster.Id
-		local Time = Game.Time + const.Minute*20
-		local Player = t.Player
-		local TKey = Time .. Player.Name
-		if Player.Conditions[17] > 0 and table.find(ZombieImmunities, Thing) then
-			t.Allow = false
+	-- the same as conditions (cleared when a character is reanimated)
+	local ZombieImmuneConds = {const.Condition.Asleep, const.Condition.Disease1, const.Condition.Disease2,
+		const.Condition.Disease3, const.Condition.Insane, const.Condition.Drunk, const.Condition.Afraid,
+		const.Condition.Weak}
+
+	---- Zombie infection (18.11.26)
+	-- A disease from a zombie infects the character: the change comes 2-3 hours later.
+	-- Symptoms: Weak after a third of the time, the disease worse after two thirds; a
+	-- character who dies infected rises at once. Cure Disease (spell or potion) only eases
+	-- the symptoms; the infection itself is cured by a temple, Divine Intervention, the
+	-- Divine Restoration or Aqua Vitae potions. The countdown shows as the Zombie debuff.
+	-- The state is saved (vars.ZombieInfection), so it survives map changes and loads.
+	local ZombieNPC = {[154] = true, [155] = true, [156] = true, [427] = true, [428] = true, [429] = true}
+	local Infections = {[MB.Disease1] = true, [MB.Disease2] = true, [MB.Disease3] = true}
+	local INCUBATION_MIN, INCUBATION_MAX = 120, 180   -- game minutes
+	local CO = const.Condition
+
+	local function infections()
+		vars.ZombieInfection = vars.ZombieInfection or {}
+		return vars.ZombieInfection
+	end
+	local function zombieDebuff(Player)
+		local ok, d = pcall(function() return Game.PlayersExtra[Player:GetIndex()].Debuffs[17] end)
+		return ok and d or nil
+	end
+	local function cureInfection(Player, quiet)
+		local inf = infections()
+		local k = Player:GetIndex()
+		if not inf[k] then return end
+		inf[k] = nil
+		local d = zombieDebuff(Player)
+		if d and Player.Conditions[CO.Zombie] == 0 then d.ExpireTime = 0 end
+		if not quiet then
+			Game.ShowStatusText(string.format(MF.Text"%s is free of the zombie infection", Player.Name))
 		end
-		InfectionTimers[TKey] = function()
-			if Game.Time > Time then
-				Player.Conditions[17] = Game.Time
-				if Player.Conditions[14] <= Game.Time then 
-					Player.HP = 1
-					Player.Conditions[14] = 0
-				end
-				Player:ShowFaceAnimation(28)
-				RemoveTimer(InfectionTimers[TKey])
-				InfectionTimers[TKey] = nil
-			else
-				Game.PlayersExtra[Player:GetIndex()].Debuffs[17].ExpireTime = Time
-				local MainCond = Player:GetMainCondition()
-				if MainCond == 20 or (Player.Conditions[7] == 0 and Player.Conditions[9] == 0 and Player.Conditions[11] == 0) then
-					Game.PlayersExtra[Player:GetIndex()].Debuffs[17].ExpireTime = 0
-					RemoveTimer(InfectionTimers[TKey])
-					InfectionTimers[TKey] = nil
+	end
+	MF.CureZombieInfection = cureInfection
+
+	local function turn(Player)
+		cureInfection(Player, true)
+		Player.Conditions[CO.Zombie] = Game.Time
+		if Player.Conditions[CO.Dead] ~= 0 then
+			Player.HP = 1
+			Player.Conditions[CO.Dead] = 0
+			Player.Conditions[CO.Unconscious] = 0
+		end
+		for _, c in ipairs(ZombieImmuneConds) do Player.Conditions[c] = 0 end
+		Player:ShowFaceAnimation(28)
+		Game.ShowStatusText(string.format(MF.Text"%s has turned into a zombie", Player.Name))
+	end
+
+	local function setIfNone(Player, cond)
+		if Player.Conditions[cond] == 0 then Player.Conditions[cond] = Game.Time end
+	end
+
+	local function infectionScan()
+		local inf = infections()
+		for _, Player in Party do
+			local k = Player:GetIndex()
+			local s = inf[k]
+			if s then
+				if Player.Conditions[CO.Zombie] ~= 0 or Player.Conditions[CO.Eradicated] ~= 0
+						or Player.Conditions[CO.Stoned] ~= 0 then
+					cureInfection(Player, true)
+				elseif Player.Conditions[CO.Dead] ~= 0 or Game.Time >= s.TurnAt then
+					turn(Player)
+				else
+					local d = zombieDebuff(Player)
+					if d then d.ExpireTime = s.TurnAt end
+					local part = (Game.Time - s.Start) / math.max(1, s.TurnAt - s.Start)
+					if part >= 1 / 3 then setIfNone(Player, CO.Weak) end
+					-- the disease stays (Cure Disease only eases it for a while)
+					local ill = Player.Conditions[CO.Disease1] ~= 0 or Player.Conditions[CO.Disease2] ~= 0
+						or Player.Conditions[CO.Disease3] ~= 0
+					if part >= 2 / 3 then
+						if Player.Conditions[CO.Disease2] == 0 and Player.Conditions[CO.Disease3] == 0 then
+							Player.Conditions[CO.Disease1] = 0
+							setIfNone(Player, CO.Disease2)
+						end
+					elseif not ill and Game.Time - (s.Eased or 0) >= const.Minute * 30 then
+						setIfNone(Player, CO.Disease1)
+					end
+					if not ill then s.Eased = s.Eased or Game.Time else s.Eased = nil end
 				end
 			end
 		end
-		--Merge.Vars.Txtmessage = string.format("Thing: %d, Monster: %d", Thing, Monster)
-		if table.find(Infections, Thing) and t.Allow == true and table.find(ZombieNPC, Monster) then
-			Timer(InfectionTimers[TKey], const.Minute, true)
+		-- infections of characters who are no longer in the party are kept for when they return
+	end
+
+	function events.DoBadThingToPlayer(t)
+		local Player = t.Player
+		if Player.Conditions[CO.Zombie] > 0 and ZombieImmunities[t.Thing] then
+			t.Allow = false
 		end
+		if t.Allow and Infections[t.Thing] and t.Monster and ZombieNPC[t.Monster.Id]
+				and Player.Conditions[CO.Zombie] == 0 then
+			local inf = infections()
+			local k = Player:GetIndex()
+			if not inf[k] then
+				local turnAt = Game.Time + const.Minute * math.random(INCUBATION_MIN, INCUBATION_MAX)
+				inf[k] = {Start = Game.Time, TurnAt = turnAt}
+				local d = zombieDebuff(Player)
+				if d then d.ExpireTime = turnAt end
+			end
+		end
+	end
+
+	-- cures: Divine Restoration and Aqua Vitae potions, Divine Intervention, a temple
+	for _, id in ipairs{32, 71} do
+		local old = evt.PotionEffects and evt.PotionEffects[id]
+		if old then
+			evt.PotionEffects[id] = function(IsDrunk, Target, Power, ...)
+				local r = old(IsDrunk, Target, Power, ...)
+				if IsDrunk and Target then cureInfection(Target) end
+				return r
+			end
+		end
+	end
+	function events.PlayerCastSpell(t)
+		if t.SpellId == 88 then   -- Divine Intervention
+			for _, Player in Party do cureInfection(Player) end
+		end
+	end
+	local TickN = 0
+	function events.Tick()
+		TickN = TickN + 1
+		if TickN % 10 ~= 0 then return end
+		local inf = infections()
+		local temple = false
+		if Game.CurrentScreen == const.Screens.House then
+			local ok, t = pcall(function()
+				local h = Game.Houses[Game.GetCurrentHouse()]
+				return h and h.Type == const.HouseType.Temple
+			end)
+			temple = ok and t
+		end
+		for _, Player in Party do
+			local s = inf[Player:GetIndex()]
+			if s then
+				if not temple then
+					s.Ill = nil
+				else
+					local clean = true
+					for c = 0, 16 do
+						if Player.Conditions[c] ~= 0 then clean = false break end
+					end
+					-- seen ill in the temple and now clean: healed there
+					if not clean then s.Ill = true elseif s.Ill then cureInfection(Player) end
+				end
+			end
+		end
+	end
+
+	local InfectionTimer
+	function events.AfterLoadMap()
+		if InfectionTimer then RemoveTimer(InfectionTimer) end
+		InfectionTimer = function() pcall(infectionScan) end
+		Timer(InfectionTimer, const.Minute, true)
+		pcall(infectionScan)
 	end
 
 	---- Portrait switches.
@@ -394,7 +514,7 @@ function events.GameInitialized2()
 				Target.HP = min(Target:GetFullHP(), resultHP + Target.HP)
 				Target.HP = max(Target.HP, 1)
 
-				for k,v in pairs(ZombieImmunities) do
+				for k,v in ipairs(ZombieImmuneConds) do
 					Target.Conditions[v] = 0
 				end
 

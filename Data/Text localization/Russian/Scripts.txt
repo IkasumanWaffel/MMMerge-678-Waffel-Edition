@@ -3282,3 +3282,5 @@ Value: %d gold	Цена: %d золотых
 %s feels better after the rest	%s: после отдыха полегчало
 %s has shaken off the poison	%s: яд выветрился
 %s has recovered from the disease	%s: болезнь отступила
+%s is free of the zombie infection	%s избавлен(а) от зомби-заразы
+%s has turned into a zombie	%s превратился(-ась) в зомби
