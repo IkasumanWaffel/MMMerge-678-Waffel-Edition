@@ -578,12 +578,13 @@ local function skillTip(id)
 	end
 	local d = str(Game.SkillDescriptions[id])
 	if d ~= "" then out[#out + 1] = d end
-	local by = {Game.SkillDesNormal, Game.SkillDesExpert, Game.SkillDesMaster, Game.SkillDesGM}
+	local by, ms = {Game.SkillDesNormal, Game.SkillDesExpert, Game.SkillDesMaster, Game.SkillDesGM}, {}
 	for m = 1, 4 do
 		local t = str(by[m] and by[m][id])
-		if t ~= "" then out[#out + 1] = string.format("%s: %s", MASTERY[m], t) end
+		if t ~= "" then ms[#ms + 1] = string.format("%s: %s", MASTERY[m], t) end
 	end
-	return table.concat(out, "\n")
+	if #ms > 0 then out[#out + 1] = table.concat(ms, "\n") end
+	return table.concat(out, "\n\n")   -- the blocks apart by an empty line
 end
 local function spellTip(spell)
 	local t = Game.SpellsTxt[spell]
@@ -591,22 +592,23 @@ local function spellTip(spell)
 	local out = {string.format("%s, %s: %g", str(t.Name), Tx"points", CC.SpellPrice(spell))}
 	local d = str(t.Description)
 	if d ~= "" then out[#out + 1] = d end
-	local by = {t.Normal, t.Expert, t.Master, t.GM}
+	local by, ms = {t.Normal, t.Expert, t.Master, t.GM}, {}
 	for m = 1, 4 do
 		local v = str(by[m])
-		if v ~= "" then out[#out + 1] = string.format("%s: %s", MASTERY[m], v) end
+		if v ~= "" then ms[#ms + 1] = string.format("%s: %s", MASTERY[m], v) end
 	end
-	return table.concat(out, "\n")
+	if #ms > 0 then out[#out + 1] = table.concat(ms, "\n") end
+	return table.concat(out, "\n\n")
 end
 local function itemTip(num)
 	local it = Game.ItemsTxt[num]
 	local f = fam()
 	local out = {string.format("%s, %s: %d", str(it.Name), Tx"points", CC.ItemCost(num))}
 	local ok, err = CC.ItemAllowed(f, num)
-	if not ok and err then out[#out + 1] = err end
+	if not ok and err then out[1] = out[1] .. "\n" .. err end
 	local d = str(it.Notes)
 	if d ~= "" then out[#out + 1] = d end
-	return table.concat(out, "\n")
+	return table.concat(out, "\n\n")
 end
 
 local function build()
