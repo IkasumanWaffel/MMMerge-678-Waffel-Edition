@@ -531,8 +531,9 @@ local function tipNow(fnt)
 				elseif TIP_BOTTOM - (t.Y + t.H + 4) >= h then y = t.Y + t.H + 4   -- room below
 				else y = t.Y >= 260 and TIP_TOP or math.max(TIP_TOP, TIP_BOTTOM - h) end
 				TipCache.Lines, TipCache.X, TipCache.Y, TipCache.H = lines, TIP_X, y, h
+				break
 			end
-			break
+			-- no tip: a text of another view (skills, spells, items) at the same place
 		end
 	end
 	return TipCache.Lines, TipCache.X, TipCache.Y, TipCache.H
