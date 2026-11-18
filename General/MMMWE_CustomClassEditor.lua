@@ -478,6 +478,29 @@ local SCREENS
 local TextCount = 0
 -- (18.11.26) right-click tooltips: the texts that have a Tip function (skills, spells, items)
 local Tips = {}
+local TIP_Y, TIP_W = 60, 300
+-- the tooltip under the mouse (text, x) or nil; worked out again only when the mouse or the
+-- right button changes, since every text asks for it to hide under the tooltip
+local TipCache = {}
+local function tipNow()
+	if not Keys.IsPressed(const.Keys.RBUTTON) then TipCache.Key = nil return end
+	local mx, my = Mouse.X, Mouse.Y
+	local key = mx * 10000 + my
+	if TipCache.Key == key and TipCache.Clock and os.clock() - TipCache.Clock < 0.25 then
+		return TipCache.Text, TipCache.X
+	end
+	TipCache.Key, TipCache.Clock, TipCache.Text, TipCache.X = key, os.clock(), nil, nil
+	for _, t in ipairs(Tips) do
+		if mx >= t.X and mx < t.X + t.W and my >= t.Y and my < t.Y + t.H then
+			local ok, tip = pcall(t.Tip)
+			if ok and tip and tip ~= "" then
+				TipCache.Text, TipCache.X = tip, mx < 320 and 330 or 10
+			end
+			break
+		end
+	end
+	return TipCache.Text, TipCache.X
+end
 local function text(t)
 	TextCount = TextCount + 1
 	if t.Tip then Tips[#Tips + 1] = {X = t.X, Y = t.Y, W = t.W, H = t.H or 14, Tip = t.Tip} end
@@ -487,6 +510,8 @@ local function text(t)
 		ColorStd = WHITE, ColorMouseOver = HOVER,
 		Condition = function(self)
 			if not shown() then return false end
+			local tip, tx = tipNow()   -- texts under the tooltip are not drawn
+			if tip and t.X + t.W > tx and t.X < tx + TIP_W and t.Y + (t.H or 14) > TIP_Y then return false end
 			local s, c = t.Get()
 			if not s then return false end
 			self.Text = s
@@ -869,17 +894,9 @@ local function build()
 	local tipEl = CustomUI.CreateText{
 		Text = "tip", X = 0, Y = 0, Width = 1, Height = 1, Layer = 0, Screen = SCREENS,
 		Condition = function()
-			if not shown() or not Keys.IsPressed(const.Keys.RBUTTON) then return false end
-			local mx, my = Mouse.X, Mouse.Y
-			for _, t in ipairs(Tips) do
-				if mx >= t.X and mx < t.X + t.W and my >= t.Y and my < t.Y + t.H then
-					local ok, tip = pcall(t.Tip)
-					if ok and tip and tip ~= "" then
-						CustomUI.ShowTooltip(tip, mx < 320 and 330 or 10, 60, 300)
-					end
-					break
-				end
-			end
+			if not shown() then return false end
+			local tip, tx = tipNow()
+			if tip then CustomUI.ShowTooltip(tip, tx, TIP_Y, TIP_W) end
 			return false
 		end}
 	Mine[tipEl] = true
