@@ -3277,3 +3277,8 @@ Damage: %s	Урон: %s
 Armor class: +%d	Класс брони: +%d
 Skill: %s	Навык: %s
 Value: %d gold	Цена: %d золотых
+%s's disease is getting worse	%s: болезнь усиливается
+%s has lost %d stat points from being %s	%s теряет %d очк. характеристик: %s
+%s feels better after the rest	%s: после отдыха полегчало
+%s has shaken off the poison	%s: яд выветрился
+%s has recovered from the disease	%s: болезнь отступила
