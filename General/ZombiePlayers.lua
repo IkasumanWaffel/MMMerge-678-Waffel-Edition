@@ -280,6 +280,22 @@ function events.GameInitialized2()
 	end
 
 
+	local ZombieFaceOf
+	local function OwnZombieFace(Face)
+		if not ZombieFaceOf then
+			ZombieFaceOf = {}
+			local byPrefix = {}
+			for i, v in Game.CharacterPortraits do
+				byPrefix[string.lower(v.FacePrefix)] = i
+			end
+			for i, v in Game.CharacterPortraits do
+				local z = byPrefix["z" .. string.lower(v.FacePrefix)]
+				if z and z ~= i then ZombieFaceOf[i] = z end
+			end
+		end
+		return ZombieFaceOf[Face]
+	end
+
 	local function SetFace(PlayerId)
 		MF.LogVerbose("%s: SetFace: %d", LogId, PlayerId)
 		local Player = Party.PlayersArray[PlayerId]
@@ -309,7 +325,10 @@ function events.GameInitialized2()
 			local OrigPortrait = vars.PlayerFaces[PlayerId]
 				and Game.CharacterPortraits[vars.PlayerFaces[PlayerId].Face] or nil
 			if OrigPortrait then
-				local NewFace = GetZombieFace(OrigPortrait.Race, OrigPortrait.DefSex)
+				-- (19.11.26) the portrait's own zombie version (prefix "z" + its face prefix,
+				-- waffel.icons.lod) when there is one, the stock zombie face otherwise
+				local NewFace = OwnZombieFace(vars.PlayerFaces[PlayerId].Face)
+					or GetZombieFace(OrigPortrait.Race, OrigPortrait.DefSex)
 				MF.LogVerbose("%s, NewFace: %s", LogId, NewFace or "nil")
 
 				if NewFace then
