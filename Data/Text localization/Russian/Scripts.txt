@@ -729,6 +729,7 @@ Construction	Детали
 
 # General/MMMWE_CustomClasses.lua:242
 %s isn't a spell of the class	%s — не заклинание этого класса
+%s needs Blaster as a starting skill	%s: нужен Бластер среди начальных навыков
 
 # General/MMMWE_CustomClasses.lua:262
 No more of %s	Больше нельзя: %s

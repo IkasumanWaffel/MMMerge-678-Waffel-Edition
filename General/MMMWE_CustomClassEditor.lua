@@ -328,7 +328,7 @@ local function clickSkill(id)
 		if E.Step ~= 1 then message(Tx"Starting skills are chosen on the base class tab") return end
 		f.StartSkills = f.StartSkills or {}
 		for i, sk in ipairs(f.StartSkills) do
-			if sk == id then table.remove(f.StartSkills, i) return end
+			if sk == id then table.remove(f.StartSkills, i) edit(true) return end
 		end
 		if cap == 0 then message(Tx"Only a skill the class can learn can be a starting skill") return end
 		if id >= 39 then message(Tx"Dual-Wield, Robe and Enchanting are learned in houses, not at the start") return end

@@ -177,7 +177,9 @@ end
 -- the game) or in a training hall. An item costs its value / ITEM_VALUE_PER_POINT (at least
 -- 1); a spellbook ITEM_BOOK_MUL x the spell's price in the build (rank x impact). Weapons,
 -- bows, armor and shields need their skill on the base class; books a spell the base class
--- has. Potions can be taken up to ITEM_MAX_STACK times.
+-- has. Potions can be taken up to ITEM_MAX_STACK times, rings up to 4.
+-- (18.11.26) only the items the class can use are offered; a blaster pistol and an energy
+-- shield for a class whose starting skills include Blaster; potions come with a power of 1-10
 local ITEM_BUDGET = 20
 local ITEM_VALUE_PER_POINT = 50
 local ITEM_BOOK_MUL = 2
@@ -187,8 +189,14 @@ local ITEM_POOL = {
 	84, 85, 89, 90, 94, 104, 99,                                -- armor and shields
 	109, 114, 117, 122, 127, 132, 137,                          -- helm, hat, belt, cloak, gloves, boots, ring
 	222, 223, 224,                                              -- Cure Wounds, Magic, Cure Weakness potions
+	866, 968,                                                   -- blaster pistol, energy shield
 }
-local STACKABLE = {[222] = true, [223] = true, [224] = true}
+local MAX_STACK = {[222] = ITEM_MAX_STACK, [223] = ITEM_MAX_STACK, [224] = ITEM_MAX_STACK, [137] = 4}
+local POTIONS = {[222] = true, [223] = true, [224] = true}
+local POTION_POWER = {1, 10}
+-- the gun and the shield: for a Blaster starting skill only; their value is 0 in ITEMS.txt
+local BLASTER_ITEMS = {[866] = 8, [968] = 6}   -- item = cost in points
+local function maxStack(num) return MAX_STACK[num] or 1 end
 local SKILL_ITEM = {[0] = true, [1] = true, [2] = true, [3] = true, [4] = true}   -- EquipStat that needs the skill
 
 local BookOf = {}
@@ -208,6 +216,7 @@ local function bookOf(spell)   -- the spellbook item of a spell (Mod1DiceSides =
 end
 
 local function itemCost(num)
+	if BLASTER_ITEMS[num] then return BLASTER_ITEMS[num] end
 	local it = Game.ItemsTxt[num]
 	if it.EquipStat == 16 then
 		return math.max(1, math.ceil(ITEM_BOOK_MUL * spellPrice(it.Mod1DiceSides)))
@@ -216,9 +225,12 @@ local function itemCost(num)
 end
 
 -- the items a family's base class may take: the pool and the Novice spellbooks of its spells
+local itemAllowed
 local function itemPool(fam)
 	local spec, list = fam.Steps[1], {}
-	for _, n in ipairs(ITEM_POOL) do list[#list + 1] = n end
+	for _, n in ipairs(ITEM_POOL) do
+		if itemAllowed(fam, n) then list[#list + 1] = n end
+	end
 	for spell = 1, 99 do
 		if spellRank(spell) == 1 and (spec.Skills[spellSchool(spell)] or 0) > 0
 				and (not spec.Spells or spec.Spells[spell]) then
@@ -230,8 +242,14 @@ local function itemPool(fam)
 end
 
 -- nil and the reason when the base class can't take the item
-local function itemAllowed(fam, num)
+function itemAllowed(fam, num)
 	local it = Game.ItemsTxt[num]
+	if BLASTER_ITEMS[num] then
+		for _, sk in ipairs(fam.StartSkills or {}) do
+			if sk == const.Skills.Blaster then return true end
+		end
+		return nil, string.format(Tx"%s needs Blaster as a starting skill", it.Name)
+	end
 	if SKILL_ITEM[it.EquipStat] and (fam.Steps[1].Skills[it.Skill] or 0) == 0 then
 		return nil, string.format(Tx"%s needs %s", it.Name, Game.SkillNames[it.Skill])
 	end
@@ -258,7 +276,7 @@ local function famSetItem(fam, num, d)
 	if d > 0 then
 		local ok, err = itemAllowed(fam, num)
 		if not ok then return nil, err end
-		if n >= (STACKABLE[num] and ITEM_MAX_STACK or 1) then
+		if n >= maxStack(num) then
 			return nil, string.format(Tx"No more of %s", Game.ItemsTxt[num].Name)
 		end
 		if itemsTotal(fam) + itemCost(num) > ITEM_BUDGET then
@@ -303,8 +321,17 @@ end
 
 -- gives a family's starting items to a party member (party slot)
 local function giveItems(fam, slot)
+	local pl = Party[slot]
 	for num, n in pairs(fam.Items or {}) do
 		for _ = 1, n do evt.ForPlayer(slot).Add("Inventory", num) end
+		if POTIONS[num] then   -- the new bottles come with no power: 1-10 each
+			for k = 1, 138 do
+				local it = pl.Items[k]
+				if it.Number == num and it.Bonus == 0 then it.Bonus = math.random(POTION_POWER[1], POTION_POWER[2]) end
+			end
+			local m = Mouse.Item
+			if m.Number == num and m.Bonus == 0 then m.Bonus = math.random(POTION_POWER[1], POTION_POWER[2]) end
+		end
 	end
 end
 
@@ -1331,19 +1358,19 @@ local function importText(text)
 		end
 		fam.Steps[step] = spec
 	end
+	for _, v in ipairs(type(t.StartSkills) == "table" and t.StartSkills or {}) do
+		local id = skillId(v)
+		if id and (fam.Steps[1].Skills[id] or 0) > 0 and #fam.StartSkills < 2 then
+			table.insert(fam.StartSkills, id)
+		end
+	end
 	if type(t.Items) == "table" then
 		fam.Items = {}
 		for num, n in pairs(t.Items) do
 			num, n = tonumber(num), tonumber(n)
 			if num and n and n >= 1 and Game.ItemsTxt[num] and itemAllowed(fam, num) then
-				fam.Items[num] = math.min(math.floor(n), STACKABLE[num] and ITEM_MAX_STACK or 1)
+				fam.Items[num] = math.min(math.floor(n), maxStack(num))
 			end
-		end
-	end
-	for _, v in ipairs(type(t.StartSkills) == "table" and t.StartSkills or {}) do
-		local id = skillId(v)
-		if id and (fam.Steps[1].Skills[id] or 0) > 0 and #fam.StartSkills < 2 then
-			table.insert(fam.StartSkills, id)
 		end
 	end
 	return fam
