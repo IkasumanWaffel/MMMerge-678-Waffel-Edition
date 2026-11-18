@@ -3273,3 +3273,7 @@ up to Master	до Мастера
 up to Grand Master	до Грандмастера
 starting skill	начальный навык
 points	очки
+Damage: %s	Урон: %s
+Armor class: +%d	Класс брони: +%d
+Skill: %s	Навык: %s
+Value: %d gold	Цена: %d золотых

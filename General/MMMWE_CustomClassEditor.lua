@@ -605,6 +605,21 @@ local function itemTip(num)
 	local it = Game.ItemsTxt[num]
 	local f = fam()
 	local out = {string.format("%s, %s: %d", str(it.Name), Tx"points", CC.ItemCost(num))}
+	-- the stats from ITEMS.txt: damage or armor class, the skill, the value
+	local st, es = {}, it.EquipStat
+	if es <= 2 then
+		local dmg = string.format("%dd%d", it.Mod1DiceCount, it.Mod1DiceSides)
+		if it.Mod2 > 0 then dmg = dmg .. " + " .. it.Mod2 end
+		st[#st + 1] = string.format(Tx"Damage: %s", dmg)
+	elseif es <= 9 then
+		local ac = it.Mod1DiceCount + it.Mod2
+		if ac > 0 then st[#st + 1] = string.format(Tx"Armor class: +%d", ac) end
+	end
+	if es <= 4 and it.Skill < 39 and Game.SkillNames[it.Skill] then   -- weapons, armor, shields
+		st[#st + 1] = string.format(Tx"Skill: %s", Game.SkillNames[it.Skill])
+	end
+	if it.Value > 0 then st[#st + 1] = string.format(Tx"Value: %d gold", it.Value) end
+	if #st > 0 then out[1] = out[1] .. "\n" .. table.concat(st, ", ") end
 	local ok, err = CC.ItemAllowed(f, num)
 	if not ok and err then out[1] = out[1] .. "\n" .. err end
 	local d = str(it.Notes)
