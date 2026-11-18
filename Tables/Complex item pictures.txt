@@ -62,7 +62,7 @@ Id	Item id	Notes		X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y	X	Y
 60	2254	Archmage's Robe		24	78	43	90	39	110	37	94	46	109		
 61	2255	Vestments of the Archmagus		27	78	31	90	40	110	35	94	31	109		
 62	2256	Lichweave Shroud		26	78	52	90	39	110	35	94	42	109		
-63	2259	Leathers of the Road Warrior		26	75	55	85	25	108	23	92	35	109	
+63	2259	Leathers of the Road Warrior		29	78	58	90	25	108	23	92	35	109	
 
 		Helms	Complex												
 1	109	Helm	x	87	28	73	41	74	44	77	42	72	67		
