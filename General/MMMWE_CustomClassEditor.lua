@@ -476,8 +476,11 @@ local SCREENS
 -- CustomUI keys texts on screen lists by the first 3 characters of the text and the position,
 -- so texts at the same place (skills / spells views) need different initial texts
 local TextCount = 0
+-- (18.11.26) right-click tooltips: the texts that have a Tip function (skills, spells, items)
+local Tips = {}
 local function text(t)
 	TextCount = TextCount + 1
+	if t.Tip then Tips[#Tips + 1] = {X = t.X, Y = t.Y, W = t.W, H = t.H or 14, Tip = t.Tip} end
 	local el = CustomUI.CreateText{
 		Text = string.format("%03d", TextCount), Font = t.Font, X = t.X, Y = t.Y, Width = t.W, Height = t.H or 14,
 		Layer = 0, Screen = SCREENS, AlignLeft = t.Left ~= false,
@@ -502,6 +505,50 @@ local function text(t)
 end
 
 local SKILL_ORDER
+
+-- the tooltip texts
+local MASTERY = {Tx"Novice", Tx"Expert", Tx"Master", Tx"Grand Master"}
+local CAP_NAME = {[0] = Tx"cannot learn", Tx"up to Novice", Tx"up to Expert", Tx"up to Master", Tx"up to Grand Master"}
+local function str(v) v = v and tostring(v) or "" return v:match("^%s*(.-)%s*$") end
+local function skillTip(id)
+	local f, s = fam(), spec()
+	local cap = s.Skills[id] or 0
+	local out = {string.format("%s (%s)", Game.SkillNames[id] or "", CAP_NAME[cap] or "")}
+	for _, sk in ipairs(f.StartSkills or {}) do
+		if sk == id then out[1] = out[1] .. " - " .. Tx"starting skill" end
+	end
+	local d = str(Game.SkillDescriptions[id])
+	if d ~= "" then out[#out + 1] = d end
+	local by = {Game.SkillDesNormal, Game.SkillDesExpert, Game.SkillDesMaster, Game.SkillDesGM}
+	for m = 1, 4 do
+		local t = str(by[m] and by[m][id])
+		if t ~= "" then out[#out + 1] = string.format("%s: %s", MASTERY[m], t) end
+	end
+	return table.concat(out, "\n")
+end
+local function spellTip(spell)
+	local t = Game.SpellsTxt[spell]
+
+	local out = {string.format("%s, %s: %g", str(t.Name), Tx"points", CC.SpellPrice(spell))}
+	local d = str(t.Description)
+	if d ~= "" then out[#out + 1] = d end
+	local by = {t.Normal, t.Expert, t.Master, t.GM}
+	for m = 1, 4 do
+		local v = str(by[m])
+		if v ~= "" then out[#out + 1] = string.format("%s: %s", MASTERY[m], v) end
+	end
+	return table.concat(out, "\n")
+end
+local function itemTip(num)
+	local it = Game.ItemsTxt[num]
+	local f = fam()
+	local out = {string.format("%s, %s: %d", str(it.Name), Tx"points", CC.ItemCost(num))}
+	local ok, err = CC.ItemAllowed(f, num)
+	if not ok and err then out[#out + 1] = err end
+	local d = str(it.Notes)
+	if d ~= "" then out[#out + 1] = d end
+	return table.concat(out, "\n")
+end
 
 local function build()
 	local Big, Small, Skill = Game.Arrus_fnt, Game.Lucida_fnt, Game.Create_fnt
@@ -697,6 +744,7 @@ local function build()
 				return string.format("%s: %s%s", name, SHORT[cap], start and " *" or ""),
 					start and GOLD or (cap > 0 and WHITE or GREY)
 			end,
+			Tip = function() if E.View == "skills" then return skillTip(id) end end,
 			Click = function() clickSkill(id) end}
 	end
 
@@ -726,6 +774,12 @@ local function build()
 					local picked = not s.Spells or s.Spells[spell]
 					return string.format("%s %g", name, CC.SpellPrice(spell)), picked and GOLD or GREY   -- its price (rank x impact)
 				end,
+				Tip = function()
+					if E.View ~= "spells" then return end
+					local school, spell = spellAt()
+					if spell then return spellTip(spell) end
+					if school then return skillTip(const.Skills[CC.MagicSchools[school]]) end
+				end,
 				Click = function()
 					local _, spell = spellAt()
 					if spell then clickSpell(spell) end
@@ -750,6 +804,11 @@ local function build()
 					local name = Game.ItemsTxt[num].Name
 					local c = n > 0 and GOLD or (CC.ItemAllowed(f, num) and WHITE or GREY)
 					return string.format("%s%s %d", n > 1 and (n .. "x ") or "", name, CC.ItemCost(num)), c
+				end,
+				Tip = function()
+					if E.View ~= "items" then return end
+					local num = itemAt()
+					if num then return itemTip(num) end
 				end,
 				Click = function()
 					local num = itemAt()
@@ -805,6 +864,25 @@ local function build()
 		Click = function() Game.PlaySound(24) close() end}
 	button{Up = "c_ok_up", Down = "c_ok_dn", Over = "c_ok_ht", X = 546, Y = 440,
 		Click = function() done() end}
+
+	-- right-click tooltips, drawn last: on the half of the screen away from the mouse
+	local tipEl = CustomUI.CreateText{
+		Text = "tip", X = 0, Y = 0, Width = 1, Height = 1, Layer = 0, Screen = SCREENS,
+		Condition = function()
+			if not shown() or not Keys.IsPressed(const.Keys.RBUTTON) then return false end
+			local mx, my = Mouse.X, Mouse.Y
+			for _, t in ipairs(Tips) do
+				if mx >= t.X and mx < t.X + t.W and my >= t.Y and my < t.Y + t.H then
+					local ok, tip = pcall(t.Tip)
+					if ok and tip and tip ~= "" then
+						CustomUI.ShowTooltip(tip, mx < 320 and 330 or 10, 60, 300)
+					end
+					break
+				end
+			end
+			return false
+		end}
+	Mine[tipEl] = true
 
 	-- entry on the creation screen
 	local entry = CustomUI.CreateButton{

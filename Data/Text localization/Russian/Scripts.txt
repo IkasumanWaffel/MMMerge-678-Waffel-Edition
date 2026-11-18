@@ -3266,3 +3266,10 @@ Promoters: %s's (%d%%). Ctrl+S save, Ctrl+L load	Повышения: как у класса «%s» (%
 Ctrl+S: save the build, Ctrl+L: load one	Ctrl+S: сохранить сборку, Ctrl+L: загрузить
 A stronger effect of this kind is already active	Уже действует более сильный эффект этого рода
 Potions can't raise this any higher	Зельями выше уже не поднять
+cannot learn	не может изучить
+up to Novice	до Новичка
+up to Expert	до Эксперта
+up to Master	до Мастера
+up to Grand Master	до Грандмастера
+starting skill	начальный навык
+points	очки
