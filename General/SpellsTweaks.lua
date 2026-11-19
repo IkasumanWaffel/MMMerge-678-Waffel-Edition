@@ -273,7 +273,12 @@ function events.PlayerCastSpell(t)
 		Game.PlayersExtra[t.TargetId:GetIndex()].Debuffs[7].ExpireTime = 0
 		Game.PlayersExtra[t.TargetId:GetIndex()].Debuffs[9].ExpireTime = 0
 		Game.PlayersExtra[t.TargetId:GetIndex()].Debuffs[11].ExpireTime = 0
-		Game.PlayersExtra[t.TargetId:GetIndex()].Debuffs[17].ExpireTime = 0
+		-- (MMMWE 20.11.26) Morbid Transformation stays while the zombie infection lasts: Cure Disease
+		-- only eases its symptoms (ZombiePlayers.lua keeps the debuff's timer and its Zombie stat drop)
+		local k = t.TargetId:GetIndex()
+		if not (vars.ZombieInfection and vars.ZombieInfection[k]) then
+			Game.PlayersExtra[k].Debuffs[17].ExpireTime = 0
+		end
 		t.Handled = true
 	end
 end
