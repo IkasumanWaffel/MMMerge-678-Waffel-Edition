@@ -19,6 +19,8 @@
 	    character screen and the level-up popup) reads a table built from the curve.
 
 	Saved with the game: vars.HardCoreMode, vars.HCMDeathLimit, vars.HCMDeaths, vars.ExpCurve.
+	The party deaths are also kept outside the saves (Saves\MMMWE_HardcoreDeaths.txt, by the
+	run id), so reloading an older save doesn't undo a death.
 	The death handling itself is in Global/MMMWE_HardcoreMode.lua.
 --]]
 local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
@@ -169,6 +171,80 @@ function Merge.Functions.HCMRemovePartySaves(runId)
 	end
 	WriteSaveList(list)
 	return n
+end
+
+---- This party's deaths, kept outside the save files (19.11.26)
+-- Saves\MMMWE_HardcoreDeaths.txt: run id, deaths, leader's name. A party death is written
+-- there at once, and a loaded game takes the larger of the file's count and its own, so
+-- reloading an older save doesn't bring the deaths back. A save of a run whose deaths have
+-- reached the limit ends the game when loaded.
+local function DeathsPath() return SavesDir() .. "MMMWE_HardcoreDeaths.txt" end
+
+local function ReadDeaths()
+	local t = {}
+	local f = io.open(DeathsPath(), "rb")
+	if f then
+		for line in f:lines() do
+			local id, n, name = line:match("^([^\t\r]+)\t(%d+)\t?([^\r]*)")
+			if id then t[id] = {Deaths = tonumber(n), Name = name} end
+		end
+		f:close()
+	end
+	return t
+end
+
+local function WriteDeaths(t)
+	local out = {}
+	for id, e in pairs(t) do out[#out + 1] = id .. "\t" .. e.Deaths .. "\t" .. (e.Name or "") end
+	table.sort(out)
+	local f = io.open(DeathsPath(), "wb")
+	if f then
+		f:write(table.concat(out, "\r\n"), #out > 0 and "\r\n" or "")
+		f:close()
+	end
+end
+
+-- the deaths on record for a run (0 if none)
+function Merge.Functions.HCMRunDeaths(runId)
+	local e = runId and ReadDeaths()[runId]
+	return e and e.Deaths or 0
+end
+
+-- one more death of this run: the new count, written to the file at once
+function Merge.Functions.HCMRecordDeath(runId, saved)
+	if not runId then return (saved or 0) + 1 end
+	local t = ReadDeaths()
+	local e = t[runId] or {Deaths = 0}
+	e.Deaths = math.max(e.Deaths, saved or 0) + 1
+	e.Name = (V().HCMLock and V().HCMLock.Name) or e.Name
+	t[runId] = e
+	WriteDeaths(t)
+	return e.Deaths
+end
+
+-- a loaded hardcore game: the deaths on record; a run already over ends here
+local function SyncDeaths()
+	if not (HasGame() and IsOn()) then return end
+	local runId = Merge.Functions.HCMRunId()
+	if not runId then return end
+	local onFile = Merge.Functions.HCMRunDeaths(runId)
+	if onFile > Deaths() then
+		vars.HCMDeaths = onFile
+	elseif Deaths() > onFile then   -- a death from before the record: put it on file
+		local t = ReadDeaths()
+		t[runId] = {Deaths = Deaths(), Name = V().HCMLock and V().HCMLock.Name}
+		WriteDeaths(t)
+	end
+	if Deaths() >= Limit() then
+		coroutine.resume(coroutine.create(function()
+			Sleep(1, 1)
+			Game.EscMessage(string.format(Tx"Hardcore mode: this party has already fallen %d of %d times. The run is over.",
+				Deaths(), Limit()))
+			Merge.Functions.HCMRemovePartySaves(runId)
+			DoGameAction(132, 0, 0, true)
+			DoGameAction(132)
+		end))
+	end
 end
 
 ---- Experience curve
@@ -463,7 +539,8 @@ function events.AfterLoadMap()
 	end
 end
 
--- Re-apply the lock whenever a game is loaded or the map changes
+-- Re-apply the lock whenever a game is loaded or the map changes; take the deaths on record
 function events.AfterLoadMap()
 	EnforceLock()
+	pcall(SyncDeaths)
 end

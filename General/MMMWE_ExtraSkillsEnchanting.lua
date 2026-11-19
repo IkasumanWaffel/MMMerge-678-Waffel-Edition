@@ -374,7 +374,8 @@ local function fireWandSlot()
 		say(string.format(Tx"%s has no charged %s", pl.Name, Game.ItemsTxt[num].Name))
 		return
 	end
-	WandShot = {Player = pl, Old = pl.ItemMainHand, Index = found, Ticks = 0}
+	WandShot = {Player = pl, Old = pl.ItemMainHand, Index = found, Ticks = 0, Number = num,
+		Charges = pl.Items[found].Charges}
 	pl.ItemMainHand = found
 	DoGameAction(23, 0, 0)   -- the attack: with a wand in the main hand, the game fires it
 end
@@ -386,6 +387,12 @@ local function finishWandShot()
 	WandShot = nil
 	local pl = s.Player
 	pl.ItemMainHand = s.Old
+	-- the shot went off (a charge used): the spell's sound, which this way of firing misses
+	local it = pl.Items[s.Index]
+	if it.Number ~= s.Number or it.Charges < s.Charges or pl.RecoveryDelay > 0 then
+		local snd = Game.SpellSounds[spellOf(s.Number)]
+		if snd and snd > 0 then Game.PlaySound(snd) end
+	end
 	if pl.Items[s.Index].Number == 0 then
 		for c = 0, 125 do
 			local v = pl.Inventory[c]

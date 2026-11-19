@@ -3289,3 +3289,4 @@ Value: %d gold	Цена: %d золотых
 %s: %s in the wand quickslot	%s: «%s» в ячейке для жезла
 %s: the wand quickslot is empty	%s: ячейка для жезла очищена
 Only a wand of an attack spell goes into the wand quickslot	В ячейку для жезла кладётся только жезл атакующего заклинания
+Hardcore mode: this party has already fallen %d of %d times. The run is over.	Режим «Хардкор»: этот отряд уже погибал %d раз из %d. Забег окончен.

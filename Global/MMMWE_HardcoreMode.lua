@@ -82,7 +82,14 @@ function events.DeathMap(t)
   if vars.HardCoreMode ~= 1 then
     return
   end
-  vars.HCMDeaths = (vars.HCMDeaths or 0) + 1
+  -- counted on file too (by the run id), so a reload can't take the death back
+  local MF = Merge.Functions
+  local runId = MF.HCMRunId and MF.HCMRunId()
+  if MF.HCMRecordDeath then
+    vars.HCMDeaths = MF.HCMRecordDeath(runId, vars.HCMDeaths or 0)
+  else
+    vars.HCMDeaths = (vars.HCMDeaths or 0) + 1
+  end
   local limit = vars.HCMDeathLimit or 1
 
   if vars.HCMDeaths >= limit then
