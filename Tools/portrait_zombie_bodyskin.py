@@ -35,12 +35,21 @@ def skin_model(hands):
     mu=np.array([(xe[i]+xe[i+1])/2,(ye[j]+ye[j+1])/2])   # the commonest colour: the skin
     d=np.sqrt(((px-mu)**2).sum(-1))
     return mu,float(np.clip(np.percentile(d[d<0.08],75),0.035,0.06))
-def recolor(im, model, ref, seed=1, strength=1.0):
+def recolor(im, model, ref, seed=1, strength=1.0, grow=0):
     a,key=arr(im); l=lumof(a); mu,rad=model; tab,(rlo,rhi)=ref
     d=np.sqrt(((chroma(a)-mu)**2).sum(-1))
     sat=a.max(-1)-a.min(-1)
     bg=a[...,2]/np.maximum(a[...,1],1e-3)
     m=np.clip(1-(d-rad)/(rad*0.8),0,1)*np.clip((bg-0.5)*12,0,1)*np.clip((l-0.07)*8,0,1)*np.clip((sat-0.03)*20,0,1)
+    if grow:   # also the redder or shadowed skin next to it (MM6 dolls)
+        mx=a.max(-1); mn=a.min(-1); sat=(mx-mn)/np.maximum(mx,1e-3)
+        r,g,b=a[...,0],a[...,1],a[...,2]
+        hue=np.degrees(np.arctan2(np.sqrt(3)*(g-b),2*r-g-b))
+        warm=(hue>-12)&(hue<34)&(sat>0.15)&(sat<0.8)&(l>0.09)&(bg>0.42)
+        near=nd.binary_dilation(m>0.5,iterations=grow)
+        lab,n=nd.label(warm&near); keep=np.zeros(n+1,bool)
+        if n: keep[np.unique(lab[(m>0.5)&warm])]=True; keep[0]=False
+        m=np.maximum(m,keep[lab]*0.95)
     m[key]=0; m=nd.gaussian_filter(m,0.7); m[key]=0
     sk=m>0.5
     if sk.sum()<20: return im
@@ -54,3 +63,8 @@ def recolor(im, model, ref, seed=1, strength=1.0):
     w=(m*strength)[...,None]; res=a*(1-w)+out*w
     res=(res*255).clip(0,255).astype('uint8'); res[key]=KEY
     return Image.fromarray(res)
+def face_model(face):
+    """skin colour from the portrait's own cheeks and nose (MM6 dolls: the hands are shared and sleeved)"""
+    a,key=arr(face); c=chroma(a)[40:58,18:43].reshape(-1,2); l=lumof(a)[40:58,18:43].ravel()
+    c=c[(l>0.15)&(l<0.9)]; mu=np.median(c,0); d=np.sqrt(((c-mu)**2).sum(-1))
+    return mu,float(np.clip(np.percentile(d,75)*1.3,0.035,0.07))
