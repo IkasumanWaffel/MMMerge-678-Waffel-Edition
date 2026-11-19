@@ -190,6 +190,7 @@ local ITEM_POOL = {
 	109, 114, 117, 122, 127, 132, 137,                          -- helm, hat, belt, cloak, gloves, boots, ring
 	222, 223, 224,                                              -- Cure Wounds, Magic, Cure Weakness potions
 	866, 968,                                                   -- blaster pistol, energy shield
+	2250,                                                       -- Apprentice's Robe (Robe skill)
 }
 local MAX_STACK = {[222] = ITEM_MAX_STACK, [223] = ITEM_MAX_STACK, [224] = ITEM_MAX_STACK, [137] = 4}
 local POTIONS = {[222] = true, [223] = true, [224] = true}
@@ -198,6 +199,10 @@ local POTION_POWER = {1, 10}
 local BLASTER_ITEMS = {[866] = 8, [968] = 6}   -- item = cost in points
 local function maxStack(num) return MAX_STACK[num] or 1 end
 local SKILL_ITEM = {[0] = true, [1] = true, [2] = true, [3] = true, [4] = true}   -- EquipStat that needs the skill
+-- (19.11.26) helms, gauntlets and boots of an armor skill need it too (MMMWE_ArmorEffects.lua),
+-- a cestus needs Unarmed (MMMWE_Cestus.lua) and a robe the Robe skill (MMMWE_ExtraSkillsEffects.lua)
+local PIECE = {[5] = true, [6] = true, [7] = true}   -- EquipStat: helm, gauntlets, boots
+local ROBE_SKILL = 42
 
 local BookOf = {}
 local function bookOf(spell)   -- the spellbook item of a spell (Mod1DiceSides = the spell)
@@ -250,7 +255,22 @@ function itemAllowed(fam, num)
 		end
 		return nil, string.format(Tx"%s needs Blaster as a starting skill", it.Name)
 	end
-	if SKILL_ITEM[it.EquipStat] and (fam.Steps[1].Skills[it.Skill] or 0) == 0 then
+	local skills = fam.Steps[1].Skills
+	if MF.IsRobe and MF.IsRobe(num) then
+		if (skills[ROBE_SKILL] or 0) == 0 then
+			return nil, string.format(Tx"%s needs %s", it.Name, Tx"Robe")
+		end
+		return true
+	end
+	if MF.Cestuses and MF.Cestuses[num] then
+		local u = const.Skills.Unarmed
+		if (skills[u] or 0) == 0 then
+			return nil, string.format(Tx"%s needs %s", it.Name, Game.SkillNames[u])
+		end
+		return true
+	end
+	if (SKILL_ITEM[it.EquipStat] or PIECE[it.EquipStat] and it.Skill >= 9 and it.Skill <= 11)
+			and (skills[it.Skill] or 0) == 0 then
 		return nil, string.format(Tx"%s needs %s", it.Name, Game.SkillNames[it.Skill])
 	end
 	if it.EquipStat == 16 then
@@ -320,8 +340,13 @@ local function clearStartItems(pl)
 end
 
 -- gives a family's starting items to a party member (party slot)
+-- (19.11.26) the game puts a given item in the active character's backpack (the party leader's
+-- at the start), so each character is made the active one for their own items, as the preset
+-- classes get theirs (MenuChooseCharacter.lua); only what doesn't fit goes to someone else
 local function giveItems(fam, slot)
 	local pl = Party[slot]
+	local cur = Game.CurrentPlayer
+	Game.CurrentPlayer = slot
 	for num, n in pairs(fam.Items or {}) do
 		for _ = 1, n do evt.ForPlayer(slot).Add("Inventory", num) end
 		if POTIONS[num] then   -- the new bottles come with no power: 1-10 each
@@ -333,6 +358,7 @@ local function giveItems(fam, slot)
 			if m.Number == num and m.Bonus == 0 then m.Bonus = math.random(POTION_POWER[1], POTION_POWER[2]) end
 		end
 	end
+	Game.CurrentPlayer = cur
 end
 
 -- (09.11.26) the preset class a build resembles: the base class with the most alike skill

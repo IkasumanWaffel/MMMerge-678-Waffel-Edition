@@ -248,3 +248,12 @@ function events.CalcDamageToMonster(t)
 		MF.DealElementalHit(t, dmg, kind)
 	end
 end
+
+-- (19.11.26) a cestus needs the Unarmed skill to be worn: the game checks the skill of
+-- weapons and armor only, not of the gauntlet slot (ItemsExtra.txt EquipReq "1" brings the
+-- cestuses to ItemsModifiers.lua's check)
+function events.ItemEquipRequirement(t)
+	if t.Req ~= 1 or not t.Player or not CESTUS[t.ItemId] then return end
+	local lvl = SplitSkill(t.Player.Skills[const.Skills.Unarmed])
+	t.Result = (lvl or 0) > 0
+end

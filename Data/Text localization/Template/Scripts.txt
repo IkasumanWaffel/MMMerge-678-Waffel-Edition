@@ -349,19 +349,19 @@ Stalt can't be refined any further.
 # General/MMMWE_Blasters.lua:438
 Smelting %s needs Repair %d (%s), %s has %d (%s).	
 
-# General/MMMWE_Blasters.lua:439, General/MMMWE_Blasters.lua:440, General/MMMWE_Blasters.lua:476, General/MMMWE_Blasters.lua:519, General/MMMWE_Blasters.lua:552, General/MMMWE_Blasters.lua:609, General/MMMWE_CustomClasses.lua:145, General/MMMWE_CustomClasses.lua:522, General/MMMWE_SpellBookInfo.lua:19, Global/MMMWE_ExtraSkillTeachers.lua:45
+# General/MMMWE_Blasters.lua:439, General/MMMWE_Blasters.lua:440, General/MMMWE_Blasters.lua:476, General/MMMWE_Blasters.lua:519, General/MMMWE_Blasters.lua:552, General/MMMWE_Blasters.lua:609, General/MMMWE_CustomClassEditor.lua:570, General/MMMWE_CustomClasses.lua:145, General/MMMWE_CustomClasses.lua:575, General/MMMWE_SpellBookInfo.lua:19, Global/MMMWE_ExtraSkillTeachers.lua:45
 Novice	
 
-# General/MMMWE_Blasters.lua:439, General/MMMWE_Blasters.lua:440, General/MMMWE_Blasters.lua:476, General/MMMWE_Blasters.lua:519, General/MMMWE_Blasters.lua:552, General/MMMWE_Blasters.lua:609, General/MMMWE_CustomClasses.lua:145, General/MMMWE_CustomClasses.lua:522, General/MMMWE_SpellBookInfo.lua:19, Global/MMMWE_ExtraSkillTeachers.lua:45, Global/MMMWE_ExtraSkillTeachers.lua:46
+# General/MMMWE_Blasters.lua:439, General/MMMWE_Blasters.lua:440, General/MMMWE_Blasters.lua:476, General/MMMWE_Blasters.lua:519, General/MMMWE_Blasters.lua:552, General/MMMWE_Blasters.lua:609, General/MMMWE_CustomClassEditor.lua:570, General/MMMWE_CustomClasses.lua:145, General/MMMWE_CustomClasses.lua:575, General/MMMWE_SpellBookInfo.lua:19, Global/MMMWE_ExtraSkillTeachers.lua:45, Global/MMMWE_ExtraSkillTeachers.lua:46
 Expert	
 
-# General/MMMWE_Blasters.lua:439, General/MMMWE_Blasters.lua:440, General/MMMWE_Blasters.lua:476, General/MMMWE_Blasters.lua:519, General/MMMWE_Blasters.lua:552, General/MMMWE_Blasters.lua:609, General/MMMWE_CustomClasses.lua:145, General/MMMWE_CustomClasses.lua:522, General/MMMWE_SpellBookInfo.lua:19, Global/MMMWE_ExtraSkillTeachers.lua:45, Global/MMMWE_ExtraSkillTeachers.lua:46
+# General/MMMWE_Blasters.lua:439, General/MMMWE_Blasters.lua:440, General/MMMWE_Blasters.lua:476, General/MMMWE_Blasters.lua:519, General/MMMWE_Blasters.lua:552, General/MMMWE_Blasters.lua:609, General/MMMWE_CustomClassEditor.lua:570, General/MMMWE_CustomClasses.lua:145, General/MMMWE_CustomClasses.lua:575, General/MMMWE_SpellBookInfo.lua:19, Global/MMMWE_ExtraSkillTeachers.lua:45, Global/MMMWE_ExtraSkillTeachers.lua:46
 Master	
 
-# General/MMMWE_Blasters.lua:439, General/MMMWE_Blasters.lua:440, General/MMMWE_Blasters.lua:476, General/MMMWE_Blasters.lua:519, General/MMMWE_Blasters.lua:552, General/MMMWE_Blasters.lua:609, General/MMMWE_CustomClasses.lua:145, General/MMMWE_CustomClasses.lua:522, General/MMMWE_SpellBookInfo.lua:19, Global/MMMWE_ExtraSkillTeachers.lua:45, Global/MMMWE_ExtraSkillTeachers.lua:46
+# General/MMMWE_Blasters.lua:439, General/MMMWE_Blasters.lua:440, General/MMMWE_Blasters.lua:476, General/MMMWE_Blasters.lua:519, General/MMMWE_Blasters.lua:552, General/MMMWE_Blasters.lua:609, General/MMMWE_CustomClassEditor.lua:570, General/MMMWE_CustomClasses.lua:145, General/MMMWE_CustomClasses.lua:575, General/MMMWE_SpellBookInfo.lua:19, Global/MMMWE_ExtraSkillTeachers.lua:45, Global/MMMWE_ExtraSkillTeachers.lua:46
 Grand Master	
 
-# General/MMMWE_Blasters.lua:440, General/MMMWE_CustomClassEditor.lua:637
+# General/MMMWE_Blasters.lua:440, General/MMMWE_CustomClassEditor.lua:761
 none	
 
 # General/MMMWE_Blasters.lua:445
@@ -520,6 +520,48 @@ Enchantment
 # General/MMMWE_ConcurrentEnchantments.lua:702
 Temp. %s:	
 
+# General/MMMWE_Conditions.lua:190
+%s has shaken off the poison	
+
+# General/MMMWE_Conditions.lua:198
+%s has recovered from the disease	
+
+# General/MMMWE_Conditions.lua:201
+%s's disease is getting worse	
+
+# General/MMMWE_Conditions.lua:265
+%s feels better after the rest	
+
+# General/MMMWE_Conditions.lua:369, General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:2996
+Might	
+
+# General/MMMWE_Conditions.lua:369, General/MMMWE_CustomClassEditor.lua:774, General/MMMWE_CustomClasses.lua:583, General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:2996
+Intellect	
+
+# General/MMMWE_Conditions.lua:369, General/MMMWE_CustomClassEditor.lua:774, General/MMMWE_CustomClasses.lua:583, General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:2996
+Personality	
+
+# General/MMMWE_Conditions.lua:370, General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:2996
+Endurance	
+
+# General/MMMWE_Conditions.lua:370, General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:2996
+Accuracy	
+
+# General/MMMWE_Conditions.lua:370, General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:2996
+Speed	
+
+# General/MMMWE_Conditions.lua:391
+%s loses %d %s from being %s	
+
+# General/MMMWE_Conditions.lua:391, General/MMMWE_Conditions.lua:396
+Eradicated	
+
+# General/MMMWE_Conditions.lua:391, General/MMMWE_Conditions.lua:396
+Dead	
+
+# General/MMMWE_Conditions.lua:396
+%s has lost %d stat points from being %s	
+
 # General/MMMWE_Containers.lua:82
 Bottle Box	
 
@@ -553,16 +595,16 @@ Choose %d starting skills (Shift+click)
 # General/MMMWE_CustomClassEditor.lua:204
 The base class needs at least %d skills	
 
-# General/MMMWE_CustomClassEditor.lua:211, General/MMMWE_CustomClasses.lua:265
+# General/MMMWE_CustomClassEditor.lua:211, General/MMMWE_CustomClasses.lua:303
 Starting items: %d points at most	
 
-# General/MMMWE_CustomClassEditor.lua:249, General/MMMWE_CustomClasses.lua:1174
+# General/MMMWE_CustomClassEditor.lua:249, General/MMMWE_CustomClasses.lua:1227
 %s is now a %s%s	
 
-# General/MMMWE_CustomClassEditor.lua:250, General/MMMWE_CustomClasses.lua:1175
+# General/MMMWE_CustomClassEditor.lua:250, General/MMMWE_CustomClasses.lua:1228
  (%d skill points refunded)	
 
-# General/MMMWE_CustomClassEditor.lua:288, General/MMMWE_CustomClassEditor.lua:294, General/MMMWE_CustomClassEditor.lua:300, General/MMMWE_CustomClassEditor.lua:313, General/MMMWE_CustomClassEditor.lua:324, General/MMMWE_CustomClassEditor.lua:373, General/MMMWE_CustomClassEditor.lua:398, General/MMMWE_CustomClassEditor.lua:412, General/MMMWE_CustomClassEditor.lua:614
+# General/MMMWE_CustomClassEditor.lua:288, General/MMMWE_CustomClassEditor.lua:294, General/MMMWE_CustomClassEditor.lua:300, General/MMMWE_CustomClassEditor.lua:313, General/MMMWE_CustomClassEditor.lua:324, General/MMMWE_CustomClassEditor.lua:373, General/MMMWE_CustomClassEditor.lua:398, General/MMMWE_CustomClassEditor.lua:412, General/MMMWE_CustomClassEditor.lua:738
 This class is taken by a character in the game	
 
 # General/MMMWE_CustomClassEditor.lua:301
@@ -595,109 +637,136 @@ No builds in the CustomClasses folder
 # General/MMMWE_CustomClassEditor.lua:422
 Loaded %s (%d/%d)	
 
-# General/MMMWE_CustomClassEditor.lua:543
+# General/MMMWE_CustomClassEditor.lua:571
+cannot learn	
+
+# General/MMMWE_CustomClassEditor.lua:571
+up to Novice	
+
+# General/MMMWE_CustomClassEditor.lua:571
+up to Expert	
+
+# General/MMMWE_CustomClassEditor.lua:571
+up to Master	
+
+# General/MMMWE_CustomClassEditor.lua:571
+up to Grand Master	
+
+# General/MMMWE_CustomClassEditor.lua:578
+starting skill	
+
+# General/MMMWE_CustomClassEditor.lua:593, General/MMMWE_CustomClassEditor.lua:607
+points	
+
+# General/MMMWE_CustomClassEditor.lua:613
+Damage: %s	
+
+# General/MMMWE_CustomClassEditor.lua:616
+Armor class: +%d	
+
+# General/MMMWE_CustomClassEditor.lua:619
+Skill: %s	
+
+# General/MMMWE_CustomClassEditor.lua:621
+Value: %d gold	
+
+# General/MMMWE_CustomClassEditor.lua:667
  (taken, read-only)	
 
-# General/MMMWE_CustomClassEditor.lua:544
+# General/MMMWE_CustomClassEditor.lua:668
 Class %d/%d: %s	
 
-# General/MMMWE_CustomClassEditor.lua:548
+# General/MMMWE_CustomClassEditor.lua:672
 There is only this custom class so far	
 
-# General/MMMWE_CustomClassEditor.lua:559
+# General/MMMWE_CustomClassEditor.lua:683
 Points: %g / %d	
 
-# General/MMMWE_CustomClassEditor.lua:622
+# General/MMMWE_CustomClassEditor.lua:746
 %s: tier %d  (%d + %d per level)	
 
-# General/MMMWE_CustomClassEditor.lua:629
+# General/MMMWE_CustomClassEditor.lua:753
 Hit points	
 
-# General/MMMWE_CustomClassEditor.lua:630, General/MMMWE_CustomClassEditor.lua:644
+# General/MMMWE_CustomClassEditor.lua:754, General/MMMWE_CustomClassEditor.lua:768
 Spell points	
 
-# General/MMMWE_CustomClassEditor.lua:637
+# General/MMMWE_CustomClassEditor.lua:761
 Kit: 	
 
-# General/MMMWE_CustomClassEditor.lua:643
+# General/MMMWE_CustomClassEditor.lua:767
 click to buy one	
 
-# General/MMMWE_CustomClassEditor.lua:644
+# General/MMMWE_CustomClassEditor.lua:768
 %s, %d pts	
 
-# General/MMMWE_CustomClassEditor.lua:650, General/MMMWE_CustomClasses.lua:530, General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3467
-Intellect	
-
-# General/MMMWE_CustomClassEditor.lua:650, General/MMMWE_CustomClasses.lua:530, General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3467
-Personality	
-
-# General/MMMWE_CustomClassEditor.lua:650
+# General/MMMWE_CustomClassEditor.lua:774
 Int. and Pers.	
 
-# General/MMMWE_CustomClassEditor.lua:656
+# General/MMMWE_CustomClassEditor.lua:780
 good	
 
-# General/MMMWE_CustomClassEditor.lua:656, General/MMMWE_CustomClasses.lua:72
+# General/MMMWE_CustomClassEditor.lua:780, General/MMMWE_CustomClasses.lua:72
 neutral	
 
-# General/MMMWE_CustomClassEditor.lua:656
+# General/MMMWE_CustomClassEditor.lua:780
 evil	
 
-# General/MMMWE_CustomClassEditor.lua:661
+# General/MMMWE_CustomClassEditor.lua:785
 Alignment: 	
 
-# General/MMMWE_CustomClassEditor.lua:684
+# General/MMMWE_CustomClassEditor.lua:808
 Ident. Item	
 
-# General/MMMWE_CustomClassEditor.lua:684
+# General/MMMWE_CustomClassEditor.lua:808
 Disarm Traps	
 
-# General/MMMWE_CustomClassEditor.lua:684
+# General/MMMWE_CustomClassEditor.lua:808
 Ident. Monster	
 
-# General/MMMWE_CustomClassEditor.lua:685
+# General/MMMWE_CustomClassEditor.lua:809
 Bodybuilding	
 
-# General/MMMWE_CustomClassEditor.lua:685, General/MMMWE_CustomClasses.lua:686
+# General/MMMWE_CustomClassEditor.lua:809, General/MMMWE_CustomClasses.lua:739
 Repair Item	
 
-# General/MMMWE_CustomClassEditor.lua:685, General/MMMWE_CustomClasses.lua:505, General/MMMWE_ExtraSkills.lua:52
+# General/MMMWE_CustomClassEditor.lua:809, General/MMMWE_CustomClasses.lua:558, General/MMMWE_ExtraSkills.lua:52
 Dual-Wield	
 
-# General/MMMWE_CustomClassEditor.lua:685, General/MMMWE_ExtraSkills.lua:54
+# General/MMMWE_CustomClassEditor.lua:809, General/MMMWE_ExtraSkills.lua:54
 Enchanting	
 
-# General/MMMWE_CustomClassEditor.lua:704
+# General/MMMWE_CustomClassEditor.lua:829
 Prot. from Magic	
 
-# General/MMMWE_CustomClassEditor.lua:722
+# General/MMMWE_CustomClassEditor.lua:847
 %s Magic: %s	
 
-# General/MMMWE_CustomClassEditor.lua:773
+# General/MMMWE_CustomClassEditor.lua:909
 Enter keeps the name, Esc drops it	
 
-# General/MMMWE_CustomClassEditor.lua:775
+# General/MMMWE_CustomClassEditor.lua:911
 Spells %d/%d: click to pick	
 
-# General/MMMWE_CustomClassEditor.lua:777
+# General/MMMWE_CustomClassEditor.lua:913
 Click +1, Ctrl+click -1	
 
-# General/MMMWE_CustomClassEditor.lua:778
+# General/MMMWE_CustomClassEditor.lua:914
 Click +, Ctrl -, Shift: start %d/%d	
 
-# General/MMMWE_CustomClassEditor.lua:787
+# General/MMMWE_CustomClassEditor.lua:923
 Items: %d of %d points	
 
-# General/MMMWE_CustomClassEditor.lua:791
+# General/MMMWE_CustomClassEditor.lua:927
 Price: rank x impact	
 
-# General/MMMWE_CustomClassEditor.lua:794
+# General/MMMWE_CustomClassEditor.lua:930
 Promoters: %s (%d%%)	
 
-# General/MMMWE_CustomClassEditor.lua:797
+# General/MMMWE_CustomClassEditor.lua:933
 Ctrl+S save, Ctrl+L load	
 
-# General/MMMWE_CustomClassEditor.lua:841
+# General/MMMWE_CustomClassEditor.lua:988
 Become a custom class	
 
 # General/MMMWE_CustomClasses.lua:72
@@ -724,193 +793,187 @@ Energy
 # General/MMMWE_CustomClasses.lua:101, General/MMMWE_Resources.lua:453
 Construction	
 
-# General/MMMWE_CustomClasses.lua:236
+# General/MMMWE_CustomClasses.lua:256
+%s needs Blaster as a starting skill	
+
+# General/MMMWE_CustomClasses.lua:261, General/MMMWE_CustomClasses.lua:268, General/MMMWE_CustomClasses.lua:274
 %s needs %s	
 
-# General/MMMWE_CustomClasses.lua:242
+# General/MMMWE_CustomClasses.lua:261, General/MMMWE_ExtraSkills.lua:53
+Robe	
+
+# General/MMMWE_CustomClasses.lua:280
 %s isn't a spell of the class	
 
-# General/MMMWE_CustomClasses.lua:262
+# General/MMMWE_CustomClasses.lua:300
 No more of %s	
 
-# General/MMMWE_CustomClasses.lua:365, General/MMMWE_CustomClasses.lua:1354
+# General/MMMWE_CustomClasses.lua:418, General/MMMWE_CustomClasses.lua:1407
 Custom class	
 
-# General/MMMWE_CustomClasses.lua:366
+# General/MMMWE_CustomClasses.lua:419
 An unused custom class.	
 
-# General/MMMWE_CustomClasses.lua:530
+# General/MMMWE_CustomClasses.lua:583
 Intellect and Personality	
 
-# General/MMMWE_CustomClasses.lua:570
+# General/MMMWE_CustomClasses.lua:623
 %s kit: %g	
 
-# General/MMMWE_CustomClasses.lua:574
+# General/MMMWE_CustomClasses.lua:627
 HP tier %d (%d/%d per level): %g	
 
-# General/MMMWE_CustomClasses.lua:576
+# General/MMMWE_CustomClasses.lua:629
 SP tier %d (%d/%d per level, %s): %g	
 
-# General/MMMWE_CustomClasses.lua:589
+# General/MMMWE_CustomClasses.lua:642
 fighter-mage x%g	
 
-# General/MMMWE_CustomClasses.lua:590
+# General/MMMWE_CustomClasses.lua:643
 school discount	
 
-# General/MMMWE_CustomClasses.lua:631
+# General/MMMWE_CustomClasses.lua:684
 %d spells: %g (by rank and impact)	
 
-# General/MMMWE_CustomClasses.lua:646, General/MMMWE_CustomClasses.lua:1054
+# General/MMMWE_CustomClasses.lua:699, General/MMMWE_CustomClasses.lua:1107
 %s needs %s Magic	
 
-# General/MMMWE_CustomClasses.lua:652
+# General/MMMWE_CustomClasses.lua:705
  Magic: no spell picked	
 
-# General/MMMWE_CustomClasses.lua:659
+# General/MMMWE_CustomClasses.lua:712
  is lost from the previous step	
 
-# General/MMMWE_CustomClasses.lua:672
+# General/MMMWE_CustomClasses.lua:725
 %g points of %d	
 
-# General/MMMWE_CustomClasses.lua:674
+# General/MMMWE_CustomClasses.lua:727
 HP tier above 	
 
-# General/MMMWE_CustomClasses.lua:675
+# General/MMMWE_CustomClasses.lua:728
 SP tier above 	
 
-# General/MMMWE_CustomClasses.lua:679
+# General/MMMWE_CustomClasses.lua:732
 the %s kit uses the %s page: no %s Magic	
 
-# General/MMMWE_CustomClasses.lua:682
+# General/MMMWE_CustomClasses.lua:735
 %s replaces spell points: SP tier 0	
 
-# General/MMMWE_CustomClasses.lua:686
+# General/MMMWE_CustomClasses.lua:739
 the %s kit needs %s	
 
-# General/MMMWE_CustomClasses.lua:692
+# General/MMMWE_CustomClasses.lua:745
 lower HP/SP tier than the previous step	
 
-# General/MMMWE_CustomClasses.lua:693
+# General/MMMWE_CustomClasses.lua:746
 loses the second SP stat	
 
-# General/MMMWE_CustomClasses.lua:696
+# General/MMMWE_CustomClasses.lua:749
  cap lower than the previous step	
 
-# General/MMMWE_CustomClasses.lua:722
+# General/MMMWE_CustomClasses.lua:775
 A custom class. Hit points: tier %d. Spell points: tier %d%s.	
 
-# General/MMMWE_CustomClasses.lua:723
+# General/MMMWE_CustomClasses.lua:776
 , from 	
 
-# General/MMMWE_CustomClasses.lua:726
+# General/MMMWE_CustomClasses.lua:779
 %s kit: %s and the %s abilities (%s page of the spellbook).	
 
-# General/MMMWE_CustomClasses.lua:727, General/MMMWE_Resources.lua:1567, General/MMMWE_Resources.lua:2537
+# General/MMMWE_CustomClasses.lua:780, General/MMMWE_Resources.lua:1567, General/MMMWE_Resources.lua:2537
 spell points	
 
-# General/MMMWE_CustomClasses.lua:738
+# General/MMMWE_CustomClasses.lua:791
 Spells: %d.	
 
-# General/MMMWE_CustomClasses.lua:915
+# General/MMMWE_CustomClasses.lua:968
 all 	
 
-# General/MMMWE_CustomClasses.lua:915
+# General/MMMWE_CustomClasses.lua:968
  custom classes are in use	
 
-# General/MMMWE_CustomClasses.lua:916
+# General/MMMWE_CustomClasses.lua:969
 Custom Class 	
 
-# General/MMMWE_CustomClasses.lua:971
+# General/MMMWE_CustomClasses.lua:1024
 %s tier must be 0..%d for the %s	
 
-# General/MMMWE_CustomClasses.lua:975
+# General/MMMWE_CustomClasses.lua:1028
 %s tier can't be lower than the previous step's (%d)	
 
-# General/MMMWE_CustomClasses.lua:989
+# General/MMMWE_CustomClasses.lua:1042
 the previous step already uses both stats	
 
-# General/MMMWE_CustomClasses.lua:1000
+# General/MMMWE_CustomClasses.lua:1053
 this skill can't be bought	
 
-# General/MMMWE_CustomClasses.lua:1004
+# General/MMMWE_CustomClasses.lua:1057
 %s can't be lower than the previous step's %s	
 
-# General/MMMWE_CustomClasses.lua:1050
+# General/MMMWE_CustomClasses.lua:1103
 no such spell	
 
-# General/MMMWE_CustomClasses.lua:1058
+# General/MMMWE_CustomClasses.lua:1111
  is a spell of the previous step	
 
-# General/MMMWE_CustomClasses.lua:1117
+# General/MMMWE_CustomClasses.lua:1170
 %d. %s (%s, class %d): %g / %d points%s	
 
-# General/MMMWE_CustomClasses.lua:1137
+# General/MMMWE_CustomClasses.lua:1190
 %d: %s (%g points)%s	
 
-# General/MMMWE_CustomClasses.lua:1141
+# General/MMMWE_CustomClasses.lua:1194
 no custom classes	
 
-# General/MMMWE_CustomClasses.lua:1164
+# General/MMMWE_CustomClasses.lua:1217
 %s already is a %s	
 
-# General/MMMWE_CustomClasses.lua:1182
+# General/MMMWE_CustomClasses.lua:1235
 not a custom class	
 
-# General/MMMWE_CustomClasses.lua:1184
+# General/MMMWE_CustomClasses.lua:1237
 the class has no build	
 
-# General/MMMWE_CustomClasses.lua:1216
+# General/MMMWE_CustomClasses.lua:1269
 the %s kit is for %ss only	
 
-# General/MMMWE_CustomClasses.lua:1222
+# General/MMMWE_CustomClasses.lua:1275
 alignment: 0 good, 5 neutral, 10 evil	
 
-# General/MMMWE_CustomClasses.lua:1234, General/MMMWE_CustomClasses.lua:1300
+# General/MMMWE_CustomClasses.lua:1287, General/MMMWE_CustomClasses.lua:1353
 unknown kit: 	
 
-# General/MMMWE_CustomClasses.lua:1293
+# General/MMMWE_CustomClasses.lua:1346
 custom class	
 
-# General/MMMWE_CustomClasses.lua:1309, General/MMMWE_CustomClasses.lua:1311
+# General/MMMWE_CustomClasses.lua:1362, General/MMMWE_CustomClasses.lua:1364
 step 	
 
-# General/MMMWE_CustomClasses.lua:1309
+# General/MMMWE_CustomClasses.lua:1362
  is missing	
 
-# General/MMMWE_CustomClasses.lua:1311
+# General/MMMWE_CustomClasses.lua:1364
  has no name	
 
-# General/MMMWE_CustomClasses.lua:1318
+# General/MMMWE_CustomClasses.lua:1371
 unknown skill: 	
 
-# General/MMMWE_CustomClasses.lua:1319
+# General/MMMWE_CustomClasses.lua:1372
 unknown cap: 	
 
-# General/MMMWE_CustomClasses.lua:1327
+# General/MMMWE_CustomClasses.lua:1380
 unknown spell: 	
 
-# General/MMMWE_CustomClasses.lua:1362
+# General/MMMWE_CustomClasses.lua:1415
 can't write 	
 
-# General/MMMWE_CustomClasses.lua:1379
+# General/MMMWE_CustomClasses.lua:1432
 can't read 	
 
 # General/MMMWE_DamageKinds.lua:209
 Sla %d%%\nPie %d%%\nBlu %d%%	
 
-# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3467
-Might	
-
-# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3467
-Endurance	
-
-# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3467
-Accuracy	
-
-# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3467
-Speed	
-
-# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:3467
+# General/MMMWE_Drains.lua:49, General/MMMWE_Main.lua:2996
 Luck	
 
 # General/MMMWE_Drains.lua:168
@@ -1000,9 +1063,6 @@ no energy shield worn
 # General/MMMWE_EnergyShield.lua:346
 %s: charge %.1f / %.1f, Nova %d Rate %d Delay %d Capacity %d, delay %.2f min%s, recharge %.1f/min	
 
-# General/MMMWE_ExtraSkills.lua:53
-Robe	
-
 # General/MMMWE_ExtraSkills.lua:57
 Fighting with a weapon in each hand. Any weapon in the off hand needs this skill (the Blaster skill still rules a second blaster pistol). With a weapon in each hand the skill adds to Attack: -10 plus 1 per point of skill. Below Master the off hand hits weaker and the attacks are slower; a Master wields two weapons as one would a single weapon; a Grand Master can hold a two-handed weapon in each hand.	
 
@@ -1081,6 +1141,21 @@ This spell can't be bound into a wand
 # General/MMMWE_ExtraSkillsEnchanting.lua:272
 %s makes a %s with %d charges	
 
+# General/MMMWE_ExtraSkillsEnchanting.lua:383
+%s has no wand in the quickslot	
+
+# General/MMMWE_ExtraSkillsEnchanting.lua:396
+%s has no charged %s	
+
+# General/MMMWE_ExtraSkillsEnchanting.lua:492
+%s: %s in the wand quickslot	
+
+# General/MMMWE_ExtraSkillsEnchanting.lua:495
+%s: the wand quickslot is empty	
+
+# General/MMMWE_ExtraSkillsEnchanting.lua:497
+Only a wand of an attack spell goes into the wand quickslot	
+
 # General/MMMWE_ForgeStory.lua:47
 The Forge	
 
@@ -1123,85 +1198,88 @@ The cube! Let me link it to the station... There. Beta-5 knows us now. Its store
 # General/MMMWE_GateStory.lua:59
 Beta-5 hums like a hive now. One day it will reach the Ancients themselves. Until then, we have work to do.	
 
-# General/MMMWE_HardcoreSettings.lua:274
-(Hardcore mode is locked for this party)	
-
-# General/MMMWE_HardcoreSettings.lua:275
-(locked while Hardcore mode is on)	
-
-# General/MMMWE_HardcoreSettings.lua:276
-(the first party death deletes this party's saves)	
-
-# General/MMMWE_HardcoreSettings.lua:279
-Each party death before the last removes all items	
-
-# General/MMMWE_HardcoreSettings.lua:280
-except special items, artifacts, relics and ancient items.	
-
-# General/MMMWE_HardcoreSettings.lua:284
-Level 50: %s exp, level 100: %s (game: %s, %s)	
-
-# General/MMMWE_HardcoreSettings.lua:298
-Hardcore mode can't be turned off for this party	
-
-# General/MMMWE_HardcoreSettings.lua:319
-Party deaths allowed	
-
-# General/MMMWE_HardcoreSettings.lua:340
-Party deaths so far	
+# General/MMMWE_HardcoreSettings.lua:241
+Hardcore mode: this party has already fallen %d of %d times. The run is over.	
 
 # General/MMMWE_HardcoreSettings.lua:350
-Experience curve	
+(Hardcore mode is locked for this party)	
 
-# General/MMMWE_HardcoreSettings.lua:377, General/MMMWE_HardcoreSettings.lua:379
-This party's save files 	
+# General/MMMWE_HardcoreSettings.lua:351
+(locked while Hardcore mode is on)	
 
-# General/MMMWE_HardcoreSettings.lua:377, General/MMMWE_HardcoreSettings.lua:379
-will be deleted 	
+# General/MMMWE_HardcoreSettings.lua:352
+(the first party death deletes this party's saves)	
 
-# General/MMMWE_HardcoreSettings.lua:378
-if the entire party is killed.\n\n	
+# General/MMMWE_HardcoreSettings.lua:355
+Each party death before the last removes all items	
 
-# General/MMMWE_HardcoreSettings.lua:380
-after 	
+# General/MMMWE_HardcoreSettings.lua:356
+except special items, artifacts, relics and ancient items.	
 
-# General/MMMWE_HardcoreSettings.lua:380
- party deaths.\n	
+# General/MMMWE_HardcoreSettings.lua:360
+Level 50: %s exp, level 100: %s (game: %s, %s)	
 
-# General/MMMWE_HardcoreSettings.lua:381
-Every party death before that 	
+# General/MMMWE_HardcoreSettings.lua:374
+Hardcore mode can't be turned off for this party	
 
-# General/MMMWE_HardcoreSettings.lua:382
-removes all items 	
+# General/MMMWE_HardcoreSettings.lua:395
+Party deaths allowed	
 
-# General/MMMWE_HardcoreSettings.lua:383
-except artifacts, relics, quest, special and ancient items.\n\n	
-
-# General/MMMWE_HardcoreSettings.lua:384
-HARDCORE MODE\n\n	
-
-# General/MMMWE_HardcoreSettings.lua:385
-Saving, loading and quitting to main menu 	
-
-# General/MMMWE_HardcoreSettings.lua:386
-are blocked 	
-
-# General/MMMWE_HardcoreSettings.lua:386
-while enemies are nearby.\n	
-
-# General/MMMWE_HardcoreSettings.lua:388
-It can't be turned off 	
-
-# General/MMMWE_HardcoreSettings.lua:388
-for this party once enabled.\n	
-
-# General/MMMWE_HardcoreSettings.lua:389
-\nEnable Hardcore Mode?	
-
-# General/MMMWE_HardcoreSettings.lua:406
-Confirm	
+# General/MMMWE_HardcoreSettings.lua:416
+Party deaths so far	
 
 # General/MMMWE_HardcoreSettings.lua:426
+Experience curve	
+
+# General/MMMWE_HardcoreSettings.lua:453, General/MMMWE_HardcoreSettings.lua:455
+This party's save files 	
+
+# General/MMMWE_HardcoreSettings.lua:453, General/MMMWE_HardcoreSettings.lua:455
+will be deleted 	
+
+# General/MMMWE_HardcoreSettings.lua:454
+if the entire party is killed.\n\n	
+
+# General/MMMWE_HardcoreSettings.lua:456
+after 	
+
+# General/MMMWE_HardcoreSettings.lua:456
+ party deaths.\n	
+
+# General/MMMWE_HardcoreSettings.lua:457
+Every party death before that 	
+
+# General/MMMWE_HardcoreSettings.lua:458
+removes all items 	
+
+# General/MMMWE_HardcoreSettings.lua:459
+except artifacts, relics, quest, special and ancient items.\n\n	
+
+# General/MMMWE_HardcoreSettings.lua:460
+HARDCORE MODE\n\n	
+
+# General/MMMWE_HardcoreSettings.lua:461
+Saving, loading and quitting to main menu 	
+
+# General/MMMWE_HardcoreSettings.lua:462
+are blocked 	
+
+# General/MMMWE_HardcoreSettings.lua:462
+while enemies are nearby.\n	
+
+# General/MMMWE_HardcoreSettings.lua:464
+It can't be turned off 	
+
+# General/MMMWE_HardcoreSettings.lua:464
+for this party once enabled.\n	
+
+# General/MMMWE_HardcoreSettings.lua:465
+\nEnable Hardcore Mode?	
+
+# General/MMMWE_HardcoreSettings.lua:482
+Confirm	
+
+# General/MMMWE_HardcoreSettings.lua:502
 Cancel	
 
 # General/MMMWE_InventorySort.lua:494 plural, English plural: Party gathered: %d items moved
@@ -1591,142 +1669,133 @@ the whole party gains 10% more experience
 # General/MMMWE_LegendaryPassives.lua:724
 %s refuses to fall!	
 
-# General/MMMWE_Main.lua:2984 plural, English plural: Holds %d items
+# General/MMMWE_Main.lua:2513 plural, English plural: Holds %d items
 Holds %d item	
 
 # General/MMMWE_Main.lua:683
 melee %d, ranged %d, armor %+d%%	
 
-# General/MMMWE_Main.lua:1057
-Eradicated	
-
-# General/MMMWE_Main.lua:1059
-Dead	
-
-# General/MMMWE_Main.lua:1067
-%s loses %d %s from being %s	
-
-# General/MMMWE_Main.lua:1877
+# General/MMMWE_Main.lua:1404
 %s eradicates %s	
 
-# General/MMMWE_Main.lua:2081
+# General/MMMWE_Main.lua:1608
 %s dodges and strikes back!	
 
-# General/MMMWE_Main.lua:2353
+# General/MMMWE_Main.lua:1880
 %s's shadow clone takes the blow!	
 
-# General/MMMWE_Main.lua:2355
+# General/MMMWE_Main.lua:1882
 %s evades the attack!	
 
-# General/MMMWE_Main.lua:2536
+# General/MMMWE_Main.lua:2063
 %s dodges the attack!	
 
-# General/MMMWE_Main.lua:2539
+# General/MMMWE_Main.lua:2066
 %s takes %d %s damage (%d negated, %.1f%%)	
 
-# General/MMMWE_Main.lua:2908, General/MMMWE_Main.lua:2911
+# General/MMMWE_Main.lua:2435, General/MMMWE_Main.lua:2440
 Type: %s \nDurability: %s	
 
-# General/MMMWE_Main.lua:2913
+# General/MMMWE_Main.lua:2442
 Type: %s	
 
-# General/MMMWE_Main.lua:2919, General/MMMWE_Main.lua:2925
+# General/MMMWE_Main.lua:2448, General/MMMWE_Main.lua:2454
 %s: +%lu	
 
-# General/MMMWE_Main.lua:2934
+# General/MMMWE_Main.lua:2463
 Armor: +%d   Block Power: %d%s (%s)	
 
-# General/MMMWE_Main.lua:2957
+# General/MMMWE_Main.lua:2486
 \nParry Power: %d%s	
 
-# General/MMMWE_Main.lua:2960, General/MMMWE_Main.lua:3044, General/MMMWE_Main.lua:3046, General/MMMWE_Main.lua:3050
+# General/MMMWE_Main.lua:2489, General/MMMWE_Main.lua:2573, General/MMMWE_Main.lua:2575, General/MMMWE_Main.lua:2579
 %s: +%d   %s: %dd%d	
 
-# General/MMMWE_Main.lua:2969, General/MMMWE_Main.lua:3003
+# General/MMMWE_Main.lua:2498, General/MMMWE_Main.lua:2532
 %s: %lu	
 
-# General/MMMWE_Main.lua:2974
+# General/MMMWE_Main.lua:2503
 Steel: %d Siertal: %d Phylt: %d	
 
-# General/MMMWE_Main.lua:2977
+# General/MMMWE_Main.lua:2506
 Kergar: %d Erudine: %d Stalt: %d	
 
-# General/MMMWE_Main.lua:2981
+# General/MMMWE_Main.lua:2510
 Bottles: %d	
 
-# General/MMMWE_Main.lua:2992
+# General/MMMWE_Main.lua:2521
 Ant: %d Jad: %d	
 
-# General/MMMWE_Main.lua:2995
+# General/MMMWE_Main.lua:2524
 Charges: %d of %d	
 
-# General/MMMWE_Main.lua:2998
+# General/MMMWE_Main.lua:2527
 Gem: %s	
 
-# General/MMMWE_Main.lua:2998
+# General/MMMWE_Main.lua:2527
 No gem set	
 
-# General/MMMWE_Main.lua:3000
+# General/MMMWE_Main.lua:2529
 Enr: %d Ant: %d Jad: %d	
 
-# General/MMMWE_Main.lua:3019
+# General/MMMWE_Main.lua:2548
 Shoot: +%d    Damage: %d-%d	
 
-# General/MMMWE_Main.lua:3227
+# General/MMMWE_Main.lua:2756
 Armor Class	
 
-# General/MMMWE_Main.lua:3228
+# General/MMMWE_Main.lua:2757
 Condition (replaced by HR and Phys Res)	
 
-# General/MMMWE_Main.lua:3229
+# General/MMMWE_Main.lua:2758
 Quick spell (replaced by resistances and chances; 4 px higher for the Sla/Pie/Blu line)	
 
-# General/MMMWE_Main.lua:3231
+# General/MMMWE_Main.lua:2760
 Melee damage	
 
-# General/MMMWE_Main.lua:3233
+# General/MMMWE_Main.lua:2762
 Ranged damage	
 
-# General/MMMWE_Main.lua:3236
+# General/MMMWE_Main.lua:2765
 Fire res	
 
-# General/MMMWE_Main.lua:3237
+# General/MMMWE_Main.lua:2766
 Air res	
 
-# General/MMMWE_Main.lua:3238
+# General/MMMWE_Main.lua:2767
 Water res	
 
-# General/MMMWE_Main.lua:3239
+# General/MMMWE_Main.lua:2768
 Earth res	
 
-# General/MMMWE_Main.lua:3240
+# General/MMMWE_Main.lua:2769
 Mind res	
 
-# General/MMMWE_Main.lua:3241
+# General/MMMWE_Main.lua:2770
 Body res	
 
-# General/MMMWE_Main.lua:3992
+# General/MMMWE_Main.lua:3521
 Flight mode active. Remaining charge: %3.1f%%	
 
-# General/MMMWE_Main.lua:3996
+# General/MMMWE_Main.lua:3525
 WARNING! Low charge: %3.1f%%	
 
-# General/MMMWE_Main.lua:3999
+# General/MMMWE_Main.lua:3528
 WARNING! Flight mode terminates in 5 minutes!	
 
-# General/MMMWE_Main.lua:4017
+# General/MMMWE_Main.lua:3546
 Tech mastery (%d/2) is insufficient to use this function	
 
-# General/MMMWE_Main.lua:4027
+# General/MMMWE_Main.lua:3556
 Remaining charge: %3.1f%%.	
 
-# General/MMMWE_Main.lua:4029, General/MMMWE_Main.lua:4053
+# General/MMMWE_Main.lua:3558, General/MMMWE_Main.lua:3582
 Device charge CRITICAL! Operation aborted	
 
-# General/MMMWE_Main.lua:4047
+# General/MMMWE_Main.lua:3576
 Tech mastery (%d/3) is insufficient to use this function	
 
-# General/MMMWE_Main.lua:4065
+# General/MMMWE_Main.lua:3594
 Flight mode activated	
 
 # General/MMMWE_MonkBranches.lua:151
@@ -2812,89 +2881,101 @@ Threat %d%%
 # General/MMMWE_UnarmedGM.lua:127
 %s strikes again!	
 
-# General/MMMWE_WildMagic.lua:167
+# General/MMMWE_WildMagic.lua:168
 Sparks and colours burst from %s's hands	
 
-# General/MMMWE_WildMagic.lua:178
+# General/MMMWE_WildMagic.lua:179
 %s's spell rebounds on %s! (%d damage)	
 
-# General/MMMWE_WildMagic.lua:182
+# General/MMMWE_WildMagic.lua:183
 %s feels strangely tipsy	
 
-# General/MMMWE_WildMagic.lua:186
+# General/MMMWE_WildMagic.lua:187
 %s falls into a magical slumber	
 
-# General/MMMWE_WildMagic.lua:190
+# General/MMMWE_WildMagic.lua:191
 %s ages a year in an instant	
 
-# General/MMMWE_WildMagic.lua:196
+# General/MMMWE_WildMagic.lua:197
 Gold coins rain on the party! (+%d)	
 
-# General/MMMWE_WildMagic.lua:200
+# General/MMMWE_WildMagic.lua:201
 Some of the party's gold vanishes! (-%d)	
 
-# General/MMMWE_WildMagic.lua:205
+# General/MMMWE_WildMagic.lua:206
 %s's spell points well up	
 
-# General/MMMWE_WildMagic.lua:214
+# General/MMMWE_WildMagic.lua:215
 %s's spell tears open a rift!	
 
-# General/MMMWE_WildMagic.lua:219
+# General/MMMWE_WildMagic.lua:220
 Some of the party's food turns to dust	
 
-# General/MMMWE_WildMagic.lua:242
+# General/MMMWE_WildMagic.lua:243
 Wild magic! %s loses control of the spell	
 
-# General/MMMWE_WildMagic.lua:250
+# General/MMMWE_WildMagic.lua:251
 %s's spell backfires! (%d damage)	
 
-# General/MMMWE_WildMagic.lua:253
+# General/MMMWE_WildMagic.lua:254
 %s's spell backfires! (cursed for %d minutes)	
 
-# General/MMMWE_WildMagic.lua:256
+# General/MMMWE_WildMagic.lua:257
 %s's spell backfires! (%s for %d minutes)	
 
-# General/MMMWE_WildMagic.lua:256
+# General/MMMWE_WildMagic.lua:257
 insane	
 
-# General/MMMWE_WildMagic.lua:256
+# General/MMMWE_WildMagic.lua:257
 afraid	
 
-# General/MMMWE_WildMagic.lua:261
+# General/MMMWE_WildMagic.lua:262
 %s's spell backfires! (-%d spell points)	
 
-# General/MMMWE_WildMagic.lua:265
+# General/MMMWE_WildMagic.lua:266
 %s's spell backfires! (%d damage, -%d Luck for %d minutes)	
 
-# General/MMMWE_WildMagic.lua:282
+# General/MMMWE_WildMagic.lua:283
 %s's spell surges with wild magic! (+%d spell points back)	
 
-# General/MMMWE_WildMagic.lua:286, General/MMMWE_WildMagic.lua:405
+# General/MMMWE_WildMagic.lua:287, General/MMMWE_WildMagic.lua:406
 %s's spell surges with wild magic! (skill %d -> %d)	
 
-# General/MMMWE_WildMagic.lua:342
+# General/MMMWE_WildMagic.lua:343
 %s burns out its magic	
 
-# General/MMMWE_WildMagic.lua:353
+# General/MMMWE_WildMagic.lua:354
 %s's spell rebounds on its allies	
 
-# General/MMMWE_WildMagic.lua:357
+# General/MMMWE_WildMagic.lua:358
 %s wanders off in a daze	
 
-# General/MMMWE_WildMagic.lua:361
+# General/MMMWE_WildMagic.lua:362
 %s draws strength from the wild magic	
 
-# General/MMMWE_WildMagic.lua:365
+# General/MMMWE_WildMagic.lua:366
 %s is healed by the wild magic	
 
-# General/MMMWE_WildMagic.lua:368
+# General/MMMWE_WildMagic.lua:369
 %s's spell bursts into harmless sparks	
 
-# General/MMMWE_WildMagic.lua:377
+# General/MMMWE_WildMagic.lua:378
 %s's spell backfires!	
 
-# General/MMMWE_WildMagic.lua:416
+# General/MMMWE_WildMagic.lua:417
 %s's spell fizzles	
+
+# Global/MMMWE_BlackMarket.lua:118 plural, English plural: No questions asked: %d gold for %d items, %s.
+No questions asked: %d gold for %d item, %s.	
+
+# Global/MMMWE_BlackMarket.lua:123 plural, English plural: %d gold for the %d things you'd rather not show a merchant, %s (%d%% of an honest price). Ask again and the deal is done.
+%d gold for the %d thing you'd rather not show a merchant, %s (%d%% of an honest price). Ask again and the deal is done.	
+
+# Global/MMMWE_BlackMarket.lua:108
+You carry nothing I'd call merchandise, %s.	
+
+# Global/MMMWE_BlackMarket.lua:134
+Sell stolen goods	
 
 # Global/MMMWE_CombatLog.lua:232
 %s hits %s for %s damage	
@@ -3208,19 +3289,19 @@ Shield %d%%
 # Global/MMMWE_HPSPDisplay.lua:1482
 HP/SP overlay 	
 
-# Global/MMMWE_HardcoreMode.lua:101
+# Global/MMMWE_HardcoreMode.lua:108
 Hardcore mode: the party has fallen (%d of %d deaths).\n	
 
-# Global/MMMWE_HardcoreMode.lua:102
+# Global/MMMWE_HardcoreMode.lua:109
 %d items were lost. Special items, artifacts, relics and ancient items were kept.	
 
-# Global/MMMWE_HardcoreMode.lua:113
+# Global/MMMWE_HardcoreMode.lua:120
 You can't save in Hardcore mode when enemies are nearby	
 
-# Global/MMMWE_HardcoreMode.lua:123
+# Global/MMMWE_HardcoreMode.lua:130
 You can't load in Hardcore mode when enemies are nearby	
 
-# Global/MMMWE_HardcoreMode.lua:124
+# Global/MMMWE_HardcoreMode.lua:131
 You can't quit in Hardcore mode when enemies are nearby	
 
 # Global/MMMWE_LegendaryTeachers.lua:34

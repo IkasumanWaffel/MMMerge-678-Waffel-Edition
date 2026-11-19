@@ -338,6 +338,28 @@ end
 ---------------------------------------------------------------------------
 
 local WandShot   -- {Player, Old main hand, Item index, ticks}
+local WandAim    -- (19.11.26) a targeted wand spell waiting in the cast queue
+
+-- (19.11.26) the spells the game lets the player aim with a click when cast from the book
+-- (the cast queue routine 0x425B67 gives them flag 8, the monster target screen, when its
+-- third argument is 0): Fire Bolt, Fireball, Lightning Bolt, Ice Bolt, Slow... A quickslot
+-- wand of one of them opens that screen: the spell goes where the player clicks.
+local QUEUE_SPELL, QUEUE, QUEUE_SIZE, QUEUE_COUNT = 0x425B67, 0x51D820, 0x14, 10
+local PickSpell = {}
+do
+	local ok = pcall(function()
+		for sp = 2, 2 + 0x79 do
+			local idx = mem.u1[0x425EA1 + sp - 2]
+			if mem.u4[0x425E75 + idx * 4] == 0x425BEE then PickSpell[sp] = true end
+		end
+	end)
+	if not ok or not next(PickSpell) then
+		for _, sp in ipairs{2, 6, 11, 18, 20, 24, 26, 29, 32, 34, 35, 37, 39, 44, 59, 60, 65, 70,
+				76, 78, 79, 87, 90, 92, 93, 96, 97, 102, 103, 111, 113, 123} do
+			PickSpell[sp] = true
+		end
+	end
+end
 
 local function attackWand(num)
 	local t = Game.ItemsTxt[num]
@@ -374,6 +396,25 @@ local function fireWandSlot()
 		say(string.format(Tx"%s has no charged %s", pl.Name, Game.ItemsTxt[num].Name))
 		return
 	end
+	local spell = spellOf(num)
+	if PickSpell[spell] then
+		-- the spell queued as from the book, at the wand's skill: the game opens its target
+		-- screen; the charge is taken when the spell goes off (WandAimTick)
+		if WandAim then return end
+		local sk, mas = wandSkill(pl)
+		local before = pl.RecoveryDelay
+		mem.call(QUEUE_SPELL, 2, spell, slot, JoinSkill(sk, mas), 0, 0)
+		local who = Party.PlayersIndexes[slot]
+		for q = 0, QUEUE_COUNT - 1 do
+			local a = QUEUE + q * QUEUE_SIZE
+			if mem.u2[a] == spell and mem.u2[a + 2] == who then
+				WandAim = {Player = pl, Index = found, Number = num, Spell = spell, Entry = a,
+					Who = who, Recovery = before, Keep = mas >= 4 and random(KEEP_CHANCE) == 1}
+				break
+			end
+		end
+		return
+	end
 	WandShot = {Player = pl, Old = pl.ItemMainHand, Index = found, Ticks = 0, Number = num,
 		Charges = pl.Items[found].Charges}
 	pl.ItemMainHand = found
@@ -406,7 +447,23 @@ local function finishWandShot()
 	end
 end
 
+-- the targeted wand spell left the queue: cast (the caster's recovery went up) or called off
+local function wandAimTick()
+	local w = WandAim
+	if mem.u2[w.Entry] == w.Spell and mem.u2[w.Entry + 2] == w.Who then return end
+	WandAim = nil
+	local pl = w.Player
+	if pl.RecoveryDelay <= w.Recovery then return end
+	local it = pl.Items[w.Index]
+	if it.Number ~= w.Number or it.Charges <= 0 then return end
+	if not w.Keep then it.Charges = it.Charges - 1 end
+end
+
 function events.Tick()
+	if WandAim then
+		local ok, err = pcall(wandAimTick)
+		if not ok then WandAim = nil; log("wand aim: %s", tostring(err)) end
+	end
 	if not WandShot then return end
 	local s = WandShot
 	s.Ticks = s.Ticks + 1
