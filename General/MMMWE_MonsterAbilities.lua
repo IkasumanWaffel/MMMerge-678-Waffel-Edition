@@ -362,23 +362,14 @@ end
 -- attack (AI states 2, 3, 8, 12, 13, 18), it is put into the Stunned state (8) for the length
 -- of its "got hit" animation, which breaks off what it was doing, and the hit sound plays.
 -- The routine also makes the monster hostile and aware of the attacker: that part (before
--- 0x40334B) still runs. A Juggernaut skips the stagger itself, from 0x40334B (reached only when
--- the stagger isn't forced) to the end, 0x4033EA. Forced staggers (the Stun spell) and the
+-- 0x40334B) still runs. A Juggernaut skips the stagger itself (MMMWE_StaggerPoise.lua). Forced staggers (the Stun spell) and the
 -- weapons' stun and paralysis (Mace, Staff, Unarmed, shield bash) work as before.
 ---------------------------------------------------------------------------
 
-if mem.u1[0x40334B] == 0x66 and mem.u1[0x40334C] == 0x8B then
-	mem.autohook(0x40334B, function(d)
-		if not enabled() then return end
-		local i = mem.i4[d.ebp - 8]
-		if i < 0 or i >= Map.Monsters.count then return end
-		if has(abilities(i, Map.Monsters[i]), "Juggernaut") then
-			d:push(0x4033EA)
-			return true
-		end
-	end)
-else
-	MF.LogWarning("[MonsterAbilities] the stagger routine at 0x40334B wasn't found: no Juggernaut")
+-- the hook itself is in MMMWE_StaggerPoise.lua (it also spaces out the staggers of every monster)
+function MF.MonsterIsJuggernaut(i)
+	if not enabled() or i < 0 or i >= Map.Monsters.count then return false end
+	return has(abilities(i, Map.Monsters[i]), "Juggernaut")
 end
 
 function events.AfterLoadMap()
