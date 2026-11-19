@@ -16,6 +16,7 @@
 	           Adaptation       the element that hit it last does 40% less for 10 seconds
 	           Thorns           15% of the melee damage it takes goes back to the attacker
 	           Last Stand       the first time it falls below 30%, it takes no damage for 3 seconds
+	           Juggernaut       hits don't stagger it (19.11.26)
 	Offensive  Enrage           below 40% of its Hit Points: +50% damage
 	           Sundering        +25% physical damage
 	           Twin Strike      25% chance to hit twice
@@ -52,6 +53,7 @@ local A = {
 	Adaptation   = {Group = "Defensive", Name = Tx"Adaptation", Mul = 0.6, Time = 10},
 	Thorns       = {Group = "Defensive", Name = Tx"Thorns", Share = 0.15},
 	LastStand    = {Group = "Defensive", Name = Tx"Last Stand", Below = 0.3, Time = 3},
+	Juggernaut   = {Group = "Defensive", Name = Tx"Juggernaut"},
 	Enrage       = {Group = "Offensive", Name = Tx"Enrage", Below = 0.4, Mul = 1.5},
 	Sundering    = {Group = "Offensive", Name = Tx"Sundering", Mul = 1.25},
 	TwinStrike   = {Group = "Offensive", Name = Tx"Twin Strike", Chance = 0.25},
@@ -63,7 +65,7 @@ local A = {
 	Warlord      = {Group = "Pack", Name = Tx"Warlord", DamageMul = 1.2, TakenMul = 0.9},
 	CallForHelp  = {Group = "Pack", Name = Tx"Call for Help", Below = 0.5, Count = 2},
 }
-local POOL = {"Regeneration", "Adaptation", "Thorns", "LastStand", "Enrage", "Sundering",
+local POOL = {"Regeneration", "Adaptation", "Thorns", "LastStand", "Juggernaut", "Enrage", "Sundering",
 	"TwinStrike", "Cleave", "Concussion", "ManaBurn", "Hamstring", "Terror"}
 local CASTER_POOL = {"Adaptation", "LastStand", "ManaBurn", "Terror", "Regeneration", "Concussion"}
 local PACK = {"Warlord", "CallForHelp"}
@@ -350,6 +352,33 @@ function events.Tick()
 			end
 		end
 	end
+end
+
+---------------------------------------------------------------------------
+-- (19.11.26) Juggernaut: hits don't stagger it.
+-- Every hit that does damage (or has an effect) and leaves a monster alive calls the game's
+-- "monster got hit" routine (0x4032DD: ecx the monster's index, edx the attacker, arg: forced).
+-- There is no chance in it: unless the monster is already staggered or in the middle of an
+-- attack (AI states 2, 3, 8, 12, 13, 18), it is put into the Stunned state (8) for the length
+-- of its "got hit" animation, which breaks off what it was doing, and the hit sound plays.
+-- The routine also makes the monster hostile and aware of the attacker: that part (before
+-- 0x40334B) still runs. A Juggernaut skips the stagger itself, from 0x40334B (reached only when
+-- the stagger isn't forced) to the end, 0x4033EA. Forced staggers (the Stun spell) and the
+-- weapons' stun and paralysis (Mace, Staff, Unarmed, shield bash) work as before.
+---------------------------------------------------------------------------
+
+if mem.u1[0x40334B] == 0x66 and mem.u1[0x40334C] == 0x8B then
+	mem.autohook(0x40334B, function(d)
+		if not enabled() then return end
+		local i = mem.i4[d.ebp - 8]
+		if i < 0 or i >= Map.Monsters.count then return end
+		if has(abilities(i, Map.Monsters[i]), "Juggernaut") then
+			d:push(0x4033EA)
+			return true
+		end
+	end)
+else
+	MF.LogWarning("[MonsterAbilities] the stagger routine at 0x40334B wasn't found: no Juggernaut")
 end
 
 function events.AfterLoadMap()

@@ -1408,7 +1408,7 @@ Assassin
 # General/MMMWE_LegendaryPassives.lua:109
 with a dagger in hand, double critical chance; critical hits ignore physical resistance	
 
-# General/MMMWE_LegendaryPassives.lua:110, General/MMMWE_MonsterAbilities.lua:58
+# General/MMMWE_LegendaryPassives.lua:110, General/MMMWE_MonsterAbilities.lua:60
 Cleave	
 
 # General/MMMWE_LegendaryPassives.lua:110
@@ -1801,64 +1801,67 @@ Flight mode activated
 # General/MMMWE_MonkBranches.lua:151
 %s seizes the opening!	
 
-# General/MMMWE_MonsterAbilities.lua:51
+# General/MMMWE_MonsterAbilities.lua:52
 Regeneration	
 
-# General/MMMWE_MonsterAbilities.lua:52
+# General/MMMWE_MonsterAbilities.lua:53
 Adaptation	
 
-# General/MMMWE_MonsterAbilities.lua:53
+# General/MMMWE_MonsterAbilities.lua:54
 Thorns	
 
-# General/MMMWE_MonsterAbilities.lua:54
+# General/MMMWE_MonsterAbilities.lua:55
 Last Stand	
 
-# General/MMMWE_MonsterAbilities.lua:55
-Enrage	
-
 # General/MMMWE_MonsterAbilities.lua:56
-Sundering	
+Juggernaut	
 
 # General/MMMWE_MonsterAbilities.lua:57
-Twin Strike	
+Enrage	
+
+# General/MMMWE_MonsterAbilities.lua:58
+Sundering	
 
 # General/MMMWE_MonsterAbilities.lua:59
-Concussion	
-
-# General/MMMWE_MonsterAbilities.lua:60
-Mana Burn	
+Twin Strike	
 
 # General/MMMWE_MonsterAbilities.lua:61
-Hamstring	
+Concussion	
 
 # General/MMMWE_MonsterAbilities.lua:62
-Terror	
+Mana Burn	
 
 # General/MMMWE_MonsterAbilities.lua:63
-Warlord	
+Hamstring	
 
 # General/MMMWE_MonsterAbilities.lua:64
+Terror	
+
+# General/MMMWE_MonsterAbilities.lua:65
+Warlord	
+
+# General/MMMWE_MonsterAbilities.lua:66
 Call for Help	
 
-# General/MMMWE_MonsterAbilities.lua:216
+# General/MMMWE_MonsterAbilities.lua:218
 %s makes a last stand!	
 
-# General/MMMWE_MonsterAbilities.lua:256
+# General/MMMWE_MonsterAbilities.lua:258
 %s strikes twice!	
 
-# General/MMMWE_MonsterAbilities.lua:274
+# General/MMMWE_MonsterAbilities.lua:276
 %s is knocked out!	
 
-# General/MMMWE_MonsterAbilities.lua:278
+# General/MMMWE_MonsterAbilities.lua:280
 %s is terrified!	
 
-# General/MMMWE_MonsterAbilities.lua:317
+# General/MMMWE_MonsterAbilities.lua:319
 %s calls for help!	
 
-# General/MMMWE_MonsterAbilities.lua:418
+# General/MMMWE_MonsterAbilities.lua:447
 Abilities (pack leader)	
 
-# General/MMMWE_MonsterAbilities.lua:418
+# General/MMMWE_MonsterAbilities.lua:447
 Abilities	
 
 # General/MMMWE_Moon.lua:305
