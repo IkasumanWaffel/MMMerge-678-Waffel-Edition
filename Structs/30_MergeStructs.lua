@@ -614,7 +614,10 @@ if MF.SettingGtNum(MM.AllConditionsModifiers, 0) then
 	or eax, dword ptr [esi+ecx*8+4]
 	test eax, eax
 	jnz @f1
-	; check debuff
+	; check debuff ((MMMWE 20.11.26) not Morbid Transformation, 17: ZombiePlayers.lua lowers
+	; the stats of the zombie infection step by step towards the Zombie condition's)
+	cmp ecx, 17
+	je @next
 	mov edx, ecx
 	push ecx
 	mov ecx, esi

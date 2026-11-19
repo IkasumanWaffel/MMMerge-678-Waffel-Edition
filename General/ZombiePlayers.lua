@@ -153,6 +153,32 @@ function events.GameInitialized2()
 		end
 	end
 
+	-- (20.11.26) the stats of an infected character sink step by step towards the Zombie
+	-- condition's: Intellect and Personality to 1%, Accuracy and Speed to 50% (the game's table
+	-- of condition stat modifiers, 0x4FDFF8: [stat * 19 + condition]), in step with the
+	-- incubation (half the way at half the time). Morbid Transformation (debuff 17) shows the
+	-- countdown but no longer drops the stats at once (Structs\30_MergeStructs.lua skips it).
+	-- The game takes the lowest modifier of the conditions a character has: the infection
+	-- lowers a stat only where its modifier for now is below that.
+	local STAT_MODS, ZOMBIE_COND = 0x4FDFF8, 17
+	local STAT_NAMES = {[0] = "Might", "Intellect", "Personality", "Endurance", "Accuracy", "Speed", "Luck"}
+	local CONDITION_MOD = 0x48E14E   -- thiscall(player, stat): the conditions' modifier, %
+	function events.CalcStatBonusByMagic(t)
+		local Player = t.Player
+		if not Player or not STAT_NAMES[t.Stat] then return end
+		local s = infections()[Player:GetIndex()]
+		if not s or Player.Conditions[CO.Zombie] ~= 0 then return end
+		local z = mem.u1[STAT_MODS + t.Stat * 19 + ZOMBIE_COND]
+		if z >= 100 then return end
+		local f = (Game.Time - s.Start) / math.max(1, s.TurnAt - s.Start)
+		f = math.max(0, math.min(1, f))
+		local m = 100 - f * (100 - z)
+		local c = mem.call(CONDITION_MOD, 1, Player["?ptr"], t.Stat)
+		if m >= c then return end
+		local base = Player["GetBase" .. STAT_NAMES[t.Stat]](Player)
+		t.Result = t.Result - math.floor(base * (c - m) / 100)
+	end
+
 	-- cures: Divine Restoration and Aqua Vitae potions, Divine Intervention, a temple
 	for _, id in ipairs{32, 71} do
 		local old = evt.PotionEffects and evt.PotionEffects[id]
