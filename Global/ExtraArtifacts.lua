@@ -1125,7 +1125,8 @@ Game.ItemsTxt[1339].Bonus = 0
 -- Wallace
 GetBonusList(1304).Skills =	{	[const.Skills.Armsmaster] = 10}
 -- Corsair
-GetBonusList(1305).Skills =	{	[const.Skills.DisarmTraps] = 10}
+GetBonusList(1305).Skills =	{	[const.Skills.DisarmTraps] = 5, 
+								[const.Skills.Perception] = 5}
 -- Hands of the Master
 GetBonusList(1313).Skills =	{	[const.Skills.Unarmed] = 10,
 								[const.Skills.Dodging] = 10}
@@ -1739,6 +1740,8 @@ local function DebuffMonster(t, kind, buff, time, power)
 		b.Power = max(b.Power, power)
 		b.Skill = max(b.Skill, 3)
 	end
+	-- (20.11.26) the sparkles the game shows on a monster its spell or the Snake's slow took hold of
+	pcall(mon.ShowSpellEffect, mon, 0)
 	return true
 end
 -- extra hits of kind to hostile monsters near the target (nearest first, at most count)
