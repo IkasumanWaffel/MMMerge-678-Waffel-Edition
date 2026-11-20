@@ -64,7 +64,9 @@ function events.GameInitialized2()
 	local CO = const.Condition
 
 	local function infections()
-		vars.ZombieInfection = vars.ZombieInfection or {}
+		-- defined in Global\MMMWE_Vars.lua; nothing yet before a game is loaded (main menu,
+		-- character creation): an empty table that isn't kept
+		if not vars or not vars.ZombieInfection then return {} end
 		return vars.ZombieInfection
 	end
 	local function zombieDebuff(Player)
@@ -333,6 +335,7 @@ function events.GameInitialized2()
 			end
 		end
 
+		if not vars then return end
 		vars.PlayerFaces = vars.PlayerFaces or {}
 
 		if Player.Conditions[const.Condition.Zombie] > 0 then
