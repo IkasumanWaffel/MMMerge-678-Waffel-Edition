@@ -18,11 +18,18 @@
 	  The renegade dragons Ilsingore, Yaardrake and Old Loeb: Deftclaw Redreaver wants them
 	    dead as traitors to their race (allied with the dragons), Sir Charles Quixote as fair
 	    game (allied with the hunters).
-	  The Devil of Baa (Bartholomew Hume): after the High Priest of Baa is dead.
+	  The Devil of Baa (Bartholomew Hume): a Kreegan among the cultists in the Temple of Baa
+	    (MMMWE_Bosses.lua names the strongest one there).
 	  The Sentinel of Varn (Kastore, the Dark ending; Resurectra, the Light ending): after the
 	    Signet or the Cube.
 	  The admirals of Regna (Dread Pirate Stanley): Admiral Nelson, Admiral Clausewitz and
-	    Captain Zyrain, his rivals.
+	    Captain Zyrain, his rivals, on their ships off Dagger Wound Island.
+	  The Wasp Queen (Schmecker, Alvar): the prize the dead adventurers' camp went for.
+	  The Pack Master (Maddigan the Tracker, Ravenshore): in the Dire Wolf Den.
+	  Grognard the Great (the Butler): once the Letter to Hairbaugh is found or a signal
+	    fire is lit.
+	  The Druid Circlet of Power (Anthony Green): from the hidden dungeon under the
+	    Murmurwoods stonehenge (MM8's scrapped Druid quest).
 
 	Kills: vars.MMMWE_BossKills[Placemon line] = true, for every named monster, whenever it
 	dies (a boss killed before its quest was given counts).
@@ -226,15 +233,14 @@ Quest{
 	Quest = true,
 	Exp = 25000,
 	Gold = 7500,
-	CanShow = function() return killed(HIGH_PRIEST) end,
 	CheckDone = function() return killed(DEVIL) end,
 	Texts = {
 		Topic = Tx"The Devil of Baa",
-		Give = Tx"The High Priest of Baa is dead, and I thank you for it. But a priest is only a voice. The cult of Baa prays to something, and that something answered them: a devil, the scrolls from the temple call it, the Devil of Baa itself, walking our world in the flesh.\n\nWhile it walks, the cult will rise again, as weeds rise from a root. Find it and destroy it.",
+		Give = Tx"The High Priest of Baa is only a voice. The cult prays to something, and that something has answered them: among the cultists in their temple in AvLee there are devils, and one of them they call the Devil of Baa and worship as their god made flesh.\n\nKill the priest, and the cult loses its voice. Leave the devil, and it will rise again, as weeds rise from a root. Destroy it.",
 		Undone = Tx"The Devil of Baa still walks. I feel it in my meditations, like a stone in a shoe.",
 		Done = Tx"The Devil of Baa is destroyed? Then the cult has lost its root as well as its voice. You have done what generations of my order could not. Accept this, with my deepest respect.",
 		After = Tx"My meditations are clear again. Thank you.",
-		Quest = Tx"Destroy the Devil of Baa and return to Bartholomew Hume in Harmondale.",
+		Quest = Tx"Destroy the Devil of Baa in the Temple of Baa in AvLee and return to Bartholomew Hume in Harmondale.",
 		Award = Tx"Destroyed the Devil of Baa",
 	},
 }
@@ -298,11 +304,103 @@ Quest{
 	CheckDone = function() return allKilled(ADMIRALS) end,
 	Texts = {
 		Topic = Tx"The admirals",
-		Give = Tx"Regna has more admirals than it has ships these days, and every one of them thinks he should be the one giving the orders. Admiral Nelson, Admiral Clausewitz, Captain Zyrain... they get in my way, they take my cut, and they don't know when to keep their mouths shut.\n\nSend the three of them to the bottom, and there's a share of the Regnan treasury in it for you. A large share. Pirate's honour.",
+		Give = Tx"Regna has more admirals than it has ships these days, and every one of them thinks he should be the one giving the orders. Admiral Nelson, Admiral Clausewitz and Captain Zyrain are off Dagger Wound Island right now, on their ships, sending raiders against the lizardfolk villages. Lizards! There's no plunder in that, only glory for them and orders for me.\n\nThey get in my way, they take my cut, and they don't know when to keep their mouths shut. Send the three of them to the bottom, and there's a share of the Regnan treasury in it for you. A large share. Pirate's honour.",
 		Undone = Tx"I still hear those three admirals giving orders. Loudly. Do something about it.",
 		Done = Tx"All three of them! Regna has learned some manners at last. Here's your share, counted twice. Don't spend it all in one port.",
 		After = Tx"Business has never been better. Funny, that.",
-		Quest = Tx"Slay Admiral Nelson, Admiral Clausewitz and Captain Zyrain and return to Dread Pirate Stanley in Regna.",
+		Quest = Tx"Slay Admiral Nelson, Admiral Clausewitz and Captain Zyrain on their ships off Dagger Wound Island and return to Dread Pirate Stanley in Regna.",
 		Award = Tx"Sank Regna's admirals for Dread Pirate Stanley",
+	},
+}
+
+-- Schmecker, Alvar: the Wasp Queen (Placemon 161)
+local SCHMECKER = 86
+Quest{
+	Name = "MMMWE_Boss_WaspQueen",
+	NPC = SCHMECKER,
+	Quest = true,
+	Exp = 15000,
+	Gold = 10000,
+	CheckDone = function() return killed(161) end,
+	Texts = {
+		Topic = Tx"The Wasp Queen",
+		Give = Tx"Royal jelly from the workers' cells is good. The Queen's own is better than anything you've ever tasted, and worth more than its jar in gold. Every few years someone goes into the nest for it. You may have seen the last ones: their camp still stands in the canyon south of the hive, and nobody has come back to it.\n\nThe Queen is the problem. As long as she lives, the nest defends itself like an army. Kill her, and I'll pay you better than any of those poor souls would have earned.",
+		Undone = Tx"The Queen still lives. The hum from the nest carries all the way to town on a quiet night.",
+		Done = Tx"The Queen is dead? Then the nest is ours to harvest for years! Here's your pay, and more, for I'm in a generous mood today.",
+		After = Tx"Business is sweet, my friends. Very sweet.",
+		Quest = Tx"Slay the Wasp Queen in the Wasp Nest near Alvar and return to Schmecker in Alvar.",
+		Award = Tx"Slew the Wasp Queen of Alvar",
+	},
+}
+
+-- Maddigan the Tracker, Ravenshore: the Pack Master (Placemon 11)
+local MADDIGAN = 71
+Quest{
+	Name = "MMMWE_Boss_PackMaster",
+	NPC = MADDIGAN,
+	Quest = true,
+	Exp = 10000,
+	Gold = 5000,
+	CheckDone = function() return killed(11) end,
+	Texts = {
+		Topic = Tx"The Pack Master",
+		Give = Tx"Kill all the dire wolves you like: the packs will keep coming as long as the Pack Master lives. It's the biggest wolf I've ever tracked, and the cleverest. It keeps to the Dire Wolf Den near here and sends the young ones out to hunt.\n\nBring it down, and the roads around Ravenshore will be safe for a generation.",
+		Undone = Tx"The Pack Master still rules the den. I can hear it howling on still nights.",
+		Done = Tx"The Pack Master, dead! I'll believe it when I see the tracks stop... no, I believe you. Here, you've earned every coin.",
+		After = Tx"The packs are scattering. Without the old one, they're just wolves again.",
+		Quest = Tx"Slay the Pack Master in the Dire Wolf Den and return to Maddigan the Tracker in Ravenshore.",
+		Award = Tx"Slew the Pack Master of the Dire Wolf Den",
+	},
+}
+
+-- the Butler: Grognard the Great (Placemon 121) and his spy Hairbaugh
+local GROGNARD = 121
+local LETTER, FIRE_S, FIRE_N = 1518, 779, 780
+local function hasItem(id)
+	for _, pl in Party do
+		for _, it in pl.Items do
+			if it.Number == id then return true end
+		end
+	end
+	return Mouse.Item.Number == id
+end
+Quest{
+	Name = "MMMWE_Boss_Grognard",
+	NPC = BUTLER,
+	Quest = true,
+	Exp = 12000,
+	Gold = 4000,
+	CanShow = function()
+		return vars.Quests.MMMWE_Boss_Grognard or hasItem(LETTER) or Party.QBits[FIRE_S] or Party.QBits[FIRE_N]
+	end,
+	CheckDone = function() return killed(GROGNARD) end,
+	Texts = {
+		Topic = Tx"Grognard the Great",
+		Give = Tx"A letter to Hairbaugh? Hairbaugh, of all people! He has lived in Harmondale for years... and he has been a goblin spy all along, waiting for the signal fires.\n\nThis Grognard the Great is the chief who drove the goblins into the castle in the first place. If the fires are lit, he will come in person, with his whole tribe. Should that happen, my lords, the chief himself must fall, or the goblins will never leave these lands.",
+		Undone = Tx"Grognard the Great still lives. Every goblin in the hills knows it, and so do the villagers.",
+		Done = Tx"Grognard is dead! Without him the tribe will scatter. Harmondale owes you, my lords - again.",
+		After = Tx"Not a goblin on the roads this week. I could get used to it.",
+		Quest = Tx"Slay Grognard the Great, the goblin chief, and return to the Butler in Harmondale.",
+		Award = Tx"Slew Grognard the Great",
+	},
+}
+
+-- Anthony Green: the Druid Circlet of Power (item 638) from under the Murmurwoods stonehenge
+local GREEN, CIRCLET = 389, 638
+Quest{
+	Name = "MMMWE_Boss_DruidCirclet",
+	NPC = GREEN,
+	Quest = true,
+	QuestItem = CIRCLET,
+	Exp = 30000,
+	Gold = 10000,
+	Texts = {
+		Topic = Tx"The Druid Circlet",
+		Give = Tx"The stonehenges of Antagarich are not the only ones. Across the sea, in the Murmurwoods of Jadame, stands another circle, older than ours. Our oldest songs say the druids of that land kept a hall beneath it, and in it the Circlet of Power, worn by the first Grand Druid.\n\nNobody has sung of that land's druids for centuries. If the hall still stands, the Circlet may still be there. Find it and bring it to me: it belongs to the circle, not to the dark.",
+		Undone = Tx"The circle in the Murmurwoods guards its hall well. Look closely at the stones themselves.",
+		Done = Tx"The Circlet of Power... I can feel the old songs in it. The circle will keep it safe now, as it should have been kept all along. Accept the circle's thanks, and this.",
+		After = Tx"The Circlet rests with the circle. On quiet nights, I swear the stones sing.",
+		Quest = Tx"Find the Druid Circlet of Power beneath the stonehenge in the Murmurwoods of Jadame and bring it to Anthony Green in the Tularean Forest.",
+		Award = Tx"Returned the Druid Circlet of Power to the circle",
 	},
 }

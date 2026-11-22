@@ -91,6 +91,33 @@ local function tagSpeaker()
 	if best then best.NameId = SPEAKER.NameId end
 end
 
+-- (23.11.26) monsters that become a named boss on a map's first visit: the strongest of the
+-- listed kinds, unless the map already has a monster of that name. The Devil of Baa is a
+-- Kreegan among the cultists in the Temple of Baa (AvLee).
+local TAGS = {
+	{Map = "d04.blv", NameId = 138, MonIds = {[220] = true, [221] = true, [222] = true}, Key = "DevilOfBaa"},
+}
+
+local function tagStrongest()
+	local name = Map.Name:lower()
+	for _, t in ipairs(TAGS) do
+		local key = "MMMWE_BossTag_" .. t.Key
+		if t.Map == name and not mapvars[key] and Game.PlaceMonTxt.count > t.NameId then
+			mapvars[key] = true
+			local best, have = nil, false
+			for i = 0, Map.Monsters.count - 1 do
+				local m = Map.Monsters[i]
+				if m.NameId == t.NameId then have = true end
+				if t.MonIds[m.Id] and (m.NameId or 0) == 0 and m.HP > 0 and m.AIState ~= const.AIState.Removed
+						and (not best or m.Level > best.Level or (m.Level == best.Level and m.FullHP > best.FullHP)) then
+					best = m
+				end
+			end
+			if best and not have then best.NameId = t.NameId end
+		end
+	end
+end
+
 -- weaknesses by Placemon.txt line
 local WEAK = {
 	[117] = {                         -- Wromthrax: Old Wound
@@ -159,6 +186,7 @@ end
 
 local function scan()
 	tagSpeaker()
+	tagStrongest()
 	for i = 0, Map.Monsters.count - 1 do
 		local m = Map.Monsters[i]
 		if isBoss(m) and alive(m) then
