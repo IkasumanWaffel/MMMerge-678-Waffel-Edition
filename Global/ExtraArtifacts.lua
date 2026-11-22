@@ -22,122 +22,586 @@ MT.PlayerEffects = PlayerEffects
 ------------------------------------------------
 
 ------------------------------------------------
--- Make artifacts unique
+-- Make unique items one-time spawns
+-- (22.11.26) Xfing's rules (Celestial Heavens, "script revision 9"), ported to the Waffel
+-- Edition with its own items:
+--   * every artifact, relic and equippable special item is recorded once it appears in the
+--     world (generated loot, a map's chests, ground or monsters) and the record is never
+--     undone: selling, losing or stashing an item doesn't make it come back
+--   * a random artifact or relic that is already recorded becomes an unrecorded one; once all
+--     are recorded, an ordinary item of treasure class 6 of the same kind
+--   * on a map refill, the fixed placements already recorded are taken away: chests of
+--     Judicious Measure, Snake and Noblebone Bow get another unrecorded artifact (or TC6
+--     loot), the special items ordinary TC5 loot, named monster drops (Villain's Blade, the
+--     Cutlasses, Minotaur's Axe, the cloaks...) the monster's ordinary treasure
+--   * quest items stay until their quest is done (Mordred, Ebonest, Whistlebone, Balthazar's
+--     Axe); the Perfect Bow and the Waffel Edition's scripted items (Padish's Signet, the
+--     Command Cube, the Leathers of the Road Warrior, the Ancients' gear) are left to their
+--     own scripts
+--   * specials that aren't equipment (MM6's Horseshoes, Lodestones, Harpy Feathers...) are
+--     left to the game, as their quests and buyers expect
+-- Material in Items.txt: 0 normal, 1 artifact, 2 relic, 3 special.
 
-vars.GotArtifact = vars.GotArtifact or {}
-
-vars.PlacedArtifacts = vars.PlacedArtifacts or {
-	-- MM8
-	[501] = -1, [502] = -1, [503] = -1, [504] = -1, [508] = -1,
-	[509] = -1, [516] = -1, [519] = -1, [523] = -1, [539] = -1,
-	[540] = -1, [541] = -1,
-	-- MM7
-	[1333] = -1, [1334] = -1, [1335] = -1, [1336] = -1,
-	[1337] = -1, [1338] = -1,
+-- fixed map placements: never in the random pool, registered by the map scan
+local FixedPlacementItems = {
+	-- MM8 artifacts and relics placed by the maps
+	501, 502, 503, 504, 508, 509, 516, 519, 523, 538, 539, 540, 541, 542,
+	-- MM7 placed artifacts and named special items
+	1333, 1334, 1335, 1336, 1337, 1338,
+	1339, 1340, 1341, 1342, 1343, 1347, 1348, 1351, 1352, 1353, 1354,
 	-- MM6
-	[2020] = -1, [2023] = -1, [2032] = -1, [2033] = -1, [2034] = -1
+	2020, 2023, 2032, 2033, 2034,
 }
 
-local GItems = Game.ItemsTxt
-local ArtifactsList = {}
-for i,v in GItems do
-	if v.Material > 0 and v.Value > 0 and v.ChanceByLevel[6] > 0 then
-		table.insert(ArtifactsList, i)
-	end
-end
+-- fixed chest items that become another unrecorded artifact when their chest refills
+local GuaranteedUniqueRespawnChestItems = {
+	[503] = true,   -- Judicious Measure: Ravage Roaming
+	[523] = true,   -- Snake: Dragon Hunter's Camp
+	[542] = true,   -- Noblebone Bow: Yaardrake's Cave
+}
 
-function events.GotItem(i)
-	local v = GItems[i]
-	if v.Material > 0 and v.Value > 0 and v.ChanceByLevel[6] > 0 then
-		vars.GotArtifact[i] = true
-		if vars.PlacedArtifacts[i] and vars.PlacedArtifacts[i] > 0 then
-			vars.PlacedArtifacts[i] = nil
-		end
-	end
-end
+-- special items placed by the maps: what they become once recorded (default: TC5 loot of
+-- the same kind)
+local FixedSpecialRespawnFallbacks = {
+	[538]  = {AnyWeapon = true},                                     -- Mace of the Sun
+	[1347] = {Strength = 5, ItemType = const.ItemType.Ring},         -- Ghost Ring
+	[1348] = {Strength = 5, ItemType = const.ItemType.Ring},         -- Faerie Ring
+}
 
-local function GetNotFoundArts()
-	local t = {}
-	for k,v in pairs(ArtifactsList) do
-		if not vars.GotArtifact[v] and not vars.PlacedArtifacts[v] then
-			table.insert(t, v)
-		end
-	end
-	return t
-end
+-- named monster drops: back to the monster's ordinary treasure once looted
+local MonsterSpecialDropItems = {
+	[1339] = true,   -- Clanker's Amulet
+	[1340] = true,   -- Lieutenant's Cutlass
+	[1341] = true,   -- Medusa's Mirror
+	[1342] = true,   -- Lady Carmine's Dagger
+	[1343] = true,   -- Villain's Blade
+	[1349] = true,   -- Sun Cloak
+	[1350] = true,   -- Moon Cloak
+	[1352] = true,   -- Vampire's Cape
+	[1353] = true,   -- Minotaur's Axe
+	[1354] = true,   -- Grognard's Cutlass
+}
 
-local function RosterHaveItem(ItemId)
-	for i = 0, Party.PlayersArray.count - 1 do
-		local Player = Party.PlayersArray[i]
-		for _, Item in Player.Items do
-			if Item.Number == ItemId then
+-- left entirely to their own scripts
+local NativeQuestControlledItems = {
+	[1344] = true, [1345] = true,   -- The Perfect Bow (quest and fixed): its MM7 map script
+	[2213] = true,                  -- Padish's Signet: the Forge story's guardian (MMMWE_ForgeStory.lua)
+	[2220] = true,                  -- Command Cube: the Gate story's guardian (MMMWE_GateStory.lua)
+	[2259] = true,                  -- Leathers of the Road Warrior: once per game (MMMWE_RoadWarrior.lua)
+	-- the Ancients' gear (MMMWE_AncientArtifacts.lua), not in the loot yet
+	[2214] = true, [2215] = true, [2216] = true, [2217] = true, [2218] = true, [2219] = true,
+	[2221] = true, [2222] = true, [2223] = true, [2224] = true,
+}
+
+-- quest items: available until the quest is done (award numbers of the Waffel Edition's
+-- Awards.txt; Xfing's 24/26/27/47 are Arcomage and Arena awards here)
+local QuestCompletionAwards = {
+	[2020] = 205,  -- Mordred: "Found Zoltan's Artifact" (MM6)
+	[539]  = 74,   -- Ebonest: "Returned Ebonest to Charles Quixote" (MM8)
+	[541]  = 79,   -- "Recovered Axe of Balthazar" (MM8)
+	[540]  = 77,   -- "Gave the Sword of Whistlebone the Slayer to the Deftclaw Redreaver" (MM8)
+}
+local QuestCompletionItems = {}
+for id in pairs(QuestCompletionAwards) do QuestCompletionItems[id] = true end
+
+vars.UniqueQuestItemCompletion = vars.UniqueQuestItemCompletion or {}
+
+local function IsQuestItemCompleted(ItemId)
+	if vars.UniqueQuestItemCompletion[ItemId] == true then
+		return true
+	end
+	local AwardIndex = QuestCompletionAwards[ItemId]
+	if AwardIndex then
+		for _, Player in Party.PlayersArray do
+			local Award = Player.Awards and Player.Awards[AwardIndex]
+			if Award == true or Award == 1 then
 				return true
 			end
 		end
 	end
+	return false
 end
 
-local function RecountFoundArtifacts()
-	for ItemId,v in pairs(vars.GotArtifact) do
-		vars.GotArtifact[ItemId] = RosterHaveItem(ItemId)
+local FixedPlacementSet = {}
+for _, id in ipairs(FixedPlacementItems) do
+	FixedPlacementSet[id] = true
+end
+
+-- the record: vars.GotArtifact[item] = true, append-only (tracking version 4, as Xfing's).
+-- Saves of the old Merge tracking keep what they had recorded, and the artifacts the old
+-- code had placed in the world (vars.PlacedArtifacts > 0) count as recorded.
+vars.GotArtifact = vars.GotArtifact or {}
+if vars.UniqueArtifactTrackingVersion ~= 4 then
+	for id, v in pairs(vars.GotArtifact) do
+		if not v then vars.GotArtifact[id] = nil end
+	end
+	for id, v in pairs(vars.PlacedArtifacts or {}) do
+		if type(v) == "number" and v > 0 then vars.GotArtifact[id] = true end
+	end
+	vars.PlacedArtifacts = nil
+	vars.NextArtifactsRefill = nil
+	vars.UniqueArtifactTrackingVersion = 4
+	vars.UniqueArtifactHistoryInitialized = false
+end
+
+local function isEquipment(txt)
+	return txt.EquipStat >= 0 and txt.EquipStat <= 11
+end
+
+local UniqueItemSet = {}
+local RandomUniquePool = {}
+for id, txt in Game.ItemsTxt do
+	local mat = txt.Material or 0
+	if mat > 0 and not NativeQuestControlledItems[id]
+			and (mat ~= 3 or isEquipment(txt) or FixedPlacementSet[id]) then
+		UniqueItemSet[id] = true
+		-- only artifacts and relics that can be found at random make the replacement pool
+		if (mat == 1 or mat == 2) and txt.Value > 0 and txt.ChanceByLevel[6] > 0
+				and not FixedPlacementSet[id] then
+			table.insert(RandomUniquePool, id)
+		end
 	end
 end
-Game.RecountFoundArtifacts = RecountFoundArtifacts
+for id in pairs(GuaranteedUniqueRespawnChestItems) do UniqueItemSet[id] = true end
+for id in pairs(FixedSpecialRespawnFallbacks) do UniqueItemSet[id] = true end
+for id in pairs(MonsterSpecialDropItems) do UniqueItemSet[id] = true end
 
+local function GetNotFoundArts()
+	local t = {}
+	for _, id in ipairs(RandomUniquePool) do
+		if not vars.GotArtifact[id] then
+			table.insert(t, id)
+		end
+	end
+	return t
+end
+Game.UniqueItemsNotFound = GetNotFoundArts
+
+local function noRefund(Item)
+	if Item.Refundable ~= nil then
+		Item.Refundable = false
+	end
+end
+
+local function SetItemToId(Item, ItemId)
+	Item:Clear()
+	Item.Number = ItemId
+	local Txt = Game.ItemsTxt[ItemId]
+	if Txt then
+		Item.Bonus = Txt.Bonus or 0
+		Item.Bonus2 = Txt.Bonus2 or 0
+		Item.BonusStrength = Txt.BonusStrength or 0
+		if Txt.Material == 3 then
+			Item:InitSpecial()
+		end
+	end
+	Item.Identified = false
+	noRefund(Item)
+end
+
+-- ordinary items of a treasure class (1..6) and kind; never another unique
+local function RandomizeOrdinaryItem(Item, Strength, ItemType)
+	Strength = Strength or 5
+	ItemType = ItemType or const.ItemType.Any
+	for _ = 1, 64 do
+		Item:Randomize(Strength, ItemType)
+		local Txt = Game.ItemsTxt[Item.Number]
+		if Item.Number > 0 and Txt and (Txt.Material or 0) == 0
+				and Txt.ChanceByLevel[Strength] > 0 then
+			noRefund(Item)
+			return true
+		end
+	end
+	Item:Clear()
+	return false
+end
+
+-- an ordinary TC5 weapon: one-handed, two-handed or missile
+local TC5WeaponKinds = {const.ItemType.Weapon, const.ItemType.Weapon2H, const.ItemType.Missile}
+local TC5WeaponKindSet = {
+	[const.ItemType.Weapon] = true, [const.ItemType.Weapon2H] = true, [const.ItemType.Missile] = true,
+}
+local TC5WeaponPool = {}
+for id, txt in Game.ItemsTxt do
+	if (txt.Material or 0) == 0 and txt.ChanceByLevel[5] > 0 and TC5WeaponKindSet[txt.EquipStat + 1] then
+		table.insert(TC5WeaponPool, id)
+	end
+end
+
+local function RandomizeOrdinaryWeaponTC5(Item)
+	for _ = 1, 96 do
+		Item:Randomize(5, TC5WeaponKinds[random(#TC5WeaponKinds)])
+		local Txt = Game.ItemsTxt[Item.Number]
+		if Item.Number > 0 and Txt and (Txt.Material or 0) == 0 and Txt.ChanceByLevel[5] > 0
+				and TC5WeaponKindSet[Txt.EquipStat + 1] then
+			noRefund(Item)
+			return true
+		end
+	end
+	if #TC5WeaponPool > 0 then
+		SetItemToId(Item, TC5WeaponPool[random(#TC5WeaponPool)])
+		return true
+	end
+	Item:Clear()
+	return false
+end
+
+-- an ordinary TC6 item of the kind of the item it replaces
+local OrdinaryTreasure6Pool, OrdinaryTreasure6PoolByType = {}, {}
+for id, txt in Game.ItemsTxt do
+	if (txt.Material or 0) == 0 and txt.Value > 0 and txt.ChanceByLevel[6] > 0 then
+		table.insert(OrdinaryTreasure6Pool, id)
+		local ItemType = txt.EquipStat + 1
+		OrdinaryTreasure6PoolByType[ItemType] = OrdinaryTreasure6PoolByType[ItemType] or {}
+		table.insert(OrdinaryTreasure6PoolByType[ItemType], id)
+	end
+end
+
+local function RandomizeOrdinaryTreasure6(Item, OriginalItemId)
+	local ItemType = Game.ItemsTxt[OriginalItemId].EquipStat + 1
+	if RandomizeOrdinaryItem(Item, 6, ItemType) then
+		return
+	end
+	local Pool = OrdinaryTreasure6PoolByType[ItemType]
+	if not Pool or #Pool == 0 then
+		Pool = OrdinaryTreasure6Pool
+	end
+	if #Pool > 0 then
+		SetItemToId(Item, Pool[random(#Pool)])
+	else
+		Item:Clear()
+	end
+end
+
+-- generated loot (chests, corpses, shops, events): recorded when it is generated
 function events.ItemGenerated(t)
-	local Num = t.Item.Number
-	local ItemTxt = GItems[Num]
-	if ItemTxt.Material > 0 and ItemTxt.Value > 0 and ItemTxt.ChanceByLevel[6] > 0
-			and (vars.GotArtifact[Num] or vars.PlacedArtifacts[Num]) then
-		local cArts = GetNotFoundArts()
-		if #cArts == 0 then
-			t.Item:Randomize(5, ItemTxt.EquipStat+1)
+	local Item = t.Item
+	local ItemId = Item.Number
+	local ItemTxt = Game.ItemsTxt[ItemId]
+	if not ItemTxt or NativeQuestControlledItems[ItemId] then
+		return
+	end
+
+	if QuestCompletionItems[ItemId] then
+		if not IsQuestItemCompleted(ItemId) then
+			return
+		end
+		vars.GotArtifact[ItemId] = true
+		if ItemId == 540 then
+			-- Jeric Whistlebone's drop becomes his ordinary treasure after the quest
+			RandomizeOrdinaryItem(Item, t.Strength, t.Kind)
 		else
-			t.Item.Number = cArts[random(#cArts)]
-			vars.PlacedArtifacts[t.Item.Number] = Map.LastRefillDay
-				+ Game.MapStats[Map.MapStatsIndex].RefillDays
+			Item:Clear()
 		end
-		Log(Merge.Log.Info, "ItemGenerated: replace item %d with %d", Num, t.Item.Number)
-	else
-		Log(Merge.Log.Info, "ItemGenerated: item %d", Num)
+		return
 	end
+
+	if MonsterSpecialDropItems[ItemId] then
+		-- recorded when it reaches the party (RecordLootedMonsterSpecials), not when the
+		-- corpse gets it
+		if vars.GotArtifact[ItemId] then
+			RandomizeOrdinaryItem(Item, t.Strength, t.Kind)
+		else
+			noRefund(Item)
+		end
+		return
+	end
+
+	if not UniqueItemSet[ItemId] then
+		return
+	end
+
+	if (ItemTxt.Material or 0) == 3 then
+		if vars.GotArtifact[ItemId] then
+			RandomizeOrdinaryItem(Item, t.Strength, t.Kind)
+		else
+			vars.GotArtifact[ItemId] = true
+			noRefund(Item)
+		end
+		return
+	end
+
+	if FixedPlacementSet[ItemId] then
+		-- fixed placements don't come as random loot: a gem instead
+		SetItemToId(Item, random(177, 186))
+		return
+	end
+
+	if vars.GotArtifact[ItemId] then
+		local Available = GetNotFoundArts()
+		if #Available > 0 then
+			ItemId = Available[random(#Available)]
+			SetItemToId(Item, ItemId)
+		else
+			RandomizeOrdinaryTreasure6(Item, ItemId)
+			Log(Merge.Log.Info, "ItemGenerated: no artifacts left, %d -> %d", ItemId, Item.Number)
+			return
+		end
+	end
+	-- record the final item, not the one it replaced
+	vars.GotArtifact[ItemId] = true
+	noRefund(Item)
+	Log(Merge.Log.Info, "ItemGenerated: unique %d", ItemId)
 end
 
+-- the artifact the game picks: only the fixed placements are filtered out here
+-- (ItemGenerated records and replaces once the item is made)
 function events.ArtifactGenerated(t)
-	-- an artifact not found yet; when all are found, a gem (items 177..186) instead
-	local cArts = GetNotFoundArts()
-	local orig_id = t.ItemId
-	if #cArts == 0 then
+	if FixedPlacementSet[t.ItemId] and not MonsterSpecialDropItems[t.ItemId] then
 		t.ItemId = random(177, 186)
-	else
-		t.ItemId = cArts[random(#cArts)]
-		vars.PlacedArtifacts[t.ItemId] = Map.LastRefillDay
-			+ Game.MapStats[Map.MapStatsIndex].RefillDays
-	--if vars.GotArtifact[t.ItemId] then
-	--	t.ItemId = random(177, 186)
-	--else
-	--	vars.GotArtifact[t.ItemId] = true
-	end
-	Log(Merge.Log.Info, "ArtifactGenerated: replace item %d with %d", orig_id, t.ItemId)
-end
-
-vars.NextArtifactsRefill = vars.NextArtifactsRefill or Game.Time + const.Year*2
-function events.AfterLoadMap()
-	-- Reset flags
-	if Game.Time > vars.NextArtifactsRefill then
-		RecountFoundArtifacts()
-		vars.NextArtifactsRefill = Game.Time + const.Year*2
 	end
 end
 
-function events.NewDay(t)
-	local DayOfGame = t.DayOfMonth + 28 * t.Month + 336 * t.GameYear
-	for k, v in pairs(vars.PlacedArtifacts) do
-		if v > 0 and v <= DayOfGame then
-			vars.PlacedArtifacts[k] = nil
-			Log(Merge.Log.Info, "NewDay: artifact recalled: %d", k)
+-- a unique placed by the map (chest, ground): recorded; on a refill, removed or replaced
+local function ProcessMapSpawnItem(Item, IsMapRefill)
+	if not Item then
+		return false
+	end
+	local ItemId = Item.Number
+	if NativeQuestControlledItems[ItemId] then
+		return false
+	end
+
+	if QuestCompletionItems[ItemId] then
+		if IsQuestItemCompleted(ItemId) then
+			vars.GotArtifact[ItemId] = true
+			Item:Clear()
+			return true
+		end
+		return false
+	end
+
+	if MonsterSpecialDropItems[ItemId] then
+		if vars.GotArtifact[ItemId] and IsMapRefill then
+			Item:Clear()
+			return true
+		end
+		noRefund(Item)
+		return false
+	end
+
+	if not UniqueItemSet[ItemId] then
+		return false
+	end
+
+	local ItemTxt = Game.ItemsTxt[ItemId]
+	local Material = ItemTxt and (ItemTxt.Material or 0) or 0
+	local WasRefundable = Item.Refundable == true
+
+	if not vars.GotArtifact[ItemId] then
+		vars.GotArtifact[ItemId] = true
+		noRefund(Item)
+		return false
+	end
+
+	if IsMapRefill and Material == 3 then
+		local Rule = FixedSpecialRespawnFallbacks[ItemId]
+		if Rule and Rule.AnyWeapon then
+			RandomizeOrdinaryWeaponTC5(Item)
+		else
+			RandomizeOrdinaryItem(Item, Rule and Rule.Strength or 5,
+				Rule and Rule.ItemType or (ItemTxt.EquipStat + 1))
+		end
+		return "replaced"
+	end
+
+	if IsMapRefill and (FixedPlacementSet[ItemId] or WasRefundable) then
+		Item:Clear()
+		return true
+	end
+
+	noRefund(Item)
+	return false
+end
+
+local function ProcessChestItem(Item, IsMapRefill)
+	if not Item or Item.Number <= 0 then
+		return
+	end
+	local ItemId = Item.Number
+	if IsMapRefill and GuaranteedUniqueRespawnChestItems[ItemId] and vars.GotArtifact[ItemId] then
+		local Available = GetNotFoundArts()
+		if #Available > 0 then
+			local NewItemId = Available[random(#Available)]
+			SetItemToId(Item, NewItemId)
+			vars.GotArtifact[NewItemId] = true
+		else
+			RandomizeOrdinaryTreasure6(Item, ItemId)
+		end
+		return
+	end
+	ProcessMapSpawnItem(Item, IsMapRefill)
+end
+
+-- monster treasure: Items[2] the item, Items[3] its gold (with the TreasureGenerated bit).
+-- A recorded unique is cleared on a refill and the bit reset, so the monster rolls its
+-- ordinary treasure again.
+local function resetTreasure(Monster)
+	local Gold = Monster.Items[3]
+	if Gold then
+		Gold:Clear()
+	end
+	Monster.TreasureGenerated = false
+end
+
+local function ProcessMonsterTreasureItem(Monster, IsMapRefill)
+	local Item = Monster.Items[2]
+	if not Item or Item.Number <= 0 then
+		return
+	end
+	local ItemId = Item.Number
+	if NativeQuestControlledItems[ItemId] then
+		return
+	end
+
+	if QuestCompletionItems[ItemId] then
+		if IsQuestItemCompleted(ItemId) then
+			vars.GotArtifact[ItemId] = true
+			Item:Clear()
+			if IsMapRefill then resetTreasure(Monster) end
+		end
+		return
+	end
+
+	if MonsterSpecialDropItems[ItemId] then
+		if vars.GotArtifact[ItemId] then
+			Item:Clear()
+			if IsMapRefill then resetTreasure(Monster) end
+		else
+			noRefund(Item)
+		end
+		return
+	end
+
+	if not UniqueItemSet[ItemId] then
+		return
+	end
+
+	if not vars.GotArtifact[ItemId] then
+		vars.GotArtifact[ItemId] = true
+		noRefund(Item)
+		return
+	end
+
+	if IsMapRefill then
+		Item:Clear()
+		resetTreasure(Monster)
+	end
+end
+
+-- a named drop already looted isn't handed out by the corpse again
+function events.PickCorpse(t)
+	local Monster = t.Monster
+	if not Monster or not Monster.Item or Monster.Item <= 0 then
+		return
+	end
+	local ItemId = Monster.Item
+	if MonsterSpecialDropItems[ItemId] and vars.GotArtifact[ItemId] then
+		evt.SetMonsterItem{Monster = t.MonsterIndex, Item = ItemId, Has = 0}
+	end
+end
+
+local function ScanMapUniqueSpawns()
+	local IsMapRefill = Map.Refilled ~= nil
+
+	-- an old save: the party's own uniques start the record (once)
+	local InitialHistoryScan = not vars.UniqueArtifactHistoryInitialized
+	if InitialHistoryScan then
+		for _, Player in Party.PlayersArray do
+			for _, Item in Player.Items do
+				if UniqueItemSet[Item.Number] then
+					vars.GotArtifact[Item.Number] = true
+				end
+			end
+		end
+		vars.UniqueArtifactHistoryInitialized = true
+	end
+
+	-- the first scan of an old save leaves the map as it is
+	local SuppressRespawns = IsMapRefill and not InitialHistoryScan
+
+	for _, Chest in Map.Chests do
+		for _, Item in Chest.Items do
+			ProcessChestItem(Item, SuppressRespawns)
 		end
 	end
+
+	-- items on the ground: those the party dropped are its own (recorded, left alone)
+	for _, Obj in Map.Objects do
+		if Obj.Item and Obj.Item.Number > 0 and not Obj.Removed then
+			if Obj.DroppedByPlayer then
+				if UniqueItemSet[Obj.Item.Number] then
+					vars.GotArtifact[Obj.Item.Number] = true
+				end
+			else
+				local Result = ProcessMapSpawnItem(Obj.Item, SuppressRespawns)
+				if Result == true then
+					Obj.Removed = true
+				elseif Result == "replaced" then
+					local Sprite = Game.ItemsTxt[Obj.Item.Number].SpriteIndex
+					if Sprite ~= nil then
+						Obj.Type = Sprite
+						Obj.TypeIndex = Sprite
+					end
+				end
+			end
+		end
+	end
+
+	for _, Monster in Map.Monsters do
+		ProcessMonsterTreasureItem(Monster, SuppressRespawns)
+	end
+end
+Game.ScanUniqueItemsOnCurrentMap = ScanMapUniqueSpawns
+
+-- anything unique that reaches a backpack (quest rewards, events) is recorded as well
+function events.GotItem(i)
+	if UniqueItemSet[i] or MonsterSpecialDropItems[i] then
+		vars.GotArtifact[i] = true
+	end
+end
+
+-- after MMMWE_DroppedItems.lua (a General script, its handler comes first) has put the
+-- party's dropped items back
+function events.AfterLoadMap()
+	local ok, err = pcall(ScanMapUniqueSpawns)
+	if not ok then Log(Merge.Log.Error, "%s: unique items scan: %s", LogId, tostring(err)) end
+end
+
+-- named monster drops are recorded only when they reach a backpack (a monster dying
+-- doesn't use up its drop); checked every second
+local function RecordLootedMonsterSpecials()
+	for _, Player in Party do
+		for _, Item in Player.Items do
+			local ItemId = Item.Number
+			if MonsterSpecialDropItems[ItemId] and not vars.GotArtifact[ItemId] then
+				vars.GotArtifact[ItemId] = true
+			end
+		end
+	end
+	local m = Mouse.Item.Number
+	if MonsterSpecialDropItems[m] and not vars.GotArtifact[m] then
+		vars.GotArtifact[m] = true
+	end
+end
+local LootTick = 0
+function events.Tick()
+	LootTick = LootTick + 1
+	if LootTick % 30 == 0 then
+		RecordLootedMonsterSpecials()
+	end
+end
+
+-- console fallback for builds whose award numbering differs, after the quest is done:
+--   Game.MarkUniqueQuestItemCompleted(2020)  -- Mordred (539 Ebonest, 540 Whistlebone, 541 Balthazar)
+function Game.MarkUniqueQuestItemCompleted(ItemId)
+	if not QuestCompletionItems[ItemId] then
+		return false
+	end
+	vars.UniqueQuestItemCompletion[ItemId] = true
+	vars.GotArtifact[ItemId] = true
+	ScanMapUniqueSpawns()
+	return true
 end
 
 ------------------------------------------------
