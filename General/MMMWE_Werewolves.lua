@@ -22,8 +22,12 @@
 	   At sunrise the beast is gone until the next full moon. The debuff's timer counts down to
 	   the next transformation, and in it to the sunrise.
 	   Cured by Remove Curse at Master or above cast on the character, Divine Intervention, the
-	   Divine Restoration potion, and by the death of the Werewolf Leader. (Portraits of the
-	   beast form are still to come.)
+	   Divine Restoration potion, and by the death of the Werewolf Leader.
+	   The beast's eyes: until portraits of the beast form are drawn, a werebeast's portrait
+	   gets yellow eyes with narrow pupils (the picture "lyceye" in waffel.icons.lod), drawn
+	   over each frame where its eyes are open, at the pupils tracked over all frames
+	   (MMMWE_LycanEyesData.lua), the way the game draws its mask over the portraits of an
+	   invisible party.
 
 	State: vars.MMMWE_Lycanthropy[roster index] = {Since = time}; map: mapvars.MMMWE_WereNight
 --]]
@@ -60,6 +64,7 @@ local LYCAN = {
 MF.WerewolfSettings, MF.LycanthropySettings = W, LYCAN
 
 local MONTH_DAYS = 28
+local EyePtrReset
 
 local function nightsSetting()
 	local v = MM.Scripts and tonumber(MM.Scripts.WerewolfFullMoonNights)
@@ -252,7 +257,7 @@ function events.MonsterKilled(mon)
 end
 
 function events.LeaveMap() openHouses() end
-function events.LeaveGame() savedHours = nil end
+function events.LeaveGame() savedHours = nil; EyePtrReset = true end
 
 ---------------------------------------------------------------------------
 -- 2. lycanthropy
@@ -370,10 +375,17 @@ end
 
 -- the debuff's timer, the turning at dusk and dawn, the beast's healing
 local Was = {}
+local BeastSlots = {}   -- party slots of the werebeasts now (for the portraits)
 local function lycanTick()
 	local night = fullMoonNight()
 	local now = Game.Time
 	local dead = leaderDead()
+	local slots = {}
+	for slot = 0, Party.count - 1 do
+		local pl = Party[slot]
+		if night and not dead and cursed(pl) then slots[slot] = true end
+	end
+	BeastSlots = slots
 	for _, pl in Party do
 		local k = pl:GetIndex()
 		if cursed(pl) and dead then
@@ -424,3 +436,45 @@ function events.AfterLoadMap()
 	LastCheck, LastMinute = 0, nil
 	pcall(checkNight)
 end
+
+---------------------------------------------------------------------------
+-- the beast's eyes on the portrait
+-- The party's portraits are drawn one by one (0x490C2D..0x490DFC: ebp the party slot, edi the
+-- y, [0x4FD9D0 + slot * 2] the x, [esp+10h] the frame's picture, from the frames of the slot's
+-- face, [0xAB2B34 + (face slot * 56 + frame) * 4], the face slot in [0xAB2FEC + slot * 4]).
+-- After a werebeast's portrait, its eyes are drawn with the game's transparent draw
+-- (0x4A419B), as the mask over an invisible party's faces is.
+---------------------------------------------------------------------------
+
+local EyePtr
+local function eyeBitmap()
+	if EyePtrReset then EyePtr, EyePtrReset = nil, nil end
+	if EyePtr == nil then
+		local ok, idx = pcall(function() return Game.IconsLod:LoadBitmap("lyceye") end)
+		EyePtr = ok and idx and idx >= 0 and Game.IconsLod.Bitmaps[idx]["?ptr"] or false
+	end
+	return EyePtr or nil
+end
+
+mem.autohook(0x490DFC, function(d)
+	local slot = d.ebp
+	if not BeastSlots[slot] then return end
+	local ok, err = pcall(function()
+		local pl = Party[slot]
+		local eyes = MF.LycanEyes and MF.LycanEyes[pl.Face]
+		if not eyes then return end
+		local img = mem.u4[d.esp + 0x10]
+		local base = mem.u4[0xAB2FEC + slot * 4] * 0x38
+		local frame
+		for k = 0, 0x37 do
+			if mem.u4[0xAB2B34 + (base + k) * 4] == img then frame = k + 1 break end
+		end
+		local e = frame and eyes[frame]
+		local bmp = e and eyeBitmap()
+		if not bmp then return end
+		local x, y = mem.i2[0x4FD9D0 + slot * 2], d.edi
+		mem.call(0x4A419B, 1, 0xEC1980, x + e[2] - 2, y + e[1] - 1, bmp, 0)
+		mem.call(0x4A419B, 1, 0xEC1980, x + e[4] - 2, y + e[3] - 1, bmp, 0)
+	end)
+	if not ok and MF.LogWarning then MF.LogWarning("Werewolves: portrait eyes: %s", tostring(err)) end
+end)
