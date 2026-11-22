@@ -38,7 +38,9 @@ local S = {
 	Kinds = 6,                           -- alliance kinds per wave
 	DarkKinds = 3, DarkShare = 0.5,      -- defenders: kinds, and their number against the wave
 	LateKindsFrom = 0.5,                 -- share of the war after which golems, genies, angels come
-	Radius = {1500, 6000},               -- where the troops gather, from the castle
+	Radius = {1500, 6000},               -- where the troops gather, from the fortress
+	Fortress = {8192, 4093},             -- (22.11.26) the centre of the Harmondale fortress
+	                                     -- (the new model); the troops gather around it
 	PatrolChance = 25, PatrolEvery = 7,  -- % on entering a land, at most once in so many days
 	PatrolCount = {3, 6},
 	VictoryExp = 100000, VictoryGold = 50000,
@@ -49,7 +51,11 @@ local SIGNET_DONE = 876
 local WAR_QUEST   = 879                  -- quest log line of the war
 local DARK_PATH   = 612
 local HARMONDALE  = "7out02.odm"
-local ALLIANCE_GROUP, DARK_GROUP, PATROL_GROUP = 200, 201, 202
+local ALLIANCE_GROUP, DARK_GROUP, PATROL_GROUP, GATE_GROUP = 200, 201, 202, 203
+-- (22.11.26) the three Elven Archers at the town's gates are replaced by Blaster Guys (the
+-- Dark side's guards) once the war begins, for good
+local GATE_ARCHERS = {[247] = true, [248] = true, [249] = true}
+local GATE_GUARD = 459
 
 -- MM7 monsters: the A line of each (B = +1, C = +2)
 local ALLIANCE = {
@@ -161,8 +167,10 @@ end
 -- placing troops
 ---------------------------------------------------------------------------
 
--- Castle Harmondale: the model whose face opens the castle (event 301 of 7out02)
+-- the fortress (S.Fortress); without it, Castle Harmondale: the model whose face opens the
+-- castle (event 301 of 7out02)
 local function castleCenter()
+	if S.Fortress then return S.Fortress[1], S.Fortress[2] end
 	for _, m in Map.Models do
 		for _, f in m.Facets do
 			if f.Event == 301 then
@@ -331,6 +339,39 @@ local function placeWave(s)
 	if n == 0 then resolve(s, true) end
 end
 
+-- the gate archers become Blaster Guys (once per map fill), standing and guarding as they did
+local GUARD_FIELDS = {"Direction", "MoveType", "GuardX", "GuardY", "GuardZ", "GuardRadius",
+	"StartX", "StartY", "StartZ"}
+local function replaceGateGuards()
+	if mapvars.MMMWE_GateGuards then return end
+	mapvars.MMMWE_GateGuards = true
+	local old = {}
+	for i = 0, Map.Monsters.count - 1 do
+		local m = Map.Monsters[i]
+		if GATE_ARCHERS[m.Id] and m.Group ~= ALLIANCE_GROUP and m.Group ~= PATROL_GROUP
+				and m.HP > 0 and m.AIState ~= const.AIState.Removed then
+			old[#old + 1] = m
+		end
+	end
+	for _, a in ipairs(old) do
+		local keep = {X = a.X, Y = a.Y, Z = a.Z}
+		for _, k in ipairs(GUARD_FIELDS) do pcall(function() keep[k] = a[k] end) end
+		a.AIState = const.AIState.Removed
+		local ok, m = pcall(SummonMonster, GATE_GUARD, keep.X, keep.Y, keep.Z, false)
+		if ok and m then
+			pcall(m.LoadFramesAndSounds, m)
+			for _, k in ipairs(GUARD_FIELDS) do
+				if keep[k] ~= nil then pcall(function() m[k] = keep[k] end) end
+			end
+			m.Group = GATE_GROUP
+			m.Ally = 9999
+			m.Hostile = false
+			pcall(function() m.ShowAsHostile = false end)
+		end
+	end
+	MF.LogInfo("[Siege] %d gate archers replaced by Blaster Guys", #old)
+end
+
 function events.MonsterKilled(mon)
 	if mon.Group ~= ALLIANCE_GROUP or (Map.Name or ""):lower() ~= HARMONDALE then return end
 	local s = vars.MMMWE_Siege
@@ -422,6 +463,8 @@ function events.AfterLoadMap()
 		-- after the war: what is left of the armies leaves Harmondale
 		if s.Over and (Map.Name or ""):lower() == HARMONDALE then
 			removeGroup(ALLIANCE_GROUP)
+			-- won: the Dark side keeps the gates
+			if s.Over == "victory" then replaceGateGuards() end
 		end
 		return
 	end
@@ -429,6 +472,7 @@ function events.AfterLoadMap()
 		local a = s.Active
 		-- no army due now: the troops of a wave that withdrew are gone
 		if not (a and a.Arrived and not a.Done) then removeGroup(ALLIANCE_GROUP) end
+		replaceGateGuards()
 		placeWave(s)
 	else
 		patrol(s)
