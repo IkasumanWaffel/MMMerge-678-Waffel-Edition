@@ -12,8 +12,13 @@
 	  its name in gold (the hover text, the monster card, the status line).
 	Not bosses: the filler names (guards, lookouts, a pet, placeholders).
 	Kept as they are (name and loot only): Mega-Dragon (deadly as it is; its Hermes' Sandals
-	stay), Wromthrax (the first Paladin promotion's quest; already a hard fight) and Q (has its
-	own stats, Bolster-SpcMonsters.txt).
+	stay) and Q (has its own stats, Bolster-SpcMonsters.txt).
+	Weaknesses (WEAK), shown on the monster card as an ability:
+	  Wromthrax - Old Wound: the menace of the centuries, but a hero of old nearly killed him
+	  and the wound never closed. Critical hits deal CritMul times their extra damage, Air
+	  (lightning through a water dragon's hide) gets through his resistance, and the wound
+	  makes him flinch: no Juggernaut, so hits stagger him. A boss for a low-level party that
+	  fights him with lightning and well-aimed blows (the first Paladin promotion).
 	A carried item (Monster.Item: the Sandals, the named drops) is never touched.
 
 	The bolster sets a monster's stats again on every map load; the boost is put back on
@@ -22,7 +27,9 @@
 --]]
 
 local MF = Merge.Functions
+local Tx = Merge.Functions.Text
 local floor, max, min = math.floor, math.max, math.min
+local VERSION = 2      -- records of an older version are boosted again
 
 local B = {
 	HPMul     = 3,
@@ -46,10 +53,21 @@ local NOT_BOSS = {
 }
 -- bosses by name and loot only
 local KEEP_STATS = {
-	[117] = true,                     -- Wromthrax
 	[118] = true,                     -- Mega-Dragon
 	[123] = true, [133] = true,       -- Q
 }
+
+-- weaknesses by Placemon.txt line
+local WEAK = {
+	[117] = {                         -- Wromthrax: Old Wound
+		Ability = "OldWound",
+		CritMul = 2,                  -- a critical hit's extra damage x this (x1.5 -> x2)
+		Resist = {AirResistance = 0},
+		NoJuggernaut = true,
+		Text = Tx"The old wound tears open!",
+	},
+}
+MF.BossWeaknesses = WEAK
 
 local function isBoss(m)
 	local n = m.NameId or 0
@@ -74,12 +92,12 @@ end
 
 local function boost(i, m)
 	local rec = store()[i]
-	local same = rec and rec.Id == m.Id and rec.NameId == m.NameId
+	local same = rec and rec.Id == m.Id and rec.NameId == m.NameId and rec.V == VERSION
 	-- already boosted, and the bolster hasn't reset it since
 	if same and rec.FullHP == m.FullHP then return end
 	-- the gold dice aren't set again by the bolster: kept from the first time
 	local dice = same and rec.Dice or {m.TreasureDiceCount, m.TreasureDiceSides}
-	rec = {Id = m.Id, NameId = m.NameId, Dice = dice}
+	rec = {Id = m.Id, NameId = m.NameId, Dice = dice, V = VERSION}
 	if not KEEP_STATS[m.NameId] then
 		local full = min(32000, floor(m.FullHP * B.HPMul))
 		if m.HP > 0 then m.HP = max(1, min(full, floor(m.HP * full / max(m.FullHP, 1)))) end
@@ -89,6 +107,10 @@ local function boost(i, m)
 		m.ArmorClass = min(255, floor(m.ArmorClass * B.ACMul + 0.5))
 		m.Level = min(255, m.Level + B.LevelAdd)
 		m.Experience = floor(m.Experience * B.ExpMul)
+	end
+	local w = WEAK[m.NameId]
+	if w and w.Resist then
+		for k, v in pairs(w.Resist) do m[k] = v end
 	end
 	-- loot: a sure item a class better, more gold (the treasure isn't rolled yet)
 	if not m.TreasureGenerated then
@@ -107,7 +129,9 @@ local function scan()
 		if isBoss(m) and alive(m) then
 			boost(i, m)
 			if not KEEP_STATS[m.NameId] and MF.SetBossAbilities and not MF.IsBossAbilityRecord(i, m) then
-				MF.SetBossAbilities(i, m, B.Abilities)
+				local w = WEAK[m.NameId]
+				MF.SetBossAbilities(i, m, B.Abilities,
+					w and {NoJuggernaut = w.NoJuggernaut, Extra = {w.Ability}})
 			end
 		end
 	end
@@ -121,6 +145,25 @@ end
 -- after the bolster: on loading a map and when the bolster settings change
 function events.AfterMapBolster() safeScan() end
 function events.AfterLoadMap() safeScan() end
+
+---------------------------------------------------------------------------
+-- critical hits on a weak boss (CalcCrits, MMMWE_Main.lua: 1 or the crit multiplier)
+---------------------------------------------------------------------------
+
+local function wrapCrits()
+	if not CalcCrits or MF.BossCritsWrapped then return end
+	MF.BossCritsWrapped = true
+	local calc = CalcCrits
+	CalcCrits = function(pl, melee, mon, ...)
+		local r = calc(pl, melee, mon, ...)
+		local w = mon and r > 1 and WEAK[mon.NameId or 0]
+		if w and w.CritMul and isBoss(mon) then
+			r = 1 + (r - 1) * w.CritMul
+			if w.Text then Game.ShowStatusText(w.Text, 2) end
+		end
+		return r
+	end
+end
 
 ---------------------------------------------------------------------------
 -- the names in gold
@@ -138,5 +181,5 @@ local function colorNames()
 	end
 end
 
-function events.GameInitialized2() colorNames() end
+function events.GameInitialized2() colorNames(); wrapCrits() end
 function events.LoadMap() colorNames() end

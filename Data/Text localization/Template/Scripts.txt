@@ -1861,6 +1861,8 @@ Call for Help
 # General/MMMWE_MonsterAbilities.lua:447
 Abilities (pack leader)	
 Abilities (boss)	
+Old Wound	
+The old wound tears open!	
 
 # General/MMMWE_MonsterAbilities.lua:447
 Abilities	

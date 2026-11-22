@@ -64,6 +64,8 @@ local A = {
 	Terror       = {Group = "Control", Name = Tx"Terror", Chance = 0.10},
 	Warlord      = {Group = "Pack", Name = Tx"Warlord", DamageMul = 1.2, TakenMul = 0.9},
 	CallForHelp  = {Group = "Pack", Name = Tx"Call for Help", Below = 0.5, Count = 2},
+	-- (22.11.26) a boss's weakness (MMMWE_Bosses.lua does what it does; listed on the card)
+	OldWound     = {Group = "Weakness", Name = Tx"Old Wound"},
 }
 local POOL = {"Regeneration", "Adaptation", "Thorns", "LastStand", "Juggernaut", "Enrage", "Sundering",
 	"TwinStrike", "Cleave", "Concussion", "ManaBurn", "Hamstring", "Terror"}
@@ -207,9 +209,13 @@ end
 
 -- fixed abilities for a boss: Juggernaut and Count more (casters from their own list),
 -- kept like the rolled ones
-function MF.SetBossAbilities(i, m, Count)
-	local rec = {Id = m.Id, A = {"Juggernaut"}, Boss = true}
-	local have = {Juggernaut = true}
+-- Opt: {NoJuggernaut = true, Extra = {ability names put first}}
+function MF.SetBossAbilities(i, m, Count, Opt)
+	Opt = Opt or {}
+	local rec = {Id = m.Id, A = {}, Boss = true}
+	local have = {Juggernaut = Opt.NoJuggernaut or nil}
+	for _, k in ipairs(Opt.Extra or {}) do have[k] = true; rec.A[#rec.A + 1] = k end
+	if not Opt.NoJuggernaut then have.Juggernaut = true; rec.A[#rec.A + 1] = "Juggernaut" end
 	local list = (m.Spell or 0) > 0 and CASTER_POOL or POOL
 	for _ = 1, Count or 2 do
 		local k = pick(list, have) or pick(POOL, have)

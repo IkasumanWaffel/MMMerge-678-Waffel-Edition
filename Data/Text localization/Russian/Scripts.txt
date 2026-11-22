@@ -1861,6 +1861,8 @@ Call for Help	Зов на помощь
 # General/MMMWE_MonsterAbilities.lua:447
 Abilities (pack leader)	Способности (вожак)
 Abilities (boss)	Способности (босс)
+Old Wound	Старая рана
+The old wound tears open!	Старая рана открылась!
 
 # General/MMMWE_MonsterAbilities.lua:447
 Abilities	Способности
