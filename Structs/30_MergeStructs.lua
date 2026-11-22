@@ -33,7 +33,7 @@ end
 
 MC.PlayerBuffs2Count = 7
 MC.PlayerBuffsCount = 27 + MC.PlayerBuffs2Count
-MC.PlayerDebuffsCount = 33 -- Conditions 0-12,15,17-19; 20-32 drains (MMMWE_Drains.lua)
+MC.PlayerDebuffsCount = 34 -- Conditions 0-12,15,17-19; 20-32 drains (MMMWE_Drains.lua); 33 Lycanthropy (MMMWE_Werewolves.lua)
 
 MC.PartyBuffs2Count = 6
 MC.PartyBuffsCount = 20 + MC.PartyBuffs2Count
@@ -1250,6 +1250,12 @@ local function SetBuffs2DebuffsNames()
 	mem.u4[MO.PlayerDebuffsNames + 17 * 4] = mem_cstring(string.format("%s", "Morbid Transformation"))  --mem.u4[0x601448 + 601 * 4] -- Zombie
 	mem.u4[MO.PlayerDebuffsNames + 18 * 4] = mem_cstring(string.format("%s", "Feeblemind"			))	--mem.u4[0x601448 + 594 * 4] -- Feebleminded
 	mem.u4[MO.PlayerDebuffsNames + 19 * 4] = mem_cstring(string.format("%s", "Unarmed"				))	--mem.u4[0x601448 + 77 * 4] -- Unarmed
+	-- 33: Lycanthropy (MMMWE_Werewolves.lua)
+	mem.u4[MO.PlayerDebuffsNames + 33 * 4] = mem_cstring("Lycanthropy")
+	do
+		local o = MO.PlayerDebuffsColors + 33 * 3
+		mem.u1[o], mem.u1[o + 1], mem.u1[o + 2] = 0x2B, 0x5A, 0x8B
+	end
 	-- 20-32: drains by monsters (MMMWE_Drains.lua)
 	local drainNames = {"Might Drain", "Intellect Drain", "Personality Drain", "Endurance Drain",
 		"Accuracy Drain", "Speed Drain", "Luck Drain", "Armor Corrosion", "Fire Res. Drain",

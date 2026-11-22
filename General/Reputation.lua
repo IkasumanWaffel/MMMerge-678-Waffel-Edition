@@ -1388,3 +1388,6 @@ end
 
 Log(Merge.Log.Info, "Init finished: %s", LogId)
 
+
+-- MMMWE (23.11.26): the current map's reputation settings, for other scripts (MMMWE_Werewolves.lua)
+function MF.ReputationSettings() return rep_set end

@@ -3433,3 +3433,10 @@ The %s path in %s costs %d gold. Come back when you have it.
 
 # Global/MMMWE_LegendaryTeachers.lua:55
 %s is now %s in %s.%s	
+The full moon rises over Blackshire... and the howling begins.	
+%s is free of the werewolf's curse	
+%s has been bitten by a werewolf... the wound burns strangely.	
+%s can only snarl: no spells under the full moon	
+%s howls at the full moon!	
+The beast in %s sleeps until the next full moon	
+Lycanthropy	

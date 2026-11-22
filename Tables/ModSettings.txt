@@ -70,3 +70,4 @@ FeeblemindedDisableScrolls	1
 Scripts.EnableVisibleGauntlets	1
 Scripts.EnableDruidSummoner	1
 TKPreventDeathFromNegativeEndurance	1
+Scripts.WerewolfFullMoonNights	1

@@ -3460,3 +3460,10 @@ A stronger effect of this kind is already active	Уже действует более сильный эфф
 Potions can't raise this any higher	Зельями выше уже не поднять
 %s is free of the zombie infection	%s избавлен(а) от зомби-заразы
 %s has turned into a zombie	%s превратился(-ась) в зомби
+The full moon rises over Blackshire... and the howling begins.	Над Блэкширом восходит полная луна... и начинается вой.
+%s is free of the werewolf's curse	%s свободен от проклятия оборотня
+%s has been bitten by a werewolf... the wound burns strangely.	%s укушен оборотнем... рана странно жжёт.
+%s can only snarl: no spells under the full moon	%s может лишь рычать: под полной луной не до заклинаний
+%s howls at the full moon!	%s воет на полную луну!
+The beast in %s sleeps until the next full moon	Зверь в душе %s спит до следующего полнолуния
+Lycanthropy	Ликантропия

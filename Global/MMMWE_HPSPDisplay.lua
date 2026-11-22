@@ -159,6 +159,7 @@ local debuffExtraLabels = {
     [30] = {label = Tx"Water Res Drain", color = 0x2244CC},
     [31] = {label = Tx"Earth Res Drain", color = 0x887744},
     [32] = {label = Tx"Light Res Drain", color = 0xFAFAFA},
+    [33] = {label = Tx"Lycanthropy", color = 0x8B5A2B},   -- MMMWE_Werewolves.lua
 }
 
 -- Extra buffs2 colors

@@ -9,3 +9,4 @@ vars.MMMWE_Cond      = vars.MMMWE_Cond or {}        -- MMMWE_Conditions.lua: con
 vars.WeakNextCheck   = vars.WeakNextCheck or {}     -- MMMWE_Conditions.lua: daily Weakness checks
 vars.WeaknessCounter = vars.WeaknessCounter or {0, 0, 0, 0, 0}
 vars.MMMWE_MostWanted = vars.MMMWE_MostWanted or {}   -- MMMWE_MostWanted.lua: renegade bands by town map
+vars.MMMWE_Lycanthropy = vars.MMMWE_Lycanthropy or {}   -- MMMWE_Werewolves.lua: cursed characters by roster index
