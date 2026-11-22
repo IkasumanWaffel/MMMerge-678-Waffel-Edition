@@ -1951,6 +1951,24 @@ The Circlet of Power... I can feel the old songs in it. The circle will keep it 
 The Circlet rests with the circle. On quiet nights, I swear the stones sing.	
 Find the Druid Circlet of Power beneath the stonehenge in the Murmurwoods of Jadame and bring it to Anthony Green in the Tularean Forest.	
 Returned the Druid Circlet of Power to the circle	
+The Dragon Riders	
+The Dragon Towers keep the dragons off our towns, and someone wants them dark. The Dragon Riders: brigands who have tamed what should never be tamed, and who live in caves north-west of here. They raided our towns before the towers stood, and they mean to raid them again. They've already bought themselves a keep in the south to do it, and the keys to turn the towers off.\n\nGo to their caves and break them, every last rider. The Frozen Highlands will pay you well.	
+The Dragon Riders still hold their caves. As long as they do, the towers are only as safe as their keys.	
+The Dragon Riders are broken! The towns can sleep again, and the towers can do their work. Take this, with the thanks of the Frozen Highlands.	
+Not a rider seen in the sky since. The towers stand, and so do we.	
+Clear out the Caves of the Dragon Riders and return to Erik von Stromgard in Castle Stromgard.	
+Broke the Dragon Riders for Erik von Stromgard	
+The false Prince	
+One more thing about this Prince of Thieves. My agents say the rogues keep a man in their hideout who calls himself the Prince, wears his colours and gives his orders. A decoy, no doubt, while the real one hides elsewhere.\n\nBut a decoy who gives orders long enough becomes a leader. Should the real Prince fall, that one would simply take his place. Deal with him as well, and the rogues will have nobody left to follow.	
+The false Prince still holds the rogues' hideout. While he does, they have a leader in waiting.	
+The impostor is dead? Good. Now when the real Prince falls, there will be no one to pick up his crown. Here, for your thoroughness.	
+The rogues are quarrelling among themselves over who gives orders now. Exactly as it should be.	
+Defeat the false Prince of Thieves in the rogues' hideout in the Frozen Highlands and return to Lord Anthony Stone at Castle Stone.	
+Unmasked and defeated the false Prince of Thieves	
+Most Wanted: a band of %d renegades (%s) who have turned on their own and now prey on the roads near here. Reward for the whole band: %d gold.	
+Most Wanted: the renegade band (%s) is no more. Here is the reward for the band: %d gold.	
+Most Wanted: no renegades are wanted here until next month.	
+The renegade band is destroyed! Claim the Most Wanted reward at the town hall.	
 
 # General/MMMWE_MonsterAbilities.lua:447
 Abilities	

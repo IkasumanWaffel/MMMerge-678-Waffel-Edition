@@ -8,3 +8,4 @@ vars.PlayerFaces     = vars.PlayerFaces or {}       -- ZombiePlayers.lua: faces 
 vars.MMMWE_Cond      = vars.MMMWE_Cond or {}        -- MMMWE_Conditions.lua: condition timers
 vars.WeakNextCheck   = vars.WeakNextCheck or {}     -- MMMWE_Conditions.lua: daily Weakness checks
 vars.WeaknessCounter = vars.WeaknessCounter or {0, 0, 0, 0, 0}
+vars.MMMWE_MostWanted = vars.MMMWE_MostWanted or {}   -- MMMWE_MostWanted.lua: renegade bands by town map

@@ -118,6 +118,15 @@ local function tagStrongest()
 	end
 end
 
+-- (23.11.26) bonus encounters without a quest: richer loot (treasure classes more, gold x)
+local EXTRA_LOOT = {
+	[135] = true,   -- Lurch
+	[26]  = true,   -- Guthwulf
+	[128] = true,   -- Lesser Genie
+	[125] = true,   -- Fallen Defender
+}
+B.ExtraTreasureUp, B.ExtraGoldMul = 1, 2
+
 -- weaknesses by Placemon.txt line
 local WEAK = {
 	[117] = {                         -- Wromthrax: Old Wound
@@ -176,8 +185,9 @@ local function boost(i, m)
 	-- loot: a sure item a class better, more gold (the treasure isn't rolled yet)
 	if not m.TreasureGenerated then
 		m.TreasureItemPercent = 100
-		m.TreasureItemLevel = min(6, max(1, m.TreasureItemLevel + B.TreasureUp))
-		m.TreasureDiceCount = min(255, max(1, dice[1]) * B.GoldMul)
+		local extra = EXTRA_LOOT[m.NameId]
+		m.TreasureItemLevel = min(6, max(1, m.TreasureItemLevel + B.TreasureUp + (extra and B.ExtraTreasureUp or 0)))
+		m.TreasureDiceCount = min(255, max(1, dice[1]) * B.GoldMul * (extra and B.ExtraGoldMul or 1))
 		m.TreasureDiceSides = max(dice[2], 10)
 	end
 	rec.FullHP = m.FullHP

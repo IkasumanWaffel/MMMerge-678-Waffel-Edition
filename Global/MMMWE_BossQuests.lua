@@ -30,6 +30,10 @@
 	    fire is lit.
 	  The Druid Circlet of Power (Anthony Green): from the hidden dungeon under the
 	    Murmurwoods stonehenge (MM8's scrapped Druid quest).
+	  The Dragon Riders (Erik von Stromgard): clear out the Caves of the Dragon Riders
+	    (MM6's scrapped quest; their letter is in the keep they took).
+	  The false Prince of Thieves (Lord Anthony Stone): the Rogue Leader in the rogues'
+	    hideout, left to cover the real Prince in the Free Haven sewers.
 
 	Kills: vars.MMMWE_BossKills[Placemon line] = true, for every named monster, whenever it
 	dies (a boss killed before its quest was given counts).
@@ -402,5 +406,79 @@ Quest{
 		After = Tx"The Circlet rests with the circle. On quiet nights, I swear the stones sing.",
 		Quest = Tx"Find the Druid Circlet of Power beneath the stonehenge in the Murmurwoods of Jadame and bring it to Anthony Green in the Tularean Forest.",
 		Award = Tx"Returned the Druid Circlet of Power to the circle",
+	},
+}
+
+-- Erik von Stromgard: the Caves of the Dragon Riders (6d20.blv) cleared
+local STROMGARD, RIDERS_MAP = 800, "6d20.blv"
+
+local function ridersLeft()
+	local n = 0
+	for i = 0, Map.Monsters.count - 1 do
+		local m = Map.Monsters[i]
+		if m.HP > 0 and m.AIState ~= const.AIState.Removed and m.AIState ~= const.AIState.Dead
+				and m.AIState ~= const.AIState.Dying and m.Ally ~= 9999 then
+			n = n + 1
+		end
+	end
+	return n
+end
+
+local RidersCheck = false
+local function checkRiders()
+	if (Map.Name or ""):lower() == RIDERS_MAP and ridersLeft() == 0 then
+		vars.MMMWE_DragonRidersCleared = true
+	end
+end
+function events.AfterLoadMap() RidersCheck = false end
+function events.MonsterKilled()
+	if (Map.Name or ""):lower() == RIDERS_MAP then RidersCheck = true end
+end
+function events.Tick()
+	if RidersCheck then RidersCheck = false; checkRiders() end
+end
+function events.LeaveMap() checkRiders() end
+
+Quest{
+	Name = "MMMWE_Boss_DragonRiders",
+	NPC = STROMGARD,
+	Quest = true,
+	Exp = 20000,
+	Gold = 10000,
+	CheckDone = function() checkRiders() return vars.MMMWE_DragonRidersCleared == true end,
+	Texts = {
+		Topic = Tx"The Dragon Riders",
+		Give = Tx"The Dragon Towers keep the dragons off our towns, and someone wants them dark. The Dragon Riders: brigands who have tamed what should never be tamed, and who live in caves north-west of here. They raided our towns before the towers stood, and they mean to raid them again. They've already bought themselves a keep in the south to do it, and the keys to turn the towers off.\n\nGo to their caves and break them, every last rider. The Frozen Highlands will pay you well.",
+		Undone = Tx"The Dragon Riders still hold their caves. As long as they do, the towers are only as safe as their keys.",
+		Done = Tx"The Dragon Riders are broken! The towns can sleep again, and the towers can do their work. Take this, with the thanks of the Frozen Highlands.",
+		After = Tx"Not a rider seen in the sky since. The towers stand, and so do we.",
+		Quest = Tx"Clear out the Caves of the Dragon Riders and return to Erik von Stromgard in Castle Stromgard.",
+		Award = Tx"Broke the Dragon Riders for Erik von Stromgard",
+	},
+}
+
+-- Lord Anthony Stone: the false Prince of Thieves (Placemon 127 Rogue Leader), once the
+-- hunt for the Prince (QBit 1122) is on
+local STONE, ROGUE_LEADER = 801, 127
+local PRINCE_QUEST, PRINCE_DONE = 1122, 1194
+
+Quest{
+	Name = "MMMWE_Boss_FalsePrince",
+	NPC = STONE,
+	Quest = true,
+	Exp = 15000,
+	Gold = 7500,
+	CanShow = function()
+		return vars.Quests.MMMWE_Boss_FalsePrince or Party.QBits[PRINCE_QUEST] or Party.QBits[PRINCE_DONE]
+	end,
+	CheckDone = function() return killed(ROGUE_LEADER) end,
+	Texts = {
+		Topic = Tx"The false Prince",
+		Give = Tx"One more thing about this Prince of Thieves. My agents say the rogues keep a man in their hideout who calls himself the Prince, wears his colours and gives his orders. A decoy, no doubt, while the real one hides elsewhere.\n\nBut a decoy who gives orders long enough becomes a leader. Should the real Prince fall, that one would simply take his place. Deal with him as well, and the rogues will have nobody left to follow.",
+		Undone = Tx"The false Prince still holds the rogues' hideout. While he does, they have a leader in waiting.",
+		Done = Tx"The impostor is dead? Good. Now when the real Prince falls, there will be no one to pick up his crown. Here, for your thoroughness.",
+		After = Tx"The rogues are quarrelling among themselves over who gives orders now. Exactly as it should be.",
+		Quest = Tx"Defeat the false Prince of Thieves in the rogues' hideout in the Frozen Highlands and return to Lord Anthony Stone at Castle Stone.",
+		Award = Tx"Unmasked and defeated the false Prince of Thieves",
 	},
 }
