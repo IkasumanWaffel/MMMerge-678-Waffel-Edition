@@ -1863,6 +1863,24 @@ Abilities (pack leader)	Способности (вожак)
 Abilities (boss)	Способности (босс)
 Old Wound	Старая рана
 The old wound tears open!	Старая рана открылась!
+Speaker for the Dead	Говорящая с мёртвыми
+There is one more thing, my lords, and I hardly know how to put it. Since the goblins took the castle, a woman in black has been seen on the highest battlements at night. The villagers call her the Speaker for the Dead.\n\nShe talks to the old lords of Harmondale who lie beneath the keep, and on some nights they answer her. And walk. The goblins won't go up there, and neither will anyone with sense. A castle whose dead won't stay buried is a poor gift for its new lords. If you could see her off the battlements, for good...	Есть ещё одно дело, господа, и я даже не знаю, как о нём сказать. С тех пор как замок заняли гоблины, по ночам на самой высокой стене видят женщину в чёрном. Селяне зовут её Говорящей с мёртвыми.\n\nОна беседует со старыми лордами Хармондейла, что покоятся под замком, и в иные ночи они ей отвечают. И встают. Гоблины туда не суются, как и любой здравомыслящий человек. Замок, чьи мертвецы не лежат в могилах, - скверный подарок новым хозяевам. Если бы вы прогнали её со стен, раз и навсегда...
+She is still up there. On a still night you can hear her calling the old lords by name. Please, before all of them answer.	Она всё ещё там. В тихую ночь слышно, как она зовёт старых лордов по именам. Прошу вас, пока не ответили все.
+The tower is quiet! The first quiet night in years, the villagers say, and the old lords of Harmondale can rest at last. This was set aside for the castle's repairs, but I can think of no better use for it.	На башне тихо! Первая спокойная ночь за многие годы, говорят селяне, и старые лорды Хармондейла наконец обрели покой. Эти деньги были отложены на ремонт замка, но лучшего применения им я не вижу.
+Not a sound from the tower since you went up there, my lords. Not a single one.	С тех пор как вы поднимались на башню, оттуда ни звука, господа. Ни единого.
+Slay the Speaker for the Dead atop Castle Harmondale and return to the Butler.	Убить Говорящую с мёртвыми на стенах замка Хармондейл и вернуться к дворецкому.
+Laid the dead of Castle Harmondale to rest	Упокоили мёртвых замка Хармондейл
+The Mega-Dragon	Мега-дракон
+You want to know why they call me the Slayer? I've killed every kind of beast there is but one. In the Land of the Giants lives a dragon older and bigger than any other: the Mega-Dragon. I went after it when I was young and foolish, and I came back with half my company.\n\nI've trained Grand Masters since, but none who could finish what I started. Kill it, and I'll show you what lies beyond Grand Master in Armsmaster, years before any other teacher would let you near it.	Хотите знать, почему меня зовут Убийцей? Я убивал всех тварей, какие есть на свете, кроме одной. В Земле великанов живёт дракон, древнее и больше всех прочих, - Мега-дракон. Я пошёл на него молодым и глупым и вернулся с половиной отряда.\n\nС тех пор я выучил немало грандмастеров, но ни один не смог закончить начатое мной. Убейте его, и я покажу вам, что лежит за пределом грандмастерства в Оружейном деле, на годы раньше, чем подпустил бы вас к этому любой другой учитель.
+The Mega-Dragon still lives. I'd know if it didn't: every warrior in Antagarich would be talking of nothing else.	Мега-дракон всё ещё жив. Я бы знал, если бы это было не так: все воины Антагарича только об этом бы и говорили.
+You did it. You actually did it! Then you've earned the Slayer's Way. Any of you who is a Grand Master of Armsmaster can learn it from me, whatever your rank or your years. Ask me about it.	Вы сделали это. Вы действительно это сделали! Значит, вы заслужили Путь Убийцы. Любой из вас, кто стал грандмастером Оружейного дела, может перенять его у меня, каким бы ни был его ранг и возраст. Спросите меня о нём.
+The Mega-Dragon is dead. I'm still getting used to the thought.	Мега-дракон мёртв. Я всё ещё привыкаю к этой мысли.
+Slay the Mega-Dragon in the Land of the Giants and return to Lasiter the Slayer.	Убить Мега-дракона в Земле великанов и вернуться к Ласитеру Убийце.
+Slew the Mega-Dragon	Убили Мега-дракона
+%s, you walk the Slayer's Way already. I have nothing more to teach you.	%s, ты уже идёшь Путём Убийцы. Мне больше нечему тебя учить.
+The Slayer's Way isn't open to you yet, %s: %s.	Путь Убийцы тебе пока закрыт, %s: %s.
+The Slayer's Way	Путь Убийцы
+Veyla the Speaker	Вейла Говорящая
 
 # General/MMMWE_MonsterAbilities.lua:447
 Abilities	Способности

@@ -1863,6 +1863,24 @@ Abilities (pack leader)
 Abilities (boss)	
 Old Wound	
 The old wound tears open!	
+Speaker for the Dead	
+There is one more thing, my lords, and I hardly know how to put it. Since the goblins took the castle, a woman in black has been seen on the highest battlements at night. The villagers call her the Speaker for the Dead.\n\nShe talks to the old lords of Harmondale who lie beneath the keep, and on some nights they answer her. And walk. The goblins won't go up there, and neither will anyone with sense. A castle whose dead won't stay buried is a poor gift for its new lords. If you could see her off the battlements, for good...	
+She is still up there. On a still night you can hear her calling the old lords by name. Please, before all of them answer.	
+The tower is quiet! The first quiet night in years, the villagers say, and the old lords of Harmondale can rest at last. This was set aside for the castle's repairs, but I can think of no better use for it.	
+Not a sound from the tower since you went up there, my lords. Not a single one.	
+Slay the Speaker for the Dead atop Castle Harmondale and return to the Butler.	
+Laid the dead of Castle Harmondale to rest	
+The Mega-Dragon	
+You want to know why they call me the Slayer? I've killed every kind of beast there is but one. In the Land of the Giants lives a dragon older and bigger than any other: the Mega-Dragon. I went after it when I was young and foolish, and I came back with half my company.\n\nI've trained Grand Masters since, but none who could finish what I started. Kill it, and I'll show you what lies beyond Grand Master in Armsmaster, years before any other teacher would let you near it.	
+The Mega-Dragon still lives. I'd know if it didn't: every warrior in Antagarich would be talking of nothing else.	
+You did it. You actually did it! Then you've earned the Slayer's Way. Any of you who is a Grand Master of Armsmaster can learn it from me, whatever your rank or your years. Ask me about it.	
+The Mega-Dragon is dead. I'm still getting used to the thought.	
+Slay the Mega-Dragon in the Land of the Giants and return to Lasiter the Slayer.	
+Slew the Mega-Dragon	
+%s, you walk the Slayer's Way already. I have nothing more to teach you.	
+The Slayer's Way isn't open to you yet, %s: %s.	
+The Slayer's Way	
+Veyla the Speaker	
 
 # General/MMMWE_MonsterAbilities.lua:447
 Abilities	

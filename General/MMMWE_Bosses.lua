@@ -49,13 +49,39 @@ local NOT_BOSS = {
 	[3] = true,                       -- Dragon Hunter Pet
 	[8] = true, [9] = true,           -- Lizardman Lookout
 	[10] = true, [110] = true,        -- Guard, guard
-	[163] = true, [164] = true,       -- Placeholder
+	[164] = true,                     -- Placeholder (163: the Speaker, below)
 }
 -- bosses by name and loot only
 local KEEP_STATS = {
 	[118] = true,                     -- Mega-Dragon
 	[123] = true, [133] = true,       -- Q
 }
+
+-- (22.11.26) the necromancer the map puts atop Castle Harmondale (a Speaker for the Dead,
+-- MONSTERS.txt 308) is named and so a boss: the Butler's quest (Global\MMMWE_BossQuests.lua).
+-- She takes the unused Placemon.txt line 163 ("Placeholder"); the highest one of the map's
+-- Speakers at the first visit (later ones, such as the siege's, stay ordinary).
+local SPEAKER = {
+	NameId = 163,
+	Name   = Tx"Veyla the Speaker",
+	MonId  = 308,
+	Maps   = {["7out02.odm"] = true, ["7d29.blv"] = true},
+}
+MF.BossSpeaker = SPEAKER
+
+local function tagSpeaker()
+	if not SPEAKER.Maps[Map.Name:lower()] or mapvars.MMMWE_SpeakerTagged then return end
+	mapvars.MMMWE_SpeakerTagged = true
+	local best
+	for i = 0, Map.Monsters.count - 1 do
+		local m = Map.Monsters[i]
+		if m.Id == SPEAKER.MonId and (m.NameId or 0) == 0 and m.HP > 0
+				and m.AIState ~= const.AIState.Removed and (not best or m.Z > best.Z) then
+			best = m
+		end
+	end
+	if best then best.NameId = SPEAKER.NameId end
+end
 
 -- weaknesses by Placemon.txt line
 local WEAK = {
@@ -124,6 +150,7 @@ local function boost(i, m)
 end
 
 local function scan()
+	tagSpeaker()
 	for i = 0, Map.Monsters.count - 1 do
 		local m = Map.Monsters[i]
 		if isBoss(m) and alive(m) then
@@ -172,6 +199,8 @@ end
 -- (again on every map load, in case the texts were read again: names already coloured are skipped)
 local function colorNames()
 	if not Game.PlaceMonTxt then return end
+	local cur = Game.PlaceMonTxt[SPEAKER.NameId]
+	if cur and not cur:find(SPEAKER.Name, 1, true) then Game.PlaceMonTxt[SPEAKER.NameId] = SPEAKER.Name end
 	local c = B.Color
 	for n = 1, Game.PlaceMonTxt.count - 1 do
 		local s = Game.PlaceMonTxt[n]
