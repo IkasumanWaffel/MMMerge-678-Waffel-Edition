@@ -22,7 +22,9 @@
 	   One roll per attempt (the same result is reused if the game asks again in the
 	   same moment).
 
-	3. Traps by treasure level (20.11.26)
+	3. Traps by treasure level (20.11.26; 22.11.26: on Enroth by the map's Lock, as every
+	   Enroth map has treasure level 6 in MapStats.txt: Lock 0-1 tier 1, 2-3 tier 2, 4 tier 3,
+	   5-6 tier 4, 7-8 tier 5, 9+ tier 6)
 	   Map Lock 0 meant no check at all (every trapped chest opened safely without the
 	   skill), and many early maps have small or no Trap dice. Now every map has at least
 	   the Lock and Trap dice of its treasure level (TRAPS.MinLock, TRAPS.MinDice), and the
@@ -181,13 +183,31 @@ end
 -- Traps by treasure level (20.11.26)
 ---------------------------------------------------------------------------
 
-local function tresOf(ms)
+local Orig = {}   -- [map] = {Lock, Trap, NewLock, NewTrap}: the map's own values
+
+-- (22.11.26) the trap tier (1..6) of a map: its treasure level, but on Enroth, whose maps all
+-- have treasure level 6 in MapStats.txt, by the map's own Lock (MM6's scale, 0..10)
+local ENROTH_LOCK_TIER = {[0] = 1, 1, 2, 2, 3, 4, 4, 5, 5, 6, 6}
+local function continentOf(i)
+	local ok, c = pcall(function() return Game.Bolster.MapsSource[i].Continent end)
+	return ok and c or nil
+end
+local function tierOf(i, ms, origLock)
+	if continentOf(i) == 3 then
+		return ENROTH_LOCK_TIER[math.min(10, origLock or ms.Lock)] or 6
+	end
 	return math.max(1, math.min(6, ms.Tres or 1))
 end
+local function trapTier()
+	local i = Map.MapStatsIndex
+	local ms = i and i > 0 and Game.MapStats[i]
+	if not ms then return 1 end
+	local o = Orig and Orig[i]
+	return tierOf(i, ms, o and o.Lock)
+end
 
--- the map's own values are kept (Orig) and the raised ones written for the map being
+-- the map's own values are kept (Orig, above) and the raised ones written for the map being
 -- entered, so a reload of MapStats.txt or a second entry doesn't raise them twice
-local Orig = {}
 function events.LoadMap()
 	if not TRAPS.Enabled then return end
 	local i = Map.MapStatsIndex
@@ -198,7 +218,7 @@ function events.LoadMap()
 		o = {Lock = ms.Lock, Trap = ms.Trap}
 		Orig[i] = o
 	end
-	local t = tresOf(ms)
+	local t = tierOf(i, ms, o.Lock)
 	o.NewLock = math.min(255, math.max(o.Lock, TRAPS.MinLock[t]))
 	o.NewTrap = math.min(255, math.max(math.ceil(o.Trap * TRAPS.DiceMul[t]), TRAPS.MinDice[t]))
 	ms.Lock, ms.Trap = o.NewLock, o.NewTrap
@@ -215,7 +235,7 @@ local function maybeTrap(id)
 	end
 	chest.Bits = bit.bor(chest.Bits, TRAPS.FlagBit)
 	if bit.band(chest.Bits, TRAPPED) ~= 0 then return end
-	if math.random(100) <= TRAPS.ExtraChance[treasureLevel()] then
+	if math.random(100) <= TRAPS.ExtraChance[trapTier()] then
 		chest.Bits = bit.bor(chest.Bits, TRAPPED)
 		log("chest %d: trapped", id)
 	end
@@ -231,7 +251,7 @@ local TRAP_KIND = {[0] = const.Damage.Fire, const.Damage.Air, const.Damage.Water
 local function percentDamage(which)
 	local ref = mem.u4[0x5CC030] % 8
 	if ref ~= 5 and ref ~= 6 then return end
-	local pct = TRAPS.Percent[treasureLevel()]
+	local pct = TRAPS.Percent[trapTier()]
 	local kind = TRAP_KIND[which] or const.Damage.Fire
 	for slot = 0, Party.count - 1 do
 		local pl = Party[slot]
