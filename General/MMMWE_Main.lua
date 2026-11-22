@@ -776,6 +776,11 @@ local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 	end
 	
 	function events.AfterLoadMap()
+		-- (22.11.26) corpses whose Hit Points the old restore gave back (saves made before the
+		-- fix): dead again, so Reanimate takes them
+		for i,v in Map.Monsters do
+			if v.HP > 0 and (v.AIState == const.AIState.Dead or v.AIState == const.AIState.Dying) then v.HP = 0 end
+		end
 		function RestoreMonstersHPAfter8Hours()
 			for i,v in Map.Monsters do
 				-- (22.11.26) the living only: a corpse with its Hit Points back can't be reanimated
