@@ -1881,6 +1881,48 @@ Slew the Mega-Dragon
 The Slayer's Way isn't open to you yet, %s: %s.	
 The Slayer's Way	
 Veyla the Speaker	
+Morcarack	
+Our ship sails from Nighon to Emerald Island, for what the island grows and what its people will sell to anyone who pays. Or it did, until Morcarack the Pitiless burned it to the waterline.\n\nThe islanders love that red dragon, you know. It keeps the pirates off their shores, they say. I say a dragon that burns ships doesn't ask whose they are. Kill it, and the sea to Emerald Island is ours. If the pirates come back after that, the islanders will learn who their real friends are.	
+Morcarack still lives in its cave on Emerald Island, and our captains still refuse to sail there. I can't say I blame them.	
+Morcarack is dead! The ship sails again on the next tide. My warlocks will want a word with you about the dragon's blood, but that can wait. Take this, for now.	
+The ship is back on the Emerald Island route. Funny thing: the islanders have started asking us for protection.	
+Slay Morcarack the Pitiless in its cave on Emerald Island and return to Tor Anwyn in Mount Nighon.	
+Slew Morcarack the Pitiless	
+The renegades	
+You have proven yourselves friends of our kind, so hear this. Ilsingore, Yaardrake and Old Loeb have turned their backs on us. They think they can save our race by scattering across Jadame and raising tribes of their own. All they will do is give Quixote's butchers three easy targets, and teach them where the rest of us sleep.\n\nI will not have it. Find the three of them and end it. It is a dragon's task, but I would rather not spill the blood of my own kind myself.	
+The renegades still live. Every day they do, the hunters learn a little more about us.	
+So it is done: Ilsingore, Yaardrake and Old Loeb are no more. It is a sad day for dragonkind, and a necessary one. Take this, and my thanks, for what they are worth from one who grieves.	
+We are fewer now, but we are one.	
+Slay the renegade dragons Ilsingore, Yaardrake and Old Loeb and return to Deftclaw Redreaver in Garrote Gorge.	
+Ended the renegade dragons for Deftclaw Redreaver	
+Lone dragons	
+Good news, my friends: the dragons are quarrelling among themselves. Three of them, Ilsingore, Yaardrake and Old Loeb, have left Deftclaw's protection to make lairs of their own across Jadame. Alone, out of reach of their kin. Fair game, I'd say!\n\nBring them down, all three, and the Dragon Hunters will pay you as we pay our very best.	
+Three lone dragons, and not one of them hunted yet? My men are starting to talk.	
+All three! Ilsingore, Yaardrake and Old Loeb! The camp will be drinking to your names for a month. Here is your pay, every coin of it.	
+Deftclaw's brood is smaller by three, and quieter for it.	
+Slay the dragons Ilsingore, Yaardrake and Old Loeb and return to Sir Charles Quixote in Garrote Gorge.	
+Hunted down three dragons for Sir Charles Quixote	
+The Devil of Baa	
+The High Priest of Baa is dead, and I thank you for it. But a priest is only a voice. The cult of Baa prays to something, and that something answered them: a devil, the scrolls from the temple call it, the Devil of Baa itself, walking our world in the flesh.\n\nWhile it walks, the cult will rise again, as weeds rise from a root. Find it and destroy it.	
+The Devil of Baa still walks. I feel it in my meditations, like a stone in a shoe.	
+The Devil of Baa is destroyed? Then the cult has lost its root as well as its voice. You have done what generations of my order could not. Accept this, with my deepest respect.	
+My meditations are clear again. Thank you.	
+Destroy the Devil of Baa and return to Bartholomew Hume in Harmondale.	
+Destroyed the Devil of Baa	
+My researchers have been reading the wreck's logs. VARN didn't only carry colonists: it carried Sentinels, guardians built to hold the ship's vaults should the crew be lost. One of them still keeps its watch, and as long as it does, half of what the Ancients left us stays out of reach.\n\nIt will not stop, and it will not listen. Put an end to its watch.	
+The Sentinel of Varn still keeps its watch. A thousand years of patience. We have less.	
+The Sentinel has fallen? Then its watch is over, and the vaults are ours to study. Well done. You will find the reward worthy of the work.	
+The Sentinel's vaults keep my researchers busy day and night.	
+Destroy the Sentinel of Varn.	
+Ended the watch of the Sentinel of Varn	
+The Sentinel of Varn	
+The admirals	
+Regna has more admirals than it has ships these days, and every one of them thinks he should be the one giving the orders. Admiral Nelson, Admiral Clausewitz, Captain Zyrain... they get in my way, they take my cut, and they don't know when to keep their mouths shut.\n\nSend the three of them to the bottom, and there's a share of the Regnan treasury in it for you. A large share. Pirate's honour.	
+I still hear those three admirals giving orders. Loudly. Do something about it.	
+All three of them! Regna has learned some manners at last. Here's your share, counted twice. Don't spend it all in one port.	
+Business has never been better. Funny, that.	
+Slay Admiral Nelson, Admiral Clausewitz and Captain Zyrain and return to Dread Pirate Stanley in Regna.	
+Sank Regna's admirals for Dread Pirate Stanley	
 
 # General/MMMWE_MonsterAbilities.lua:447
 Abilities	

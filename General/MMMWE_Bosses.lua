@@ -49,7 +49,7 @@ local NOT_BOSS = {
 	[3] = true,                       -- Dragon Hunter Pet
 	[8] = true, [9] = true,           -- Lizardman Lookout
 	[10] = true, [110] = true,        -- Guard, guard
-	[164] = true,                     -- Placeholder (163: the Speaker, below)
+	[163] = true, [164] = true, [166] = true,   -- Placeholder
 }
 -- bosses by name and loot only
 local KEEP_STATS = {
@@ -59,10 +59,12 @@ local KEEP_STATS = {
 
 -- (22.11.26) the necromancer the map puts atop Castle Harmondale (a Speaker for the Dead,
 -- MONSTERS.txt 308) is named and so a boss: the Butler's quest (Global\MMMWE_BossQuests.lua).
--- She takes the unused Placemon.txt line 163 ("Placeholder"); the highest one of the map's
--- Speakers at the first visit (later ones, such as the siege's, stay ordinary).
+-- She has her own Placemon.txt line, 165 (the placeholders 163, 164 and 166 kept as they
+-- are); the highest one of the map's Speakers at the first visit (later ones, such as the
+-- siege's, stay ordinary).
 local SPEAKER = {
-	NameId = 163,
+	NameId = 165,
+	OldNameId = 163,   -- given to her for a while on 22.11.26
 	Name   = Tx"Veyla the Speaker",
 	MonId  = 308,
 	Maps   = {["7out02.odm"] = true, ["7d29.blv"] = true},
@@ -70,7 +72,13 @@ local SPEAKER = {
 MF.BossSpeaker = SPEAKER
 
 local function tagSpeaker()
-	if not SPEAKER.Maps[Map.Name:lower()] or mapvars.MMMWE_SpeakerTagged then return end
+	if not SPEAKER.Maps[Map.Name:lower()] then return end
+	if Game.PlaceMonTxt.count <= SPEAKER.NameId then return end   -- an older revamp.T.lod
+	for i = 0, Map.Monsters.count - 1 do
+		local m = Map.Monsters[i]
+		if m.Id == SPEAKER.MonId and m.NameId == SPEAKER.OldNameId then m.NameId = SPEAKER.NameId end
+	end
+	if mapvars.MMMWE_SpeakerTagged then return end
 	mapvars.MMMWE_SpeakerTagged = true
 	local best
 	for i = 0, Map.Monsters.count - 1 do
@@ -199,7 +207,7 @@ end
 -- (again on every map load, in case the texts were read again: names already coloured are skipped)
 local function colorNames()
 	if not Game.PlaceMonTxt then return end
-	local cur = Game.PlaceMonTxt[SPEAKER.NameId]
+	local cur = Game.PlaceMonTxt.count > SPEAKER.NameId and Game.PlaceMonTxt[SPEAKER.NameId]
 	if cur and not cur:find(SPEAKER.Name, 1, true) then Game.PlaceMonTxt[SPEAKER.NameId] = SPEAKER.Name end
 	local c = B.Color
 	for n = 1, Game.PlaceMonTxt.count - 1 do
