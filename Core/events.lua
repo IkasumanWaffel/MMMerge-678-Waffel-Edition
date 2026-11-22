@@ -1845,12 +1845,41 @@ end
 local function SetBonusMM6(t, v)
 	t.Result = t.Result + v
 end
+-- MMMWE (23.11.26): a short memo for CalcStatBonusByItems and GetSkill. The game asks for the
+-- same few characters' item bonuses and skills thousands of times a second; the handlers run
+-- once per character, stat (or skill) and game result, and their result is reused for
+-- STAT_MEMO_TIME seconds. A changed game result (gear, skills, conditions) misses the memo at
+-- once; anything else is seen at most STAT_MEMO_TIME later. STAT_MEMO_TIME = 0 turns it off.
+STAT_MEMO_TIME = STAT_MEMO_TIME or 0.03
+local StatMemo, StatMemoTime = {}, 0
+local SkillMemo = {}
+local os_clock = os.clock
+local function statMemoFresh()
+	local now = os_clock()
+	if now - StatMemoTime > STAT_MEMO_TIME then
+		StatMemo, SkillMemo, StatMemoTime = {}, {}, now
+	end
+end
+function ClearStatMemo()
+	StatMemo, SkillMemo = {}, {}
+end
+
 mem.hookfunction(mmv(0x482E80, 0x48EAA6, 0x48E213), 1, mmv(1, 2, 2), function(d, def, this, stat, IgnoreExtraHand)
+	local res = def(this, stat, IgnoreExtraHand)
+	local key
+	if STAT_MEMO_TIME > 0 then
+		statMemoFresh()
+		key = this * 512 + stat * 2 + ((IgnoreExtraHand and IgnoreExtraHand ~= 0) and 1 or 0)
+		local m = StatMemo[key]
+		if m and m[1] == res then
+			return m[2]
+		end
+	end
 	local t = {
 		-- :const.Stats
 		Stat = stat,  -- const.Stats
 		IgnoreExtraHand = IgnoreExtraHand and IgnoreExtraHand ~= 0,
-		Result = def(this, stat, IgnoreExtraHand),
+		Result = res,
 		SetArtifactBonus = ArtifactBonus and SetArtifactBonus or SetBonusMM6,
 		SetMagicBonus = ArtifactBonus and SetMagicBonus or SetBonusMM6,
 	}
@@ -1866,6 +1895,9 @@ mem.hookfunction(mmv(0x482E80, 0x48EAA6, 0x48E213), 1, mmv(1, 2, 2), function(d,
 	--
 	-- 'SetMagicBonus' does the same to 'MagicBonus'.
 	events.cocalls("CalcStatBonusByItems", t)
+	if key then
+		StatMemo[key] = {res, t.Result}
+	end
 	return t.Result
 end)
 
@@ -1898,13 +1930,27 @@ end)
 -- GetSkill
 if mmver > 6 then
 	mem.hookfunction(mm78(0x48F87A, 0x48EF4F), 1, 1, function(d, def, this, skill)
+		local res = def(this, skill)
+		local key
+		if STAT_MEMO_TIME > 0 then
+			statMemoFresh()
+			-- the spell being cast takes part (GetSpellSkill, ExtraEvents.lua)
+			key = (this * 256 + skill) * 1024 + mem.u2[0x51D820]
+			local m = SkillMemo[key]
+			if m and m[1] == res then
+				return m[2]
+			end
+		end
 		local t = {
 			Skill = skill,  -- const.Skills
-			Result = def(this, skill),
+			Result = res,
 		}
 		t.PlayerIndex, t.Player = GetPlayer(this)
 		--!k{Player :structs.Player} [MM7+]
 		events.cocalls("GetSkill", t)
+		if key then
+			SkillMemo[key] = {res, t.Result}
+		end
 		return t.Result
 	end)
 end

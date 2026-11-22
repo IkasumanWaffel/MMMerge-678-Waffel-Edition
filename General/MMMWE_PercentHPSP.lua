@@ -127,12 +127,28 @@ local function sumItems(pl)
 end
 P.SumItems = sumItems
 
+-- (23.11.26) the game asks for full HP / SP hundreds of times a second: the item sums are
+-- kept for SUM_TIME seconds per character (a change of gear shows at most that much later)
+local SUM_TIME = 0.05
+local SumCache, SumTime = {}, 0
+local function sumItemsCached(pl)
+	local now = os.clock()
+	if now - SumTime > SUM_TIME then SumCache, SumTime = {}, now end
+	local key = pl["?ptr"]
+	local c = SumCache[key]
+	if not c then
+		c = {sumItems(pl)}
+		SumCache[key] = c
+	end
+	return c[1], c[2], c[3], c[4]
+end
+
 -- 1. remove the flat bonuses
 function events.CalcStatBonusByItems(t)
 	if not P.Enabled or (t.Stat ~= STAT_HP and t.Stat ~= STAT_SP) or not t.Player then
 		return
 	end
-	local _, _, flatHP, flatSP = sumItems(t.Player)
+	local _, _, flatHP, flatSP = sumItemsCached(t.Player)
 	if t.Stat == STAT_HP then
 		t.Result = t.Result - flatHP
 	else
@@ -151,7 +167,7 @@ local function percentHook(isHP)
 		if not pl or full <= 0 then
 			return full
 		end
-		local pctHP, pctSP = sumItems(pl)
+		local pctHP, pctSP = sumItemsCached(pl)
 		local pct = isHP and pctHP or pctSP
 		if pct ~= 0 then
 			full = full + floor(full * pct / 100)

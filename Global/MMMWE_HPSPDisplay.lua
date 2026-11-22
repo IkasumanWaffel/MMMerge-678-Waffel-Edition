@@ -27,7 +27,7 @@ local kernel32 = mem.dll.kernel32
 local lastPoll = 0      -- timeGetTime() of the last reading of the values
 
 local CONFIG = {
-    pollMs   = 100,     -- the values are read this often (ms)
+    pollMs   = 150,     -- the values are read this often (ms; 23.11.26: was 100)
     baseW    = 1920,
     baseH    = 1200,
     gameW    = 640,
