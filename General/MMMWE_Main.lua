@@ -778,7 +778,9 @@ local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 	function events.AfterLoadMap()
 		function RestoreMonstersHPAfter8Hours()
 			for i,v in Map.Monsters do
-				if v.Id > 0 and v.Id < Game.MonstersTxt.Limit then
+				-- (22.11.26) the living only: a corpse with its Hit Points back can't be reanimated
+				-- (Reanimate takes monsters with no Hit Points left), which broke it after a reload
+				if v.Id > 0 and v.Id < Game.MonstersTxt.Limit and v.HP > 0 then
 					v.HP = v.FullHP
 				end
 			end
@@ -833,10 +835,10 @@ local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 	end
 	
 	function RestoreMonstersHPAfterTempleHeal()
+		RemoveTimer(RestoreMonstersHPAfterTempleHeal)
 		for i,v in Map.Monsters do
-			if v.Id > 0 and v.Id < Game.MonstersTxt.Limit then
+			if v.Id > 0 and v.Id < Game.MonstersTxt.Limit and v.HP > 0 then   -- (22.11.26) not the dead
 				v.HP = v.FullHP
-				RemoveTimer(RestoreMonstersHPAfterTempleHeal)
 			end
 		end
 	end
@@ -2472,7 +2474,10 @@ local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 		local pl = Party:GetCurrentPlayer()
 		local itSlot = findItemSlot(pl, ItNumber)
 		if not itSlot then
-			return cachedCstring(" +%d")
+			-- (20.11.26) an item not in the backpack (lying on the ground): the game's own line. With
+			-- no damage bonus it is the dice line ("%s: +%d   %s: %dd%d"), whose arguments a lone
+			-- " +%d" read wrongly (the 'Attack' text's address shown as the bonus)
+			return cachedCstring(item.Mod2 == 0 and Tx"%s: +%d   %s: %dd%d" or " +%d")
 		end
 
 		local damage = item.Mod1DiceCount * item.Mod1DiceSides + item.Mod2

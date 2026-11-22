@@ -16,8 +16,10 @@ function events.AfterLoadMap()
 		Map.Tilesets[0].Group = 1
 		Map.LoadTileset(1)
 	else
-		Map.Tilesets[0].Group = 4
-		Map.LoadTileset(4)
+		-- (MMMWE 22.11.26) the wasteland set (8), as in out12: the dirt set (4) has only the base
+		-- tiles, no borders, so the borders of the map's own snow set showed as broken tiles
+		Map.Tilesets[0].Group = 8
+		Map.LoadTileset(8)
 	end
 end
 
