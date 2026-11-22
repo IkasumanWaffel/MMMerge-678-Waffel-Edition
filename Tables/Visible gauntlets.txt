@@ -59,6 +59,26 @@ Item	Doll type	Pose	X	Y	Notes
 913	0	LHd	600	178	Steel Gauntlets
 913	0	LHu	605	175	Steel Gauntlets
 913	0	LHo	605	175	Steel Gauntlets
+913	1	RHd	491	184	Steel Gauntlets
+913	1	RHu	510	166	Steel Gauntlets
+913	1	LHd	595	196	Steel Gauntlets
+913	1	LHu	595	197	Steel Gauntlets
+913	1	LHo	583	201	Steel Gauntlets
+913	2	RHd	480	210	Steel Gauntlets
+913	2	RHu	478	193	Steel Gauntlets
+913	2	LHd	593	217	Steel Gauntlets
+913	2	LHu	593	219	Steel Gauntlets
+913	2	LHo	593	218	Steel Gauntlets
+913	3	RHd	474	195	Steel Gauntlets
+913	3	RHu	469	181	Steel Gauntlets
+913	3	LHd	605	198	Steel Gauntlets
+913	3	LHu	604	199	Steel Gauntlets
+913	3	LHo	603	199	Steel Gauntlets
+913	4	RHd	482	197	Steel Gauntlets
+913	4	RHu	478	182	Steel Gauntlets
+913	4	LHd	596	203	Steel Gauntlets
+913	4	LHu	595	201	Steel Gauntlets
+913	4	LHo	596	195	Steel Gauntlets
 914	0	RHd	495	172	Silver Mesh Gauntlets
 914	0	RHu	494	141	Silver Mesh Gauntlets
 914	0	LHd	599	178	Silver Mesh Gauntlets
