@@ -1860,6 +1860,7 @@ Call for Help	Зов на помощь
 
 # General/MMMWE_MonsterAbilities.lua:447
 Abilities (pack leader)	Способности (вожак)
+Abilities (boss)	Способности (босс)
 
 # General/MMMWE_MonsterAbilities.lua:447
 Abilities	Способности

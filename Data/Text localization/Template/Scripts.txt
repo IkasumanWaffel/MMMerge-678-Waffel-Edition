@@ -1860,6 +1860,7 @@ Call for Help
 
 # General/MMMWE_MonsterAbilities.lua:447
 Abilities (pack leader)	
+Abilities (boss)	
 
 # General/MMMWE_MonsterAbilities.lua:447
 Abilities	

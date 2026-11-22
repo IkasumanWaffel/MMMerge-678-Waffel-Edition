@@ -161,6 +161,11 @@ local function has(r, k)
 end
 
 local function monName(m)
+	-- a named monster (Placemon.txt) by its own name, without its colour codes
+	if (m.NameId or 0) > 0 and Game.PlaceMonTxt[m.NameId] then
+		local s = Game.PlaceMonTxt[m.NameId]:gsub("\f%d%d%d%d%d", "")
+		if s ~= "" then return s end
+	end
 	local t = Game.MonstersTxt[m.Id]
 	return t and t.Name or "?"
 end
@@ -195,14 +200,39 @@ local function enabled()
 	return (Game.BolsterAmount or 100) > 0
 end
 
+-- (22.11.26) a boss's abilities (MMMWE_Bosses.lua) work whatever the bolster
+local function active(r)
+	return enabled() or (r ~= nil and r.Boss == true)
+end
+
+-- fixed abilities for a boss: Juggernaut and Count more (casters from their own list),
+-- kept like the rolled ones
+function MF.SetBossAbilities(i, m, Count)
+	local rec = {Id = m.Id, A = {"Juggernaut"}, Boss = true}
+	local have = {Juggernaut = true}
+	local list = (m.Spell or 0) > 0 and CASTER_POOL or POOL
+	for _ = 1, Count or 2 do
+		local k = pick(list, have) or pick(POOL, have)
+		if k then have[k] = true; rec.A[#rec.A + 1] = k end
+	end
+	store()[i] = rec
+	return rec
+end
+
+function MF.IsBossAbilityRecord(i, m)
+	local r = store()[i]
+	return r ~= nil and r.Id == m.Id and r.Boss == true
+end
+
 ---------------------------------------------------------------------------
 -- damage the monsters take
 ---------------------------------------------------------------------------
 
 function events.CalcDamageToMonster(t)
-	if not enabled() or not t.Monster or (t.Result or 0) <= 0 then return end
+	if not t.Monster or (t.Result or 0) <= 0 then return end
 	local i, m = t.MonsterIndex, t.Monster
 	local r = abilities(i, m)
+	if not active(r) then return end
 	local now = os.clock()
 	if r then
 		local s = State[i] or {}
@@ -244,10 +274,11 @@ end
 ---------------------------------------------------------------------------
 
 function events.CalcDamageToPlayer(t)
-	if not enabled() or not t.Player or (t.Result or 0) <= 0 then return end
+	if not t.Player or (t.Result or 0) <= 0 then return end
 	local m, i = attacker()
 	if not m or not i then return end
 	local r = abilities(i, m)
+	if not active(r) then return end
 	local mul = 1
 	if warlordNear(i, m) or (r and has(r, "Warlord")) then mul = mul * A.Warlord.DamageMul end
 	if r then
@@ -326,13 +357,14 @@ end
 local LastRegen, LastCheck = 0, 0
 function events.Tick()
 	if #Queue > 0 then runQueue() end
-	if not enabled() or Game.CurrentScreen ~= 0 then return end
+	if Game.CurrentScreen ~= 0 then return end
+	local on = enabled()
 	local now = os.clock()
 	if now - LastRegen >= 0.5 then
 		local dt = min(now - LastRegen, 1)
 		LastRegen = now
 		for i, r in pairs(store()) do
-			if i < Map.Monsters.count and has(r, "Regeneration") then
+			if i < Map.Monsters.count and (on or r.Boss) and has(r, "Regeneration") then
 				local m = Map.Monsters[i]
 				if m.Id == r.Id and alive(m) and m.HP < m.FullHP then
 					m.HP = min(m.FullHP, m.HP + max(1, floor(m.FullHP * A.Regeneration.Rate * dt)))
@@ -340,7 +372,7 @@ function events.Tick()
 			end
 		end
 	end
-	if now - LastCheck >= CHECK_TIME then
+	if on and now - LastCheck >= CHECK_TIME then
 		LastCheck = now
 		local pl = partyLevel()
 		local s = store()
@@ -368,8 +400,9 @@ end
 
 -- the hook itself is in MMMWE_StaggerPoise.lua (it also spaces out the staggers of every monster)
 function MF.MonsterIsJuggernaut(i)
-	if not enabled() or i < 0 or i >= Map.Monsters.count then return false end
-	return has(abilities(i, Map.Monsters[i]), "Juggernaut")
+	if i < 0 or i >= Map.Monsters.count then return false end
+	local r = abilities(i, Map.Monsters[i])
+	return active(r) and has(r, "Juggernaut")
 end
 
 function events.AfterLoadMap()
@@ -420,12 +453,11 @@ local function cardMastery()
 end
 
 mem.autohook(0x41E398, function(d)
-	if not enabled() then return end
 	local ok, err = pcall(function()
 		local m, i = cardMonster(mem.u4[d.ebp - 0x10])
 		if not m then return end
 		local r = abilities(i, m)
-		if not r or #r.A == 0 or cardMastery() < CARD_MASTERY then return end
+		if not r or not active(r) or #r.A == 0 or cardMastery() < CARD_MASTERY then return end
 		local dlg, font, color = mem.u4[d.ebp - 8], mem.u4[d.ebp - 0x20], mem.u4[d.ebp - 0xC]
 		local lineH = mem.u1[font + 5] - 3
 		-- edi: the line after the last effect; with no effects the game drew "None" there
@@ -435,7 +467,7 @@ mem.autohook(0x41E398, function(d)
 			mem.call(0x44A50F, 2, dlg, font, x, y, color, s, 0, 0, 0)
 			y = y + lineH
 		end
-		line(CARD_HEAD_X, r.Leader and Tx"Abilities (pack leader)" or Tx"Abilities")
+		line(CARD_HEAD_X, r.Boss and Tx"Abilities (boss)" or r.Leader and Tx"Abilities (pack leader)" or Tx"Abilities")
 		for _, k in ipairs(r.A) do line(CARD_X, A[k].Name) end
 	end)
 	if not ok and MF.LogWarning then MF.LogWarning("MonsterAbilities card: %s", tostring(err)) end
