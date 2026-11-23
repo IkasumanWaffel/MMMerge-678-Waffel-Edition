@@ -14,7 +14,7 @@ local is7 = mmver == 7 or nil
 local is8 = mmver == 8 or nil
 local is78 = mmver > 6 or nil
 
-local _KNOWNGLOBALS_F = Party, Game, Map, VFlipUnfixed, structs, GameInitialized0, GameInitialized1, GameInitialized2, RespectMonsterExp, SplitSkill
+local _KNOWNGLOBALS_F = Party, Game, Map, VFlipUnfixed, structs, GameInitialized0, GameInitialized1, GameInitialized2, RespectMonsterExp, SplitSkill, STAT_MEMO_TIME
 
 local PatchOptionsSize = offsets.PatchOptionsSize -- Game.PatchOptions.Size
 
@@ -1895,6 +1895,13 @@ mem.hookfunction(mmv(0x482E80, 0x48EAA6, 0x48E213), 1, mmv(1, 2, 2), function(d,
 	--
 	-- 'SetMagicBonus' does the same to 'MagicBonus'.
 	events.cocalls("CalcStatBonusByItems", t)
+	-- MMMWE (23.11.26): items (artifacts, relics, enchantments of every script) can't take Endurance
+	-- below zero: their total is kept at least minus the character's base Endurance
+	if stat == 3 and t.Player and _G.Merge and ((_G.Merge.ModSettings or {}).TKPreventDeathFromNegativeEndurance
+			or (_G.Merge.Settings or {}).TKPreventDeathFromNegativeEndurance) == 1 then
+		local base = t.Player:GetBaseEndurance()
+		if t.Result < -base then t.Result = -base end
+	end
 	if key then
 		StatMemo[key] = {res, t.Result}
 	end

@@ -245,12 +245,14 @@ function events.OpenChest(id)
 	if not ok then log("trap roll error: %s", tostring(err)) end
 end
 
--- the trap goes off (0x41F9E6: edx = which of the four trap explosions, 811..814 in
--- ObjList.txt; the trap's object reference at 0x5CC030 is of kind 5 or 6 when it fires)
+-- the trap goes off. (23.11.26) The percent damage was dealt at 0x41F9E6, before the game
+-- reads the trap's object reference at 0x5CC030; the damage done there could change that
+-- reference, so the game skipped its own explosion: no animation and no Trap-dice damage.
+-- Now it is dealt at 0x41FCC6, right after the game's explosion (0x4367B6: 5 + Trap x d20
+-- to each character, with a dodge roll) has been applied. [ebp-38h] is which of the four
+-- trap explosions (811..814 in ObjList.txt) went off.
 local TRAP_KIND = {[0] = const.Damage.Fire, const.Damage.Air, const.Damage.Water, const.Damage.Body}
 local function percentDamage(which)
-	local ref = mem.u4[0x5CC030] % 8
-	if ref ~= 5 and ref ~= 6 then return end
 	local pct = TRAPS.Percent[trapTier()]
 	local kind = TRAP_KIND[which] or const.Damage.Fire
 	for slot = 0, Party.count - 1 do
@@ -263,12 +265,13 @@ local function percentDamage(which)
 		end
 	end
 end
-if mem.u1[0x41F9E6] == 0x8B and mem.u4[0x41F9E8] == 0x5CC030 then
-	mem.autohook(0x41F9E6, function(d)
+if mem.u1[0x41FCC6] == 0x8B and mem.u1[0x41FCC7] == 0x45 and mem.u1[0x41FCC8] == 0xD0
+		and mem.u1[0x41FCC9] == 0x80 and mem.u1[0x41FCCA] == 0x20 and mem.u1[0x41FCCB] == 0xFE then
+	mem.autohook(0x41FCC6, function(d)
 		if not TRAPS.Enabled then return end
-		local ok, err = pcall(percentDamage, d.edx)
+		local ok, err = pcall(percentDamage, mem.i4[d.ebp - 0x38])
 		if not ok then log("trap damage error: %s", tostring(err)) end
 	end)
 else
-	MF.LogWarning("[Chests] the trap at 0x41F9E6 wasn't found: no percent damage")
+	MF.LogWarning("[Chests] the trap explosion at 0x41FCC6 wasn't found: no percent damage")
 end

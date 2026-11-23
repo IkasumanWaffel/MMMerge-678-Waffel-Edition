@@ -528,10 +528,18 @@ function events.GameInitialized2()
 end
 
 -- Message after a non-final party death (set by Global/MMMWE_HardcoreMode.lua)
+-- (23.11.26) A save made while the message was still pending (the autosave of the death map)
+-- brought it back on every load. It is now shown once per death of a run: the deaths already
+-- told are remembered for the session, outside the saves.
+local ToldDeaths = {}
 function events.AfterLoadMap()
 	local msg = vars and vars.HCMPendingMessage
 	if msg then
 		vars.HCMPendingMessage = nil
+		local runId = Merge.Functions.HCMRunId and Merge.Functions.HCMRunId()
+		local key = tostring(runId) .. ":" .. tostring(vars.HCMDeaths or 0)
+		if ToldDeaths[key] then return end
+		ToldDeaths[key] = true
 		coroutine.resume(coroutine.create(function()
 			Sleep(1, 1)
 			Game.EscMessage(msg)

@@ -1018,7 +1018,7 @@ StoreEffects = function(player_index, postpone_gc)
 						T = PLT.Stats
 						for k,v in pairs(Mod.Stats) do
 							if k == 3 and (TKPreventDeathFromNegativeEndurance == 1) then
-								T[k] = math.max((T[k] or 0) + v, (T[k] or 0) - Player:GetBaseEndurance())
+								T[k] = (T[k] or 0) + v   -- (23.11.26) the total is kept above -base Endurance in Core/events.lua
 							else
 								T[k] = (T[k] or 0) + v
 							end
