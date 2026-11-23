@@ -3303,25 +3303,25 @@ an Expert in
 %s %s is taught by %s.	
 
 # Global/MMMWE_HPSPDisplay.lua:129
-Poisoning (light)	
+Mild Poison	
 
 # Global/MMMWE_HPSPDisplay.lua:130
-Disease (light)	
+Mild Disease	
 
 # Global/MMMWE_HPSPDisplay.lua:131
-Poisoning (moderate)	
+Poison	
 
 # Global/MMMWE_HPSPDisplay.lua:132
-Disease (moderate)	
+Disease	
 
 # Global/MMMWE_HPSPDisplay.lua:133
-Poisoning (severe)	
+Deadly Poison	
 
 # Global/MMMWE_HPSPDisplay.lua:134
-Disease (severe)	
+Wasting Disease	
 
 # Global/MMMWE_HPSPDisplay.lua:137
-Death Decay	
+Decay	
 
 # Global/MMMWE_HPSPDisplay.lua:145
 Morbid Transform	
@@ -3441,3 +3441,33 @@ The full moon rises over Blackshire... and the howling begins.
 The beast in %s sleeps until the next full moon	
 Lycanthropy	
 Wand %d/%d	
+
+# Global/MMMWE_HPSPDisplay.lua (condition debuff)
+Curse	
+
+# Global/MMMWE_HPSPDisplay.lua (condition debuff)
+Weakness	
+
+# Global/MMMWE_HPSPDisplay.lua (condition debuff)
+Sleep	
+
+# Global/MMMWE_HPSPDisplay.lua (condition debuff)
+Fear	
+
+# Global/MMMWE_HPSPDisplay.lua (condition debuff)
+Inebriation	
+
+# Global/MMMWE_HPSPDisplay.lua (condition debuff)
+Insanity	
+
+# Global/MMMWE_HPSPDisplay.lua (condition debuff)
+Paralysis	
+
+# Global/MMMWE_HPSPDisplay.lua (condition debuff)
+Unconscious	
+
+# Global/MMMWE_HPSPDisplay.lua (condition debuff)
+Petrified	
+
+# Global/MMMWE_HPSPDisplay.lua (condition debuff)
+Zombie	

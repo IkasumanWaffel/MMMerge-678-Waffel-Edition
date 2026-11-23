@@ -3303,25 +3303,25 @@ an Expert in	Эксперт навыка
 %s %s is taught by %s.	%s %s: учит %s.
 
 # Global/MMMWE_HPSPDisplay.lua:129
-Poisoning (light)	Отравление (слабое)
+Mild Poison	Слабый яд
 
 # Global/MMMWE_HPSPDisplay.lua:130
-Disease (light)	Болезнь (слабая)
+Mild Disease	Лёгкая болезнь
 
 # Global/MMMWE_HPSPDisplay.lua:131
-Poisoning (moderate)	Отравление (среднее)
+Poison	Яд
 
 # Global/MMMWE_HPSPDisplay.lua:132
-Disease (moderate)	Болезнь (средняя)
+Disease	Болезнь
 
 # Global/MMMWE_HPSPDisplay.lua:133
-Poisoning (severe)	Отравление (тяжёлое)
+Deadly Poison	Смертельный яд
 
 # Global/MMMWE_HPSPDisplay.lua:134
-Disease (severe)	Болезнь (тяжёлая)
+Wasting Disease	Изнуряющая болезнь
 
 # Global/MMMWE_HPSPDisplay.lua:137
-Death Decay	Тлен смерти
+Decay	Тлен
 
 # Global/MMMWE_HPSPDisplay.lua:145
 Morbid Transform	Мёртвое превращение
@@ -3468,3 +3468,33 @@ The full moon rises over Blackshire... and the howling begins.	Над Блэкширом вос
 The beast in %s sleeps until the next full moon	Зверь в душе %s спит до следующего полнолуния
 Lycanthropy	Ликантропия
 Wand %d/%d	Жезл %d/%d
+
+# Global/MMMWE_HPSPDisplay.lua (condition debuff)
+Curse	Проклятие
+
+# Global/MMMWE_HPSPDisplay.lua (condition debuff)
+Weakness	Слабость
+
+# Global/MMMWE_HPSPDisplay.lua (condition debuff)
+Sleep	Сон
+
+# Global/MMMWE_HPSPDisplay.lua (condition debuff)
+Fear	Страх
+
+# Global/MMMWE_HPSPDisplay.lua (condition debuff)
+Inebriation	Опьянение
+
+# Global/MMMWE_HPSPDisplay.lua (condition debuff)
+Insanity	Безумие
+
+# Global/MMMWE_HPSPDisplay.lua (condition debuff)
+Paralysis	Паралич
+
+# Global/MMMWE_HPSPDisplay.lua (condition debuff)
+Unconscious	Без сознания
+
+# Global/MMMWE_HPSPDisplay.lua (condition debuff)
+Petrified	Окаменение
+
+# Global/MMMWE_HPSPDisplay.lua (condition debuff)
+Zombie	Зомби

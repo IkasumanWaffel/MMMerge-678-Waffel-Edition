@@ -121,26 +121,38 @@ local partyDebuffInfo = {}
 local partyBuffNames = {}
 
 -- Default debuff colors and labels
+-- (23.11.26) names: Inebriation, Mild Poison / Poison / Deadly Poison, Mild / Wasting Disease,
+-- Unconscious, Decay (the stat loss of the dead), Petrified, Eradicated; all translatable
 local debuffColors = {
-    [0]  = {color = 0xAA0055, label = "Curse"				},
-    [1]  = {color = 0x00AA88, label = "Weakness"        	},
-    [2]  = {color = 0xFF7722, label = "Sleep"           	},
-    [3]  = {color = 0x0088AA, label = "Fear"            	},
-    [4]  = {color = 0x00DD11, label = "Drunkedness"     	},
-    [5]  = {color = 0x00FFFF, label = "Insanity"        	},
-    [6]  = {color = 0x22CC22, label = Tx"Poisoning (light)" 	},
-    [7]  = {color = 0x2255AA, label = Tx"Disease (light)"   	},
-    [8]  = {color = 0x22CC22, label = Tx"Poisoning (moderate)"},
-    [9]  = {color = 0x2255AA, label = Tx"Disease (moderate)"  },
-    [10] = {color = 0x22CC22, label = Tx"Poisoning (severe)"  },
-    [11] = {color = 0x2255AA, label = Tx"Disease (severe)"    },
-    [12] = {color = 0xFFCCAA, label = "Paralysis"       	},
-    [13] = {color = 0xCCCCCC, label = "Faint"     			},
-    [14] = {color = 0x666666, label = Tx"Death Decay"         },
-    [15] = {color = 0x337799, label = "Stoned"          	},
-    [16] = {color = 0x0000FF, label = "Desintegration"     	},
-	[17] = {color = 0x717919, label = "Zombie"          	},
+    [0]  = {color = 0xAA0055, label = Tx"Curse"           },
+    [1]  = {color = 0x00AA88, label = Tx"Weakness"        },
+    [2]  = {color = 0xFF7722, label = Tx"Sleep"           },
+    [3]  = {color = 0x0088AA, label = Tx"Fear"            },
+    [4]  = {color = 0x00DD11, label = Tx"Inebriation"     },
+    [5]  = {color = 0x00FFFF, label = Tx"Insanity"        },
+    [6]  = {color = 0x22CC22, label = Tx"Mild Poison"     },
+    [7]  = {color = 0x2255AA, label = Tx"Mild Disease"    },
+    [8]  = {color = 0x22CC22, label = Tx"Poison"          },
+    [9]  = {color = 0x2255AA, label = Tx"Disease"         },
+    [10] = {color = 0x22CC22, label = Tx"Deadly Poison"   },
+    [11] = {color = 0x2255AA, label = Tx"Wasting Disease" },
+    [12] = {color = 0xFFCCAA, label = Tx"Paralysis"       },
+    [13] = {color = 0xCCCCCC, label = Tx"Unconscious"     },
+    [14] = {color = 0x666666, label = Tx"Decay"           },
+    [15] = {color = 0x337799, label = Tx"Petrified"       },
+    [16] = {color = 0x0000FF, label = Tx"Eradicated"      },
+    [17] = {color = 0x717919, label = Tx"Zombie"          },
 }
+-- a label starts with a capital letter, also in a translation that is a lower-case word in
+-- the middle of a sentence elsewhere ("Eradicated"); Cyrillic of code page 1251 too
+for _, d in pairs(debuffColors) do
+    local c = d.label:byte(1)
+    if c and ((c >= 0x61 and c <= 0x7A) or c >= 0xE0) then
+        d.label = string.char(c - 0x20) .. d.label:sub(2)
+    elseif c == 0xB8 then
+        d.label = string.char(0xA8) .. d.label:sub(2)
+    end
+end
 
 -- Extra debuffs (indexes 17-19 + previous 0-16)
 local debuffExtraLabels = {
