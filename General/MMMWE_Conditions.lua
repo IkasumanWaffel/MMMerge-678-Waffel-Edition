@@ -16,6 +16,9 @@
 	Unconscious   an Endurance check every 10 minutes: wake up (Weak) or bleed on.
 	Dead,         drain a random base stat: 1 point every 12 hours dead, every 6 hours
 	Eradicated    eradicated, counted over rest and travel too.
+	Soul fatigue  (24.11.26) each death and revival of a character makes the next drain
+	              come sooner: the time per point is divided by 1 + revivals, at most 8
+	              (12 h dead: 6 h after the first revival, 4 h after the second ... 1.5 h).
 
 	Time that passes all at once (rest, travel, a long wait) is settled when the party is
 	back: poison and disease do a fifth of the damage they'd have done tick by tick and
@@ -60,6 +63,7 @@ local C = {
 	-- dead / eradicated
 	StatLossDead = const.Hour * 12,     -- one point per this time
 	StatLossErad = const.Hour * 6,
+	SoulFatigueMax = 8,                 -- the time per point is divided by 1 + revivals, up to this
 	-- the other conditions' status screen timers
 	ShownFor = const.Day * 7,
 }
@@ -373,8 +377,21 @@ local function runStatLoss(pl)
 	local st = state(pl)
 	local erad = pl.Conditions[CO.Eradicated] ~= 0
 	local dead = pl.Conditions[CO.Dead] ~= 0
-	if not (erad or dead) then st.Loss = nil return end
-	local every = erad and C.StatLossErad or C.StatLossDead
+	if not (erad or dead) then
+		st.Loss = nil
+		-- back from death: one more revival for the soul fatigue
+		if st.Out then
+			st.Out = nil
+			st.Revivals = (st.Revivals or 0) + 1
+			local mul = math.min(C.SoulFatigueMax, 1 + st.Revivals)
+			message(Tx"%s's soul grows weary: after another death the body decays %dx faster", pl.Name, mul)
+		end
+		return
+	end
+	st.Out = true
+	-- soul fatigue: the revivals so far shorten the time per point
+	local every = (erad and C.StatLossErad or C.StatLossDead)
+		/ math.min(C.SoulFatigueMax, 1 + (st.Revivals or 0))
 	local now = Game.Time
 	st.Loss = st.Loss or now
 	local n = math.floor((now - st.Loss) / every)
