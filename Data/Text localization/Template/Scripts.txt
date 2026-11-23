@@ -3474,3 +3474,6 @@ Zombie
 
 # General/MMMWE_Conditions.lua (soul fatigue)
 %s's soul grows weary: after another death the body decays %dx faster	
+
+# General/MMMWE_Conditions.lua (soul fatigue)
+%s's soul is eased: the weariness of one death is lifted	

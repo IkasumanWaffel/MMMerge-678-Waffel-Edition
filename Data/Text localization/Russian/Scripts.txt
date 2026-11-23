@@ -3501,3 +3501,6 @@ Zombie	Зомби
 
 # General/MMMWE_Conditions.lua (soul fatigue)
 %s's soul grows weary: after another death the body decays %dx faster	Душа %s утомлена: после новой смерти тело разлагается быстрее (x%d)
+
+# General/MMMWE_Conditions.lua (soul fatigue)
+%s's soul is eased: the weariness of one death is lifted	Душа %s облегчена: усталость одной смерти снята

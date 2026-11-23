@@ -19,6 +19,8 @@
 	Soul fatigue  (24.11.26) each death and revival of a character makes the next drain
 	              come sooner: the time per point is divided by 1 + revivals, at most 8
 	              (12 h dead: 6 h after the first revival, 4 h after the second ... 1.5 h).
+	              A revival counts after 6 minutes dead or eradicated; a revival by Divine
+	              Intervention cast at Grand Master or by Aqua Vitae takes one off instead.
 
 	Time that passes all at once (rest, travel, a long wait) is settled when the party is
 	back: poison and disease do a fifth of the damage they'd have done tick by tick and
@@ -64,6 +66,8 @@ local C = {
 	StatLossDead = const.Hour * 12,     -- one point per this time
 	StatLossErad = const.Hour * 6,
 	SoulFatigueMax = 8,                 -- the time per point is divided by 1 + revivals, up to this
+	SoulFatigueAfter = const.Minute * 6, -- a revival counts after this long dead or eradicated
+	BlessedFor = const.Minute * 10,     -- Divine Intervention (GM) / Aqua Vitae: the revival seen within this
 	-- the other conditions' status screen timers
 	ShownFor = const.Day * 7,
 }
@@ -381,14 +385,32 @@ local function runStatLoss(pl)
 		st.Loss = nil
 		-- back from death: one more revival for the soul fatigue
 		if st.Out then
+			local outAt = type(st.Out) == "number" and st.Out or Game.Time
 			st.Out = nil
-			st.Revivals = (st.Revivals or 0) + 1
-			local mul = math.min(C.SoulFatigueMax, 1 + st.Revivals)
-			message(Tx"%s's soul grows weary: after another death the body decays %dx faster", pl.Name, mul)
+			local blessed = st.Blessed and Game.Time - st.Blessed <= C.BlessedFor
+			st.Blessed = nil
+			if blessed then
+				if (st.Revivals or 0) > 0 then
+					st.Revivals = st.Revivals - 1
+					message(Tx"%s's soul is eased: the weariness of one death is lifted", pl.Name)
+				end
+			elseif Game.Time - outAt >= C.SoulFatigueAfter then
+				st.Revivals = (st.Revivals or 0) + 1
+				local mul = math.min(C.SoulFatigueMax, 1 + st.Revivals)
+				message(Tx"%s's soul grows weary: after another death the body decays %dx faster", pl.Name, mul)
+			end
 		end
 		return
 	end
-	st.Out = true
+	-- when the character fell: the earlier of the two conditions' times
+	if not st.Out then
+		local t0 = Game.Time
+		for _, c in ipairs{CO.Dead, CO.Eradicated} do
+			local v = pl.Conditions[c]
+			if v ~= 0 and v < t0 then t0 = v end
+		end
+		st.Out = t0
+	end
 	-- soul fatigue: the revivals so far shorten the time per point
 	local every = (erad and C.StatLossErad or C.StatLossDead)
 		/ math.min(C.SoulFatigueMax, 1 + (st.Revivals or 0))
@@ -412,6 +434,30 @@ local function runStatLoss(pl)
 	if n > 1 and lost > 0 then
 		message(Tx"%s has lost %d stat points from being %s", pl.Name, lost, erad and Tx"Eradicated" or Tx"Dead")
 	end
+end
+
+-- the blessed revivals: Divine Intervention cast at Grand Master (the whole party), Aqua Vitae
+local function bless(pl)
+	if pl.Conditions[CO.Dead] ~= 0 or pl.Conditions[CO.Eradicated] ~= 0 then
+		state(pl).Blessed = Game.Time
+	end
+end
+function events.PlayerCastSpell(t)
+	if t.SpellId == 88 and (t.Mastery or 0) >= 4 then
+		for _, pl in Party do pcall(bless, pl) end
+	end
+end
+-- Aqua Vitae (potion 71) is set by Global/ExtraPotions.lua, run with each game: wrapped again
+-- whenever it is not the wrapper
+local AquaWrapper
+local function wrapAquaVitae()
+	local cur = evt.PotionEffects and evt.PotionEffects[71]
+	if not cur or cur == AquaWrapper then return end
+	AquaWrapper = function(IsDrunk, Target, ...)
+		if IsDrunk and Target then pcall(bless, Target) end
+		return cur(IsDrunk, Target, ...)
+	end
+	evt.PotionEffects[71] = AquaWrapper
 end
 
 ---------------------------------------------------------------------------
@@ -504,6 +550,7 @@ end
 
 local ScanTimer
 function events.AfterLoadMap()
+	pcall(wrapAquaVitae)
 	vars.WeaknessCounter = vars.WeaknessCounter or {0, 0, 0, 0, 0}
 	vars.RemainingFood = vars.RemainingFood or Party.Food
 	vars.StatLossNext = nil   -- the old hourly stat loss
