@@ -1154,7 +1154,7 @@ This spell can't be bound into a wand	Это заклинание нельзя заключить в жезл
 %s: the wand quickslot is empty	%s: ячейка для жезла очищена
 
 # General/MMMWE_ExtraSkillsEnchanting.lua:497
-Only a wand of an attack spell goes into the wand quickslot	В ячейку для жезла кладётся только жезл атакующего заклинания
+Only a wand goes into the wand quickslot	В ячейку для жезла кладётся только жезл
 
 # General/MMMWE_ForgeStory.lua:47
 The Forge	Кузня

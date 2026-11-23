@@ -104,6 +104,20 @@ local function say(text)
 	Game.ShowStatusText(text)
 end
 
+-- (23.11.26) a spell's sound for the wands that don't go through the game's own casting: the
+-- game loads the sounds of the spells in the party's books, so the sound of any other spell
+-- was silent until something loaded it. Loaded first, then played.
+local function spellSound(spell)
+	local snd = spell and spell > 0 and Game.SpellSounds[spell]
+	if not snd or snd <= 0 then return end
+	pcall(Game.LoadSound, snd)
+	Game.PlaySound(snd)
+end
+local function loadSpellSound(spell)
+	local snd = spell and spell > 0 and Game.SpellSounds[spell]
+	if snd and snd > 0 then pcall(Game.LoadSound, snd) end
+end
+
 ---------------------------------------------------------------------------
 -- the game's wands: the spell cast at the Enchanting skill and rank
 ---------------------------------------------------------------------------
@@ -161,6 +175,7 @@ local function useSupportWand(target, item, slot)
 	local user = Party[userSlot]
 	local s, m = wandSkill(user)
 	CastSpellDirect(spell, s, m, Party.PlayersIndexes[userSlot], slot)
+	spellSound(spell)
 	local keep = m >= 4 and random(KEEP_CHANCE) == 1
 	if not keep then item.Charges = item.Charges - 1 end
 	if item.Charges <= 0 then
@@ -340,30 +355,31 @@ end
 local WandShot   -- {Player, Old main hand, Item index, ticks}
 local WandAim    -- (19.11.26) a targeted wand spell waiting in the cast queue
 
--- (19.11.26) the spells the game lets the player aim with a click when cast from the book
--- (the cast queue routine 0x425B67 gives them flag 8, the monster target screen, when its
--- third argument is 0): Fire Bolt, Fireball, Lightning Bolt, Ice Bolt, Slow... A quickslot
--- wand of one of them opens that screen: the spell goes where the player clicks.
+-- (23.11.26) the cast queue: a support wand in the quickslot is queued as a spell from the
+-- book (third argument 0), so the game asks for the character to cast it on where the spell
+-- needs one (Heal, a party spell at Novice) and casts it on the party otherwise. Attack wands
+-- fire at once (no target screen).
 local QUEUE_SPELL, QUEUE, QUEUE_SIZE, QUEUE_COUNT = 0x425B67, 0x51D820, 0x14, 10
-local PickSpell = {}
-do
-	local ok = pcall(function()
-		for sp = 2, 2 + 0x79 do
-			local idx = mem.u1[0x425EA1 + sp - 2]
-			if mem.u4[0x425E75 + idx * 4] == 0x425BEE then PickSpell[sp] = true end
-		end
-	end)
-	if not ok or not next(PickSpell) then
-		for _, sp in ipairs{2, 6, 11, 18, 20, 24, 26, 29, 32, 34, 35, 37, 39, 44, 59, 60, 65, 70,
-				76, 78, 79, 87, 90, 92, 93, 96, 97, 102, 103, 111, 113, 123} do
-			PickSpell[sp] = true
-		end
-	end
-end
 
 local function attackWand(num)
 	local t = Game.ItemsTxt[num]
 	return t and t.EquipStat == WAND_EQUIP and not SUPPORT[num]
+end
+local function slotWand(num)
+	return attackWand(num) or SUPPORT[num] ~= nil
+end
+
+-- a used-up wand out of the backpack
+local function dropFromBackpack(pl, index)
+	if pl.Items[index].Number ~= 0 then return end
+	for c = 0, 125 do
+		if pl.Inventory[c] == index then
+			pl.Inventory[c] = 0
+			for c2 = 0, 125 do
+				if pl.Inventory[c2] == -(1 + c) then pl.Inventory[c2] = 0 end
+			end
+		end
+	end
 end
 
 local function equippedIndex(pl, k)
@@ -396,13 +412,14 @@ local function fireWandSlot()
 		say(string.format(Tx"%s has no charged %s", pl.Name, Game.ItemsTxt[num].Name))
 		return
 	end
-	local spell = spellOf(num)
-	if PickSpell[spell] then
-		-- the spell queued as from the book, at the wand's skill: the game opens its target
-		-- screen; the charge is taken when the spell goes off (WandAimTick)
+	if SUPPORT[num] then
+		-- queued as from the book at the wand's skill; the charge is taken when the spell
+		-- goes off (wandAimTick)
 		if WandAim then return end
+		local spell = SUPPORT[num]
 		local sk, mas = wandSkill(pl)
 		local before = pl.RecoveryDelay
+		loadSpellSound(spell)
 		mem.call(QUEUE_SPELL, 2, spell, slot, JoinSkill(sk, mas), 0, 0)
 		local who = Party.PlayersIndexes[slot]
 		for q = 0, QUEUE_COUNT - 1 do
@@ -415,6 +432,7 @@ local function fireWandSlot()
 		end
 		return
 	end
+	loadSpellSound(spellOf(num))
 	WandShot = {Player = pl, Old = pl.ItemMainHand, Index = found, Ticks = 0, Number = num,
 		Charges = pl.Items[found].Charges}
 	pl.ItemMainHand = found
@@ -431,8 +449,7 @@ local function finishWandShot()
 	-- the shot went off (a charge used): the spell's sound, which this way of firing misses
 	local it = pl.Items[s.Index]
 	if it.Number ~= s.Number or it.Charges < s.Charges or pl.RecoveryDelay > 0 then
-		local snd = Game.SpellSounds[spellOf(s.Number)]
-		if snd and snd > 0 then Game.PlaySound(snd) end
+		spellSound(spellOf(s.Number))
 	end
 	if pl.Items[s.Index].Number == 0 then
 		for c = 0, 125 do
@@ -457,6 +474,11 @@ local function wandAimTick()
 	local it = pl.Items[w.Index]
 	if it.Number ~= w.Number or it.Charges <= 0 then return end
 	if not w.Keep then it.Charges = it.Charges - 1 end
+	if it.Charges <= 0 and SUPPORT[it.Number] then
+		it.Number = 0
+		dropFromBackpack(pl, w.Index)
+		say(Tx"The wand crumbles to dust")
+	end
 end
 
 function events.Tick()
@@ -487,13 +509,13 @@ function events.KeyDown(t)
 	local pl = Party[slot]
 	pl.Attrs.WandSlot = pl.Attrs.WandSlot or 0
 	local num = Mouse.Item.Number
-	if num ~= 0 and attackWand(num) then
+	if num ~= 0 and slotWand(num) then
 		pl.Attrs.WandSlot = num
 		say(string.format(Tx"%s: %s in the wand quickslot", pl.Name, Game.ItemsTxt[num].Name))
 	elseif num == 0 then
 		pl.Attrs.WandSlot = 0
 		say(string.format(Tx"%s: the wand quickslot is empty", pl.Name))
 	else
-		say(Tx"Only a wand of an attack spell goes into the wand quickslot")
+		say(Tx"Only a wand goes into the wand quickslot")
 	end
 end

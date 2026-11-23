@@ -1154,7 +1154,7 @@ This spell can't be bound into a wand
 %s: the wand quickslot is empty	
 
 # General/MMMWE_ExtraSkillsEnchanting.lua:497
-Only a wand of an attack spell goes into the wand quickslot	
+Only a wand goes into the wand quickslot	
 
 # General/MMMWE_ForgeStory.lua:47
 The Forge	
