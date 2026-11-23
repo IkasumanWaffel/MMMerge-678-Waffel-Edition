@@ -3440,3 +3440,4 @@ The full moon rises over Blackshire... and the howling begins.
 %s howls at the full moon!	
 The beast in %s sleeps until the next full moon	
 Lycanthropy	
+Wand %d/%d	

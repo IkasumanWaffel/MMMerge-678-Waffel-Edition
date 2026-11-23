@@ -3467,3 +3467,4 @@ The full moon rises over Blackshire... and the howling begins.	Над Блэкширом вос
 %s howls at the full moon!	%s воет на полную луну!
 The beast in %s sleeps until the next full moon	Зверь в душе %s спит до следующего полнолуния
 Lycanthropy	Ликантропия
+Wand %d/%d	Жезл %d/%d

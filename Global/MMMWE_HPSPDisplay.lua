@@ -51,6 +51,8 @@ local CONFIG = {
     cell = {anchor = "portrait", dx = 0, dy = -104},
     -- charge of a worn energy shield (MMMWE_EnergyShield.lua), above the power cell
     shield = {anchor = "portrait", dx = 0, dy = -124},
+    -- (23.11.26) charges of the quickslot wand (MMMWE_ExtraSkillsEnchanting.lua), the next line up
+    wand = {anchor = "portrait", dx = 0, dy = -144},
     cellH = 18,
     sp = {
         [0] = {anchor = "portrait", dx = 0, dy = -54},
@@ -63,7 +65,7 @@ local CONFIG = {
     --=== Debuffs (Game.PlayersExtra[i].Debuffs[]) ===
     debuffDY       = 885,   -- no Cell / Shield line above the portrait
     debuffDYPerLine = 20,   -- moved up this much for each of them shown (865 one, 845 both)
-    debuffW        = 180,
+    debuffW        = 240,   -- (23.11.26) room for the condition's time
     debuffH        = 18,
     debuffLineH   = 20,
     maxDebuffLines = 3,
@@ -378,6 +380,21 @@ local TIME_MINUTE = const.Minute or 256
 local TIME_HOUR   = const.Hour or (256 * 60)
 local TIME_DAY    = const.Day or (256 * 60 * 24)
 
+-- (23.11.26) how long a condition has lasted ("3h 20m", "2d 5h"), shown after its debuff
+local function formatElapsed(since, currentTime)
+    local t = currentTime - since
+    if t < TIME_MINUTE then return "0m" end
+    if t < TIME_HOUR then return math.floor(t / TIME_MINUTE) .. "m" end
+    if t < TIME_DAY then
+        local h = math.floor(t / TIME_HOUR)
+        local m = math.floor((t - h * TIME_HOUR) / TIME_MINUTE)
+        return h .. "h" .. (m > 0 and (" " .. m .. "m") or "")
+    end
+    local d = math.floor(t / TIME_DAY)
+    local h = math.floor((t - d * TIME_DAY) / TIME_HOUR)
+    return d .. "d" .. (h > 0 and (" " .. h .. "h") or "")
+end
+
 local function formatTime(expireTime, currentTime)
     local remaining = expireTime - currentTime
     if remaining <= 0 then return "0m" end
@@ -504,11 +521,21 @@ pcall(function()
                 if buff then
                     local expireTime = buff.ExpireTime or 0
                     if expireTime and expireTime > 0 then
+                        -- (23.11.26) the condition debuffs (0..16 are the conditions of the
+                        -- same number) show how long the condition has lasted
+                        local since
+                        if info.id <= 16 then
+                            local c = player.Conditions[info.id]
+                            if c and c ~= 0 and c <= Game.Time then
+                                since = formatElapsed(c, Game.Time)
+                            end
+                        end
                         active[#active + 1] = {
                             label = info.label,
                             color = info.color,
                             power = buff.Power or 0,
                             expireTime = expireTime,
+                            timeStr = since,
                         }
                     end
                 end
@@ -729,7 +756,13 @@ local function getValues(nPlayers)
             if Merge.Functions.ShieldCharge then
                 pcall(function() shield = Merge.Functions.ShieldCharge(p) end)
             end
+            local wand, wandMax
+            if Merge.Functions.QuickslotWand then
+                pcall(function() wand, wandMax = Merge.Functions.QuickslotWand(p) end)
+            end
             v[i] = {
+                wand = wand,
+                wandMax = wandMax,
                 cell = cell,
                 cell2 = cell2,
                 shield = shield,
@@ -804,14 +837,15 @@ local function valuesChanged(v, nPlayers)
     for i = 0, nPlayers - 1 do
         local a, b = v[i], lastValues[i]
         if not b then return true end
-        if a.hp ~= b.hp or a.sp ~= b.sp or a.maxHP ~= b.maxHP or a.maxSP ~= b.maxSP or a.cell ~= b.cell or a.cell2 ~= b.cell2 or a.shield ~= b.shield then
+        if a.hp ~= b.hp or a.sp ~= b.sp or a.maxHP ~= b.maxHP or a.maxSP ~= b.maxSP or a.cell ~= b.cell or a.cell2 ~= b.cell2 or a.shield ~= b.shield
+                or a.wand ~= b.wand or a.wandMax ~= b.wandMax then
             return true
         end
         -- Debuffs
         if #a.debuffs ~= #(b.debuffs or {}) then return true end
         for j = 1, #a.debuffs do
             local bd = b.debuffs and b.debuffs[j]
-            if not bd or a.debuffs[j].label ~= bd.label then
+            if not bd or a.debuffs[j].label ~= bd.label or a.debuffs[j].timeStr ~= bd.timeStr then
                 return true
             end
         end
@@ -1231,10 +1265,19 @@ local function drawOverlay()
 
         --=== BLASTER POWER CELL ===
         local cellH = math.max(1, math.floor(CONFIG.cellH * baseScaleY))
+        -- the lines stack up from the cell's place: cell, shield, wand (as many as shown)
+        local SLOTS = {CONFIG.cell, CONFIG.shield, CONFIG.wand}
         for i = 0, nPlayers - 1 do
             local d = lastValues[i]
-            local cx, cy = labelScreenXY(CONFIG.cell, portraitX[i], hpBarX[i], spBarX[i], portraitY, barY)
-            fillRect(hdc, cx, cy, cw, cellH, COLOR_KEY)
+            for _, cfg in ipairs(SLOTS) do
+                local x, y = labelScreenXY(cfg, portraitX[i], hpBarX[i], spBarX[i], portraitY, barY)
+                fillRect(hdc, x, y, cw, cellH, COLOR_KEY)
+            end
+            local n = 0
+            local function nextXY()
+                n = n + 1
+                return labelScreenXY(SLOTS[n], portraitX[i], hpBarX[i], spBarX[i], portraitY, barY)
+            end
             if d and d.exists and d.cell then
                 -- colours are BGR: green, yellow below 50%, red below 10% (the lower cell)
                 local low = d.cell2 and math.min(d.cell, d.cell2) or d.cell
@@ -1242,15 +1285,23 @@ local function drawOverlay()
                 if low < 10 then c = 0x4444FF elseif low < 50 then c = 0x00FFFF end
                 local text = d.cell2 and string.format(Tx"Cell %d%% / %d%%", d.cell, d.cell2)
                     or string.format(Tx"Cell %d%%", d.cell)
+                local cx, cy = nextXY()
                 drawText(hdc, text, cx, cy, cw, cellH, c)
             end
             -- energy shield charge: light blue, yellow below 50%, red when broken
-            local sx, sy = labelScreenXY((d and d.cell) and CONFIG.shield or CONFIG.cell, portraitX[i], hpBarX[i], spBarX[i], portraitY, barY)
-            fillRect(hdc, sx, sy, cw, cellH, COLOR_KEY)
             if d and d.exists and d.shield then
                 local c = 0xFFD080
                 if d.shield <= 0 then c = 0x4444FF elseif d.shield < 50 then c = 0x00FFFF end
+                local sx, sy = nextXY()
                 drawText(hdc, string.format(Tx"Shield %d%%", d.shield), sx, sy, cw, cellH, c)
+            end
+            -- quickslot wand charges: violet, yellow at a fifth or less, red when empty
+            if d and d.exists and d.wand then
+                local c = 0xFF88CC
+                if d.wand <= 0 then c = 0x4444FF
+                elseif d.wandMax and d.wandMax > 0 and d.wand * 5 <= d.wandMax then c = 0x00FFFF end
+                local wx, wy = nextXY()
+                drawText(hdc, string.format(Tx"Wand %d/%d", d.wand, d.wandMax or d.wand), wx, wy, cw, cellH, c)
             end
         end
 
@@ -1262,7 +1313,7 @@ local function drawOverlay()
 				for line = 1, math.min(#d.debuffs, CONFIG.maxDebuffLines) do
                     local db = d.debuffs[line]
                     local ly
-                    local extra = (d.cell and 1 or 0) + (d.shield and 1 or 0)
+                    local extra = (d.cell and 1 or 0) + (d.shield and 1 or 0) + (d.wand and 1 or 0)
                     local baseY = math.floor(gameOffsetY + (CONFIG.debuffDY - extra * CONFIG.debuffDYPerLine) * baseScaleY)
                     if CONFIG.debuffBottomAnchor then
                         ly = baseY - line * debuffLineH
@@ -1270,7 +1321,8 @@ local function drawOverlay()
                         ly = baseY + (line - 1) * debuffLineH
                     end
                     fillRect(hdc, colX, ly, debuffW, debuffH, COLOR_KEY)
-                    drawText(hdc, db.label, colX, ly, debuffW, debuffH, db.color)
+                    drawText(hdc, db.timeStr and (db.label .. " " .. db.timeStr) or db.label,
+                        colX, ly, debuffW, debuffH, db.color)
                 end
             end
         end

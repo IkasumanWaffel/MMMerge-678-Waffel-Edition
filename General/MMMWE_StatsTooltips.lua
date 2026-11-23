@@ -141,3 +141,11 @@ mem.hookfunction(0x41771F, 1, 0, function(d, def, this)
 	end
 	return def(this)
 end)
+
+-- (23.11.26) The Phys line stands where the game printed the condition, and it was still
+-- coloured by the main condition (0x4181AF: mov ecx, eax / call 0x416FB2, the condition's
+-- colour). The colour is now 0 (the default): the conditions and how long they have lasted
+-- are shown with the debuffs above the portraits (Global/MMMWE_HPSPDisplay.lua).
+if mem.u1[0x4181AF] == 0x8B and mem.u1[0x4181B0] == 0xC8 and mem.u1[0x4181B1] == 0xE8 then
+	mem.asmpatch(0x4181AF, "xor eax, eax", 7)
+end

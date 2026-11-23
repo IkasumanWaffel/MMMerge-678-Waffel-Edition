@@ -389,6 +389,23 @@ local function equippedIndex(pl, k)
 	return false
 end
 
+-- (23.11.26) the quickslot wand for the overlay (Global/MMMWE_HPSPDisplay.lua): the charges of
+-- the wand the key would use (the first charged one in the backpack) and its most charges;
+-- 0 charges when none is left. nil when the slot is empty.
+function MF.QuickslotWand(pl)
+	local num = pl.Attrs and pl.Attrs.WandSlot
+	if not num or num == 0 then return nil end
+	local firstAny
+	for k = 1, 138 do
+		local it = pl.Items[k]
+		if it.Number == num and not it.Broken and not equippedIndex(pl, k) then
+			if it.Charges > 0 then return it.Charges, mostCharges(it), num end
+			firstAny = firstAny or it
+		end
+	end
+	return 0, firstAny and mostCharges(firstAny) or 0, num
+end
+
 local function fireWandSlot()
 	if Game.Paused or Game.CurrentScreen ~= 0 or WandShot then return end
 	local slot = MF.GetCurrentPlayer and MF.GetCurrentPlayer() or Game.CurrentPlayer
