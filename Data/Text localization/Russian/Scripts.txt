@@ -554,7 +554,7 @@ Speed	Скорость
 %s loses %d %s from being %s	%s теряет %d (%s): %s
 
 # General/MMMWE_Conditions.lua:391, General/MMMWE_Conditions.lua:396
-Eradicated	стёрт в прах
+Eradicated	уничтожен
 
 # General/MMMWE_Conditions.lua:391, General/MMMWE_Conditions.lua:396
 Dead	мёртв
