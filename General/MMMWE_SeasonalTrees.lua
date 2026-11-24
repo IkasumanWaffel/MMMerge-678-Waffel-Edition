@@ -13,10 +13,8 @@
 	picked; MM7's tree37 -> 7tree30) and keep their apples in autumn. Picking apples changes
 	the tree's picture (the events of oute2, oute3): the picture a map event sets becomes the
 	sprite's own one, and the season's picture is put back within a couple of seconds.
-	(24.11.26) As in MM7, no apples are picked in autumn and winter. Each apple tree's event
-	(oute2, oute3) gives an apple while its map variable is 0 and sets it to 1; in autumn and
-	winter the variable is held at 1 (the tree says it has no apples), the real value kept in
-	mapvars and put back in spring. In autumn the unpicked trees still show their apples.
+	(24.11.26) As in MM7, no apples are picked in autumn and winter: the MM6 apple tree events
+	of oute2 and oute3 are rewritten in their map scripts with MF.RewriteAppleTrees (below).
 
 	The map's own tree of each sprite is kept in mapvars (the sprite's picture is saved with
 	the map), so the trees come back in spring.
@@ -44,13 +42,6 @@ local TREES = {
 	["6tree06"] = {nil, "s6t06w"},        -- (picked)
 }
 
--- the apple trees: map variable (MapVar) -> sprite (from the maps' events)
-local APPLES = {
-	oute2 = {[0] = 134, 135, 136, 137, 138, 139, 140, 141},
-	oute3 = {[9] = 298, [10] = 299, [11] = 300, [12] = 301, [13] = 467, [14] = 303,
-		[15] = 302, [16] = 305, [17] = 304},
-}
-
 local function season()
 	for s = 3, 1, -1 do
 		if evt.CheckSeason{Season = s} then return s end
@@ -64,34 +55,6 @@ local function apply()
 	local s = season()
 	mapvars.MMMWE_SeasonTrees = mapvars.MMMWE_SeasonTrees or {}
 	local orig = mapvars.MMMWE_SeasonTrees
-	-- apples: none in autumn and winter
-	local apples = APPLES[name]
-	if apples then
-		local held = mapvars.MMMWE_ApplesHeld
-		if s >= 2 then
-			if not held then
-				held = {}
-				for v in pairs(apples) do held[v] = Map.Vars[v] end
-				mapvars.MMMWE_ApplesHeld = held
-			end
-			for v, i in pairs(apples) do
-				Map.Vars[v] = 1
-				if held[v] == 0 and i < Map.Sprites.count then
-					orig[i] = "tree06a"          -- unpicked: shows its apples (bare in winter)
-					if s == 2 then Map.Sprites[i].DecName = "tree06a" end
-				end
-			end
-		elseif held then
-			for v, i in pairs(apples) do
-				Map.Vars[v] = held[v] or 0
-				if (held[v] or 0) == 0 and i < Map.Sprites.count then
-					orig[i] = "tree06a"
-					Map.Sprites[i].DecName = "tree06a"
-				end
-			end
-			mapvars.MMMWE_ApplesHeld = nil
-		end
-	end
 	local changed = 0
 	for i = 0, Map.Sprites.count - 1 do
 		local sp = Map.Sprites[i]
@@ -135,4 +98,41 @@ function events.Tick()
 	if now - Last < 2 then return end
 	Last = now
 	if MAPS[(Map.Name or ""):lower():gsub("%.odm$", "")] then safeApply() end
+end
+
+---------------------------------------------------------------------------
+-- (24.11.26) the MM6 apple trees, rewritten as in MM7 (called by Scripts\Maps\oute2.lua,
+-- oute3.lua). The original event of a tree: hint "Tree"; while its map variable is 0 an apple
+-- (+1 food), the variable set to 1 and the tree's picture to the picked one (6tree06); then
+-- "no more apples"; on map load a picked tree shows the picked picture. Now no apples in
+-- autumn and winter (MM7's apple trees: nothing then), and the picking message is right
+-- (oute2 showed "Tree", oute3 "Tree" for an empty tree).
+-- trees = {[event] = {MapVar index, sprite index}}, texts = {Hint, Picked, Empty}
+---------------------------------------------------------------------------
+
+local Tx = Merge.Functions.Text
+function Merge.Functions.RewriteAppleTrees(trees, texts)
+	local picked = texts.Picked or Tx"You pick an apple."
+	for ev, t in pairs(trees) do
+		local v, spr = t[1], t[2]
+		Game.MapEvtLines:RemoveEvent(ev)
+		evt.hint[ev] = texts.Hint
+		evt.map[ev] = function()
+			if evt.CheckSeason{Season = 2} or evt.CheckSeason{Season = 3} then
+				Game.ShowStatusText(texts.Empty)
+			elseif Map.Vars[v] >= 1 then
+				Game.ShowStatusText(texts.Empty)
+			else
+				Map.Vars[v] = 1
+				evt.Add{"Food", 1}
+				Game.ShowStatusText(picked)
+				if spr < Map.Sprites.count then Map.Sprites[spr].DecName = "6tree06" end
+				pcall(safeApply)   -- the season's picture at once
+			end
+		end
+		-- a picked tree shows the picked picture (the season's one is put after the load)
+		if Map.Vars[v] >= 1 and spr < Map.Sprites.count then
+			Map.Sprites[spr].DecName = "6tree06"
+		end
+	end
 end

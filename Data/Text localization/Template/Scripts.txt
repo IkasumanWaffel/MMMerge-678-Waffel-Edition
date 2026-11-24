@@ -3477,3 +3477,6 @@ Zombie
 
 # General/MMMWE_Conditions.lua (soul fatigue)
 %s's soul is eased: the weariness of one death is lifted	
+
+# General/MMMWE_SeasonalTrees.lua (apple trees)
+You pick an apple.	

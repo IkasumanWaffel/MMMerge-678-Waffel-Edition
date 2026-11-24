@@ -66,3 +66,10 @@ function events.AfterLoadMap()
 		Map.LoadTileset(0)
 	end
 end
+
+----------------------------------------
+-- (MMMWE 24.11.26) Apple trees as in MM7: no apples in autumn and winter (General/MMMWE_SeasonalTrees.lua)
+Merge.Functions.RewriteAppleTrees({
+	[101] = {0, 134}, [102] = {1, 135}, [103] = {2, 136}, [104] = {3, 137},
+	[105] = {4, 138}, [106] = {5, 139}, [107] = {6, 140}, [108] = {7, 141},
+}, {Hint = evt.str[1], Empty = evt.str[2]})
