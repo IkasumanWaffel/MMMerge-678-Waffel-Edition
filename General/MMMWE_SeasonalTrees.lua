@@ -13,6 +13,10 @@
 	picked; MM7's tree37 -> 7tree30) and keep their apples in autumn. Picking apples changes
 	the tree's picture (the events of oute2, oute3): the picture a map event sets becomes the
 	sprite's own one, and the season's picture is put back within a couple of seconds.
+	(24.11.26) As in MM7, no apples are picked in autumn and winter. Each apple tree's event
+	(oute2, oute3) gives an apple while its map variable is 0 and sets it to 1; in autumn and
+	winter the variable is held at 1 (the tree says it has no apples), the real value kept in
+	mapvars and put back in spring. In autumn the unpicked trees still show their apples.
 
 	The map's own tree of each sprite is kept in mapvars (the sprite's picture is saved with
 	the map), so the trees come back in spring.
@@ -40,6 +44,13 @@ local TREES = {
 	["6tree06"] = {nil, "s6t06w"},        -- (picked)
 }
 
+-- the apple trees: map variable (MapVar) -> sprite (from the maps' events)
+local APPLES = {
+	oute2 = {[0] = 134, 135, 136, 137, 138, 139, 140, 141},
+	oute3 = {[9] = 298, [10] = 299, [11] = 300, [12] = 301, [13] = 467, [14] = 303,
+		[15] = 302, [16] = 305, [17] = 304},
+}
+
 local function season()
 	for s = 3, 1, -1 do
 		if evt.CheckSeason{Season = s} then return s end
@@ -53,6 +64,34 @@ local function apply()
 	local s = season()
 	mapvars.MMMWE_SeasonTrees = mapvars.MMMWE_SeasonTrees or {}
 	local orig = mapvars.MMMWE_SeasonTrees
+	-- apples: none in autumn and winter
+	local apples = APPLES[name]
+	if apples then
+		local held = mapvars.MMMWE_ApplesHeld
+		if s >= 2 then
+			if not held then
+				held = {}
+				for v in pairs(apples) do held[v] = Map.Vars[v] end
+				mapvars.MMMWE_ApplesHeld = held
+			end
+			for v, i in pairs(apples) do
+				Map.Vars[v] = 1
+				if held[v] == 0 and i < Map.Sprites.count then
+					orig[i] = "tree06a"          -- unpicked: shows its apples (bare in winter)
+					if s == 2 then Map.Sprites[i].DecName = "tree06a" end
+				end
+			end
+		elseif held then
+			for v, i in pairs(apples) do
+				Map.Vars[v] = held[v] or 0
+				if (held[v] or 0) == 0 and i < Map.Sprites.count then
+					orig[i] = "tree06a"
+					Map.Sprites[i].DecName = "tree06a"
+				end
+			end
+			mapvars.MMMWE_ApplesHeld = nil
+		end
+	end
 	local changed = 0
 	for i = 0, Map.Sprites.count - 1 do
 		local sp = Map.Sprites[i]
