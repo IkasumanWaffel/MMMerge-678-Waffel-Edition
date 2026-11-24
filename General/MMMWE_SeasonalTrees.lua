@@ -7,8 +7,12 @@
 	in winter (their Scripts\Maps\<map>.lua) have no such trees: MM6 has no seasonal pictures.
 	Here their broadleaf trees take MM7's autumn and winter pictures, the flowering trees
 	lose their blossom in winter and the conifers get snow; spring and summer show the map's
-	own trees. Food trees (6tree06, tree06a: their events change their pictures), palms,
-	swamp trees and the snowy trees of the Frozen Highlands are left as they are.
+	own trees. Palms, swamp trees and the snowy trees of the Frozen Highlands are left as
+	they are.
+	(24.11.26) The apple trees go bare in winter as in MM7 (tree06a with apples, 6tree06
+	picked; MM7's tree37 -> 7tree30) and keep their apples in autumn. Picking apples changes
+	the tree's picture (the events of oute2, oute3): the picture a map event sets becomes the
+	sprite's own one, and the season's picture is put back within a couple of seconds.
 
 	The map's own tree of each sprite is kept in mapvars (the sprite's picture is saved with
 	the map), so the trees come back in spring.
@@ -32,6 +36,8 @@ local TREES = {
 	["6tree04"] = {nil, "s6t04w"},
 	["6tree18"] = {nil, "s6t18w"},        -- conifers: snow in winter (tree33)
 	["6tree25"] = {nil, "s6t25w"},        -- (tree36)
+	["tree06a"] = {nil, "s6t6aw"},        -- apple trees: bare in winter (7tree30)
+	["6tree06"] = {nil, "s6t06w"},        -- (picked)
 }
 
 local function season()
@@ -50,13 +56,13 @@ local function apply()
 	local changed = 0
 	for i = 0, Map.Sprites.count - 1 do
 		local sp = Map.Sprites[i]
+		-- the sprite's own tree: the one it shows when that is a map tree (also one a map
+		-- event has just set, as picking apples does), else the one kept
+		local cur = (sp.DecName or ""):lower()
 		local own = orig[i]
-		if not own then
-			local cur = sp.DecName
-			if cur and TREES[cur:lower()] then
-				own = cur:lower()
-				orig[i] = own
-			end
+		if TREES[cur] then
+			own = cur
+			orig[i] = own
 		end
 		if own then
 			local t = TREES[own]
@@ -72,9 +78,22 @@ local function apply()
 	end
 end
 
-function events.AfterLoadMap()
+local function safeApply()
 	local ok, err = pcall(apply)
 	if not ok and Merge.Functions.LogWarning then
 		Merge.Functions.LogWarning("[SeasonalTrees] %s", tostring(err))
 	end
+end
+
+function events.AfterLoadMap()
+	safeApply()
+end
+
+-- a tree changed by a map event (apples picked) gets the season's picture back
+local Last = 0
+function events.Tick()
+	local now = os.clock()
+	if now - Last < 2 then return end
+	Last = now
+	if MAPS[(Map.Name or ""):lower():gsub("%.odm$", "")] then safeApply() end
 end
