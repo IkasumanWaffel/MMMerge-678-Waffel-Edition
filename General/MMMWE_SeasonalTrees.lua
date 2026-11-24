@@ -17,18 +17,21 @@
 local MAPS = {outa1 = true, outc2 = true, outd1 = true, outd2 = true, outd3 = true,
 	oute1 = true, oute2 = true, oute3 = true}
 
--- the map's tree -> {autumn, winter}; nil keeps the tree in that season
+-- the map's tree -> {autumn, winter}; nil keeps the tree in that season.
+-- (24.11.26) The pictures are MM7's, in copies sized to the MM6 tree they stand for
+-- (DecList.txt / SFT.txt s6tNNa / s6tNNw, the MM7 picture with a smaller SFT scale): MM7's
+-- trees drawn at their own scale came out two to five times taller.
 local TREES = {
-	["6tree01"] = {"7tree14", "7tree15"},   -- broadleaf -> yellow / bare
-	["6tree02"] = {"7tree05", "7tree06"},
-	["6tree05"] = {"7tree17", "7tree18"},
-	["6tree10"] = {"7tree08", "7tree09"},
-	["6tree15"] = {"7tree20", "7tree21"},   -- red autumn
-	["6tree19"] = {"tree26", "tree27"},     -- wide crown, red autumn
-	["6tree03"] = {nil, "7tree24"},         -- flowering trees: bare in winter
-	["6tree04"] = {nil, "7tree24"},
-	["6tree18"] = {nil, "tree33"},          -- conifers: snow in winter
-	["6tree25"] = {nil, "tree36"},
+	["6tree01"] = {"s6t01a", "s6t01w"},   -- 7tree14 yellow / 7tree15 bare
+	["6tree02"] = {"s6t02a", "s6t02w"},   -- 7tree05 / 7tree06
+	["6tree05"] = {"s6t05a", "s6t05w"},   -- 7tree17 / 7tree18
+	["6tree10"] = {"s6t10a", "s6t10w"},   -- 7tree08 / 7tree09
+	["6tree15"] = {"s6t15a", "s6t15w"},   -- 7tree20 red / 7tree21
+	["6tree19"] = {"s6t19a", "s6t19w"},   -- tree26 red / tree27
+	["6tree03"] = {nil, "s6t03w"},        -- flowering trees: bare in winter (7tree24)
+	["6tree04"] = {nil, "s6t04w"},
+	["6tree18"] = {nil, "s6t18w"},        -- conifers: snow in winter (tree33)
+	["6tree25"] = {nil, "s6t25w"},        -- (tree36)
 }
 
 local function season()
