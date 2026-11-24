@@ -99,7 +99,7 @@ local CONFIG = {
 
     -- X-offsets (in 1920x1200 coords)
     -- For player widgets: offset relative to portrait anchor
-    debuffDX      = 0,
+    debuffDX      = -30,  -- (24.11.26) half of the widening to 240, so the lines stay centred over the portrait
     buffDX        = 0,
     -- For party widgets: "center" or absolute X in 1920x1200 coords
     partyBuffDX   = 65,
