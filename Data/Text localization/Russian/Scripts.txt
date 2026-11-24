@@ -3507,3 +3507,88 @@ Zombie	Зомби
 
 # General/MMMWE_SeasonalTrees.lua (apple trees)
 You pick an apple.	Вы срываете яблоко.
+
+# Global/MMMWE_WarlockPeace.lua (peace talks)
+You brought Haldar home from the Maze to his brother.	Вы вернули Халдара из Лабиринта его брату.
+
+# Global/MMMWE_WarlockPeace.lua (peace talks)
+One of you wears the robes of a Warlock.	Один из вас носит мантию чернокнижника.
+
+# Global/MMMWE_WarlockPeace.lua (peace talks)
+You slew Morcarack, who burned our ship to the waterline.	Вы убили Моркарака, сжёгшего наш корабль до самой ватерлинии.
+
+# Global/MMMWE_WarlockPeace.lua (peace talks)
+Sealed Offer of the Pit	Запечатанное предложение Ямы
+
+# Global/MMMWE_WarlockPeace.lua (peace talks)
+A letter under Maximus's seal, offering the Warlocks of Thunderfist Mountain a deal for their soul jars.	Письмо под печатью Максимуса с предложением сделки чернокнижникам Горы Громового Кулака: их сосуды для душ в обмен на условия Ямы.
+
+# Global/MMMWE_WarlockPeace.lua (peace talks)
+Archibald would rather we didn't start a war with Nighon over a few jars, and for once I agree with him: dead warlocks make no jars. Take this letter to Thunderfist Mountain. It carries my seal and my terms. The warlocks watch their caves; show it at the entrances near their town and someone will come out to talk.\n\nThey won't deal with just anyone, mind. If they turn you away, you know what to do.	Арчибальд предпочёл бы не начинать войну с Нигоном из-за нескольких сосудов, и на этот раз я с ним согласен: мёртвые чернокнижники сосудов не делают. Отнесите это письмо на Гору Громового Кулака. На нём моя печать и мои условия. Чернокнижники следят за своими пещерами; покажите письмо у входов рядом с их городом, и кто-нибудь выйдет поговорить.\n\nТолько учтите: они имеют дело не с каждым. Если вас прогонят - вы знаете, что делать.
+
+# Global/MMMWE_WarlockPeace.lua (peace talks)
+You lost my letter? Here's another. Try to keep this one until it reaches the warlocks.	Потеряли моё письмо? Вот другое. Постарайтесь донести хотя бы это до чернокнижников.
+
+# Global/MMMWE_WarlockPeace.lua (peace talks)
+You still have my letter. Thunderfist Mountain, the caves near the warlocks' town. Go.	Моё письмо всё ещё у вас. Гора Громового Кулака, пещеры рядом с городом чернокнижников. Ступайте.
+
+# Global/MMMWE_WarlockPeace.lua (peace talks)
+The warlocks have named their price? Then pay it, one way or another. I want those jars, not a report on the haggling.	Чернокнижники назвали свою цену? Так заплатите её, так или иначе. Мне нужны сосуды, а не отчёт о торге.
+
+# Global/MMMWE_WarlockPeace.lua (peace talks)
+Peace with the Warlocks	Мир с чернокнижниками
+
+# Global/MMMWE_WarlockPeace.lua (peace talks)
+[The envoy hands you a heavy case] The jars, as agreed. Tell Maximus the price will not be this low again. And tell him the warlocks keep their word as long as others keep theirs. You may walk in Thunderfist Mountain in peace.	[Посланник протягивает вам тяжёлый ларец] Сосуды, как договаривались. Передайте Максимусу, что так дёшево они ему больше не достанутся. И передайте, что чернокнижники держат слово, пока его держат другие. Можете ходить по Горе Громового Кулака с миром.
+
+# Global/MMMWE_WarlockPeace.lua (peace talks)
+A figure in dark robes steps out of the cave mouth, eyes glowing red under the hood. \"You carry the seal of the Pit. Speak your business, and be quick.\"	Из пещеры выходит фигура в тёмной мантии, под капюшоном красным светятся глаза. \"На вас печать Ямы. Говорите, с чем пришли, и побыстрее.\"
+
+# Global/MMMWE_WarlockPeace.lua (peace talks)
+\"Back again. Have you brought the price?\"	\"Снова вы. Принесли плату?\"
+
+# Global/MMMWE_WarlockPeace.lua (peace talks)
+\"The Eyes no longer stir in the deep halls. We felt it. The masters are pleased.\"	\"Очи в глубоких залах больше не шевелятся. Мы это почувствовали. Мастера довольны.\"
+
+# Global/MMMWE_WarlockPeace.lua (peace talks)
+\"The masters have nothing more to say to you.\"	\"Мастерам больше нечего вам сказать.\"
+
+# Global/MMMWE_WarlockPeace.lua (peace talks)
+[The envoy reads the letter and tears it in two] The Pit sends strangers to beg for our jars, and offers nothing but gold. The masters don't know you, and you have done nothing for them. There will be no deal. Go home, or come and take the jars, if you dare.	[Посланник читает письмо и рвёт его надвое] Яма присылает чужаков выпрашивать наши сосуды и не предлагает ничего, кроме золота. Мастера вас не знают, и вы ничего для них не сделали. Сделки не будет. Ступайте домой - или придите и возьмите сосуды сами, если осмелитесь.
+
+# Global/MMMWE_WarlockPeace.lua (peace talks)
+[The envoy breaks the seal and reads in silence] Maximus. Last year he called us thieves, and now he wants our jars again. Still, the masters know your names. %s\n\nFor that alone they are willing to deal. A case of soul jars for %d gold. Or for a favour: the Eyes have crept into the deep halls of Thunderfist and spoil our work there. Clear them out, and the jars are yours. While you do it, no warlock will raise a hand against you.	[Посланник ломает печать и молча читает] Максимус. В прошлом году он называл нас ворами, а теперь ему снова нужны наши сосуды. И всё же мастера знают ваши имена. %s\n\nЛишь поэтому они готовы на сделку. Ларец сосудов для душ за %d золотых. Или за услугу: Очи заползли в глубокие залы Горы Громового Кулака и мешают нашей работе. Очистите их, и сосуды ваши. Пока вы этим заняты, ни один чернокнижник не поднимет на вас руку.
+
+# Global/MMMWE_WarlockPeace.lua (peace talks)
+The sealed offer	Запечатанное предложение
+
+# Global/MMMWE_WarlockPeace.lua (peace talks)
+Pay %d gold	Заплатить %d золотых
+
+# Global/MMMWE_WarlockPeace.lua (peace talks)
+\"That is not %d gold. Come back when you have it.\"	\"Это не %d золотых. Возвращайтесь, когда они у вас будут.\"
+
+# Global/MMMWE_WarlockPeace.lua (peace talks)
+[The envoy counts the gold slowly, coin by coin] It is all here.	[Посланник медленно, монету за монетой, пересчитывает золото] Всё здесь.
+
+# Global/MMMWE_WarlockPeace.lua (peace talks)
+\"Good. The Eyes nest in the deep halls under the mountain. Kill every one you find in Thunderfist and come back to me. Until then the masters' word protects you, as long as you don't raise a hand against us.\"	\"Хорошо. Очи гнездятся в глубоких залах под горой. Убейте всех, кого найдёте на Горе Громового Кулака, и возвращайтесь ко мне. До тех пор вас защищает слово мастеров - пока вы не поднимете руку на нас.\"
+
+# Global/MMMWE_WarlockPeace.lua (peace talks)
+\"Not one Eye left. The masters did not think you could do it.\"	\"Ни одного Ока не осталось. Мастера не думали, что вам это удастся.\"
+
+# Global/MMMWE_WarlockPeace.lua (peace talks)
+\"The Eyes still float in the deep halls. Kill them all, then come back.\"	\"Очи всё ещё парят в глубоких залах. Убейте их всех, тогда возвращайтесь.\"
+
+# Global/MMMWE_WarlockPeace.lua (peace talks)
+A favour	Услуга
+
+# Global/MMMWE_WarlockPeace.lua (peace talks)
+Warlock Envoy	Посланник чернокнижников
+
+# Global/MMMWE_WarlockPeace.lua (peace talks)
+The deep halls are clear of the Eyes. Return to the warlock envoy.	Глубокие залы очищены от Очей. Вернитесь к посланнику чернокнижников.
+
+# Global/MMMWE_WarlockPeace.lua (peace talks)
+You attacked the warlocks: the peace with Thunderfist Mountain is broken!	Вы напали на чернокнижников: мир с Горой Громового Кулака нарушен!
+
