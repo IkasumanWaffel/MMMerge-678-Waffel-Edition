@@ -432,6 +432,11 @@ function events.Tick()
 	pcall(regen)
 end
 
+-- (24.11.26) no eyes until the werebeasts are found again for the map / game just loaded
+function events.BeforeLoadMap()
+	BeastSlots = {}
+end
+
 function events.AfterLoadMap()
 	LastCheck, LastMinute = 0, nil
 	pcall(checkNight)
@@ -446,14 +451,25 @@ end
 -- (0x4A419B), as the mask over an invisible party's faces is.
 ---------------------------------------------------------------------------
 
-local EyePtr
+-- (24.11.26) the picture is found by its index, checked by name before every use: the game
+-- frees and reuses the icons loaded during play (a load, a map change), so a kept pointer
+-- could point at freed memory after loading a save (a crash when the portrait was drawn)
+local EyeIdx
 local function eyeBitmap()
-	if EyePtrReset then EyePtr, EyePtrReset = nil, nil end
-	if EyePtr == nil then
-		local ok, idx = pcall(function() return Game.IconsLod:LoadBitmap("lyceye") end)
-		EyePtr = ok and idx and idx >= 0 and Game.IconsLod.Bitmaps[idx]["?ptr"] or false
+	if EyePtrReset then EyeIdx, EyePtrReset = nil, nil end
+	local lod = Game.IconsLod
+	if EyeIdx then
+		local ok, same = pcall(function()
+			return EyeIdx < lod.Bitmaps.count and lod.Bitmaps[EyeIdx].Name:lower() == "lyceye"
+		end)
+		if not (ok and same) then EyeIdx = nil end
 	end
-	return EyePtr or nil
+	if not EyeIdx then
+		local ok, idx = pcall(function() return lod:LoadBitmap("lyceye") end)
+		if not ok or not idx or idx < 0 then return nil end
+		EyeIdx = idx
+	end
+	return lod.Bitmaps[EyeIdx]["?ptr"]
 end
 
 mem.autohook(0x490DFC, function(d)
