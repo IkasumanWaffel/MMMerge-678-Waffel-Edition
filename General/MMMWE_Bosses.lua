@@ -174,7 +174,7 @@ local function boost(i, m)
 		m.FullHP = full
 		mulAttack(m.Attack1, B.DamageMul)
 		mulAttack(m.Attack2, B.DamageMul)
-		m.ArmorClass = min(255, floor(m.ArmorClass * B.ACMul + 0.5))
+		m.ArmorClass = min(2000, floor(m.ArmorClass * B.ACMul + 0.5))   -- (24.11.26) was capped at 255: bolstered bosses lost armor
 		m.Level = min(255, m.Level + B.LevelAdd)
 		m.Experience = floor(m.Experience * B.ExpMul)
 	end
