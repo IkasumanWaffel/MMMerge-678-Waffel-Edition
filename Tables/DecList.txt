@@ -690,3 +690,6 @@
 688	s6t25w	tree	0	96	96	0	s6t25w	-	-	-	-	-	-	-	-	-	-	-	0	0	0	0
 689	s6t06w	tree	0	96	96	0	s6t06w	-	-	-	-	-	-	-	-	-	-	-	0	0	0	0
 690	s6t6aw	tree	0	96	96	0	s6t6aw	-	-	-	-	-	-	-	-	-	-	-	0	0	0	0
+691	herbspr01	herb	0	0	0	0	herbspr01	-	-	-	-	-	-	-	-	-	-	-	0	0	0	0
+692	herbspr02	herb	0	0	0	0	herbspr02	-	-	-	-	-	-	-	-	-	-	-	0	0	0	0
+693	herbspr03	herb	0	0	0	0	herbspr03	-	-	-	-	-	-	-	-	-	-	-	0	0	0	0

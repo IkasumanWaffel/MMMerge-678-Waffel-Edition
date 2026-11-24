@@ -3565,3 +3565,24 @@ The deep halls are clear of the Eyes. Return to the warlock envoy.
 # Global/MMMWE_WarlockPeace.lua (peace talks)
 You attacked the warlocks: the peace with Thunderfist Mountain is broken!	
 
+# General/MMMWE_HerbShrubs.lua (herb shrubs)
+Widowsweep bush	
+
+# General/MMMWE_HerbShrubs.lua (herb shrubs)
+Phirna plant	
+
+# General/MMMWE_HerbShrubs.lua (herb shrubs)
+Poppysnaps	
+
+# General/MMMWE_HerbShrubs.lua (herb shrubs)
+The shrub is bare: nothing grows in winter.	
+
+# General/MMMWE_HerbShrubs.lua (herb shrubs)
+This shrub has been picked already.	
+
+# General/MMMWE_HerbShrubs.lua (herb shrubs)
+You pick %s (%d).	
+
+# General/MMMWE_HerbShrubs.lua (herb shrubs)
+You pick %s.	
+
