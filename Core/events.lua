@@ -1899,7 +1899,10 @@ mem.hookfunction(mmv(0x482E80, 0x48EAA6, 0x48E213), 1, mmv(1, 2, 2), function(d,
 	-- below zero: their total is kept at least minus the character's base Endurance
 	if stat == 3 and t.Player and _G.Merge and ((_G.Merge.ModSettings or {}).TKPreventDeathFromNegativeEndurance
 			or (_G.Merge.Settings or {}).TKPreventDeathFromNegativeEndurance) == 1 then
-		local base = t.Player:GetBaseEndurance()
+		-- (24.11.26) the raw base value: the game's GetBaseEndurance asks CalcStatBonusByItems
+		-- itself (MM8 0x48C364), so calling it here recursed until the stack ran out (a crash
+		-- when a game was loaded or started)
+		local base = t.Player.EnduranceBase
 		if t.Result < -base then t.Result = -base end
 	end
 	if key then
