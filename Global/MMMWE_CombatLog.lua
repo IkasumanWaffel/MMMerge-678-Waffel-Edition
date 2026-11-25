@@ -33,7 +33,7 @@ local CONFIG = {
 
     newestColor = 0xFFFFFF,
     oldestColor = 0x666666,
-	
+
 	LogClearDelay = 20	--Time in real-time seconds before the log widget is cleared
 }
 
@@ -44,8 +44,9 @@ local WS_EX_LAYERED     = 0x00080000
 local WS_EX_TRANSPARENT = 0x00000020
 local WS_EX_TOPMOST     = 0x00000008
 local WS_POPUP          = 0x80000000
-local LWA_COLORKEY      = 0x00000001
-local SW_SHOWNORMAL     = 1
+local ULW_ALPHA         = 0x00000002
+local SW_HIDE           = 0
+local SW_SHOWNA         = 8
 local CS_HREDRAW        = 0x0002
 local CS_VREDRAW        = 0x0001
 local SWP_NOACTIVATE    = 0x0010
@@ -53,7 +54,8 @@ local COLOR_KEY         = 0x1A001A
 local DT_SINGLELINE     = 0x00000020
 local DT_NOCLIP         = 0x00000100
 local DT_LEFT           = 0x00000000
-local SRCCOPY           = 0x00CC0020
+local DIB_RGB_COLORS    = 0
+local ANTIALIASED_QUALITY = 5
 
 local MOUSEEVENTF_RIGHTDOWN = 0x0008
 local MOUSEEVENTF_RIGHTUP   = 0x0010
@@ -65,6 +67,9 @@ if not _G.MMStatusOverlay then
     _G.MMStatusOverlay = {}
 end
 local G = _G.MMStatusOverlay
+
+-- Prefer LuaJIT for pixel processing, with an MMExtension memory-access fallback.
+local ffiOK, ffi = pcall(require, "ffi")
 
 local function loadOverlayState()
     if vars and vars.CombatLogActive ~= nil then
@@ -94,6 +99,15 @@ local rectBuf    = mem.StaticAlloc(16)
 local clientRect = mem.StaticAlloc(16)
 local drawRect   = mem.StaticAlloc(16)
 local pointBuf   = mem.StaticAlloc(8)
+local bitmapInfo = mem.StaticAlloc(40)
+local bitsOut    = mem.StaticAlloc(4) -- MM8 is a 32-bit process
+local dstPoint   = mem.StaticAlloc(8)
+local srcPoint   = mem.StaticAlloc(8)
+local windowSize = mem.StaticAlloc(8)
+local blend      = mem.StaticAlloc(4)
+-- BLENDFUNCTION: AC_SRC_OVER, flags 0, constant alpha 255, AC_SRC_ALPHA
+mem.u4[blend] = 0x01FF0000
+mem.u4[srcPoint], mem.u4[srcPoint + 4] = 0, 0
 local lastPX, lastPY, lastW, lastH = -1, -1, -1, -1
 local needRedraw = true
 
@@ -126,7 +140,7 @@ local originalShowStatusText = Game.ShowStatusText
 
 local function pushMessage(text, damageKind)
     if not text or text == "" then return end
-    if not overlayActive then return end           
+    if not overlayActive then return end
     local n = CONFIG.maxMessages
     for i = n - 1, 1, -1 do
         messages[i] = messages[i - 1]
@@ -346,7 +360,7 @@ local function createFont()
     local key = tostring(actualSize)
     if key == lastFontKey and hFont ~= 0 then return end
     if hFont ~= 0 then gdi32.DeleteObject(hFont) end
-    hFont = gdi32.CreateFontA(actualSize, 0, 0, 0, 400, 0, 0, 0, (Merge.Functions.FontCharset and Merge.Functions.FontCharset() or 1), 0, 0, 5, 0, Merge.Functions.FontFace and Merge.Functions.FontFace("Sovngarde", "Book Antiqua") or "Book Antiqua")
+    hFont = gdi32.CreateFontA(actualSize, 0, 0, 0, 400, 0, 0, 0, (Merge.Functions.FontCharset and Merge.Functions.FontCharset() or 1), 0, 0, ANTIALIASED_QUALITY, 0, Merge.Functions.FontFace and Merge.Functions.FontFace("Sovngarde", "Book Antiqua") or "Book Antiqua")
     lastFontKey = key
     G.font = hFont
 end
@@ -398,8 +412,9 @@ local function createWindow()
         0, 0, 0, 0, 0, 0, 0, 0)
     if overlayHwnd == 0 then return false end
 
-    user32.SetLayeredWindowAttributes(overlayHwnd, COLOR_KEY, 0, LWA_COLORKEY)
-    user32.ShowWindow(overlayHwnd, SW_SHOWNORMAL)
+    -- Do NOT call SetLayeredWindowAttributes: it prevents UpdateLayeredWindow
+    -- from working until WS_EX_LAYERED is reset. Show only after a valid frame.
+    user32.ShowWindow(overlayHwnd, SW_HIDE)
 
     createFont()
     G.hwnd = overlayHwnd
@@ -447,24 +462,73 @@ local function fillRect(hdc, x, y, w, h, color)
     user32.FillRect(hdc, rectBuf, b)
 end
 
--- the memory bitmap the lines are drawn into, kept between redraws (made anew only when
--- the window size changes; a full-screen bitmap took milliseconds to make) (03.11.26)
-local memDC, memBmp, memOldBmp, memW, memH = 0, 0, 0, 0, 0
-local function getMemDC(wdc, w, h)
-    if memDC ~= 0 and memW == w and memH == h then return memDC end
-    if memDC ~= 0 then
-        gdi32.SelectObject(memDC, memOldBmp)
-        if memBmp ~= 0 then gdi32.DeleteObject(memBmp) end
-        gdi32.DeleteDC(memDC)
-        memDC, memBmp = 0, 0
+-- Two cached DIBs: draw the same glyphs against black and white, then
+-- recover coverage and premultiplied RGB from their difference. No window colour key.
+local blackSurface, whiteSurface = {}, {}
+local function getMemDC(surface, w, h)
+    if surface.dc and surface.w == w and surface.h == h then return surface.dc end
+    if surface.dc then
+        gdi32.SelectObject(surface.dc, surface.old)
+        gdi32.DeleteObject(surface.bmp)
+        gdi32.DeleteDC(surface.dc)
+        surface.dc, surface.bmp, surface.bits = nil, nil, nil
     end
-    local dc = gdi32.CreateCompatibleDC(wdc)
+    local dc = gdi32.CreateCompatibleDC(0)
     if dc == 0 then return 0 end
-    local bmp = gdi32.CreateCompatibleBitmap(wdc, w, h)
-    if bmp == 0 then gdi32.DeleteDC(dc); return 0 end
-    memDC, memBmp, memW, memH = dc, bmp, w, h
-    memOldBmp = gdi32.SelectObject(dc, bmp)
+    for i = 0, 36, 4 do mem.u4[bitmapInfo + i] = 0 end
+    mem.u4[bitmapInfo] = 40
+    mem.i4[bitmapInfo + 4] = w
+    mem.i4[bitmapInfo + 8] = -h
+    mem.u2[bitmapInfo + 12] = 1
+    mem.u2[bitmapInfo + 14] = 32
+    mem.u4[bitmapInfo + 20] = w * h * 4
+    mem.u4[bitsOut] = 0
+    local bmp = gdi32.CreateDIBSection(dc, bitmapInfo, DIB_RGB_COLORS, bitsOut, 0, 0)
+    local pixels = mem.u4[bitsOut]
+    if bmp == 0 or pixels == 0 then
+        if bmp ~= 0 then gdi32.DeleteObject(bmp) end
+        gdi32.DeleteDC(dc)
+        return 0
+    end
+    local old = gdi32.SelectObject(dc, bmp)
+    if old == 0 or old == -1 or old == 0xFFFFFFFF then
+        gdi32.DeleteObject(bmp)
+        gdi32.DeleteDC(dc)
+        return 0
+    end
+    surface.dc, surface.bmp, surface.old = dc, bmp, old
+    surface.w, surface.h, surface.bits = w, h, pixels
     return dc
+end
+
+-- For a composited pixel B on black and W on white, W-B is the
+-- uncovered fraction. B already contains premultiplied RGB. GDI rounding
+-- and gamma may differ slightly by channel, so average and clamp coverage.
+local function recoverPixel(dark, light)
+    dark, light = dark % 0x1000000, light % 0x1000000
+    if dark == 0 and light == 0xFFFFFF then return 0 end
+    if dark == light then return dark + 0xFF000000 end
+    local b, g, r = dark % 256, math.floor(dark / 256) % 256, math.floor(dark / 65536)
+    local wb, wg, wr = light % 256, math.floor(light / 256) % 256, math.floor(light / 65536)
+    local a = math.floor(255 - ((wb-b) + (wg-g) + (wr-r)) / 3 + 0.5)
+    a = math.min(255, math.max(0, a, b, g, r))
+    return dark + a * 0x1000000
+end
+
+local function setPixelAlpha(w, h)
+    gdi32.GdiFlush()
+    if ffiOK then
+        local black = ffi.cast("uint32_t*", blackSurface.bits)
+        local white = ffi.cast("uint32_t*", whiteSurface.bits)
+        for i = 0, w * h - 1 do
+            black[i] = recoverPixel(tonumber(black[i]), tonumber(white[i]))
+        end
+    else
+        for i = 0, w * h * 4 - 4, 4 do
+            local bp, wp = blackSurface.bits + i, whiteSurface.bits + i
+            mem.u4[bp] = recoverPixel(mem.u4[bp], mem.u4[wp])
+        end
+    end
 end
 
 local OUTLINE_COLOR = 0x505050
@@ -496,14 +560,10 @@ end
 
 
 local function clearOverlay()
-    if not ensureWindow() then return end
-    pcall(function()
-        local hdc = user32.GetDC(overlayHwnd)
-        if not hdc or hdc == 0 then return end
-        user32.GetClientRect(overlayHwnd, clientRect)
-        fillRect(hdc, 0, 0, mem.u4[clientRect + 8], mem.u4[clientRect + 12], COLOR_KEY)
-        user32.ReleaseDC(overlayHwnd, hdc)
-    end)
+    -- Hiding an alpha window clears it without a GDI repaint or background flash.
+    if overlayHwnd ~= 0 and user32.IsWindow(overlayHwnd) ~= 0 then
+        user32.ShowWindow(overlayHwnd, SW_HIDE)
+    end
 end
 
 local function syncPosition()
@@ -576,7 +636,7 @@ local function drawOverlay()
     if not ensureWindow() then return end
     syncPosition()
     checkDamageFlush()
-	
+
 	-- Clear old entries in the log after some time
     if overlayActive and messages[0] then
         if os.clock() - lastMessageTime > CONFIG.LogClearDelay then
@@ -587,7 +647,7 @@ local function drawOverlay()
             return
         end
     end
-	
+
     if not overlayActive then
         if needRedraw then
             needRedraw = false
@@ -600,6 +660,8 @@ local function drawOverlay()
     -- closed): redrawing every frame made the text flicker
     if not needRedraw then return end
     needRedraw = false
+    if not messages[0] then clearOverlay(); return end
+    if screenW <= 0 or screenH <= 0 then needRedraw = true; return end
 
     local ch = math.max(1, math.floor(CONFIG.textH * baseScaleY))
     local lineH = math.max(1, math.floor(CONFIG.lineSpacing * baseScaleY))
@@ -623,51 +685,57 @@ local function drawOverlay()
     local n = CONFIG.maxMessages
 
     local ok, err = pcall(function()
-        local wdc = user32.GetDC(overlayHwnd)
-        if not wdc or wdc == 0 then return end
-        user32.GetClientRect(overlayHwnd, clientRect)
-        local w, h = mem.u4[clientRect + 8], mem.u4[clientRect + 12]
+        local w, h = screenW, screenH
+        local hdc = getMemDC(blackSurface, w, h)
+        local whiteDC = getMemDC(whiteSurface, w, h)
+        if hdc == 0 or whiteDC == 0 then error("CreateDIBSection / memory DC failed") end
+        local function render(dc, background)
+            fillRect(dc, 0, 0, w, h, background)
 
-        -- the lines are drawn into a memory bitmap and copied to the window in one step, so
-        -- the window never shows the erased state in between
-        local hdc = getMemDC(wdc, w, h)
-        if hdc == 0 then
-            user32.ReleaseDC(overlayHwnd, wdc)
-            needRedraw = true
-            return
-        end
-        fillRect(hdc, 0, 0, w, h, COLOR_KEY)
+            local oldFont = gdi32.SelectObject(dc, hFont)
+            gdi32.SetBkMode(dc, 1)
 
-        local oldFont = gdi32.SelectObject(hdc, hFont)
-        gdi32.SetBkMode(hdc, 1)
-
-        for i = 0, n - 1 do
-            local entry = messages[i]
-            if entry then
-                local msg, dk
-                if type(entry) == "string" then
-                    msg = entry
-                else
-                    msg = entry.text
-                    dk = entry.damageKind
-                end
-                if msg and msg ~= "" then
-                    local ly = sy + i * lineH
-                    fillRect(hdc, sx, ly, cw, ch, COLOR_KEY)
-                    local baseColor = (dk ~= nil and damageTypeColors[dk]) or CONFIG.newestColor
-                    local color = getLineColor(i, n, baseColor)
-                    drawText(hdc, msg, sx, ly, cw, ch, color)
+            for i = 0, n - 1 do
+                local entry = messages[i]
+                if entry then
+                    local msg, dk
+                    if type(entry) == "string" then
+                        msg = entry
+                    else
+                        msg = entry.text
+                        dk = entry.damageKind
+                    end
+                    if msg and msg ~= "" then
+                        local ly = sy + i * lineH
+                        fillRect(dc, sx, ly, cw, ch, background)
+                        local baseColor = (dk ~= nil and damageTypeColors[dk]) or CONFIG.newestColor
+                        local color = getLineColor(i, n, baseColor)
+                        drawText(dc, msg, sx, ly, cw, ch, color)
+                    end
                 end
             end
-        end
 
-        gdi32.SelectObject(hdc, oldFont)
-        gdi32.BitBlt(wdc, 0, 0, w, h, hdc, 0, 0, SRCCOPY)
-        user32.ReleaseDC(overlayHwnd, wdc)
+            gdi32.SelectObject(dc, oldFont)
+        end
+        render(hdc, 0x000000)
+        render(whiteDC, 0xFFFFFF)
+        setPixelAlpha(w, h)
+        mem.u4[dstPoint], mem.u4[dstPoint + 4] = lastPX, lastPY
+        mem.i4[windowSize], mem.i4[windowSize + 4] = w, h
+        local result = user32.UpdateLayeredWindow(overlayHwnd, 0,
+            dstPoint, windowSize, hdc, srcPoint, 0, blend, ULW_ALPHA)
+        if result == 0 then
+            local code = kernel32.GetLastError()
+            error("UpdateLayeredWindow failed, Win32 error " .. tostring(code))
+        end
+        if user32.IsWindowVisible(overlayHwnd) == 0 then
+            user32.ShowWindow(overlayHwnd, SW_SHOWNA)
+        end
     end)
 
     if not ok then
         MF.LogWarning("%s: draw error: %s", LogId, tostring(err))
+        clearOverlay()
     end
 end
 
