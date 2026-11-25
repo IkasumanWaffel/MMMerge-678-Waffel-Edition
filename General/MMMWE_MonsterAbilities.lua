@@ -58,10 +58,10 @@ local A = {
 	Sundering    = {Group = "Offensive", Name = Tx"Sundering", Mul = 1.25},
 	TwinStrike   = {Group = "Offensive", Name = Tx"Twin Strike", Chance = 0.25},
 	Cleave       = {Group = "Offensive", Name = Tx"Cleave", Share = 0.5},
-	Concussion   = {Group = "Control", Name = Tx"Concussion", Chance = 0.12, Time = 5},   -- minutes knocked out
+	Concussion   = {Group = "Control", Name = Tx"Concussion", Chance = 0.12, Time = 5},   -- minutes between the saves
 	ManaBurn     = {Group = "Control", Name = Tx"Mana Burn", Share = 0.5},
 	Hamstring    = {Group = "Control", Name = Tx"Hamstring", Delay = 60},
-	Terror       = {Group = "Control", Name = Tx"Terror", Chance = 0.10, Time = 15},      -- minutes afraid
+	Terror       = {Group = "Control", Name = Tx"Terror", Chance = 0.10, Time = 15},      -- minutes between the saves
 	Warlord      = {Group = "Pack", Name = Tx"Warlord", DamageMul = 1.2, TakenMul = 0.9},
 	CallForHelp  = {Group = "Pack", Name = Tx"Call for Help", Below = 0.5, Count = 2},
 	-- (22.11.26) a boss's weakness (MMMWE_Bosses.lua does what it does; listed on the card)
@@ -340,11 +340,11 @@ local function runQueue()
 			elseif e.Kind == "slow" then
 				e.Player.RecoveryDelay = e.Player.RecoveryDelay + A.Hamstring.Delay
 			elseif e.Kind == "condition" then
-				-- (25.11.26) for a while only (MMMWE_Conditions.lua), with the time left on the
-				-- portrait bar
+				-- (25.11.26) until a save succeeds, rolled every Time minutes (MMMWE_Conditions.lua),
+				-- with the time to the next roll on the portrait bar
 				if e.Player:IsConscious() and e.Player.Conditions[e.Condition] == 0 then
 					if MF.TimedCondition and e.Time then
-						MF.TimedCondition(e.Player, e.Condition, e.Time * const.Minute)
+						MF.TimedCondition(e.Player, e.Condition, e.Time * const.Minute, true)
 					else
 						e.Player.Conditions[e.Condition] = Game.Time
 					end

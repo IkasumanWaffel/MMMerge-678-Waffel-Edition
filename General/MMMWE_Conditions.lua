@@ -286,7 +286,9 @@ local function runLight(pl)
 	local now = Game.Time
 	for cond, L in pairs(C.Light) do
 		local since = pl.Conditions[cond]
-		if since == 0 or outOfGame(pl) then
+		if since ~= 0 and MF.TimedConditionTill and MF.TimedConditionTill(pl, cond) then
+			-- a timed condition rolls its own saves (runTimed below)
+		elseif since == 0 or outOfGame(pl) then
 			st.Light[cond] = nil
 			if since == 0 then show(pl, cond, 0) end
 		else
@@ -529,11 +531,13 @@ end
 MF.ConditionsScan = scan
 
 ---------------------------------------------------------------------------
--- (25.11.26) timed conditions: set for a while by a monster ability (MMMWE_MonsterAbilities.lua:
--- Concussion, Terror) or a spell backfire (MMMWE_WildMagic.lua) and gone when the time is up,
--- unless something else gave the condition again in between. The portrait bar shows the time
--- left (MF.TimedConditionTill, Global/MMMWE_HPSPDisplay.lua) instead of the time it has lasted.
--- The light conditions' save rolls still go on, so a timed one can end earlier.
+-- (25.11.26) timed conditions, given by a monster ability (MMMWE_MonsterAbilities.lua: Concussion,
+-- Terror) or a spell backfire (MMMWE_WildMagic.lua). The portrait bar shows the time to their
+-- next turn (MF.TimedConditionTill, Global/MMMWE_HPSPDisplay.lua) instead of the time they have
+-- lasted. Something else giving the condition again in between ends the entry.
+--   plain  (backfires): gone when the time is up;
+--   rolled (monster abilities): the light condition's save (C.Light: stat and DC) is rolled
+--          every period instead of the hourly one, and the condition lasts until a roll succeeds.
 ---------------------------------------------------------------------------
 
 local function timedList()
@@ -541,13 +545,15 @@ local function timedList()
 	return vars.MMMWE_TimedConds
 end
 
--- duration in game time; false if the character has the condition already
-function MF.TimedCondition(pl, cond, duration)
+-- duration (rolled: the period between the saves) in game time; false if the character has the
+-- condition already
+function MF.TimedCondition(pl, cond, duration, rolled)
 	if not pl or pl.Conditions[cond] ~= 0 or outOfGame(pl) then return false end
 	pl.Conditions[cond] = Game.Time
 	local till = Game.Time + duration
 	local list = timedList()
-	list[#list + 1] = {pi = pl:GetIndex(), c = cond, set = pl.Conditions[cond], till = till}
+	list[#list + 1] = {pi = pl:GetIndex(), c = cond, set = pl.Conditions[cond], till = till,
+		period = rolled and C.Light[cond] and duration or nil}
 	local d = debuffOf(pl, cond)
 	if d and d.ExpireTime < till then d.ExpireTime = till end
 	return true
@@ -572,9 +578,20 @@ local function runTimed()
 		if not pl or pl.Conditions[e.c] ~= e.set then
 			table.remove(list, i)            -- cured, or given again by something else
 		elseif Game.Time >= e.till then
-			pl.Conditions[e.c] = 0
-			show(pl, e.c, 0)
-			table.remove(list, i)
+			local L = e.period and C.Light[e.c]
+			local cured = true
+			while L and Game.Time >= e.till do
+				if rnd(20) + statFx(pl, L.Stat) >= L.DC then break end
+				e.till = e.till + e.period
+			end
+			if L and Game.Time < e.till then cured = false end
+			if cured then
+				pl.Conditions[e.c] = 0
+				show(pl, e.c, 0)
+				table.remove(list, i)
+			else
+				show(pl, e.c, e.till)
+			end
 		end
 	end
 end
