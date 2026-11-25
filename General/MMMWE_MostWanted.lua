@@ -4,7 +4,7 @@
 	Besides the monthly bounty on one monster (BountyHunt.lua), every town hall posts a bounty
 	on a band of renegades who have turned on their own: troops of the usually good side (elves,
 	soldiers, knights, monks, priests of the Sun, dwarves, wizards, angels...) or, since 25.11.26,
-	of the dark side (dark elves, necromancers, priests of the Moon and of Baa, dark dwarves).
+	of the dark side (dark elves, necromancers, priests of the Moon and of Baa, dark dwarves, death knights).
 	The side is picked first (half and half), then a kind of it. The band is
 	placed on the town's map when the month's bounty is first read; the bounty is paid at the
 	town hall once every one of them is dead, and lapses at the end of the month.
@@ -50,6 +50,7 @@ local DARK = {
 	214,   -- Acolyte, Cleric, Priest of the Moon
 	490,   -- Acolyte, Cleric, Priest of Baa
 	175,   -- Dark Dwarf Grunt, Pounder, Berserker
+	565,   -- Death Knight, Doom Knight, Cuisinart
 }
 local KINDS = {}
 for _, t in ipairs{LIGHT, DARK} do for _, v in ipairs(t) do KINDS[#KINDS + 1] = v end end
