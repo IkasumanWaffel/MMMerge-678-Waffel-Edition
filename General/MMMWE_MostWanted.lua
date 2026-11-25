@@ -2,8 +2,10 @@
 	MMMWE_MostWanted.lua (23.11.26): "Most Wanted" - the town halls' bounty on a renegade band.
 
 	Besides the monthly bounty on one monster (BountyHunt.lua), every town hall posts a bounty
-	on a band of renegades: troops of the usually good side (elves, soldiers, knights, monks,
-	priests of the Sun, dwarves, wizards, angels...) who have turned on their own. The band is
+	on a band of renegades who have turned on their own: troops of the usually good side (elves,
+	soldiers, knights, monks, priests of the Sun, dwarves, wizards, angels...) or, since 25.11.26,
+	of the dark side (dark elves, necromancers, priests of the Moon and of Baa, dark dwarves).
+	The side is picked first (half and half), then a kind of it. The band is
 	placed on the town's map when the month's bounty is first read; the bounty is paid at the
 	town hall once every one of them is dead, and lapses at the end of the month.
 
@@ -28,7 +30,7 @@ local S = {
 MF.MostWantedSettings = S
 
 -- the A line of each kind (B = +1, C = +2)
-local KINDS = {
+local LIGHT = {
 	250,   -- Elven Warrior, Defender, Lancer
 	247,   -- Elven Archer, Scout, Ranger
 	253,   -- Conscript, Soldier, Fighter
@@ -41,6 +43,21 @@ local KINDS = {
 	292,   -- Sorcerer, Wizard, Archmage
 	199,   -- Angel, Angel Lord, Archangel
 }
+local DARK = {
+	25,    -- Dark Elven Warrior, Defender, Crusader
+	55,    -- Dark Path Journeyman, Necromancer, Master Necromancer
+	307,   -- Necromancer, Speaker for the Dead, Queen of the Dead
+	214,   -- Acolyte, Cleric, Priest of the Moon
+	490,   -- Acolyte, Cleric, Priest of Baa
+	175,   -- Dark Dwarf Grunt, Pounder, Berserker
+}
+local KINDS = {}
+for _, t in ipairs{LIGHT, DARK} do for _, v in ipairs(t) do KINDS[#KINDS + 1] = v end end
+
+-- every line of every Most Wanted kind (the ordinary bounty hunt leaves these out)
+local IS_WANTED = {}
+for _, base in ipairs(KINDS) do for t = 0, 2 do IS_WANTED[base + t] = true end end
+function MF.IsMostWantedKind(id) return IS_WANTED[id] == true end
 
 local TEXT = {
 	Wanted = Tx"Most Wanted: a band of %d renegades (%s) who have turned on their own and now prey on the roads near here. Reward for the whole band: %d gold.",
@@ -57,10 +74,10 @@ local function partyLevel()
 end
 
 -- the strongest line of a random kind the party is ready for
-local function pickKind()
+local function pickFrom(list)
 	local pl = partyLevel()
 	local options = {}
-	for _, base in ipairs(KINDS) do
+	for _, base in ipairs(list) do
 		local best
 		for t = 0, 2 do
 			local txt = Game.MonstersTxt[base + t]
@@ -68,8 +85,14 @@ local function pickKind()
 		end
 		if best then options[#options + 1] = best end
 	end
-	if #options == 0 then options = {KINDS[random(#KINDS)]} end
+	if #options == 0 then return nil end
 	return options[random(#options)]
+end
+
+local function pickKind()
+	local first, second = LIGHT, DARK
+	if random(2) == 2 then first, second = DARK, LIGHT end
+	return pickFrom(first) or pickFrom(second) or KINDS[random(#KINDS)]
 end
 
 local function plural(id) return Game.MonstersTxt[id].Name end

@@ -51,15 +51,41 @@ local function AddBountyHuntReward(Gold, NoGold)
 end
 BountyHuntFunctions.AddBountyHuntReward = AddBountyHuntReward
 
+-- (25.11.26, MMMWE) Not a bounty: harmless creatures (peasants, pets, fish), the Most Wanted
+-- renegade kinds (MMMWE_MostWanted.lua posts those itself), unique monsters and filler rows.
+-- IsMonsterOfKind is tested for any nonzero answer (the game's own answer for a set flag
+-- need not be 1, so the old "== 1" test could let peasants through).
+local NoBounty = {}
+for i = 178, 180 do NoBounty[i] = true end   -- Fish
+for i = 457, 474 do NoBounty[i] = true end   -- Tolberti, Robert the Wise, Blaster Guy, Mega-Dragons; cats, chickens, dogs, rats
+for i = 646, 654 do NoBounty[i] = true end   -- Demon Queen, Reactors, cacti, fillers
+NoBounty[658] = true                         -- filler row
+NoBounty[567] = true                         -- Cuisinart
+BountyHuntFunctions.NoBounty = NoBounty
+
+local function KindSet(i, kind)
+	local r = kind and Game.IsMonsterOfKind(i, kind)
+	return r ~= nil and r ~= 0 and r ~= false
+end
+
+local function BountyAllowed(i, v)
+	if NoBounty[i] then return false end
+	if (v.Name or ""):lower():find("peasant", 1, true) then return false end
+	local MK = const.MonsterKind
+	if KindSet(i, MK.NoArena) or KindSet(i, MK.Peasant) then return false end
+	local MF = Merge and Merge.Functions
+	if MF and MF.IsMostWantedKind and MF.IsMostWantedKind(i) then return false end
+	return true
+end
+BountyHuntFunctions.BountyAllowed = BountyAllowed
+
 local function MonstersForBountyHunt(MaxLevel)
 	local list = {}
 	local append = table.insert
 	MaxLevel = MaxLevel or Party[0].LevelBase + 20
 
 	for i, v in Game.MonstersTxt do
-		if v.Level > MaxLevel or Game.IsMonsterOfKind(i, const.MonsterKind.NoArena) == 1 then
-			-- skip
-		else
+		if i > 0 and v.Level <= MaxLevel and BountyAllowed(i, v) then
 			append(list, i)
 		end
 	end
