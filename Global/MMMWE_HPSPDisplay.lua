@@ -174,6 +174,7 @@ local debuffExtraLabels = {
     [31] = {label = Tx"Earth Res Drain", color = 0x887744},
     [32] = {label = Tx"Light Res Drain", color = 0xFAFAFA},
     [33] = {label = Tx"Lycanthropy", color = 0x8B5A2B},   -- MMMWE_Werewolves.lua
+    [34] = {label = Tx"Ill Luck", color = 0x6A3A8B},      -- a backfired Dark spell (MMMWE_WildMagic.lua)
 }
 
 -- Extra buffs2 colors
@@ -538,7 +539,12 @@ pcall(function()
                         local since
                         if info.id <= 16 then
                             local c = player.Conditions[info.id]
-                            if c and c ~= 0 and c <= Game.Time then
+                            -- (25.11.26) a timed condition (a monster ability, a backfire) shows
+                            -- the time left instead
+                            local till = MF.TimedConditionTill and MF.TimedConditionTill(player, info.id)
+                            if till and till > Game.Time then
+                                since = formatTime(till, Game.Time)
+                            elseif c and c ~= 0 and c <= Game.Time then
                                 since = formatElapsed(c, Game.Time)
                             end
                         end

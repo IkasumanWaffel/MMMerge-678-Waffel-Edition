@@ -58,10 +58,10 @@ local A = {
 	Sundering    = {Group = "Offensive", Name = Tx"Sundering", Mul = 1.25},
 	TwinStrike   = {Group = "Offensive", Name = Tx"Twin Strike", Chance = 0.25},
 	Cleave       = {Group = "Offensive", Name = Tx"Cleave", Share = 0.5},
-	Concussion   = {Group = "Control", Name = Tx"Concussion", Chance = 0.12},
+	Concussion   = {Group = "Control", Name = Tx"Concussion", Chance = 0.12, Time = 5},   -- minutes knocked out
 	ManaBurn     = {Group = "Control", Name = Tx"Mana Burn", Share = 0.5},
 	Hamstring    = {Group = "Control", Name = Tx"Hamstring", Delay = 60},
-	Terror       = {Group = "Control", Name = Tx"Terror", Chance = 0.10},
+	Terror       = {Group = "Control", Name = Tx"Terror", Chance = 0.10, Time = 15},      -- minutes afraid
 	Warlord      = {Group = "Pack", Name = Tx"Warlord", DamageMul = 1.2, TakenMul = 0.9},
 	CallForHelp  = {Group = "Pack", Name = Tx"Call for Help", Below = 0.5, Count = 2},
 	-- (22.11.26) a boss's weakness (MMMWE_Bosses.lua does what it does; listed on the card)
@@ -310,11 +310,11 @@ function events.CalcDamageToPlayer(t)
 	end
 	if has(r, "Concussion") and random() < A.Concussion.Chance then
 		Queue[#Queue + 1] = {Kind = "condition", Player = pl, Condition = const.Condition.Asleep,
-			Text = string.format(Tx"%s is knocked out!", pl.Name)}
+			Time = A.Concussion.Time, Text = string.format(Tx"%s is knocked out!", pl.Name)}
 	end
 	if has(r, "Terror") and random() < A.Terror.Chance then
 		Queue[#Queue + 1] = {Kind = "condition", Player = pl, Condition = const.Condition.Afraid,
-			Text = string.format(Tx"%s is terrified!", pl.Name)}
+			Time = A.Terror.Time, Text = string.format(Tx"%s is terrified!", pl.Name)}
 	end
 end
 
@@ -340,8 +340,14 @@ local function runQueue()
 			elseif e.Kind == "slow" then
 				e.Player.RecoveryDelay = e.Player.RecoveryDelay + A.Hamstring.Delay
 			elseif e.Kind == "condition" then
+				-- (25.11.26) for a while only (MMMWE_Conditions.lua), with the time left on the
+				-- portrait bar
 				if e.Player:IsConscious() and e.Player.Conditions[e.Condition] == 0 then
-					e.Player.Conditions[e.Condition] = Game.Time
+					if MF.TimedCondition and e.Time then
+						MF.TimedCondition(e.Player, e.Condition, e.Time * const.Minute)
+					else
+						e.Player.Conditions[e.Condition] = Game.Time
+					end
 					status(e.Text)
 				end
 			elseif e.Kind == "summon" then

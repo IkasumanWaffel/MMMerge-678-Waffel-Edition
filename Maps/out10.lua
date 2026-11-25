@@ -42,3 +42,32 @@ for n, dest in pairs(Thunderfist) do
 		evt.MoveToMap(dest)
 	end
 end
+
+-- (MMMWE 25.11.26) the three buildings added to the town: MM7's unused Nighon houses (the town
+-- hall and the bank had their rows in 2DEvents.txt, map 69, but no building) and a spare
+-- alchemist's shop. The door facets of the new models get their events here.
+local NewDoors = {
+	{Model = "13rp_temple_N_1", Facets = {28, 53}, Event = 31, House = 207},  -- Hall of Midnight (town hall)
+	{Model = "Human", Facets = {39}, Event = 32, House = 290},                -- Frozen Assets (bank)
+	{Model = "13rp_alchemistN", Facets = {11}, Event = 33, House = 126},      -- alchemist's shop
+}
+for _, d in ipairs(NewDoors) do
+	evt.HouseDoor(d.Event, d.House)
+end
+
+function events.AfterLoadMap()
+	for _, d in ipairs(NewDoors) do
+		for _, m in Map.Models do
+			if m.Name == d.Model then
+				for _, k in ipairs(d.Facets) do
+					local f = k < m.Facets.count and m.Facets[k]
+					if f then
+						f.Event = d.Event
+						pcall(function() f.TriggerByClick = true end)
+					end
+				end
+				break
+			end
+		end
+	end
+end

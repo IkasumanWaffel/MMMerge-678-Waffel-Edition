@@ -3706,3 +3706,6 @@ Your loan is overdue! The bank took %d gold from your savings; %d gold is still 
 # Global/MMMWE_BankLoans.lua (bank)
 Debt collectors from the bank are after you: you owe %d gold!	За вами идут сборщики долгов банка: вы должны %d золотых!
 
+# Global/MMMWE_HPSPDisplay.lua (debuff: a backfired Dark spell)
+Ill Luck	Невезение
+

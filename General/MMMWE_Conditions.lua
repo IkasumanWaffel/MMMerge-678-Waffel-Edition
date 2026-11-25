@@ -465,12 +465,17 @@ end
 ---------------------------------------------------------------------------
 
 local DaysToTravel = 0
+-- (25.11.26) WalkToMap fires when the game offers the walk to the next map, before the party
+-- agrees: a refused walk left its days behind, and the next map change (into a dungeon, say)
+-- was taken for a walk of that many days. The walk now counts only if the time has passed.
+local TravelStart
 local NoWeaknessHouseTypes = {[24] = true, [25] = true, [27] = true, [28] = true}
 
 function events.WalkToMap(t)
 	vars.RemainingFood = Party.Food
 	vars.WeaknessCounter = vars.WeaknessCounter or {0, 0, 0, 0, 0}
 	DaysToTravel = t.Days
+	TravelStart = Game.Time
 	for _, pl in Party do
 		vars.WeaknessCounter[pl:GetSlot() + 1] = pl.Conditions[CO.Weak]
 	end
@@ -523,6 +528,57 @@ local function scan()
 end
 MF.ConditionsScan = scan
 
+---------------------------------------------------------------------------
+-- (25.11.26) timed conditions: set for a while by a monster ability (MMMWE_MonsterAbilities.lua:
+-- Concussion, Terror) or a spell backfire (MMMWE_WildMagic.lua) and gone when the time is up,
+-- unless something else gave the condition again in between. The portrait bar shows the time
+-- left (MF.TimedConditionTill, Global/MMMWE_HPSPDisplay.lua) instead of the time it has lasted.
+-- The light conditions' save rolls still go on, so a timed one can end earlier.
+---------------------------------------------------------------------------
+
+local function timedList()
+	vars.MMMWE_TimedConds = vars.MMMWE_TimedConds or {}
+	return vars.MMMWE_TimedConds
+end
+
+-- duration in game time; false if the character has the condition already
+function MF.TimedCondition(pl, cond, duration)
+	if not pl or pl.Conditions[cond] ~= 0 or outOfGame(pl) then return false end
+	pl.Conditions[cond] = Game.Time
+	local till = Game.Time + duration
+	local list = timedList()
+	list[#list + 1] = {pi = pl:GetIndex(), c = cond, set = pl.Conditions[cond], till = till}
+	local d = debuffOf(pl, cond)
+	if d and d.ExpireTime < till then d.ExpireTime = till end
+	return true
+end
+
+-- when a timed condition ends (nil if the character's condition isn't a timed one)
+function MF.TimedConditionTill(pl, cond)
+	local list = vars and vars.MMMWE_TimedConds
+	if not list or not pl then return nil end
+	local pi = pl:GetIndex()
+	for _, e in ipairs(list) do
+		if e.pi == pi and e.c == cond and pl.Conditions[cond] == e.set then return e.till end
+	end
+end
+
+local function runTimed()
+	local list = vars and vars.MMMWE_TimedConds
+	if not list then return end
+	for i = #list, 1, -1 do
+		local e = list[i]
+		local pl = Party.PlayersArray[e.pi]
+		if not pl or pl.Conditions[e.c] ~= e.set then
+			table.remove(list, i)            -- cured, or given again by something else
+		elseif Game.Time >= e.till then
+			pl.Conditions[e.c] = 0
+			show(pl, e.c, 0)
+			table.remove(list, i)
+		end
+	end
+end
+
 -- cures show at once: a cured condition's status timer goes away in the same frame, and
 -- the rest screen is noted for the rest's cure chance
 local TickN = 0
@@ -546,6 +602,7 @@ end
 function events.Tick()
 	TickN = TickN + 1
 	if TickN % 5 == 0 then pcall(clearCured) end
+	if TickN % 16 == 0 then pcall(runTimed) end
 end
 
 local ScanTimer
@@ -556,7 +613,9 @@ function events.AfterLoadMap()
 	vars.StatLossNext = nil   -- the old hourly stat loss
 
 	-- weakness from food running out on the way
-	if Party.Food == 0 and DaysToTravel > vars.RemainingFood then
+	local walked = TravelStart and DaysToTravel > 0 and Map.IsOutdoor()
+		and Game.Time - TravelStart >= DaysToTravel * const.Day - const.Hour * 12
+	if walked and Party.Food == 0 and DaysToTravel > vars.RemainingFood then
 		for _, pl in Party do
 			local i = pl:GetSlot() + 1
 			if vars.WeaknessCounter[i] == 0 and pl.Conditions[CO.Dead] == 0
@@ -570,6 +629,7 @@ function events.AfterLoadMap()
 		end
 	end
 	DaysToTravel = 0
+	TravelStart = nil
 
 	scan()   -- settles the time spent on the way
 	if ScanTimer then RemoveTimer(ScanTimer) end

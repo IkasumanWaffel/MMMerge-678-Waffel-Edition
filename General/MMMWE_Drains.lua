@@ -60,13 +60,17 @@ local RES_STAT = {Fire = ST.FireResistance, Air = ST.AirResistance, Water = ST.W
 
 -- monster id -> list of drains (one is picked at random per proc)
 local DRAINERS = {}
-local function add(ids, what)
-	for _, id in ipairs(ids) do DRAINERS[id] = what end
+local ODDS = {}       -- monster id -> {Base = %, ACSave = share of AC} (else BASE_CHANCE, AC_SAVE)
+local function add(ids, what, odds)
+	for _, id in ipairs(ids) do DRAINERS[id] = what; ODDS[id] = odds end
 end
 add({52, 53, 54, 415, 416, 417},       {"Might", "Endurance"})                  -- vampires
 add({487, 488, 489},                   {"Endurance", "Intellect", "Personality"}) -- MM6 bloodsuckers
 add({151, 152, 153},                   STATS)                                   -- MM8 nightmares
-add({310, 311, 312, 589, 590, 591},    {"ArmorClass"})                          -- oozes
+-- (25.11.26) oozes: corrosion is what they are about, so it comes more often and armor
+-- resists it less (with BASE_CHANCE and half the AC as the save a well-armored party saw it
+-- on one ooze hit in ten or fewer)
+add({310, 311, 312, 589, 590, 591},    {"ArmorClass"}, {Base = 50, ACSave = 0.25})  -- oozes
 add({73, 74, 75, 240, 531},            {"Fire"})                                -- fire elementals
 add({82, 83, 84, 234, 525},            {"Air"})                                 -- air elementals
 add({76, 77, 78, 246, 534},            {"Water"})                               -- water elementals
@@ -137,10 +141,10 @@ end
 -- applying a drain
 ---------------------------------------------------------------------------
 
-local function saveValue(pl, what, b)
+local function saveValue(pl, what, b, odds)
 	if RES_STAT[what] then return math.max(pl:GetBaseResistance(RES_STAT[what]), 0) end
 	if what == "ArmorClass" then
-		return (pl:GetArmorClass() + (active(b) and b.Power or 0)) * AC_SAVE
+		return (pl:GetArmorClass() + (active(b) and b.Power or 0)) * (odds and odds.ACSave or AC_SAVE)
 	end
 	return math.max(statValue(pl, what), 0)
 end
@@ -155,6 +159,11 @@ local function applyDrain(pl, what)
 	elseif what == "ArmorClass" then
 		local acClean = pl:GetArmorClass() + cur
 		amount = corrosionFor(pl, acClean, count + 1)
+		-- (25.11.26) the formula gives nothing where it doesn't hold (armor so durable that its
+		-- hit resistance passes 205, a party with no AC): then 5% of the clean AC a corrosion
+		if amount <= cur and acClean > cur then
+			amount = math.min(acClean, cur + math.max(1, math.ceil(acClean * AC_STEP)))
+		end
 	else
 		amount = cur + statDrainAmount(statValue(pl, what))
 	end
@@ -210,8 +219,9 @@ local function onHit(t)
 	local what = list[math.random(#list)]
 	local b = debuffs(pl)[SLOT[what]]
 	local level = math.max(mon.Level or 1, 1)
-	local save = saveValue(pl, what, b)
-	local chance = BASE_CHANCE * (level + 30) / (level + 30 + save)
+	local odds = ODDS[mon.Id]
+	local save = saveValue(pl, what, b, odds)
+	local chance = (odds and odds.Base or BASE_CHANCE) * (level + 30) / (level + 30 + save)
 	local roll = math.random() * 100
 	if TEST == "always" then roll = 0 end
 	if roll >= chance then

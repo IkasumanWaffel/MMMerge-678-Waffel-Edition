@@ -95,6 +95,11 @@ end
 
 -- a condition that wears off after the given minutes (if nothing else set it again)
 local function timedCondition(pl, cond, minutes)
+	-- (25.11.26) through MMMWE_Conditions.lua: the portrait bar shows the time left
+	if MF.TimedCondition then
+		MF.TimedCondition(pl, cond, minutes * const.Minute)
+		return
+	end
 	if pl.Conditions[cond] ~= 0 then return end
 	pl.Conditions[cond] = Game.Time
 	local s = store()
@@ -102,10 +107,22 @@ local function timedCondition(pl, cond, minutes)
 		till = Game.Time + minutes * const.Minute}
 end
 
+-- (25.11.26) the Luck penalty is the player debuff 34, "Ill Luck" (Structs/30_MergeStructs.lua):
+-- it is listed with its timer among the debuffs and saved with them. Before, it was kept in vars
+-- only, with nothing to show it (the backfire seemed to have no Luck penalty at all).
+local ILL_LUCK = 34
+local function illLuck(pl)
+	local ok, b = pcall(function() return Game.PlayersExtra[pl:GetIndex()].Debuffs[ILL_LUCK] end)
+	return ok and b or nil
+end
+
 local function darkDrain(pl, minutes)
-	local s = store()
-	s.Dark = s.Dark or {}
-	s.Dark[pl:GetIndex()] = Game.Time + minutes * const.Minute
+	local b = illLuck(pl)
+	if not b then return end
+	local till = Game.Time + minutes * const.Minute
+	if b.ExpireTime < till then b.ExpireTime = till end
+	b.Power = -W.DARK_LUCK
+	b.Skill = 1
 end
 
 local nextCheck = 0
@@ -121,18 +138,13 @@ function events.Tick()
 			table.remove(s.Timed, i)
 		end
 	end
-	if s.Dark then
-		for pi, till in pairs(s.Dark) do
-			if Game.Time >= till then s.Dark[pi] = nil end
-		end
-	end
+	s.Dark = nil   -- the old store (saves from before 25.11.26)
 end
 
-function events.CalcStatBonusByItems(t)
-	if t.Stat ~= const.Stats.Luck or not t.Player or not vars or not vars.MMMWE_WildMagic then return end
-	local d = vars.MMMWE_WildMagic.Dark
-	local till = d and d[t.Player:GetIndex()]
-	if till and Game.Time < till then t.Result = t.Result + W.DARK_LUCK end
+function events.CalcStatBonusByMagic(t)
+	if t.Stat ~= const.Stats.Luck or not t.Player then return end
+	local b = illLuck(t.Player)
+	if b and b.ExpireTime > Game.Time and b.Power > 0 then t.Result = t.Result - b.Power end
 end
 
 -- damage of an element; out of Hardcore mode it leaves at least 1 HP
