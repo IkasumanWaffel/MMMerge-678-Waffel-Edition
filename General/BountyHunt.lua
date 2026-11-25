@@ -60,7 +60,6 @@ for i = 178, 180 do NoBounty[i] = true end   -- Fish
 for i = 457, 474 do NoBounty[i] = true end   -- Tolberti, Robert the Wise, Blaster Guy, Mega-Dragons; cats, chickens, dogs, rats
 for i = 646, 654 do NoBounty[i] = true end   -- Demon Queen, Reactors, cacti, fillers
 NoBounty[658] = true                         -- filler row
-NoBounty[567] = true                         -- Cuisinart
 BountyHuntFunctions.NoBounty = NoBounty
 
 local function KindSet(i, kind)
