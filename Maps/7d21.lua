@@ -1,5 +1,5 @@
 -- White Cliff Cave
--- (MMMWE 25.11.26) small trolls (MM7's unused 7m452 sprites; monsters 655-657: Troll Runt,
+-- (MMMWE 25.11.26) small trolls (MM7's small troll sprites m461, which the Swamp Troll only shows enlarged; monsters 655-657: Troll Runt,
 -- Troll Brawler, Troll Bruiser) live here alongside the oozes: on every refill a few bands are
 -- put at the cave's monster spawn points, mostly runts, some brawlers, a rare bruiser.
 
