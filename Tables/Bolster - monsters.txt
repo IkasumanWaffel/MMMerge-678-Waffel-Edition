@@ -651,4 +651,9 @@
 649	Cactus	Creature		Neutral		Speed	0	x	-	-	-	-	-			225
 650	Cactus	Creature		Neutral		Speed	0	x	-	-	-	-	-			225
 651	Cactus	Creature		Neutral		Speed	0	x	-	-	-	-	-			225
+653	Reactor	Immobile	NoArena	Neutral		Endurance	0	x	x	-	-	-	-			225
+654	Reactor	Immobile	NoArena	Neutral		Endurance	0	x	x	-	-	-	-			225
+655	Troll Runt	Troll	Ogre	Neutral		Endurance	0	-	-	-	-	-	-			225
+656	Troll Brawler	Troll	Ogre	Neutral		Endurance	0	-	-	-	-	-	-			225
+657	Troll Bruiser	Troll	Ogre	Neutral		Endurance	0	-	-	-	-	-	-			225
 																

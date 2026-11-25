@@ -651,3 +651,8 @@
 650	Cactus	Cactus	-15	15	-5	0	Cactus	Piercing
 651	Cactus	Cactus	-15	15	-5	0	Cactus	Piercing
 652	Reactor	zReactor	30	30	-20	Imm	Stone/metal	Blunt
+653	Reactor	zReactor	30	30	-20	Imm	Stone/metal	Blunt
+654	Reactor	zReactor	30	30	-20	Imm	Stone/metal	Blunt
+655	Troll Runt	STroll	10	-5	5	5	-	Blunt
+656	Troll Brawler	STroll	10	-5	5	10	-	Blunt
+657	Troll Bruiser	STroll	10	-5	5	15	-	Blunt

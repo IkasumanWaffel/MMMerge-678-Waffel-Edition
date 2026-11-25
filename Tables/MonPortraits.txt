@@ -216,3 +216,5 @@
 215	1021	Wolfman
 216	0	Reactor
 217	0	Cactus
+218	0	Reactor
+219	1359	Troll Runt

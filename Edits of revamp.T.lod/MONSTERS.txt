@@ -654,3 +654,8 @@ Default Monster Data					Stats								Movement and Combat					Attack 1			Attack 
 650	Cactus	Cactus B	40	280	30	50	0	0	Y	Free	Aggress	4	300	60	0	Afraid	Phys	6D6	0	0	0	0	0	20	"Deadly Swarm,N,2"	0	0	50	50	50	50	Imm	Imm	Imm	0	11	0	0
 651	Cactus	Cactus C	50	400	35	50	0	0	Y	Free	Aggress	4	300	50	0	Insane	Phys	7D6	0	0	0	0	0	20	"Deadly Swarm,N,2"	0	0	62	62	62	62	Imm	Imm	Imm	0	15	0	"Summon,air,Cactus A"
 652	Reactor	zReactor	100	1300	40	11000	0	0	N	Short	Suicidal	4	0	60	0	0	Ener	20D5+20	Ener	0	0	0	0	0	0	0	0	Imm	Imm	Imm	Imm	Imm	Imm	Imm	Imm	Imm	Imm	0
+653	Reactor	zReactor	100	1300	40	11000	0	0	N	Short	Suicidal	4	0	60	0	0	Ener	20D5+20	Ener	0	0	0	0	0	0	0	0	Imm	Imm	Imm	Imm	Imm	Imm	Imm	Imm	Imm	Imm	0
+654	Reactor	zReactor	100	1300	40	11000	0	0	N	Short	Suicidal	4	0	60	0	0	Ener	20D5+20	Ener	0	0	0	0	0	0	0	0	Imm	Imm	Imm	Imm	Imm	Imm	Imm	Imm	Imm	Imm	0
+655	Troll Runt	STroll A	5	19	6	70	2D10	1	N	Med	Normal	4	200	100	0	0	Phys	1D6+1	0	0	0	0	0	0	0	0	0	0	0	7	0	0	0	7	0	0	5	0
+656	Troll Brawler	STroll B	9	35	9	180	3D10	1	N	Med	Aggress	4	210	95	0	0	Phys	2D4+3	0	0	0	0	0	0	0	0	0	0	0	7	0	0	0	7	0	0	10	0
+657	Troll Bruiser	STroll C	14	61	14	336	4D10	1	N	Med	Aggress	4	220	90	0	0	Phys	2D6+5	0	0	0	0	0	0	0	0	0	0	0	7	0	0	0	7	0	0	15	0

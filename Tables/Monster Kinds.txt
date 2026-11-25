@@ -652,3 +652,8 @@ Monster	Undead	Dragon	Swimmer	Immobile	Peasant	NoArena	Ogre	Elemental
 650 Cactus B	-	-	-	-	-	-	-	-
 651 Cactus C	-	-	-	-	-	-	-	-
 652 zReactor	-	-	x	-	-	-	-	-
+653 zReactor	-	-	x	-	-	-	-	-
+654 zReactor	-	-	x	-	-	-	-	-
+655 STroll A	-	-	-	-	-	-	x	-
+656 STroll B	-	-	-	-	-	-	x	-
+657 STroll C	-	-	-	-	-	-	x	-
