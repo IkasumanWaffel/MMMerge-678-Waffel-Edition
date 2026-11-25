@@ -312,16 +312,39 @@ topic("AmountAll", "DepositAmount", 3, {
 })
 topic("AmountBack", "DepositAmount", 5, {Texts = {Topic = Tx"Back"}, Execute = function() ExitQuestBranch() end})
 
--- the clerk joins the banker when the party walks into a bank
-function events.OnEnterShop(t)
-	local h = Game.Houses[t.HouseId]
-	if not h or h.Type ~= const.HouseType.Bank then return end
+-- the clerk joins the banker: he is put into the bank of the map on every map load (as
+-- NPCMercenaries.lua puts the mercenaries into the taverns), and into the bank the party
+-- walks into if the map has more than one
+local function prepareClerk()
 	local npc = Game.NPC[B.Clerk]
 	local name = Tx"Bank Clerk"
 	if npc.Name ~= name then npc.Name = name end
 	npc.Pic = B.ClerkPic
 	for i = 0, 5 do npc.Events[i] = 0 end
-	if npc.House ~= t.HouseId then npc.House = t.HouseId end
+end
+
+local function mapBank()
+	for i, v in Game.HousesExtra do
+		if v.Map == Map.MapStatsIndex and Game.Houses[i].Type == const.HouseType.Bank then
+			return i
+		end
+	end
+end
+
+local function placeClerk(house)
+	if not house then return end
+	prepareClerk()
+	if Game.NPC[B.Clerk].House ~= house then evt.MoveNPC{B.Clerk, house} end
+end
+
+function events.LoadMap()
+	local ok, err = pcall(function() placeClerk(mapBank()) end)
+	if not ok and MF.LogWarning then MF.LogWarning("MMMWE bank clerk: " .. tostring(err)) end
+end
+
+function events.OnEnterShop(t)
+	local h = Game.Houses[t.HouseId]
+	if h and h.Type == const.HouseType.Bank then pcall(placeClerk, t.HouseId) end
 end
 
 ---------------------------------------------------------------------------
