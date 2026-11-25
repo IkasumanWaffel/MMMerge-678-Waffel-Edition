@@ -3586,3 +3586,96 @@ You pick %s (%d).
 # General/MMMWE_HerbShrubs.lua (herb shrubs)
 You pick %s.	
 
+# Global/MMMWE_BankLoans.lua (bank)
+[The clerk counts out %d gold] Sign here. You owe the bank %d gold, due by %s. Repay at any of our banks. A word of advice: the bank always collects.	
+
+# Global/MMMWE_BankLoans.lua (bank)
+You owe %d gold, and you have only %d with you and %d in your account.	
+
+# Global/MMMWE_BankLoans.lua (bank)
+The loan is repaid in full: %d gold. It is a pleasure to do business with you.	
+
+# Global/MMMWE_BankLoans.lua (bank)
+%d gold paid. You still owe %d gold.	
+
+# Global/MMMWE_BankLoans.lua (bank)
+You already have %d deposits with us. Wait until one of them ends.	
+
+# Global/MMMWE_BankLoans.lua (bank)
+%d gold deposited for %d month(s). On %s, %d gold will go into your account.	
+
+# Global/MMMWE_BankLoans.lua (bank)
+%d deposit(s) closed before their term: %d gold back, without interest.	
+
+# Global/MMMWE_BankLoans.lua (bank)
+Our terms for you here: loans up to %d gold for %d months at %s%% a year; term deposits at %s%% (1 month), %s%% (3), %s%% (6), %s%% (12) a year.	
+
+# Global/MMMWE_BankLoans.lua (bank)
+With your reputation hereabouts, the bank lends you nothing.	
+
+# Global/MMMWE_BankLoans.lua (bank)
+Your loan is OVERDUE: %d gold, and it grows every week.	
+
+# Global/MMMWE_BankLoans.lua (bank)
+Your loan: %d gold, due by %s.	
+
+# Global/MMMWE_BankLoans.lua (bank)
+Deposit: %d gold for %d month(s), %d gold on %s.	
+
+# Global/MMMWE_BankLoans.lua (bank)
+Loans and term deposits, at your service. Every bank of ours keeps the same books.	
+
+# Global/MMMWE_BankLoans.lua (bank)
+Loans	
+
+# Global/MMMWE_BankLoans.lua (bank)
+Term deposits	
+
+# Global/MMMWE_BankLoans.lua (bank)
+Our terms and your accounts	
+
+# Global/MMMWE_BankLoans.lua (bank)
+Borrow %d gold	
+
+# Global/MMMWE_BankLoans.lua (bank)
+Ask for a loan	
+
+# Global/MMMWE_BankLoans.lua (bank)
+I am sorry. With your reputation hereabouts, the bank cannot lend you anything.	
+
+# Global/MMMWE_BankLoans.lua (bank)
+Repay everything (%d gold)	
+
+# Global/MMMWE_BankLoans.lua (bank)
+Pay what I carry (%d gold)	
+
+# Global/MMMWE_BankLoans.lua (bank)
+Back	
+
+# Global/MMMWE_BankLoans.lua (bank)
+%d month(s) at %s%% a year	
+
+# Global/MMMWE_BankLoans.lua (bank)
+Close my deposits early	
+
+# Global/MMMWE_BankLoans.lua (bank)
+Deposit %d gold	
+
+# Global/MMMWE_BankLoans.lua (bank)
+Deposit all my gold (%d)	
+
+# Global/MMMWE_BankLoans.lua (bank)
+Bank Clerk	
+
+# Global/MMMWE_BankLoans.lua (bank)
+A term deposit has ended: %d gold went into your bank account.	
+
+# Global/MMMWE_BankLoans.lua (bank)
+Your loan fell due: the bank took %d gold from your savings.	
+
+# Global/MMMWE_BankLoans.lua (bank)
+Your loan is overdue! The bank took %d gold from your savings; %d gold is still owed.	
+
+# Global/MMMWE_BankLoans.lua (bank)
+Debt collectors from the bank are after you: you owe %d gold!	
+

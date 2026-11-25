@@ -3613,3 +3613,96 @@ You pick %s (%d).	Вы собираете: %s (%d).
 # General/MMMWE_HerbShrubs.lua (herb shrubs)
 You pick %s.	Вы собираете: %s.
 
+# Global/MMMWE_BankLoans.lua (bank)
+[The clerk counts out %d gold] Sign here. You owe the bank %d gold, due by %s. Repay at any of our banks. A word of advice: the bank always collects.	[Служащий отсчитывает %d золотых] Подпишите здесь. Вы должны банку %d золотых, срок - до %s. Вернуть можно в любом нашем банке. И совет: банк всегда своё получает.
+
+# Global/MMMWE_BankLoans.lua (bank)
+You owe %d gold, and you have only %d with you and %d in your account.	Вы должны %d золотых, а у вас с собой только %d и на счету %d.
+
+# Global/MMMWE_BankLoans.lua (bank)
+The loan is repaid in full: %d gold. It is a pleasure to do business with you.	Ссуда погашена полностью: %d золотых. Приятно иметь с вами дело.
+
+# Global/MMMWE_BankLoans.lua (bank)
+%d gold paid. You still owe %d gold.	Уплачено %d золотых. Вы ещё должны %d золотых.
+
+# Global/MMMWE_BankLoans.lua (bank)
+You already have %d deposits with us. Wait until one of them ends.	У вас уже %d вкладов у нас. Подождите, пока какой-нибудь из них закончится.
+
+# Global/MMMWE_BankLoans.lua (bank)
+%d gold deposited for %d month(s). On %s, %d gold will go into your account.	%d золотых положено на %d мес. %s на ваш счёт поступит %d золотых.
+
+# Global/MMMWE_BankLoans.lua (bank)
+%d deposit(s) closed before their term: %d gold back, without interest.	Закрыто досрочно вкладов: %d. Возвращено %d золотых, без процентов.
+
+# Global/MMMWE_BankLoans.lua (bank)
+Our terms for you here: loans up to %d gold for %d months at %s%% a year; term deposits at %s%% (1 month), %s%% (3), %s%% (6), %s%% (12) a year.	Наши условия для вас здесь: ссуды до %d золотых на %d мес. под %s%% годовых; срочные вклады под %s%% (1 месяц), %s%% (3), %s%% (6), %s%% (12) годовых.
+
+# Global/MMMWE_BankLoans.lua (bank)
+With your reputation hereabouts, the bank lends you nothing.	С вашей репутацией в этих краях банк ничего вам не одолжит.
+
+# Global/MMMWE_BankLoans.lua (bank)
+Your loan is OVERDUE: %d gold, and it grows every week.	Ваша ссуда ПРОСРОЧЕНА: %d золотых, и долг растёт каждую неделю.
+
+# Global/MMMWE_BankLoans.lua (bank)
+Your loan: %d gold, due by %s.	Ваша ссуда: %d золотых, срок - до %s.
+
+# Global/MMMWE_BankLoans.lua (bank)
+Deposit: %d gold for %d month(s), %d gold on %s.	Вклад: %d золотых на %d мес., %d золотых к %s.
+
+# Global/MMMWE_BankLoans.lua (bank)
+Loans and term deposits, at your service. Every bank of ours keeps the same books.	Ссуды и срочные вклады к вашим услугам. Во всех наших банках одни и те же книги.
+
+# Global/MMMWE_BankLoans.lua (bank)
+Loans	Ссуды
+
+# Global/MMMWE_BankLoans.lua (bank)
+Term deposits	Срочные вклады
+
+# Global/MMMWE_BankLoans.lua (bank)
+Our terms and your accounts	Наши условия и ваши счета
+
+# Global/MMMWE_BankLoans.lua (bank)
+Borrow %d gold	Занять %d золотых
+
+# Global/MMMWE_BankLoans.lua (bank)
+Ask for a loan	Попросить ссуду
+
+# Global/MMMWE_BankLoans.lua (bank)
+I am sorry. With your reputation hereabouts, the bank cannot lend you anything.	Сожалею. С вашей репутацией в этих краях банк ничего не может вам одолжить.
+
+# Global/MMMWE_BankLoans.lua (bank)
+Repay everything (%d gold)	Вернуть всё (%d золотых)
+
+# Global/MMMWE_BankLoans.lua (bank)
+Pay what I carry (%d gold)	Отдать, что есть с собой (%d золотых)
+
+# Global/MMMWE_BankLoans.lua (bank)
+Back	Назад
+
+# Global/MMMWE_BankLoans.lua (bank)
+%d month(s) at %s%% a year	%d мес. под %s%% годовых
+
+# Global/MMMWE_BankLoans.lua (bank)
+Close my deposits early	Закрыть вклады досрочно
+
+# Global/MMMWE_BankLoans.lua (bank)
+Deposit %d gold	Положить %d золотых
+
+# Global/MMMWE_BankLoans.lua (bank)
+Deposit all my gold (%d)	Положить всё золото (%d)
+
+# Global/MMMWE_BankLoans.lua (bank)
+Bank Clerk	Банковский служащий
+
+# Global/MMMWE_BankLoans.lua (bank)
+A term deposit has ended: %d gold went into your bank account.	Срочный вклад закончился: %d золотых поступило на ваш банковский счёт.
+
+# Global/MMMWE_BankLoans.lua (bank)
+Your loan fell due: the bank took %d gold from your savings.	Срок ссуды истёк: банк забрал %d золотых из ваших сбережений.
+
+# Global/MMMWE_BankLoans.lua (bank)
+Your loan is overdue! The bank took %d gold from your savings; %d gold is still owed.	Ваша ссуда просрочена! Банк забрал %d золотых из ваших сбережений; долг - ещё %d золотых.
+
+# Global/MMMWE_BankLoans.lua (bank)
+Debt collectors from the bank are after you: you owe %d gold!	За вами идут сборщики долгов банка: вы должны %d золотых!
+
