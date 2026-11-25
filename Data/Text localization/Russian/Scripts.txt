@@ -3721,3 +3721,15 @@ Ill Luck	Невезение
 # General/MMMWE_Main.lua (durability tooltip)
 %s, breaks %d/%d	%s, поломки %d/%d
 
+# Global/MMMWE_HPSPDisplay.lua (party speed)
+Speed %d%%	Скорость %d%%
+
+# Global/MMMWE_HPSPDisplay.lua (party speed)
+(slowed)	(замедление)
+
+# General/MMMWE_MonsterAbilities.lua (ability)
+Slow	Замедление
+
+# General/MMMWE_MonsterAbilities.lua (ability)
+%s slows the party down!	%s замедляет отряд!
+

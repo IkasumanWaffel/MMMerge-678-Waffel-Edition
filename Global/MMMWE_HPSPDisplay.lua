@@ -80,6 +80,9 @@ local CONFIG = {
     showWeaponEnchants = true,
     weaponEnchantColor = nil,   -- nil = colored by time left like the other buffs
 
+    --=== (25.11.26) Party speed (MMMWE_PartySpeed.lua): a small line over the minimap ===
+    speedX = 1640, speedY = 946, speedW = 272, speedH = 18,
+
     --=== Party buffs (Party.SpellBuffs2) ===
     partyBuffDY       = 970,
     partyBuffW        = 200,
@@ -800,6 +803,10 @@ local function getValues(nPlayers)
     end
     v.partyBuffs = getPartyBuffs(currentTime)
     v.partyDebuffs = getPartyDebuffs(currentTime)
+    if MF.PartySpeedInfo then
+        local ok, pct, slowed = pcall(MF.PartySpeedInfo)
+        if ok then v.speed, v.slowed = pct, slowed end
+    end
 
     -- Diagnostics: data sources availability check
     if not _G.MMOverlay._debugLogged then
@@ -876,6 +883,7 @@ local function valuesChanged(v, nPlayers)
             end
         end
     end
+    if v.speed ~= lastValues.speed or v.slowed ~= lastValues.slowed then return true end
     -- Party buffs
     local pa, pb = v.partyBuffs or {}, lastValues.partyBuffs or {}
     if #pa ~= #pb then return true end
@@ -1435,6 +1443,22 @@ local function drawOverlay()
                 end
                 drawText(hdc, pdText, pDebuffX, ly, pDebuffW, pDebuffH, pdColor)
             end
+        end
+
+        --=== PARTY SPEED (25.11.26): grey at 100%, green faster, blue slower, orange slowed ===
+        if lastValues.speed then
+            local sx = math.floor(gameOffsetX + CONFIG.speedX * baseScaleX)
+            local sy = math.floor(gameOffsetY + CONFIG.speedY * baseScaleY)
+            local sw = screenScale(CONFIG.speedW)
+            local shh = math.max(1, math.floor(CONFIG.speedH * baseScaleY))
+            local pct = lastValues.speed
+            local c = 0xAAAAAA
+            if lastValues.slowed then c = 0x3399FF
+            elseif pct > 100 then c = 0x99DD99
+            elseif pct < 100 then c = 0xDDAA88 end
+            local text = string.format(Tx"Speed %d%%", pct)
+            if lastValues.slowed then text = text .. " " .. Tx"(slowed)" end
+            drawText(hdc, text, sx, sy, sw, shh, c)
         end
 
         gdi32.SelectObject(hdc, oldFont)

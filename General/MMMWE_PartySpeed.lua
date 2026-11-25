@@ -9,6 +9,11 @@
 	  S.Max: +1% per point, up to +40% (140%) at an average bonus of +40; a negative average slows
 	  the party, down to 80%.
 	Running and flying go by the same value, so they scale alike.
+	(25.11.26) Slowing: MF.PartySlow(mult, seconds) (the monster ability Slow,
+	MMMWE_MonsterAbilities.lua) multiplies the speed by mult for that many seconds of game time
+	in real-time terms (const.RTSecond); a new slow replaces a weaker or shorter one.
+	MF.PartySpeedInfo() -> the speed in % and whether the party is slowed (the speed widget,
+	Global/MMMWE_HPSPDisplay.lua).
 --]]
 
 local MF = Merge.Functions
@@ -39,10 +44,23 @@ local function averageBonus()
 	return n > 0 and sum / n or 0
 end
 
+local Slow   -- {Mul, Till}
+
+local function slowMul()
+	if Slow and Game.Time < Slow.Till then return Slow.Mul end
+	Slow = nil
+	return 1
+end
+
 local function mult()
-	return max(S.Min, min(S.Max, 1 + averageBonus() * S.PerPoint))
+	return max(S.Min, min(S.Max, 1 + averageBonus() * S.PerPoint)) * slowMul()
 end
 MF.PartySpeedMult = mult
+
+function MF.PartySpeedInfo()
+	local ok, m = pcall(mult)
+	return floor((ok and m or 1) * 100 + 0.5), slowMul() < 1
+end
 
 local function update()
 	local cur = mem.i4[WALK]
@@ -53,6 +71,15 @@ local function update()
 	if v ~= cur then mem.i4[WALK] = v end
 	Last = v
 end
+
+function MF.PartySlow(mul, seconds)
+	local till = Game.Time + floor(seconds * const.RTSecond)
+	if Slow and Game.Time < Slow.Till and Slow.Mul <= mul and Slow.Till >= till then return end
+	Slow = {Mul = math.min(mul, Slow and Game.Time < Slow.Till and Slow.Mul or 1), Till = till}
+	pcall(update)
+end
+
+function events.LeaveMap() Slow = nil end
 
 local acc = 0
 function events.Tick()

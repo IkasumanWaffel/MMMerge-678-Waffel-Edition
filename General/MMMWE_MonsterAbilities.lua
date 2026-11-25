@@ -25,6 +25,8 @@
 	           Mana Burn        a hit burns spell points: half the damage
 	           Hamstring        a hit slows the target's recovery
 	           Terror           10% chance to frighten the target (Afraid)
+	           Slow             15% chance to slow the whole party's movement by 40% for
+	                            6 seconds (MMMWE_PartySpeed.lua; 25.11.26)
 	Pack       Warlord          monsters near it deal +20% damage and take 10% less
 	           Call for Help    below half its Hit Points, it calls two of its kind (once)
 
@@ -62,14 +64,15 @@ local A = {
 	ManaBurn     = {Group = "Control", Name = Tx"Mana Burn", Share = 0.5},
 	Hamstring    = {Group = "Control", Name = Tx"Hamstring", Delay = 60},
 	Terror       = {Group = "Control", Name = Tx"Terror", Chance = 0.10, Time = 15},      -- minutes between the saves
+	Slow         = {Group = "Control", Name = Tx"Slow", Chance = 0.15, Mul = 0.6, Time = 6},  -- party speed x Mul, seconds
 	Warlord      = {Group = "Pack", Name = Tx"Warlord", DamageMul = 1.2, TakenMul = 0.9},
 	CallForHelp  = {Group = "Pack", Name = Tx"Call for Help", Below = 0.5, Count = 2},
 	-- (22.11.26) a boss's weakness (MMMWE_Bosses.lua does what it does; listed on the card)
 	OldWound     = {Group = "Weakness", Name = Tx"Old Wound"},
 }
 local POOL = {"Regeneration", "Adaptation", "Thorns", "LastStand", "Juggernaut", "Enrage", "Sundering",
-	"TwinStrike", "Cleave", "Concussion", "ManaBurn", "Hamstring", "Terror"}
-local CASTER_POOL = {"Adaptation", "LastStand", "ManaBurn", "Terror", "Regeneration", "Concussion"}
+	"TwinStrike", "Cleave", "Concussion", "ManaBurn", "Hamstring", "Terror", "Slow"}
+local CASTER_POOL = {"Adaptation", "LastStand", "ManaBurn", "Terror", "Regeneration", "Concussion", "Slow"}
 local PACK = {"Warlord", "CallForHelp"}
 MF.MonsterAbilitySettings = A
 
@@ -312,6 +315,9 @@ function events.CalcDamageToPlayer(t)
 		Queue[#Queue + 1] = {Kind = "condition", Player = pl, Condition = const.Condition.Asleep,
 			Time = A.Concussion.Time, Text = string.format(Tx"%s is knocked out!", pl.Name)}
 	end
+	if has(r, "Slow") and random() < A.Slow.Chance then
+		Queue[#Queue + 1] = {Kind = "slowparty", Name = monName(m)}
+	end
 	if has(r, "Terror") and random() < A.Terror.Chance then
 		Queue[#Queue + 1] = {Kind = "condition", Player = pl, Condition = const.Condition.Afraid,
 			Time = A.Terror.Time, Text = string.format(Tx"%s is terrified!", pl.Name)}
@@ -336,6 +342,11 @@ local function runQueue()
 				end
 				if #list > 0 and e.Damage > 0 then
 					Party[list[random(#list)]]:DoDamage(e.Damage, e.DamageKind or const.Damage.Phys)
+				end
+			elseif e.Kind == "slowparty" then
+				if MF.PartySlow then
+					MF.PartySlow(A.Slow.Mul, A.Slow.Time)
+					status(string.format(Tx"%s slows the party down!", e.Name))
 				end
 			elseif e.Kind == "slow" then
 				e.Player.RecoveryDelay = e.Player.RecoveryDelay + A.Hamstring.Delay

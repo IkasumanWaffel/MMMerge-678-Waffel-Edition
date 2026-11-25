@@ -3694,3 +3694,15 @@ Ill Luck
 # General/MMMWE_Main.lua (durability tooltip)
 %s, breaks %d/%d	
 
+# Global/MMMWE_HPSPDisplay.lua (party speed)
+Speed %d%%	
+
+# Global/MMMWE_HPSPDisplay.lua (party speed)
+(slowed)	
+
+# General/MMMWE_MonsterAbilities.lua (ability)
+Slow	
+
+# General/MMMWE_MonsterAbilities.lua (ability)
+%s slows the party down!	
+
