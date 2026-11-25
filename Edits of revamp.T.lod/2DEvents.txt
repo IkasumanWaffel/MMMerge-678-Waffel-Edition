@@ -125,7 +125,7 @@
 123	14	Alchemist	100	181	Infernal Temptations	Nogard	Alchemist	0515	0	0	0	5	2		14			18	6	0	0	0	0
 124	15	Alchemist	100	182	Potent Potions & Brews	Digger	Alchemist	1552	0	0	0	4	1		7			6	18	0	0	0	0
 125	16	Alchemist	82	180	Beakers and Bottles	Sioned	Alchemist	0539	0	0	0	4	1		7			6	18	0	0	0	0
-126	17	Alchemist	69	181	The Gilded Carafe	Kathleen	Alchemist	0473	0	0	0	5	2		14			18	6	0	0	0	0
+126	17	Alchemist	69	181	The Gilded Carafe	Kathleen	Alchemist	0478	0	0	0	5	2		14			18	6	0	0	0	0
 127	18	Alchemist	0	180	Helpful Solutions	Agatha	Alchemist	0539	0	0	0	1.5	1		7			6	18	0	0	0	0
 128	1	Fire Guild	62	240	Initiate Guild of Fire	Sethric	Guildmaster	0538	0	0	0	2	2		14			6	18	0	0	0	0
 129	2	Fire Guild	63	240	Adept Guild of Fire	Jani	Guildmaster	0538	0	0	0	3	3		14			6	18	0	0	0	0
