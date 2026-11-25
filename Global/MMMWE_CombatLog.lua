@@ -50,12 +50,14 @@ local SW_SHOWNA         = 8
 local CS_HREDRAW        = 0x0002
 local CS_VREDRAW        = 0x0001
 local SWP_NOACTIVATE    = 0x0010
+local SWP_NOSIZE        = 0x0001
+local SWP_NOMOVE        = 0x0002
 local COLOR_KEY         = 0x1A001A
 local DT_SINGLELINE     = 0x00000020
 local DT_NOCLIP         = 0x00000100
 local DT_LEFT           = 0x00000000
 local DIB_RGB_COLORS    = 0
-local ANTIALIASED_QUALITY = 5
+local ANTIALIASED_QUALITY = 4   -- grayscale (5 is ClearType: coloured fringes)
 
 local MOUSEEVENTF_RIGHTDOWN = 0x0008
 local MOUSEEVENTF_RIGHTUP   = 0x0010
@@ -105,6 +107,7 @@ local dstPoint   = mem.StaticAlloc(8)
 local srcPoint   = mem.StaticAlloc(8)
 local windowSize = mem.StaticAlloc(8)
 local blend      = mem.StaticAlloc(4)
+local textSize   = mem.StaticAlloc(8)
 -- BLENDFUNCTION: AC_SRC_OVER, flags 0, constant alpha 255, AC_SRC_ALPHA
 mem.u4[blend] = 0x01FF0000
 mem.u4[srcPoint], mem.u4[srcPoint + 4] = 0, 0
@@ -466,7 +469,10 @@ end
 -- recover coverage and premultiplied RGB from their difference. No window colour key.
 local blackSurface, whiteSurface = {}, {}
 local function getMemDC(surface, w, h)
-    if surface.dc and surface.w == w and surface.h == h then return surface.dc end
+    if surface.dc and surface.w >= w and surface.h >= h then return surface.dc end
+    -- grow with room to spare, so a slightly longer line doesn't make new bitmaps
+    w = math.max(w, surface.w or 0, 64) + 64
+    h = math.max(h, surface.h or 0, 64) + 32
     if surface.dc then
         gdi32.SelectObject(surface.dc, surface.old)
         gdi32.DeleteObject(surface.bmp)
@@ -517,18 +523,36 @@ end
 
 local function setPixelAlpha(w, h)
     gdi32.GdiFlush()
+    local stride = blackSurface.w
     if ffiOK then
         local black = ffi.cast("uint32_t*", blackSurface.bits)
         local white = ffi.cast("uint32_t*", whiteSurface.bits)
-        for i = 0, w * h - 1 do
-            black[i] = recoverPixel(tonumber(black[i]), tonumber(white[i]))
+        for y = 0, h - 1 do
+            local row = y * stride
+            for i = row, row + w - 1 do
+                black[i] = recoverPixel(tonumber(black[i]), tonumber(white[i]))
+            end
         end
     else
-        for i = 0, w * h * 4 - 4, 4 do
-            local bp, wp = blackSurface.bits + i, whiteSurface.bits + i
-            mem.u4[bp] = recoverPixel(mem.u4[bp], mem.u4[wp])
+        for y = 0, h - 1 do
+            local row = y * stride * 4
+            for i = row, row + (w - 1) * 4, 4 do
+                local bp, wp = blackSurface.bits + i, whiteSurface.bits + i
+                mem.u4[bp] = recoverPixel(mem.u4[bp], mem.u4[wp])
+            end
         end
     end
+end
+
+-- a DC only for measuring the lines
+local measureDC = 0
+local function textWidth(text)
+    if measureDC == 0 then measureDC = gdi32.CreateCompatibleDC(0) end
+    if measureDC == 0 then return 0 end
+    gdi32.SelectObject(measureDC, hFont)
+    mem.u4[textSize], mem.u4[textSize + 4] = 0, 0
+    gdi32.GetTextExtentPoint32A(measureDC, text, #text, textSize)
+    return mem.i4[textSize]
 end
 
 local OUTLINE_COLOR = 0x505050
@@ -582,7 +606,8 @@ local function syncPosition()
 
     if px ~= lastPX or py ~= lastPY or w ~= lastW or h ~= lastH then
         lastPX, lastPY, lastW, lastH = px, py, w, h
-        user32.SetWindowPos(overlayHwnd, -1, px, py, w, h, SWP_NOACTIVATE)
+        -- placed and sized to the text block by UpdateLayeredWindow (drawOverlay)
+        user32.SetWindowPos(overlayHwnd, -1, 0, 0, 0, 0, SWP_NOACTIVATE + SWP_NOMOVE + SWP_NOSIZE)
         screenW = w
         screenH = h
 
@@ -684,8 +709,29 @@ local function drawOverlay()
 
     local n = CONFIG.maxMessages
 
+    -- the layered window covers only the block the lines take (with the outline's pixel
+    -- around it), so the per-pixel alpha pass and the upload stay small at any resolution
+    local lines, maxW = {}, 0
+    for i = 0, n - 1 do
+        local entry = messages[i]
+        local msg = entry and (type(entry) == "string" and entry or entry.text)
+        if msg and msg ~= "" then
+            lines[#lines + 1] = i
+            maxW = math.max(maxW, cw, textWidth(msg))
+        end
+    end
+    if #lines == 0 then clearOverlay(); return end
+    local PAD = 2
+    local bx = math.max(0, sx - PAD)
+    local by = math.max(0, sy - PAD)
+    local bw = math.min(screenW, sx + maxW + PAD) - bx
+    local bh = math.min(screenH, sy + lines[#lines] * lineH + ch + PAD) - by
+    if bw <= 0 or bh <= 0 then clearOverlay(); return end
+    -- line positions inside the block
+    local ox, oy = sx - bx, sy - by
+
     local ok, err = pcall(function()
-        local w, h = screenW, screenH
+        local w, h = bw, bh
         local hdc = getMemDC(blackSurface, w, h)
         local whiteDC = getMemDC(whiteSurface, w, h)
         if hdc == 0 or whiteDC == 0 then error("CreateDIBSection / memory DC failed") end
@@ -706,11 +752,10 @@ local function drawOverlay()
                         dk = entry.damageKind
                     end
                     if msg and msg ~= "" then
-                        local ly = sy + i * lineH
-                        fillRect(dc, sx, ly, cw, ch, background)
+                        local ly = oy + i * lineH
                         local baseColor = (dk ~= nil and damageTypeColors[dk]) or CONFIG.newestColor
                         local color = getLineColor(i, n, baseColor)
-                        drawText(dc, msg, sx, ly, cw, ch, color)
+                        drawText(dc, msg, ox, ly, cw, ch, color)
                     end
                 end
             end
@@ -720,7 +765,8 @@ local function drawOverlay()
         render(hdc, 0x000000)
         render(whiteDC, 0xFFFFFF)
         setPixelAlpha(w, h)
-        mem.u4[dstPoint], mem.u4[dstPoint + 4] = lastPX, lastPY
+        -- screen coordinates may be negative on a left or upper monitor: wrapped as u4
+        mem.u4[dstPoint], mem.u4[dstPoint + 4] = (lastPX + bx) % 0x100000000, (lastPY + by) % 0x100000000
         mem.i4[windowSize], mem.i4[windowSize + 4] = w, h
         local result = user32.UpdateLayeredWindow(overlayHwnd, 0,
             dstPoint, windowSize, hdc, srcPoint, 0, blend, ULW_ALPHA)
