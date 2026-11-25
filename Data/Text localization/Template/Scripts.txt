@@ -3682,3 +3682,15 @@ Debt collectors from the bank are after you: you owe %d gold!
 # Global/MMMWE_HPSPDisplay.lua (debuff: a backfired Dark spell)
 Ill Luck	
 
+# General/MMMWE_ItemDurability.lua (breaks)
+%s's %s has broken! It will survive %d more break(s).	
+
+# General/MMMWE_ItemDurability.lua (breaks)
+%s's %s has broken! The next break will destroy it.	
+
+# General/MMMWE_ItemDurability.lua (breaks)
+%s's %s breaks beyond repair and is lost!	
+
+# General/MMMWE_Main.lua (durability tooltip)
+%s, breaks %d/%d	
+

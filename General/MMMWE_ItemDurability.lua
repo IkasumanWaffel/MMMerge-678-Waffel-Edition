@@ -26,6 +26,13 @@
 -- One stored unit is 1 durability point, or 2 points for items whose maximum
 -- durability would not fit in a byte (see ensureCache). The value lives in the
 -- item struct, so it follows the item and is saved with the game.
+--
+-- (25.11.26) BREAKS: an item survives only so many breaks. Each time its durability drops to
+-- zero (or a monster's "break item" attack breaks it) a break is counted; the break past the
+-- limit destroys the item for good. Limit: CONFIG.breaks (regular 3, special and artifact 5),
+-- a Hardened item (Harden Item potion) +2 (regular) / +3 (special, artifact); relics never
+-- break. The count is kept in the item's spare byte 0x1B (Item.Material, unused by the game),
+-- so it follows the item and is saved with it; repairs don't reset it.
 -- ========================================================================
 
 local MF = Merge.Functions
@@ -77,6 +84,13 @@ local CONFIG = {
 	-- Stage thresholds (fraction of max durability remaining)
 	wornThreshold    = 0.66,
 	damagedThreshold = 0.33,
+
+	-- ---- breaks (25.11.26) ----------------------------------------------
+	breaks = {
+		enabled = true,
+		limit   = { regular = 3, special = 5, artifact = 5 },   -- breaks survived; one more destroys it
+		harden  = { regular = 2, special = 3, artifact = 3 },   -- extra breaks for a Hardened item
+	},
 
 	-- Damage penalty by stage for melee weapons and bows
 	weaponDamagePenalty = { worn = 0.10, damaged = 0.25 },
@@ -299,6 +313,74 @@ local function addWear(it, points)
 end
 
 -- ========================================================================
+-- BREAKS
+-- ========================================================================
+
+local itemName       -- below (STAGES)
+local BREAKS_OFFSET = 0x1B
+local HARDENED_BIT  = 0x200
+
+local function breaksAllowedNum(n, hardened)
+	local B = CONFIG.breaks
+	local cls = classOf(n) or "regular"
+	if cls == "relic" then return nil end
+	if cls ~= "special" and cls ~= "artifact" then cls = "regular" end
+	return (B.limit[cls] or 3) + (hardened and (B.harden[cls] or 0) or 0)
+end
+
+local function getBreaksPtr(ptr) return mem.u1[ptr + BREAKS_OFFSET] end
+
+-- (ptr) -> breaks so far, breaks the item survives (nil: no limit)
+local function breaksInfoPtr(ptr)
+	local n = mem.i4[ptr]
+	if n <= 0 or not CONFIG.breaks.enabled or isIndestructible(n) then return 0, nil end
+	local hardened = bit.band(mem.u4[ptr + 0x14], HARDENED_BIT) ~= 0
+	return getBreaksPtr(ptr), breaksAllowedNum(n, hardened)
+end
+
+local function destroyItem(pl, it)
+	if not pl then return end
+	local p = it["?ptr"]
+	for j = 1, 138 do
+		if pl.Items[j]["?ptr"] == p then
+			for _, f in ipairs({"ItemMainHand", "ItemExtraHand", "ItemBow", "ItemArmor", "ItemHelm",
+					"ItemGauntlets", "ItemBoots", "ItemBelt", "ItemCloak", "ItemAmulet"}) do
+				local ok, v = pcall(function() return pl[f] end)
+				if ok and v == j then pl[f] = 0 end
+			end
+			break
+		end
+	end
+	it:Clear()
+end
+
+-- a break: counted; past the limit the item is gone. true if it was destroyed
+local function countBreak(it, pl)
+	if not CONFIG.breaks.enabled then return false end
+	local p = it["?ptr"]
+	local done, allowed = breaksInfoPtr(p)
+	if not allowed then return false end
+	done = math.min(255, done + 1)
+	mem.u1[p + BREAKS_OFFSET] = done
+	if done <= allowed then
+		if pl and CONFIG.showMessages then
+			local left = allowed - done
+			Game.ShowStatusText(left > 0
+				and string.format(Tx"%s's %s has broken! It will survive %d more break(s).", pl.Name, itemName(it), left)
+				or string.format(Tx"%s's %s has broken! The next break will destroy it.", pl.Name, itemName(it)))
+		end
+		return false
+	end
+	local name = itemName(it)
+	log("DESTROYED: item %d after %d breaks", it.Number, done)
+	destroyItem(pl, it)
+	if pl and CONFIG.showMessages then
+		Game.ShowStatusText(string.format(Tx"%s's %s breaks beyond repair and is lost!", pl.Name, name))
+	end
+	return true
+end
+
+-- ========================================================================
 -- STAGES
 -- ========================================================================
 
@@ -324,7 +406,7 @@ function MF.GetDurabilityLabel(cur, max)
 	return LABELS[stageOf(cur, max)] or ""
 end
 
-local function itemName(it)
+itemName = function(it)
 	local txt = Game.ItemsTxt[it.Number]
 	return it.Identified and txt.Name or txt.NotIdentifiedName
 end
@@ -361,8 +443,10 @@ local function wearItem(it, amount, pl)
 		setByte(it, BROKEN_MARK)
 		Game.PlaySound(44603, -2)
 		if pl then pl:ShowFaceAnimation(40) end
-		say(it, "broken", pl)
 		log("BROKEN: item %d", it.Number)
+		if not countBreak(it, pl) and not (CONFIG.breaks.enabled and select(2, breaksInfoPtr(it["?ptr"]))) then
+			say(it, "broken", pl)
+		end
 	elseif after ~= before then
 		say(it, after, pl)
 		log("%s: item %d (was %s)", after, it.Number, before)
@@ -509,7 +593,11 @@ local function scanInventories()
 					end
 					if b ~= 0 then setByte(it, 0) end
 				elseif it.Broken then
-					if b ~= BROKEN_MARK then setByte(it, BROKEN_MARK) end
+					if b ~= BROKEN_MARK then
+						setByte(it, BROKEN_MARK)
+						-- broken by something else (a monster's break item attack): a break too
+						countBreak(it, pl)
+					end
 				elseif b == BROKEN_MARK then
 					setByte(it, 0)
 					log("Repaired: item %d restored to full durability", it.Number)
@@ -670,6 +758,7 @@ MF.GetBaseDurability = baseOf                 -- (itemNumber) -> base durability
 MF.IsIndestructible  = isIndestructible       -- (itemNumber)
 MF.GetItemWear       = getWear                -- (item)  -> wear points (999 = broken)
 MF.GetItemWearPtr    = getWearPtr             -- (ptr)   -> same, from a raw item pointer (tooltip hook)
+MF.GetItemBreaksPtr  = breaksInfoPtr          -- (ptr)   -> breaks so far, breaks survived (nil: no limit)
 MF.WearOnHit         = wearOnHit              -- called by CalcDamageToPlayer in MMMWE_Main.lua
 MF.WearItem          = function(it, amount, pl) wearItem(it, amount, pl) end
 MF.GetWeaponPenalty  = weaponPenalty          -- (item)  -> damage penalty fraction (0 / worn / damaged), used by applyPenalty in MMMWE_Main.lua

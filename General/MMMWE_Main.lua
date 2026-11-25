@@ -2393,6 +2393,12 @@ local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 	mem.autohook(0x41d812, function(d)
 		ItHardened = math.floor(mem.i2[d.eax + 0x14] / 512)
 		MF.TipWear = MF.GetItemWearPtr(d.eax)
+		-- (25.11.26) breaks so far / survived (MMMWE_ItemDurability.lua)
+		if MF.GetItemBreaksPtr then
+			MF.TipBreaks, MF.TipBreaksMax = MF.GetItemBreaksPtr(d.eax)
+		else
+			MF.TipBreaks, MF.TipBreaksMax = 0, nil
+		end
 	end)
 
 	-- Find item slot by item id
@@ -2414,8 +2420,17 @@ local Tx, Tn = Merge.Functions.Text, Merge.Functions.TextKey
 		return dur, math.max(dur - (MF.TipWear or 0) / d, 0)	-- max, current (after wear)
 	end
 	
-	-- "50" while pristine, "37/50 (Worn)" once worn, "Indestructible" for relics
+	-- "50" while pristine, "37/50 (Worn)" once worn, "Indestructible" for relics; then how many
+	-- breaks the item has had of those it survives (25.11.26)
+	local durLineCore
 	local function durLine(itemNum, divisor)
+		local line = durLineCore(itemNum, divisor)
+		if MF.TipBreaksMax and not (MF.IsIndestructible and MF.IsIndestructible(itemNum)) then
+			line = string.format(Tx"%s, breaks %d/%d", line, MF.TipBreaks or 0, MF.TipBreaksMax)
+		end
+		return line
+	end
+	durLineCore = function(itemNum, divisor)
 		if MF.IsIndestructible and MF.IsIndestructible(itemNum) then
 			return "Indestructible"
 		end
