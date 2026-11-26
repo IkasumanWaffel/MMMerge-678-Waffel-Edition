@@ -1,0 +1,109 @@
+import re, csv, json
+R='/home/claude/mmmerge-678-waffel-edition/'
+mon=[r.split('\t') for r in open(R+'Edits of revamp.T.lod/MONSTERS.txt',encoding='latin1',newline='').read().split('\r\n')]
+bol={r.split('\t')[0]:r.split('\t') for r in open(R+'Tables/Bolster - monsters.txt',encoding='latin1').read().splitlines()}
+EL=['Fire','Air','Water','Earth','Mind','Spirit','Body','Light','Dark','Ener','Phys']
+SPELL={'fire bolt':'Fire','fireball':'Fire','incinerate':'Fire','meteor shower':'Fire','dragon breath':'Dark',
+ 'lightning bolt':'Air','sparks':'Air','ice bolt':'Water','ice blast':'Water','acid burst':'Water','poison spray':'Body',
+ 'blades':'Earth','rock blast':'Earth','deadly swarm':'Earth','mind blast':'Mind','psychic shock':'Mind','psychic shockt':'Mind',
+ 'spirit lash':'Spirit','harm':'Body','flying fist':'Body','toxic cloud':'Dark','finger of death':'Dark','light bolt':'Light',
+ 'paralyze':'Light','mass curse':'Dark','day-o-gods':'Light'}
+# name keywords -> element (first match wins)
+KW=[(r'\bbat\b|bloodsucker|blood sucker','Body'),(r'moon|necro|lich|death|doom|dark|skeleton|bone|shadow|night|undead|cuisinart|black','Dark'),(r'fire|flame|inferno|magma|lava|efre|phoenix|ember|smoke|burn|hell|salamander|red dragon|warden of fire|devil|demon|imp\b','Fire'),
+ (r'ice|frost|snow|water|sea |shark|kraken|wyrm|unicorn|sprite|genie|djinn|triton|naga|mermaid|eel|tide','Water'),
+ (r'air|storm|lightning|thunder|wind|tempest|dust devil|cloud|hawk|roc\b|thunderbird|titan|ether|crystal walker','Air'),
+ (r'earth|stone|rock|boulder|clay|golem|gargoyle|sand|crystal|tree|treant|cactus|troglodyte|dwar|basilisk|gorgon|medusa|behemoth','Earth'),
+ (r'ghost|spectre|specter|wraith|banshee|phantom|wight|shade|spirit|poltergeist|harpy|angel|monk|ninja|master of','Spirit'),
+ (r'eye|beholder|psych|mind|fear|nightmare|agar|terror|gog\b|vampire|siren','Mind'),
+ (r'spider|snake|serpent|cobra|viper|wasp|scorpion|couatl|ooze|slime|jelly|rat|toad|mushroom|corpse|zombie|ghoul|ghast|mummy|troll|lizard|swamp|blood sucker|bat\b|mosquito|leech|baa|cannibal|thief|cutpurse|robber|bandit|assassin|wolf|bear|cat\b|dog|hound|panther|tiger|lion|boar|griffin|wyvern|hydra|dragonfly|minicore|chicken','Body'),
+ (r'sun|light|cleric|priest|paladin|crusader|templar|glow|dancing','Light'),
+ (r'moon|necro|lich|death|doom|dark|skeleton|bone|shadow|night|undead|cuisinart|black','Dark'),
+ (r'droid|robot|blaster|reactor|patrol|seeker|tolberti|emerald dragon|mega|varn|guardian|ultra|unit\b','Ener')]
+KIND={'Undead':'Spirit','Demon':'Fire','Dragon':'Fire','Construct':'Ener','Troll':'Body','Ogre':'Phys','Minotaur':'Phys','Titan':'Air',
+ 'Lizardman':'Body','Goblin':'Body','DarkElf':'Dark','Elf':'Phys','Dwarf':'Earth','Human':'Phys','Creature':'Body','Elemental':'Phys','Immobile':'Earth'}
+ARCHERS={'Human','Elf','DarkElf','Dwarf','Goblin','Lizardman'}
+PAIR={'Fire':'Air','Air':'Fire','Water':'Earth','Earth':'Water','Body':'Mind','Mind':'Spirit','Spirit':'Body','Light':'Spirit','Dark':'Body','Ener':'Fire','Phys':'Mind'}
+HUMANOID={'Human','Elf','DarkElf','Dwarf','Goblin','Minotaur','Ogre','Troll','Lizardman','Titan','Undead','Demon'}
+ROCK=re.compile(r'ogre|troll|cyclop|titan|giant|troglodyte|gorgon|behemoth|golem')
+def dice(s):
+    m=re.match(r'\s*(\d+)\s*[dD]\s*(\d+)\s*(?:\+\s*(\d+))?',s or '')
+    return (int(m[1]),int(m[2]),int(m[3] or 0)) if m else None
+def avg(d): return d[0]*(d[1]+1)/2+d[2]
+def scale(d,k):
+    n,s,b=d; t=avg(d)*k; b2=round(b*k); n2=max(1,round((t-b2)/((s+1)/2)))
+    return f'{n2}D{s}'+(f'+{b2}' if b2 else '')
+def spells(r):
+    out=[]
+    for c in (r[25],r[27]):
+        m=re.match(r'"?\s*([A-Za-z\- ]+?)\s*,',c or '')
+        if m and m[1].lower() in SPELL: out.append(SPELL[m[1].lower()])
+    return out
+rows=[]
+for r in mon[4:]:
+    if len(r)<39 or not r[0].strip().isdigit(): continue
+    i=r[0].strip(); b=bol.get(i)
+    if not b: continue
+    name=r[1].strip(); low=name.lower()+' '; kind=b[2].strip() or '-'; xk=b[3]; style=b[6].strip() or 'Wimpy'
+    peasant='Peasant' in xk
+    a1=(r[17].strip(),r[18].strip(),r[19].strip()); a2=(r[21].strip(),r[22].strip(),r[23].strip(),r[20].strip())
+    a1ranged=a1[2] not in ('0','')
+    aff=[]; src=[]
+    for pat,el in KW:
+        if re.search(pat,low): aff.append(el); src.append('name'); break
+    if a1[0] not in ('Phys','0','') : aff.append(a1[0]); src.append('attack 1')
+    for e in spells(r): aff.append(e); src.append('spell')
+    if KIND.get(kind): aff.append(KIND[kind]); src.append('kind')
+    seen=[];
+    for e in aff:
+        if e not in seen: seen.append(e)
+    aff=seen or ['Phys']; prim=aff[0]; sec=aff[1] if len(aff)>1 else prim
+    d=dice(a1[1]) or (1,4,0)
+    hum=kind in HUMANOID
+    if peasant or name.lower() in ('cat','chicken','dog','rat','fish','peasant'):
+        p=None; why='peasant / pet: no second attack'
+    elif style=='Strength':
+        if a1ranged: p=('Phys',scale(d,1.0),'0',25); why='ranged attacker: a melee blow up close'
+        elif prim!='Phys': p=(prim,scale(d,1.0),'0',15); why=f'{prim} strike in melee'
+        else: p=('Phys',scale(d,1.5),'0',15); why='heavy blow'
+    elif style=='Endurance':
+        el=prim if prim!='Phys' else 'Body'
+        p=(el,scale(d,1.0),'0',20); why=f'{el} melee (draining, crushing)'
+    elif style=='Speed':
+        weak = src and src[0]=='kind'
+        if a1ranged:
+            el='Phys' if (weak or prim=='Phys') else prim; p=(el,scale(d,0.75),'0',20); why='quick melee strike'
+        elif prim not in ('Phys','Body') and not weak:
+            p=(prim,scale(d,0.75),prim,25); why=f'{prim} missile'
+        elif kind in ARCHERS or ROCK.search(low):
+            if ROCK.search(low): p=('Phys',scale(d,0.75),'Rock',25); why='thrown rock'
+            else: p=('Phys',scale(d,0.75),'Arrow',25); why='arrows / thrown weapons'
+        else: p=('Body',scale(d,0.75),'0',20); why='quick rending / venomous strike'
+    elif style=='Magic':
+        if a1ranged and a1[0]==prim:
+            if kind in ('Elemental','Construct'): el=prim; p=(el,scale(d,1.0),'0',25); why=f'{el} touch up close'
+            else:
+                el = sec if sec not in (prim,'Phys') else PAIR.get(prim,'Mind')
+                p=(el,scale(d,1.0),el,30); why=f'{el} bolt (second school)'
+        else:
+            el=prim if prim!='Phys' else 'Mind'; p=(el,scale(d,1.0),el,30); why=f'{el} bolt'
+    else:  # Wimpy, not peasant
+        el=prim if prim!='Phys' else 'Phys'
+        p=(el,scale(d,0.75),'0',10); why='weak melee'
+    cur = '' if a2[0] in ('0','') else f'{a2[0]} {a2[1]} {"melee" if a2[2] in ("0","") else a2[2]} {a2[3]}%'
+    if p is None: act='none' if not cur else 'remove?'
+    else:
+        same = cur and a2[0]==p[0] and ((a2[2] in ('0',''))==(p[2]=='0'))
+        a2ranged = a2[2] not in ('0','')
+        complements = cur and (a2ranged!=a1ranged or a2[0]!=a1[0])
+        if same or complements:
+            act='keep current'; p=(a2[0],a2[1],a2[2],int(a2[3] or 0)); why='current second attack already complements the first'
+        else: act='new' if not cur else 'replace'
+    rows.append(dict(Id=int(i),Name=name,Kind=kind,Style=style,Level=r[3].strip(),
+        Attack1=f'{a1[0]} {a1[1]} {"melee" if not a1ranged else a1[2]}',Current2=cur,
+        Affinity='/'.join(aff[:2]),Source=src[0] if src else '',
+        Type=p[0] if p else '',Damage=p[1] if p else '',Missile=('melee' if p and p[2]=='0' else (p[2] if p else '')),Chance=p[3] if p else '',
+        Action=act,Why=why))
+json.dump(rows,open('/home/claude/atk/rows.json','w'))
+from collections import Counter
+print(len(rows),Counter(x['Action'] for x in rows),Counter(x['Type'] for x in rows))
+for x in rows[::23]: print(x['Id'],x['Name'],x['Style'],x['Attack1'],'|',x['Current2'],'->',x['Type'],x['Damage'],x['Missile'],x['Chance'],x['Action'],'|',x['Affinity'])
