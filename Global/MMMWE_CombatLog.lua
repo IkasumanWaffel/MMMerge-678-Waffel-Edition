@@ -175,18 +175,19 @@ local damageTypes = {
 local PHYS_KIND_KEY = {Slashing = 101, Piercing = 102, Blunt = 103}
 
 -- Color per damage type (BGR format for Win32 SetTextColor)
+-- (26.11.26) the nine schools after the scroll colours (6.3), lightened to read over any ground; BGR
 local damageTypeColors = {
-    [0]  = 0x0066FF,   -- Fire: orange-red
-    [1]  = 0x99FFFF,   -- Air: pale yellow
-    [2]  = 0xFF6633,   -- Water: blue
-    [3]  = 0x00AA44,   -- Earth: green
+    [0]  = 0x365AFF,   -- Fire: red-orange (#FF5A36)
+    [1]  = 0x66E0FF,   -- Air: warm yellow (#FFE066)
+    [2]  = 0xFFB64F,   -- Water: sky blue (#4FB6FF)
+    [3]  = 0x4AC38B,   -- Earth: leaf green (#8BC34A)
     [4]  = 0xC8C8C8,   -- Phys: light gray
     [5]  = 0xFF00CC,   -- Magic: magenta
-    [6]  = 0x00D7FF,   -- Spirit: gold
-    [7]  = 0xCC00FF,   -- Mind: purple
-    [8]  = 0x44FF44,   -- Body: bright green
-    [9]  = 0xFFFFCC,   -- Light: pale cyan
-    [10] = 0x990099,   -- Dark: dark purple
+    [6]  = 0x3AA4FF,   -- Spirit: amber (#FFA43A)
+    [7]  = 0xFF8C8A,   -- Mind: periwinkle (#8A8CFF)
+    [8]  = 0xC67FFF,   -- Body: pink (#FF7FC6)
+    [9]  = 0xD2F4FF,   -- Light: warm ivory (#FFF4D2)
+    [10] = 0xB890A0,   -- Dark: dusky lilac (#A090B8)
     [12] = 0xD0C220,   -- Energy: teal
     [50] = 0x0033AA,   -- Dragon: dark red
     [101] = 0xE0E0E0,  -- Slashing: near white
