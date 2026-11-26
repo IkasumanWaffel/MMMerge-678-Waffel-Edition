@@ -272,9 +272,9 @@ Default Monster Data					Stats								Movement and Combat					Attack 1			Attack 
 268	Shade	Ghost A	9	35	25	171	5%L2	0	Y	Free	Normal	3	240	100	CP	Afraid	Phys	1D6+6	0	35	Spirit	1D6+6	0	0	0	0	0	26	0	Imm	26	Imm	0	Imm	0	211	33	0
 269	Specter	Ghost B	13	55	30	299	10%L3	0	Y	Long	Normal	3	260	90	CP	Agex2	Phys	2D6+6	0	35	Spirit	2D6+6	0	0	0	0	0	40	0	Imm	40	Imm	0	Imm	0	211	33	0
 270	Ghost	Ghost C	19	93	35	551	20%L4	0	Y	Med	Suicidal	3	300	90	CP	Uncon	Phys	3D6+6	0	35	Spirit	3D6+6	0	0	0	0	0	62	0	Imm	62	Imm	0	Imm	0	211	33	0
-271	Goblin	Goblin A	4	13	6	56	4D4	1	N	Med	Normal	1	160	100	W	0	Phys	1D9	0	10	Phys	4D2	Arrow	5	"Poison Spray,N,2"	0	0	5	0	0	0	0	0	0	0	0	3	0
-272	Hobgoblin	Goblin B	6	21	10	96	8D4	1	N	Med	Normal	1	170	100	W	0	Phys	1D9+2	0	15	Phys	4D2+1	Arrow	6	"Ice Bolt,N,4"	0	0	5	0	0	0	0	0	0	0	0	7	0
-273	Goblin Lord	Goblin C	10	40	14	200	10%15D4+L1	1	N	Short	Aggress	1	180	90	W	0	Phys	1D9+4	0	25	Phys	4D2+4	Arrow	9	"Shrapmetal,E,2"	0	0	15	15	15	15	15	0	15	0	0	11	0
+271	Goblin	Goblin A	4	13	6	56	4D4	1	N	Med	Normal	1	160	100	W	0	Phys	1D9	0	10	Phys	4D2	Arrow	5	"Fire Bolt,N,2"	5	"Poison Spray,N,2"	5	0	0	0	0	0	0	0	0	3	0
+272	Hobgoblin	Goblin B	6	21	10	96	8D4	1	N	Med	Normal	1	170	100	W	0	Phys	1D9+2	0	15	Phys	4D2+1	Arrow	6	"Ice Bolt,N,3"	6	"Harm,N,3"	5	0	0	0	0	0	0	0	0	7	0
+273	Goblin Lord	Goblin C	10	40	14	200	10%15D4+L1	1	N	Short	Aggress	1	180	90	W	0	Phys	1D9+4	0	25	Phys	4D2+4	Arrow	9	"Fireball,E,3"	9	"Acid Burst,E,3"	15	15	15	15	15	0	15	0	0	11	0
 274	Gogling	AGog A	7	25	6	119	0	1	N	Short	Normal	2	200	90	S	0	Fire	1D10+2	Fire	0	0	0	0	0	0	0	0	Imm	15	15	15	15	7	15	0	0	11	"explode,2D10,fire"
 275	Gog	AGog B	11	45	10	231	0	1	N	Short	Normal	2	220	85	S	0	Fire	1D10+6	Fire	0	0	0	0	0	0	0	0	Imm	20	20	20	20	7	20	0	0	15	"explode,2D10,fire"
 276	Magog	AGog C	18	86	14	504	0	1	N	Short	Aggress	2	240	80	S	0	Fire	2D10+8	Fire	0	0	0	0	0	0	0	0	Imm	33	33	33	33	7	33	0	0	26	"explode,2D10,fire"
