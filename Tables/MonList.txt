@@ -461,18 +461,18 @@
 459	190	90	1	0	0	0	0	0	2520	2521	2522	2523	zUltra Dragon A	7m499w	7m499w	7m499a	7m499a	7m499n	7m499d	7m499x	7m499f
 460	190	90	1	0	0	0	0	0	2520	2521	2522	2523	zUltra Dragon B	7m499w	7m499w	7m499a	7m499a	7m499n	7m499d	7m499x	7m499f
 461	190	90	1	0	0	0	0	0	2520	2521	2522	2523	zUltra Dragon C	7m499w	7m499w	7m499a	7m499a	7m499n	7m499d	7m499x	7m499f
-462	40	64	1	0	0	0	0	0	0	0	0	0	zcat a	m500s	m500w	m500w	m500w	m500s	m500d	m500x	m500s
-463	40	64	1	0	0	0	0	0	0	0	0	0	zcat b	m500s	m500w	m500w	m500w	m500s	m500d	m500x	m500s
-464	40	64	1	0	0	0	0	0	0	0	0	0	zcat c	m500s	m500w	m500w	m500w	m500s	m500d	m500x	m500s
+462	24	32	1	0	0	0	0	0	0	0	0	0	zcat a	m500s	m500w	m500w	m500w	m500s	m500d	m500x	m500s
+463	24	32	1	0	0	0	0	0	0	0	0	0	zcat b	zcatbs	zcatbw	zcatbw	zcatbw	zcatbs	zcatbd	zcatbx	zcatbs
+464	24	32	1	0	0	0	0	0	0	0	0	0	zcat c	zcatcs	zcatcw	zcatcw	zcatcw	zcatcs	zcatcd	zcatcx	zcatcs
 465	40	64	1	0	0	0	0	0	0	0	0	0	zchicken a	m504s	m504w	m504w	m504w	m504s	m504d	m504x	m504s
-466	40	64	1	0	0	0	0	0	0	0	0	0	zchicken b	m504s	m504w	m504w	m504w	m504s	m504d	m504x	m504s
-467	40	64	1	0	0	0	0	0	0	0	0	0	zchicken c	m504s	m504w	m504w	m504w	m504s	m504d	m504x	m504s
+466	40	64	1	0	0	0	0	0	0	0	0	0	zchicken b	zchickenbs	zchickenbw	zchickenbw	zchickenbw	zchickenbs	zchickenbd	zchickenbx	zchickenbs
+467	40	64	1	0	0	0	0	0	0	0	0	0	zchicken c	zchickencs	zchickencw	zchickencw	zchickencw	zchickencs	zchickencd	zchickencx	zchickencs
 468	40	64	1	0	0	0	0	0	0	0	0	0	zdog a	7m509s	7m509w	7m509w	7m509w	7m509s	7m509d	m509x	7m509s
-469	40	64	1	0	0	0	0	0	0	0	0	0	zdog b	7m509s	7m509w	7m509w	7m509w	7m509s	7m509d	m509x	7m509s
-470	40	64	1	0	0	0	0	0	0	0	0	0	zdog c	7m509s	7m509w	7m509w	7m509w	7m509s	7m509d	m509x	7m509s
-471	40	64	1	0	0	0	0	0	0	0	0	0	zrat a	7m514s	7m514w	7m514w	7m514w	7m514s	7m514d	7m514x	7m514s
-472	40	64	1	0	0	0	0	0	0	0	0	0	zrat b	7m514s	7m514w	7m514w	7m514w	7m514s	7m514d	7m514x	7m514s
-473	40	64	1	0	0	0	0	0	0	0	0	0	zrat c	7m514s	7m514w	7m514w	7m514w	7m514s	7m514d	7m514x	7m514s
+469	40	64	1	0	0	0	0	0	0	0	0	0	zdog b	zdogbs	zdogbw	zdogbw	zdogbw	zdogbs	zdogbd	zdogbx	zdogbs
+470	40	64	1	0	0	0	0	0	0	0	0	0	zdog c	zdogcs	zdogcw	zdogcw	zdogcw	zdogcs	zdogcd	zdogcx	zdogcs
+471	24	32	1	0	0	0	0	0	0	0	0	0	zrat a	7m514s	7m514w	7m514w	7m514w	7m514s	7m514d	7m514x	7m514s
+472	24	32	1	0	0	0	0	0	0	0	0	0	zrat b	zratbs	zratbw	zratbw	zratbw	zratbs	zratbd	zratbx	zratbs
+473	24	32	1	0	0	0	0	0	0	0	0	0	zrat c	zratcs	zratcw	zratcw	zratcw	zratcs	zratcd	zratcx	zratcs
 474	161	40	140	0	999	999	999	0	2530	2531	2532	2533	BArcher A	ARC1STA	arc1wkA	arc1atK	arc1atK	arc1wiF	arc1diQ	arc1diV	arc1fia
 475	161	40	140	0	999	999	999	0	2530	2531	2532	2533	BArcher B	ARC2STA	arc2wkA	arc2atK	arc2atK	arc2wiF	arc2diQ	arc2diV	arc2fia
 476	161	40	140	0	999	999	999	0	2530	2531	2532	2533	BArcher C	ARC3STA	arc3wkA	arc3atK	arc3atK	arc3wiF	arc3diQ	arc3diV	arc3fia
