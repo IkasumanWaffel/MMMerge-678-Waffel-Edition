@@ -97,6 +97,7 @@ for r in mon[4:]:
         complements = cur and (a2ranged!=a1ranged or a2[0]!=a1[0])
         if same or complements:
             act='keep current'; p=(a2[0],a2[1],a2[2],int(a2[3] or 0)); why='current second attack already complements the first'
+            if a2[2]=='ArrowF' and a2[0]!='Fire': act='replace'; p=('Fire',)+p[1:]; why='flaming bolts: ArrowF is Fire'
         else: act='new' if not cur else 'replace'
     rows.append(dict(Id=int(i),Name=name,Kind=kind,Style=style,Level=r[3].strip(),
         Attack1=f'{a1[0]} {a1[1]} {"melee" if not a1ranged else a1[2]}',Current2=cur,
