@@ -11,7 +11,9 @@
 	On every refill of a listed map with at least MIN_PEASANTS townsfolk (peasant monsters),
 	COUNT animals are placed next to random townsfolk, peaceful like them (their group and
 	ally). The variant (A/B/C: three colourings, palettes 545 / 2101 / 2102) is random.
-	A map whose own monster list already has domestic animals is left as it is.
+	(27.11.26) A map whose own monster list already has domestic animals (Harmondale, Erathia,
+	the Tularean Forest) keeps them, each given a random colouring of its own kind, and gets
+	only EXTRA more, of the kinds that suit the town.
 	TOWNS[map] = {{kind, weight}, ...}; kind = the A line's monster id, Variants = false for
 	a creature with one line only.
 	mapvars.MMMWE_TownAnimals is set once the map has been handled.
@@ -28,9 +30,13 @@ for i = 463, 474 do DOMESTIC[i] = true end
 local MIN_PEASANTS = 3
 local COUNT = {4, 12}                       -- at least, at most; else townsfolk / 2
 local SPREAD = {120, 420}                   -- distance from the townsfolk
+local EXTRA = {2, 5}                        -- added where the map has animals of its own
 
 local TOWNS = {
-	-- Antagarich (Harmondale, Erathia and the Tularean Forest have theirs in the map files)
+	-- Antagarich
+	["7out02.odm"] = {{CHICKEN, 2}, {CAT, 1}, {RAT, 1}},                        -- Harmondale (has its own)
+	["7out03.odm"] = {{DOG, 2}, {CAT, 1}, {RAT, 1}},                            -- Erathia (has its own)
+	["7out04.odm"] = {{CAT, 3}, {CHICKEN, 1}},                                  -- Tularean Forest (has its own)
 	["7out01.odm"] = {{CHICKEN, 3}, {DOG, 2}, {CAT, 1}},                        -- Emerald Island
 	["7out05.odm"] = {{CAT, 3}, {RAT, 3}, {BAT, 1}},                            -- Deyja
 	["7out06.odm"] = {{CAT, 3}, {DOG, 1}, {CHICKEN, 1}},                        -- Bracada Desert
@@ -93,21 +99,28 @@ local function place()
 	if not pool or mapvars.MMMWE_TownAnimals then return end
 	if Game.MonstersTxt.count <= RAT + 2 then return end
 
-	local folk = {}
+	local folk, own = {}, 0
 	for i = 0, Map.Monsters.count - 1 do
 		local m = Map.Monsters[i]
 		if m.HP > 0 and m.AIState ~= const.AIState.Removed then
 			if DOMESTIC[m.Id] then
-				mapvars.MMMWE_TownAnimals = true      -- the map has its own
-				return
+				-- the map's own animal: same kind, a random colouring
+				local base = m.Id - (m.Id - CAT) % 3
+				local id = base + random(0, 2)
+				if id ~= m.Id then
+					m.Id = id
+					pcall(m.LoadFramesAndSounds, m)
+				end
+				own = own + 1
+			elseif isPeasant(m.Id) then
+				folk[#folk + 1] = m
 			end
-			if isPeasant(m.Id) then folk[#folk + 1] = m end
 		end
 	end
 	mapvars.MMMWE_TownAnimals = true
 	if #folk < MIN_PEASANTS then return end
 
-	local n = min(COUNT[2], max(COUNT[1], floor(#folk / 2)))
+	local n = own > 0 and random(EXTRA[1], EXTRA[2]) or min(COUNT[2], max(COUNT[1], floor(#folk / 2)))
 	local placed = 0
 	for _ = 1, n do
 		local f = folk[random(#folk)]
@@ -129,7 +142,7 @@ local function place()
 			warn("SummonMonster: %s", tostring(m))
 		end
 	end
-	if MF.LogInfo then MF.LogInfo("town animals: %d placed on %s (%d townsfolk)", placed, name, #folk) end
+	if MF.LogInfo then MF.LogInfo("town animals: %d placed on %s (%d townsfolk, %d of its own recoloured)", placed, name, #folk, own) end
 end
 
 function events.AfterLoadMap()

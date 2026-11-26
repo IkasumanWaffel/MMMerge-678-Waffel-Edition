@@ -464,18 +464,18 @@ Default Monster Data					Stats								Movement and Combat					Attack 1			Attack 
 460	Mega-Dragon	zUltra Dragon A	100	3000	100	30000	0	1	Y	Short	Suicidal	4	300	30	4	Errad	Ener	20D10	Ener	50	Phys	20D10	0	0	0	0	0	Imm	211	211	211	211	20	Imm	62	62	156	"Summon,air,Dragon C"
 461	Mega-Dragon	zUltra Dragon B	100	4000	150	40000	0	1	Y	Short	Suicidal	4	300	30	4	Errad	Ener	25D10	Ener	50	Phys	25D10	0	0	0	0	0	Imm	211	211	211	211	20	Imm	62	62	156	"Summon,air,Dragon C"
 462	Mega-Dragon	zUltra Dragon C	100	5000	200	50000	0	1	Y	Short	Suicidal	4	300	30	4	Errad	Ener	30D10	Ener	50	Phys	30D10	0	0	0	0	0	Imm	211	211	211	211	20	Imm	62	62	156	"Summon,air,Dragon C"
-463	Cat A	zcat a	1	3	3	11	2D6	1	N	Long	Wimp	4	140	100	0	0	Phys	2D2	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
-464	Cat B	zcat b	1	3	3	11	2D6	1	N	Long	Wimp	4	140	100	0	0	Phys	2D2	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
-465	Cat C	zcat c	1	3	3	11	2D6	1	N	Long	Wimp	4	140	100	0	0	Phys	2D2	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
-466	Chicken A	zchicken a	1	3	3	11	2D6	1	N	Long	Wimp	4	140	100	0	0	Phys	2D2	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
-467	Chicken B	zchicken b	1	3	3	11	2D6	1	N	Long	Wimp	4	140	100	0	0	Phys	2D2	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
-468	Chicken C	zchicken c	1	3	3	11	2D6	1	N	Long	Wimp	4	140	100	0	0	Phys	2D2	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
-469	Dog A	zdog a	1	3	3	11	2D6	1	N	Long	Wimp	4	140	100	0	0	Phys	2D2	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
-470	Dog B	zdog b	1	3	3	11	2D6	1	N	Long	Wimp	4	140	100	0	0	Phys	2D2	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
-471	Dog C	zdog c	1	3	3	11	2D6	1	N	Long	Wimp	4	140	100	0	0	Phys	2D2	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
-472	Rat A	zrat a	1	3	3	11	2D6	1	N	Long	Wimp	4	140	100	0	0	Phys	2D2	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
-473	Rat B	zrat b	1	3	3	11	2D6	1	N	Long	Wimp	4	140	100	0	0	Phys	2D2	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
-474	Rat C	zrat c	1	3	3	11	2D6	0	N	Long	Wimp	4	140	100	0	0	Phys	2D2	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+463	Cat	zcat a	1	3	3	11	2D6	1	N	Long	Wimp	4	140	100	0	0	Phys	2D2	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+464	Cat	zcat b	1	3	3	11	2D6	1	N	Long	Wimp	4	140	100	0	0	Phys	2D2	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+465	Cat	zcat c	1	3	3	11	2D6	1	N	Long	Wimp	4	140	100	0	0	Phys	2D2	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+466	Chicken	zchicken a	1	3	3	11	2D6	1	N	Long	Wimp	4	140	100	0	0	Phys	2D2	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+467	Chicken	zchicken b	1	3	3	11	2D6	1	N	Long	Wimp	4	140	100	0	0	Phys	2D2	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+468	Chicken	zchicken c	1	3	3	11	2D6	1	N	Long	Wimp	4	140	100	0	0	Phys	2D2	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+469	Dog	zdog a	1	3	3	11	2D6	1	N	Long	Wimp	4	140	100	0	0	Phys	2D2	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+470	Dog	zdog b	1	3	3	11	2D6	1	N	Long	Wimp	4	140	100	0	0	Phys	2D2	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+471	Dog	zdog c	1	3	3	11	2D6	1	N	Long	Wimp	4	140	100	0	0	Phys	2D2	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+472	Rat	zrat a	1	3	3	11	2D6	1	N	Long	Wimp	4	140	100	0	0	Phys	2D2	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+473	Rat	zrat b	1	3	3	11	2D6	1	N	Long	Wimp	4	140	100	0	0	Phys	2D2	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+474	Rat	zrat c	1	3	3	11	2D6	0	N	Long	Wimp	4	140	100	0	0	Phys	2D2	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
 475	Archer	BArcher A	9	35	14	171	5%3D20+L1Bow	0	N	Short	Normal	4	140	90	0	0	Phys	1D6+1	Arrow	0	0	0	0	0	0	0	0	15	15	15	15	0	5	0	0	0	0	0
 476	Master Archer	BArcher B	19	93	16	551	5%6D20+L2Bow	0	N	Short	Aggress	4	150	90	0	0	Phys	2D6+2	Arrow	20	Fire	3D6	ArrowF	0	0	0	0	33	33	33	33	0	5	0	0	0	0	"shot,x2"
 477	Fire Archer	BArcher C	29	171	22	1131	10%10D20+L3Bow	0	N	Short	Aggress	4	160	80	0	0	Phys	3D6+3	Arrow	30	Fire	4D6	ArrowF	40	"Fireball,N,5"	0	0	50	50	50	50	15	15	15	15	15	0	"shot,x2"
