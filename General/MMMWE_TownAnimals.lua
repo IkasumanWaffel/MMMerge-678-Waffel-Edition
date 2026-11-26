@@ -21,6 +21,8 @@
 	class of a peasant of the town, so the engine judges it by the peasants' relations instead
 	of its own class (a wild dragonfly or couatl class is hostile to the party and the
 	peasants). Saves made before this get it on their next visit (mapvars.MMMWE_TownAnimalsSide).
+	Spoken to, an animal answers with a line of its own (SpeakWithMonster: the game would show
+	its group's street talk, the same as the townsfolk's) - LINES[kind].
 --]]
 
 local MF = Merge.Functions
@@ -75,6 +77,55 @@ MF.TownAnimals = TOWNS
 
 -- creatures with one line only (no A/B/C colourings of their own)
 local SINGLE = {[COUATL] = true, [BAT] = true, [DRAGONFLY] = true}
+
+local Tx = MF.Text or function(t) return t end
+local LINES = {
+	[CAT] = {
+		"The cat blinks at you slowly, then goes back to washing its paw.",
+		"Mrrrow? The cat rubs against your boots and leaves a tuft of fur behind.",
+		"The cat stares at something only it can see, just past your left shoulder.",
+		"Purrr... The cat lets you scratch it exactly twice, then bites.",
+		"The cat yawns, showing every tooth. You are clearly not worth the trouble.",
+		"Mew! The cat inspects your pack for anything that smells of fish.",
+	},
+	[DOG] = {
+		"Woof! The dog wags its tail so hard that its whole back half wags along.",
+		"The dog sniffs your boots very thoroughly. Whatever you stepped in, it approves.",
+		"The dog drops a stick at your feet and looks up at you with enormous hope.",
+		"Grrr... woof! The dog decides you are a friend after all and licks your hand.",
+		"The dog rolls over and shows you its belly. The adventure can wait.",
+		"Arf! The dog runs a circle around the party, then another one, just to be sure.",
+	},
+	[CHICKEN] = {
+		"Bawk! The chicken eyes your rations with obvious interest.",
+		"The chicken scratches at the dirt, finds nothing and seems to blame you for it.",
+		"Cluck-cluck... The chicken studies you with one eye, then with the other.",
+		"Bawk-bawk-BAWK! The chicken has an opinion and wants the whole town to hear it.",
+		"The chicken pecks at the buckle of your boot. It was shiny; it had to be checked.",
+	},
+	[RAT] = {
+		"Squeak! The rat freezes, twitches its whiskers and darts under a barrel.",
+		"The rat sits up on its hind legs and sniffs in the direction of your purse.",
+		"The rat gnaws at something you would rather not identify.",
+		"Squeak-squeak. The rat looks well fed. Somebody's grain store must be lighter.",
+	},
+	[COUATL] = {
+		"The young couatl coils its feathered body and hisses a soft greeting.",
+		"Ssss... The couatl fans out its bright wings, showing off for the villagers.",
+		"The couatl tastes the air with its forked tongue. You smell of faraway places.",
+	},
+	[BAT] = {
+		"The bat hangs upside down and squeaks something too high to hear.",
+		"The bat flutters twice around your head and vanishes into the shadows.",
+		"The bat folds its wings and watches you with tiny glittering eyes.",
+	},
+	[DRAGONFLY] = {
+		"The dragonfly hovers before your nose, wings humming, then zips away.",
+		"Bzzz... The dragonfly lands on your sleeve for a moment to rest.",
+		"The dragonfly snaps a midge out of the air. The swamp has one pest fewer.",
+	},
+}
+MF.TownAnimalLines = LINES
 
 local function warn(fmt, ...)
 	if MF.LogWarning then MF.LogWarning("town animals: " .. fmt, ...) end
@@ -199,4 +250,18 @@ function events.AfterLoadMap()
 	if not ok then warn("%s", tostring(err)) end
 	ok, err = pcall(place)
 	if not ok then warn("%s", tostring(err)) end
+end
+
+-- an animal of the town speaks for itself instead of repeating the townsfolk's street talk
+function events.SpeakWithMonster(t)
+	local m = t.Monster
+	if not m or m.Hostile then return end
+	local kind
+	if DOMESTIC[m.Id] then
+		kind = m.Id - (m.Id - CAT) % 3
+	elseif SINGLE[m.Id] and m.Ally ~= 0 and TOWNS[(Map.Name or ""):lower()] then
+		kind = m.Id
+	end
+	local list = kind and LINES[kind]
+	if list then t.Result = Tx(list[random(#list)]) end
 end
