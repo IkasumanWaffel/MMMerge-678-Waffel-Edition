@@ -17,6 +17,10 @@
 	TOWNS[map] = {{kind, weight}, ...}; kind = the A line's monster id, Variants = false for
 	a creature with one line only.
 	mapvars.MMMWE_TownAnimals is set once the map has been handled.
+	(27.11.26) Every animal takes the side of the townsfolk: its Ally is set to the Hostile.txt
+	class of a peasant of the town, so the engine judges it by the peasants' relations instead
+	of its own class (a wild dragonfly or couatl class is hostile to the party and the
+	peasants). Saves made before this get it on their next visit (mapvars.MMMWE_TownAnimalsSide).
 --]]
 
 local MF = Merge.Functions
@@ -82,6 +86,20 @@ local function isPeasant(id)
 	return r ~= nil and r ~= 0 and r ~= false
 end
 
+-- the Hostile.txt class whose relations a townsman (and his animals) follow
+local function side(f)
+	if f.Ally ~= 0 then return f.Ally end
+	return floor((f.Id + 2) / 3)
+end
+
+local function befriend(m, f)
+	m.Group = f.Group
+	m.Ally = side(f)
+	m.Hostile = false
+	pcall(function() m.ShowAsHostile = false end)
+	pcall(function() m.HostileType = 0 end)
+end
+
 local function pick(pool)
 	local sum = 0
 	for _, e in ipairs(pool) do sum = sum + e[2] end
@@ -99,7 +117,7 @@ local function place()
 	if not pool or mapvars.MMMWE_TownAnimals then return end
 	if Game.MonstersTxt.count <= RAT + 2 then return end
 
-	local folk, own = {}, 0
+	local folk, pets, own = {}, {}, 0
 	for i = 0, Map.Monsters.count - 1 do
 		local m = Map.Monsters[i]
 		if m.HP > 0 and m.AIState ~= const.AIState.Removed then
@@ -111,6 +129,7 @@ local function place()
 					m.Id = id
 					pcall(m.LoadFramesAndSounds, m)
 				end
+				pets[#pets + 1] = m
 				own = own + 1
 			elseif isPeasant(m.Id) then
 				folk[#folk + 1] = m
@@ -118,6 +137,10 @@ local function place()
 		end
 	end
 	mapvars.MMMWE_TownAnimals = true
+	mapvars.MMMWE_TownAnimalsSide = true
+	if #folk > 0 then
+		for _, m in ipairs(pets) do befriend(m, folk[random(#folk)]) end
+	end
 	if #folk < MIN_PEASANTS then return end
 
 	local n = own > 0 and random(EXTRA[1], EXTRA[2]) or min(COUNT[2], max(COUNT[1], floor(#folk / 2)))
@@ -132,11 +155,7 @@ local function place()
 		local ok, m = pcall(SummonMonster, id, x, y, f.Z, true)
 		if ok and m then
 			pcall(m.LoadFramesAndSounds, m)
-			m.Group = f.Group
-			m.Ally = f.Ally
-			m.Hostile = false
-			pcall(function() m.ShowAsHostile = false end)
-			pcall(function() m.HostileType = 0 end)
+			befriend(m, f)
 			placed = placed + 1
 		elseif not ok then
 			warn("SummonMonster: %s", tostring(m))
@@ -145,7 +164,39 @@ local function place()
 	if MF.LogInfo then MF.LogInfo("town animals: %d placed on %s (%d townsfolk, %d of its own recoloured)", placed, name, #folk, own) end
 end
 
+-- a map handled before the animals took the townsfolk's side: the domestic animals, and the
+-- couatls, bats and dragonflies that share a group with the townsfolk (placed by this script)
+local function migrate()
+	local name = (Map.Name or ""):lower()
+	if not TOWNS[name] or not mapvars.MMMWE_TownAnimals or mapvars.MMMWE_TownAnimalsSide then return end
+	mapvars.MMMWE_TownAnimalsSide = true
+	local folk, byGroup, list = {}, {}, {}
+	for i = 0, Map.Monsters.count - 1 do
+		local m = Map.Monsters[i]
+		if m.HP > 0 and m.AIState ~= const.AIState.Removed then
+			if isPeasant(m.Id) then
+				folk[#folk + 1] = m
+				byGroup[m.Group] = byGroup[m.Group] or m
+			elseif DOMESTIC[m.Id] or SINGLE[m.Id] then
+				list[#list + 1] = m
+			end
+		end
+	end
+	if #folk == 0 then return end
+	local n = 0
+	for _, m in ipairs(list) do
+		local f = byGroup[m.Group]
+		if f or DOMESTIC[m.Id] then
+			befriend(m, f or folk[random(#folk)])
+			n = n + 1
+		end
+	end
+	if MF.LogInfo then MF.LogInfo("town animals: %d set to the townsfolk's side on %s", n, name) end
+end
+
 function events.AfterLoadMap()
-	local ok, err = pcall(place)
+	local ok, err = pcall(migrate)
+	if not ok then warn("%s", tostring(err)) end
+	ok, err = pcall(place)
 	if not ok then warn("%s", tostring(err)) end
 end
