@@ -9,23 +9,24 @@ SPELL={'fire bolt':'Fire','fireball':'Fire','incinerate':'Fire','meteor shower':
  'spirit lash':'Spirit','harm':'Body','flying fist':'Body','toxic cloud':'Dark','finger of death':'Dark','light bolt':'Light',
  'paralyze':'Light','mass curse':'Dark','day-o-gods':'Light'}
 # name keywords -> element (first match wins)
-KW=[(r'\bbat\b|bloodsucker|blood sucker','Body'),(r'moon|necro|lich|death|doom|dark|skeleton|bone|shadow|\bnight|undead|cuisinart|black','Dark'),(r'fire|flame|inferno|magma|lava|efre|phoenix|ember|smoke|burn|hell|salamander|red dragon|warden of fire|devil|demon|imp\b','Fire'),
- (r'ice|frost|snow|water|sea |shark|kraken|wyrm|unicorn|sprite|genie|djinn|triton|naga|mermaid|eel|tide','Water'),
- (r'air|storm|lightning|thunder|wind|tempest|dust devil|cloud|hawk|roc\b|thunderbird|titan|ether|crystal walker','Air'),
- (r'earth|stone|rock|boulder|clay|golem|gargoyle|sand|crystal|tree|treant|cactus|troglodyte|dwar|basilisk|gorgon|medusa|behemoth','Earth'),
- (r'ghost|spectre|specter|wraith|banshee|phantom|wight|shade|spirit|poltergeist|harpy|angel|monk|ninja|master of','Spirit'),
- (r'eye|beholder|psych|mind|fear|nightmare|agar|terror|gog\b|vampire|siren','Mind'),
- (r'spider|snake|serpent|cobra|viper|wasp|scorpion|couatl|ooze|slime|jelly|rat|toad|mushroom|corpse|zombie|ghoul|ghast|mummy|troll|lizard|swamp|blood sucker|bat\b|mosquito|leech|baa|cannibal|thief|cutpurse|robber|bandit|assassin|wolf|bear|cat\b|dog|hound|panther|tiger|lion|boar|griffin|wyvern|hydra|dragonfly|minicore|chicken','Body'),
- (r'sun|light|cleric|priest|paladin|crusader|templar|glow|dancing','Light'),
- (r'moon|necro|lich|death|doom|dark|skeleton|bone|shadow|\bnight|undead|cuisinart|black','Dark'),
- (r'droid|robot|blaster|reactor|patrol|seeker|tolberti|emerald dragon|mega|varn|guardian|ultra|unit\b','Ener')]
+KW=[(r'droid|robot|blaster|reactor|patrol unit|terminator|seeker|tolberti|emerald dragon|sapphire dragon|ruby dragon|mega-dragon|varn|unit\b','Ener'),
+ (r'\bbat\b|bloodsucker|blood sucker','Body'),
+ (r'moon|necro|lich|death|doom|dark|skeleton|\bbone|shadow|\bnight|undead|cuisinart|\bblack','Dark'),
+ (r'\bfire|flame|inferno|magma|lava|efre|phoenix|\bember|smoke|\bburn|\bhell|salamander|red dragon|(?<!dust )devil|demon|\bimp\b|\bgog\b|magog|gogling','Fire'),
+ (r'\bice\b|frost|snow|water|\bsea\b|shark|kraken|wyrm|unicorn|sprite|genie|djinn|triton|naga|mermaid|\beel\b|\btide','Water'),
+ (r'\bair\b|storm|lightning|thunder|\bwind|tempest|dust devil|cloud|hawk|\broc\b|thunderbird|titan|ether|crystal walker','Air'),
+ (r'earth|stone|\brock|boulder|\bclay|golem|gargoyle|\bsand|crystal|\btree|treant|cactus|troglodyte|dwar|basilisk|gorgon|medusa|behemoth','Earth'),
+ (r'ghost|spectre|specter|wraith|banshee|phantom|wight|\bshade|spirit|poltergeist|harpy|angel|\bmonk|ninja|master of','Spirit'),
+ (r'\beye\b|beholder|psych|\bmind|\bfear\b|nightmare|agar|terror|vampire|siren','Mind'),
+ (r'spider|snake|serpent|cobra|viper|wasp|scorpion|couatl|ooze|slime|jelly|\brat\b|ratman|wererat|toad|mushroom|corpse|zombie|ghoul|ghast|mummy|troll|lizard|swamp|mosquito|leech|\bbaa\b|cannibal|thief|cutpurse|robber|bandit|assassin|wolf|\bbear\b|\bcat\b|\bdog\b|hound|panther|tiger|\blion\b|\bboar\b|griffin|wyvern|hydra|dragonfly|minicore|chicken','Body'),
+ (r'\bsun\b|\blight\b|cleric|priest|paladin|crusader|templar|\bglow|dancing light','Light')]
 KIND={'Undead':'Spirit','Demon':'Fire','Dragon':'Fire','Construct':'Earth','Troll':'Body','Ogre':'Phys','Minotaur':'Phys','Titan':'Air',
  'Lizardman':'Body','Goblin':'Body','DarkElf':'Dark','Elf':'Phys','Dwarf':'Earth','Human':'Phys','Creature':'Body','Elemental':'Phys','Immobile':'Earth'}
 ARCHERS={'Human','Elf','DarkElf','Dwarf','Goblin','Lizardman'}
 PAIR={'Fire':'Air','Air':'Fire','Water':'Earth','Earth':'Water','Body':'Mind','Mind':'Spirit','Spirit':'Body','Light':'Spirit','Dark':'Body','Ener':'Fire','Phys':'Mind'}
 HUMANOID={'Human','Elf','DarkElf','Dwarf','Goblin','Minotaur','Ogre','Troll','Lizardman','Titan','Undead','Demon'}
 ROGUE=re.compile(r'thief|cutpurse|robber|bandit|assassin|rogue|brigand|burglar|smuggler|cutthroat|ninja|spy')
-THUG=re.compile(r'thug|ruffian|buccaneer|pirate|head hunter|cannibal|brigand|bandit')
+THUG=re.compile(r'thug|ruffian|buccaneer|pirate|corsair|head hunter|cannibal|brigand|bandit')
 ROCK=re.compile(r'ogre|troll|cyclop|titan|giant $|troglodyte|gorgon|behemoth|golem')
 def dice(s):
     m=re.match(r'\s*(\d+)\s*[dD]\s*(\d+)\s*(?:\+\s*(\d+))?',s or '')
