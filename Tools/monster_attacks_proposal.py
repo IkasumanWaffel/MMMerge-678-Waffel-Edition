@@ -61,7 +61,9 @@ for r in mon[4:]:
     aff=seen or ['Phys']; prim=aff[0]; sec=aff[1] if len(aff)>1 else prim
     d=dice(a1[1]) or (1,4,0)
     hum=kind in HUMANOID
-    if peasant or name.lower() in ('cat','chicken','dog','rat','fish','peasant'):
+    if a1[2]=='Ener' and kind=='Human' and re.search(r'blaster|tolberti|robert the wise',low):
+        p=None; why='blaster: shoots in melee and at range alike, no second attack'
+    elif peasant or name.lower() in ('cat','chicken','dog','rat','fish','peasant'):
         p=None; why='peasant / pet: no second attack'
     elif style=='Strength':
         if a1ranged: p=('Phys',scale(d,1.0),'0',25); why='ranged attacker: a melee blow up close'
