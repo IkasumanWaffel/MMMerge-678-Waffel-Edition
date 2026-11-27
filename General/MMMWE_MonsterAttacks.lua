@@ -11,6 +11,9 @@
 	monsters that already use them (TYPE_REF, MISSILE_REF: {id, attack}), so the table needs no
 	codes of its own.
 
+	Action "attack1" sets the first attack instead (Chance unused): the dark dwarves shoot their
+	crossbows first and fight in melee second (27.11.26).
+
 	Flaming arrows (ArrowF) deal Fire damage: every attack that shoots one is made Fire.
 
 	Game.MonstersTxt is changed once the game data is loaded. The bolster copies the second attack
@@ -78,6 +81,7 @@ local function codes(refs, field)
 end
 
 local Changed = {}          -- MONSTERS.txt id -> true, for the maps' monsters
+local First = {}            -- MONSTERS.txt id -> true: Attack1 changed (type and missile, which the bolster leaves)
 local ArrowF, FireType
 
 local function readTable()
@@ -120,6 +124,18 @@ local function apply()
 			m.Attack2Chance = 0
 			Changed[r.Id] = true
 			count = count + 1
+		elseif r.Action == "attack1" then
+			if not ty or not mi then
+				warn("%d %s: unknown type %s or missile %s", r.Id, r.Name, tostring(r.Type), tostring(r.Missile))
+			else
+				local a = m.Attack1
+				a.Type = ty
+				a.Missile = mi
+				a.DamageDiceCount = math.min(r.Count, 255)
+				a.DamageDiceSides = math.min(r.Sides, 255)
+				a.DamageAdd = math.min(r.Add, 255)
+				First[r.Id] = true
+			end
 		elseif r.Action == "new" or r.Action == "replace" then
 			if not ty or not mi then
 				warn("%d %s: unknown type %s or missile %s", r.Id, r.Name, tostring(r.Type), tostring(r.Missile))
@@ -136,6 +152,7 @@ local function apply()
 			end
 		end
 	end
+	for id in pairs(First) do Changed[id] = true end
 
 	-- flaming arrows burn
 	local burning = 0
@@ -169,11 +186,23 @@ local function onMap()
 			end
 		end
 	end
+	for i, mon in Map.Monsters do
+		if First[mon.Id] then
+			local a = Game.MonstersTxt[mon.Id].Attack1
+			mon.Attack1.Type = a.Type
+			mon.Attack1.Missile = a.Missile
+		end
+	end
 	if Game.UseMonsterBolster or mapvars.MMMWE_MonsterAttacks then return end
 	mapvars.MMMWE_MonsterAttacks = true
 	for i, mon in Map.Monsters do
 		if Changed[mon.Id] then
 			local src = Game.MonstersTxt[mon.Id]
+			if First[mon.Id] then
+				mon.Attack1.DamageDiceCount = src.Attack1.DamageDiceCount
+				mon.Attack1.DamageDiceSides = src.Attack1.DamageDiceSides
+				mon.Attack1.DamageAdd = src.Attack1.DamageAdd
+			end
 			mon.Attack2Chance = src.Attack2Chance
 			mon.Attack2.Type = src.Attack2.Type
 			mon.Attack2.Missile = src.Attack2.Missile

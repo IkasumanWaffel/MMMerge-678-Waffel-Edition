@@ -114,9 +114,12 @@ Id	Name	Action	Type	DiceCount	DiceSides	DamageAdd	Missile	Chance
 163	Skeletal Dragon	new	Phys	5	6	0	melee	25
 164	Bone Dragon	new	Phys	7	6	0	melee	25
 165	Undead Dragon	new	Phys	9	6	0	melee	25
-175	Dark Dwarf Grunt	new	Phys	2	5	8	Arrow	25
-176	Dark Dwarf Pounder	new	Phys	2	5	11	Arrow	25
-177	Dark Dwarf Berserker	new	Phys	2	5	19	Arrow	25
+175	Dark Dwarf Grunt	attack1	Phys	3	5	10	Arrow	0
+175	Dark Dwarf Grunt	new	Phys	3	5	10	melee	30
+176	Dark Dwarf Pounder	attack1	Phys	3	5	15	Arrow	0
+176	Dark Dwarf Pounder	new	Phys	3	5	15	melee	30
+177	Dark Dwarf Berserker	attack1	Phys	3	5	25	Arrow	0
+177	Dark Dwarf Berserker	new	Phys	3	5	25	melee	30
 181	Pirate	new	Phys	2	5	0	Arrow	15
 182	Buccaneer	new	Phys	1	5	2	Arrow	15
 183	Corsair	new	Phys	2	5	3	Arrow	15
