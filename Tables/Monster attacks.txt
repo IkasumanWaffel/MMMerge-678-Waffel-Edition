@@ -178,6 +178,9 @@ Id	Name	Action	Type	DiceCount	DiceSides	DamageAdd	Missile	Chance	Projectile
 262	Stone Gargoyle	new	Earth	2	12	0	melee	20	
 263	Marble Gargoyle	new	Earth	2	12	4	melee	20	
 264	Obsidian Gargoyle	new	Earth	2	12	8	melee	20	
+271	Goblin	keep		0	0	0	Arrow	0	dagger
+272	Hobgoblin	keep		0	0	0	Arrow	0	dagger
+273	Goblin Lord	keep		0	0	0	Arrow	0	dagger
 274	Gogling	new	Air	1	10	2	Air	30	
 275	Gog	new	Air	1	10	6	Air	30	
 276	Magog	new	Air	2	10	8	Air	30	

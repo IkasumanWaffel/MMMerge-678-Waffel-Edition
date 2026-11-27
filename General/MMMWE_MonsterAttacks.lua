@@ -11,7 +11,8 @@
 	monsters that already use them (TYPE_REF, MISSILE_REF: {id, attack}), so the table needs no
 	codes of its own.
 
-	Action "attack1" sets the first attack instead (Chance unused): the dark dwarves shoot their
+	Action "keep" leaves the second attack as it is and only names the weapon it is thrown as
+	(MM7 goblins: daggers instead of arrows). Action "attack1" sets the first attack instead (Chance unused): the dark dwarves shoot their
 	crossbows first and fight in melee second (27.11.26).
 
 	Projectile (javelin / axe / dagger, 27.11.26): the monster's thrown second attack leaves as an
@@ -141,6 +142,12 @@ local function apply()
 			m.Attack2Chance = 0
 			Changed[r.Id] = true
 			count = count + 1
+		elseif r.Action == "keep" then
+			-- the second attack stays as it is; only the thrown weapon it is drawn as (Projectile)
+			local obj = r.Projectile and PROJECTILE_OBJ[r.Projectile:lower()]
+			if obj and m.Attack2.Missile == mi then
+				Thrown[r.Id] = objIndex(obj)
+			end
 		elseif r.Action == "attack1" then
 			if not ty or not mi then
 				warn("%d %s: unknown type %s or missile %s", r.Id, r.Name, tostring(r.Type), tostring(r.Missile))
