@@ -25,6 +25,7 @@ ARCHERS={'Human','Elf','DarkElf','Dwarf','Goblin','Lizardman'}
 PAIR={'Fire':'Air','Air':'Fire','Water':'Earth','Earth':'Water','Body':'Mind','Mind':'Spirit','Spirit':'Body','Light':'Spirit','Dark':'Body','Ener':'Fire','Phys':'Mind'}
 HUMANOID={'Human','Elf','DarkElf','Dwarf','Goblin','Minotaur','Ogre','Troll','Lizardman','Titan','Undead','Demon'}
 ROGUE=re.compile(r'thief|cutpurse|robber|bandit|assassin|rogue|brigand|burglar|smuggler|cutthroat|ninja|spy')
+THUG=re.compile(r'thug|ruffian|buccaneer|pirate|head hunter|cannibal|brigand|bandit')
 ROCK=re.compile(r'ogre|troll|cyclop|titan|giant|troglodyte|gorgon|behemoth|golem')
 def dice(s):
     m=re.match(r'\s*(\d+)\s*[dD]\s*(\d+)\s*(?:\+\s*(\d+))?',s or '')
@@ -97,7 +98,9 @@ for r in mon[4:]:
         elif kind=='Elemental' and not a1ranged and prim!='Phys':
             p=(prim,scale(d,0.75),prim,25); why=f'{prim} missile from afar'
         # a second attack that only repeats the first
-        if p[0]==a1[0] and ((p[2]=='0')==(not a1ranged)):
+        trained = kind in ('Human','Dwarf','-','0','') and not (THUG.search(low) or ROGUE.search(low) or ROCK.search(low) or 'cyclop' in low)
+        if why=='heavy blow' and trained: why='hard hit (a trained fighter)'
+        elif p[0]==a1[0] and ((p[2]=='0')==(not a1ranged)) and not why.startswith('current'):
             if not a1ranged and p[0] not in ('Phys',):
                 p=(p[0],scale(d,0.75),p[0],25); why=f'{p[0]} missile (the melee one is Attack 1)'
             elif a1ranged:
@@ -111,9 +114,10 @@ for r in mon[4:]:
     else:
         same = cur and a2[0]==p[0] and ((a2[2] in ('0',''))==(p[2]=='0'))
         a2ranged = a2[2] not in ('0','')
-        complements = cur and (a2ranged!=a1ranged or a2[0]!=a1[0])
+        hardhit = cur and a2[0]=='Phys' and not a2ranged and a1[0]=='Phys' and not a1ranged and kind in ('Human','Dwarf','-','0','') and not THUG.search(low) and not ROGUE.search(low)
+        complements = cur and (a2ranged!=a1ranged or a2[0]!=a1[0] or hardhit)
         if same or complements:
-            act='keep current'; p=(a2[0],a2[1],a2[2],int(a2[3] or 0)); why='current second attack already complements the first'
+            act='keep current'; p=(a2[0],a2[1],a2[2],int(a2[3] or 0)); why=('current hard hit kept (a trained fighter)' if hardhit else 'current second attack already complements the first')
             if a2[2]=='ArrowF' and a2[0]!='Fire': act='replace'; p=('Fire',)+p[1:]; why='flaming bolts: ArrowF is Fire'
         else: act='new' if not cur else 'replace'
     rows.append(dict(Id=int(i),Name=name,Kind=kind,Style=style,Level=r[3].strip(),
