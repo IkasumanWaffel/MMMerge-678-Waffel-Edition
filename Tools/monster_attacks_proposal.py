@@ -104,7 +104,7 @@ for r in mon[4:]:
             el=PAIR.get(a1[0],'Body') if a1[0]!='Phys' else 'Body'
             p=(el,scale(d,0.75),'0',20); why=f'{el} draining touch (melee only)'
         # a second attack that only repeats the first
-        trained = kind in ('Human','Dwarf','-','0','') and not (THUG.search(low) or ROGUE.search(low) or ROCK.search(low) or 'cyclop' in low)
+        trained = (kind in ('Human','Dwarf','-','0','') and not (THUG.search(low) or ROGUE.search(low) or ROCK.search(low) or 'cyclop' in low)) or re.match(r'ogre( raider| chieftain)? $',low)
         if why=='heavy blow' and trained: why='hard hit (a trained fighter)'
         elif p[0]==a1[0] and ((p[2]=='0')==(not a1ranged)) and not why.startswith('current'):
             if not a1ranged and p[0] not in ('Phys',):
