@@ -1,301 +1,301 @@
-Id	Name	Action	Type	DiceCount	DiceSides	DamageAdd	Missile	Chance
-9	Winged Serpent	new	Body	3	2	4	melee	20
-10	Regnan Bandit	new	Body	3	10	6	Arrow	20
-11	Regnan Pirate	new	Phys	4	10	6	Arrow	15
-12	Regnan Brigadier	new	Phys	12	10	12	melee	15
-13	Regnan Crossbowman	replace	Fire	6	2	6	ArrowF	35
-14	Regnan Arbalester	replace	Fire	7	2	7	ArrowF	45
-15	Regnan Lieutenant	replace	Fire	8	2	8	ArrowF	55
-25	Dark Elven Warrior	new	Dark	4	4	4	melee	15
-26	Dark Elven Defender	new	Dark	5	4	6	melee	15
-27	Dark Elven Crusader	new	Dark	6	4	8	melee	15
-31	Ogre Brawler	new	Phys	4	3	9	melee	15
-32	Ogre Warrior	new	Phys	4	3	15	melee	15
-33	Ogre Warleader	new	Phys	4	3	21	melee	15
-34	Animalist	new	Body	4	6	2	melee	15
-35	Shapeshifter	new	Body	4	6	4	melee	15
-36	Lycanthrope	new	Body	4	6	6	melee	15
-37	Ratman	new	Body	5	4	2	melee	15
-38	Wererat	new	Body	5	4	4	melee	15
-39	Greater Wererat	new	Body	5	4	6	melee	15
-40	Bestial Animalist	new	Body	3	8	0	melee	20
-41	Bestial Shapeshifter	new	Body	3	8	2	melee	20
-42	Bestial Lycanthrope	new	Body	3	8	3	melee	20
-43	Dragon Hunter	new	Phys	9	5	8	melee	15
-44	Crusader	new	Light	8	5	5	melee	15
-45	Dragonslayer	new	Phys	18	5	0	melee	15
-46	Acolyte of the Sun	new	Light	6	4	0	Light	30
-47	Cleric of the Sun	new	Light	8	4	4	Light	30
-48	Priest of the Sun	new	Spirit	9	4	8	Spirit	30
-55	Dark Path Journeyman	new	Body	9	4	0	Body	30
-56	Necromancer	new	Air	12	4	0	Air	30
-57	Master Necromancer	new	Fire	16	4	0	Fire	30
-58	Troll Clubman	new	Body	2	10	4	melee	20
-59	Troll Warrior	new	Body	3	10	6	melee	20
-60	Troll Chieftain	new	Body	4	10	10	melee	20
-64	Minotaur Guard	new	Phys	4	7	0	Arrow	15
-65	Minotaur Warrior	new	Phys	6	7	4	Arrow	15
-66	Minotaur Battleleader	new	Phys	7	7	8	Arrow	15
-70	Dragon	new	Phys	12	8	0	melee	25
-71	Dragon Flightleader	new	Phys	14	8	0	melee	25
-72	Great Wyrm	new	Phys	16	8	0	melee	25
-73	Lesser Fire Elemental	new	Fire	5	10	0	Fire	25
-74	Fire Elemental	new	Fire	7	10	0	Fire	25
-75	Greater Fire Elemental	new	Fire	8	10	0	Fire	25
-76	Lesser Water Elemental	new	Water	5	10	0	Water	25
-77	Water Elemental	new	Water	7	10	0	Water	25
-78	Greater Water Elemental	new	Water	8	10	0	Water	25
-82	Lesser Air Elemental	new	Air	5	10	0	Air	25
-83	Air Elemental	new	Air	7	10	0	Air	25
-84	Greater Air Elemental	new	Air	8	10	0	Air	25
-85	Dire Wolf Yearling	new	Body	4	4	0	melee	20
-86	Dire Wolf	new	Body	4	4	2	melee	20
-87	Pack Leader	new	Body	4	4	4	melee	20
-91	Cyclops	new	Phys	11	2	2	Rock	15
-92	Cyclops Hunter	new	Phys	12	2	3	Rock	15
-93	Cyclops Warrior	new	Phys	14	2	4	Rock	15
-94	Serpentman	new	Body	2	4	0	melee	20
-95	Serpentman Elder	new	Body	2	6	2	melee	20
-96	Serpentman Warrior	new	Body	2	8	3	melee	20
-97	Dancing Light	new	Light	6	4	0	melee	20
-98	Wisp	new	Light	10	4	0	melee	20
-99	Will O' Wisp	new	Light	15	4	0	melee	20
-100	Centaur	new	Phys	1	4	2	melee	20
-101	Centaur Warrior	new	Phys	2	4	3	melee	20
-102	Centaur Warlord	new	Phys	2	4	4	melee	20
-103	Efreeti Soldier	new	Fire	5	8	0	Fire	25
-104	Efreeti Knight	new	Fire	7	8	0	Fire	25
-105	Efreeti Lord	new	Fire	8	8	0	Fire	25
-109	Unicorn Foal	new	Water	4	6	0	melee	20
-110	Unicorn	new	Water	4	6	0	melee	20
-111	Unicorn Herd Leader	new	Water	5	6	0	melee	20
-112	Emerald Dragon	replace	Phys	12	8	0	melee	25
-113	Sapphire Dragon	replace	Phys	14	8	0	melee	25
-114	Ruby Dragon	replace	Phys	16	8	0	melee	25
-115	Mist Hawk	new	Air	4	7	0	Air	25
-116	Storm Eagle	new	Air	6	7	4	Air	25
-117	Thunderbird	new	Air	7	7	8	Air	25
-118	Wasp Worker	new	Body	2	7	2	melee	20
-119	Wasp Sentry	new	Body	3	7	4	melee	20
-120	Wasp Warrior	new	Body	4	7	8	melee	20
-121	Wyvern	new	Body	7	6	0	melee	15
-122	Horned Wyvern	new	Body	9	6	0	melee	15
-123	Ancient Wyvern	new	Body	12	6	0	melee	15
-124	Brass Gorgon	new	Earth	4	4	8	melee	15
-125	Bronze Gorgon	new	Earth	5	4	10	melee	15
-126	Iron Gorgon	new	Earth	6	4	12	melee	15
-127	Fire Newt	new	Fire	4	7	0	Fire	25
-128	Fire Lizard	new	Fire	6	7	4	Fire	25
-129	Salamander	new	Fire	7	7	8	Fire	25
-130	Fire Bird	new	Fire	3	17	8	Fire	25
-131	Phoenix	new	Fire	4	17	4	Fire	25
-132	Grand Phoenix	new	Fire	4	17	8	Fire	25
-133	Triton	new	Water	4	7	0	melee	15
-134	Triton Warrior	new	Water	6	7	0	melee	15
-135	Triton Crusader	new	Water	7	7	0	melee	15
-136	Young Dragon Turtle	new	Body	5	15	0	melee	15
-137	Dragon Turtle	new	Body	6	15	0	melee	15
-138	Elder Tortoise	new	Body	7	15	0	melee	15
-139	Rook	new	Body	9	7	0	melee	20
-140	Corbie	new	Body	10	7	0	melee	20
-141	Raven	new	Body	10	7	0	melee	20
-145	Plane Guardian	new	Light	5	8	10	melee	15
-146	Plane Protector	new	Light	6	8	15	melee	15
-147	Plane Overlord	new	Light	10	8	20	melee	15
-151	Fear	new	Mind	6	8	0	melee	15
-152	Terror	new	Mind	8	8	0	melee	15
-153	Nightmare	new	Dark	10	8	0	melee	15
-157	Charger	new	Earth	3	10	20	melee	15
-158	Juggernaut	new	Earth	4	10	30	melee	15
-159	Demolisher	new	Earth	5	10	40	melee	15
-160	Smoke Gog	new	Air	1	10	2	Air	30
-161	Ember Gog	new	Air	1	10	6	Air	30
-162	Fire Gog	new	Air	2	10	8	Air	30
-163	Skeletal Dragon	new	Phys	5	6	0	melee	25
-164	Bone Dragon	new	Phys	7	6	0	melee	25
-165	Undead Dragon	new	Phys	9	6	0	melee	25
-175	Dark Dwarf Grunt	attack1	Phys	3	5	10	Arrow	0
-175	Dark Dwarf Grunt	new	Phys	3	5	10	melee	30
-176	Dark Dwarf Pounder	attack1	Phys	3	5	15	Arrow	0
-176	Dark Dwarf Pounder	new	Phys	3	5	15	melee	30
-177	Dark Dwarf Berserker	attack1	Phys	3	5	25	Arrow	0
-177	Dark Dwarf Berserker	new	Phys	3	5	25	melee	30
-181	Pirate	new	Phys	2	5	0	Arrow	15
-182	Buccaneer	new	Phys	1	5	2	Arrow	15
-183	Corsair	new	Phys	2	5	3	Arrow	15
-187	Pirate Seer	new	Fire	2	4	1	Fire	30
-188	Pirate Magi	new	Air	2	4	2	Air	30
-189	Pirate Wizard	new	Body	3	4	4	Body	30
-193	Soldier of Fortune	new	Phys	4	7	6	melee	15
-194	Mercenary	new	Phys	4	7	9	melee	15
-195	Mercenary Captain	new	Phys	4	7	12	melee	15
-196	Chaos Guardian	new	Light	15	4	0	melee	15
-197	Chaos Protector	new	Light	20	4	0	melee	15
-198	Chaos Overlord	new	Light	25	4	0	melee	15
-206	Vampire Bat	new	Body	1	3	2	melee	20
-208	Young Behemoth	new	Earth	3	10	20	melee	15
-209	Behemoth	new	Earth	4	10	30	melee	15
-210	Ancient Behemoth	new	Earth	5	10	40	melee	15
-214	Acolyte of the Moon	new	Body	2	4	0	Body	30
-215	Cleric of the Moon	new	Body	2	4	4	Body	30
-216	Priest of the Moon	new	Body	2	4	8	Body	30
-217	Acolyte of the Sun	new	Spirit	2	4	0	Spirit	30
-218	Cleric of the Sun	new	Mind	2	4	4	Mind	30
-219	Priest of the Sun	new	Spirit	2	4	8	Spirit	30
-226	Dragonfly	new	Body	2	2	0	melee	20
-227	Fire Dragonfly	new	Fire	2	2	1	Fire	25
-228	Queen Dragonfly	new	Body	3	2	2	melee	20
-229	Dwarven Soldier	new	Earth	4	2	4	melee	15
-230	Dwarven Lieutenant	new	Earth	4	2	8	melee	15
-231	Dwarven Commander	new	Earth	4	2	16	melee	15
-232	Tempest	new	Air	2	6	0	melee	20
-233	Cyclone	new	Air	4	6	0	melee	20
-234	Air Elemental	new	Air	6	6	0	melee	20
-235	Clay Elemental	new	Earth	10	3	0	melee	20
-236	Stone Elemental	new	Earth	15	3	0	melee	20
-237	Earth Elemental	new	Earth	25	3	0	melee	20
-238	Warden of Fire	new	Phys	2	8	0	melee	25
-239	Guardian of Flame	new	Phys	5	8	0	melee	25
-240	Fire Elemental	new	Phys	8	8	0	melee	25
-241	Lesser Light Elemental	new	Light	3	4	0	melee	20
-242	Light Elemental	new	Light	7	4	0	melee	20
-243	Greater Light Elemental	new	Light	10	4	0	melee	20
-244	Sprite	new	Water	3	12	0	melee	25
-245	Sylph	new	Water	4	12	0	melee	25
-246	Water Elemental	new	Water	6	12	0	melee	25
-247	Elven Archer	new	Phys	3	2	2	melee	20
-248	Elven Scout	new	Phys	4	2	3	melee	20
-249	Elven Ranger	new	Phys	6	2	4	melee	20
-250	Elven Warrior	new	Phys	2	4	3	Arrow	15
-251	Elven Defender	new	Phys	2	4	4	Arrow	15
-252	Elven Lancer	new	Phys	3	4	6	Arrow	15
-253	Conscript	new	Phys	4	3	9	melee	15
-254	Soldier	new	Phys	4	3	15	melee	15
-255	Fighter	new	Phys	4	3	21	melee	15
-259	Initiate of the Sword	new	Phys	6	5	30	melee	15
-260	Champion of the Sword	new	Phys	6	5	45	melee	15
-261	Master of the Sword	new	Spirit	4	5	40	melee	15
-262	Stone Gargoyle	new	Earth	2	12	0	melee	20
-263	Marble Gargoyle	new	Earth	2	12	4	melee	20
-264	Obsidian Gargoyle	new	Earth	2	12	8	melee	20
-274	Gogling	new	Air	1	10	2	Air	30
-275	Gog	new	Air	1	10	6	Air	30
-276	Magog	new	Air	2	10	8	Air	30
-280	Griffin	new	Body	2	8	2	melee	15
-281	Hunting Griffin	new	Body	2	8	6	melee	15
-282	Royal Griffin	new	Body	3	8	10	melee	15
-289	Lich	new	Dark	3	8	6	Dark	30
-290	Power Lich	new	Dark	4	8	12	Dark	30
-291	Lich King	new	Spirit	5	8	20	Spirit	30
-292	Sorcerer	new	Spirit	9	4	0	Spirit	30
-293	Wizard	new	Spirit	12	4	0	Spirit	30
-294	Archmage	new	Fire	16	4	0	Fire	30
-298	Medusa	new	Phys	4	4	8	melee	25
-299	Queen Medusa	new	Phys	5	4	10	melee	25
-300	Empress Medusa	new	Phys	6	4	12	melee	25
-301	Minotaur	new	Phys	2	7	19	Arrow	15
-302	Minotaur Headsman	new	Phys	2	7	30	Arrow	15
-303	Minotaur Lord	new	Phys	2	7	45	Arrow	15
-307	Necromancer	new	Body	9	4	0	Body	30
-308	Speaker for the Dead	new	Body	12	4	0	Body	30
-309	Queen of the Dead	new	Body	16	4	0	Body	30
-385	Giant Rat	new	Body	1	8	0	melee	20
-388	Seeker Droid	new	Phys	10	5	10	melee	25
-389	Sentinel Droid	new	Phys	12	5	15	melee	25
-390	Assassin Droid	new	Phys	20	5	20	melee	25
-391	Roc	new	Air	2	10	15	Air	25
-392	Greater Roc	new	Air	3	10	19	Air	25
-393	Thunderbird	new	Air	4	10	22	Air	25
-406	Thief	replace	Body	2	4	2	Arrow	20
-407	Rogue	replace	Body	2	4	4	Arrow	20
-408	Master Thief	replace	Body	2	4	9	Arrow	20
-418	Fire Warlock	new	Air	9	4	0	Air	30
-419	Water Warlock	new	Earth	12	4	0	Earth	30
-420	Air Warlock	new	Fire	16	4	0	Fire	30
-421	Wight	new	Body	2	5	4	melee	20
-422	Wraith	new	Body	2	5	9	melee	20
-423	Barrow Wight	new	Body	3	5	9	melee	20
-424	Wyvern	new	Body	7	6	0	melee	15
-425	Horned Wyvern	new	Body	9	6	0	melee	15
-426	Ancient Wyvern	new	Body	12	6	0	melee	15
-475	Archer	new	Phys	1	6	1	melee	25
-478	Magyar	new	Phys	5	7	4	melee	15
-481	Bat	new	Body	1	3	0	melee	20
-482	Giant Bat	new	Body	1	3	2	melee	20
-483	Vampire Bat	new	Body	1	3	2	melee	20
-484	Flying Eye	new	Mind	5	6	0	Mind	30
-485	Terrible Eye	new	Mind	6	6	0	Mind	30
-486	Maddening Eye	new	Mind	7	6	0	Mind	30
-505	Fire Lizard	new	Phys	10	6	0	melee	25
-506	Lightning Lizard	new	Phys	12	6	0	melee	25
-507	Thunder Lizard	new	Phys	14	6	0	melee	25
-517	Druid	new	Body	2	4	3	Body	30
-518	Great Druid	new	Earth	2	4	6	Earth	30
-519	Grand Druid	new	Fire	2	4	12	Fire	30
-523	Dust Devil	new	Air	2	6	0	melee	20
-524	Twister	new	Air	4	6	0	melee	20
-525	Air Elemental	new	Air	6	6	0	melee	20
-529	Fire Beast	new	Phys	2	8	0	melee	25
-530	Fire Spirit	new	Phys	5	8	0	melee	25
-531	Fire Elemental	new	Phys	8	8	0	melee	25
-532	Water Beast	new	Water	3	12	0	melee	25
-533	Water Spirit	new	Water	4	12	0	melee	25
-534	Water Elemental	new	Water	6	12	0	melee	25
-538	Thug	replace	Phys	1	4	1	Arrow	15
-539	Ruffian	replace	Phys	1	4	4	Arrow	15
-540	Brigand	replace	Body	1	4	8	Arrow	20
-541	Stone Gargoyle	new	Earth	2	12	0	melee	15
-542	Marble Gargoyle	new	Earth	2	12	4	melee	15
-543	Diamond Gargoyle	new	Earth	2	12	8	melee	15
-553	Guard	new	Phys	4	3	8	melee	15
-568	Lich	new	Dark	3	8	6	Dark	30
-569	Greater Lich	new	Dark	4	8	12	Dark	30
-570	Power Lich	new	Dark	5	8	20	Dark	30
-571	Lizard Man	new	Phys	1	6	0	melee	25
-573	Lizard Wizard	new	Phys	1	6	5	melee	25
-574	Medusa	new	Earth	3	4	6	Earth	25
-575	Medusa Enchantress	new	Earth	4	4	8	Earth	25
-576	Gorgon	new	Earth	4	4	9	Earth	25
-580	Minotaur	new	Phys	2	7	19	Arrow	15
-581	Minotaur Mage	new	Air	3	7	40	melee	15
-582	Minotaur King	new	Dark	3	7	60	melee	15
-586	Swordsman	new	Phys	4	7	6	melee	15
-587	Expert Swordsman	new	Phys	4	7	9	melee	15
-592	Ogre	new	Phys	3	5	15	melee	15
-593	Ogre Raider	new	Phys	3	5	22	melee	15
-594	Ogre Chieftain	new	Phys	3	5	38	melee	15
-601	Cutpurse	new	Body	2	2	2	Arrow	20
-602	Bounty Hunter	new	Phys	1	2	4	Arrow	25
-603	Assassin	new	Body	1	2	8	Arrow	20
-604	Cannibal	new	Body	3	3	2	melee	15
-605	Head Hunter	new	Phys	2	3	3	Arrow	15
-606	Witch Doctor	new	Earth	3	3	6	melee	15
-616	Cannibal	new	Body	1	9	2	melee	15
-617	Head Hunter	new	Phys	1	9	3	Arrow	15
-618	Witch Doctor	new	Fire	1	9	6	melee	15
-619	Common Rat	new	Body	1	8	0	melee	20
-620	Large Rat	new	Body	1	8	2	melee	20
-621	Giant Rat	new	Body	1	8	4	melee	20
-622	Patrol Unit	new	Ener	7	5	8	melee	20
-623	Enforcer Unit	new	Ener	9	5	11	melee	20
-624	Terminator Unit	new	Ener	15	5	15	melee	20
-625	Sea Serpent	new	Phys	2	20	25	melee	25
-626	Sea Monster	new	Phys	2	20	35	melee	25
-627	Sea Terror	new	Phys	2	20	45	melee	25
-631	Sorcerer	new	Fire	9	4	0	Fire	30
-632	Magician	new	Fire	12	4	0	Fire	30
-633	Warlock	new	Air	16	4	0	Air	30
-643	Wolfman	new	Body	2	12	12	melee	15
-644	Werewolf	new	Body	2	12	16	melee	15
-645	Greater Werewolf	new	Body	2	12	20	melee	15
-646	Demon Queen	new	Fire	2	8	20	Fire	25
-647	Reactor	new	Ener	20	5	20	melee	20
-648	Reactor	new	Ener	20	5	20	melee	20
-649	Cactus	new	Earth	4	6	0	Earth	25
-650	Cactus	new	Earth	4	6	0	Earth	25
-651	Cactus	new	Earth	5	6	0	Earth	25
-653	Reactor	new	Ener	20	5	20	melee	20
-654	Reactor	new	Ener	20	5	20	melee	20
-655	Troll Runt	new	Body	1	6	1	melee	20
-656	Troll Brawler	new	Body	2	4	3	melee	20
-657	Troll Bruiser	new	Body	2	6	5	melee	20
+Id	Name	Action	Type	DiceCount	DiceSides	DamageAdd	Missile	Chance	Projectile
+9	Winged Serpent	new	Body	3	2	4	melee	20	
+10	Regnan Bandit	new	Body	3	10	6	Arrow	20	dagger
+11	Regnan Pirate	new	Phys	4	10	6	Arrow	15	javelin
+12	Regnan Brigadier	new	Phys	12	10	12	melee	15	
+13	Regnan Crossbowman	replace	Fire	6	2	6	ArrowF	35	
+14	Regnan Arbalester	replace	Fire	7	2	7	ArrowF	45	
+15	Regnan Lieutenant	replace	Fire	8	2	8	ArrowF	55	
+25	Dark Elven Warrior	new	Dark	4	4	4	melee	15	
+26	Dark Elven Defender	new	Dark	5	4	6	melee	15	
+27	Dark Elven Crusader	new	Dark	6	4	8	melee	15	
+31	Ogre Brawler	new	Phys	4	3	9	melee	15	
+32	Ogre Warrior	new	Phys	4	3	15	melee	15	
+33	Ogre Warleader	new	Phys	4	3	21	melee	15	
+34	Animalist	new	Body	4	6	2	melee	15	
+35	Shapeshifter	new	Body	4	6	4	melee	15	
+36	Lycanthrope	new	Body	4	6	6	melee	15	
+37	Ratman	new	Body	5	4	2	melee	15	
+38	Wererat	new	Body	5	4	4	melee	15	
+39	Greater Wererat	new	Body	5	4	6	melee	15	
+40	Bestial Animalist	new	Body	3	8	0	melee	20	
+41	Bestial Shapeshifter	new	Body	3	8	2	melee	20	
+42	Bestial Lycanthrope	new	Body	3	8	3	melee	20	
+43	Dragon Hunter	new	Phys	9	5	8	melee	15	
+44	Crusader	new	Light	8	5	5	melee	15	
+45	Dragonslayer	new	Phys	18	5	0	melee	15	
+46	Acolyte of the Sun	new	Light	6	4	0	Light	30	
+47	Cleric of the Sun	new	Light	8	4	4	Light	30	
+48	Priest of the Sun	new	Spirit	9	4	8	Spirit	30	
+55	Dark Path Journeyman	new	Body	9	4	0	Body	30	
+56	Necromancer	new	Air	12	4	0	Air	30	
+57	Master Necromancer	new	Fire	16	4	0	Fire	30	
+58	Troll Clubman	new	Body	2	10	4	melee	20	
+59	Troll Warrior	new	Body	3	10	6	melee	20	
+60	Troll Chieftain	new	Body	4	10	10	melee	20	
+64	Minotaur Guard	new	Phys	4	7	0	Arrow	15	axe
+65	Minotaur Warrior	new	Phys	6	7	4	Arrow	15	axe
+66	Minotaur Battleleader	new	Phys	7	7	8	Arrow	15	axe
+70	Dragon	new	Phys	12	8	0	melee	25	
+71	Dragon Flightleader	new	Phys	14	8	0	melee	25	
+72	Great Wyrm	new	Phys	16	8	0	melee	25	
+73	Lesser Fire Elemental	new	Fire	5	10	0	Fire	25	
+74	Fire Elemental	new	Fire	7	10	0	Fire	25	
+75	Greater Fire Elemental	new	Fire	8	10	0	Fire	25	
+76	Lesser Water Elemental	new	Water	5	10	0	Water	25	
+77	Water Elemental	new	Water	7	10	0	Water	25	
+78	Greater Water Elemental	new	Water	8	10	0	Water	25	
+82	Lesser Air Elemental	new	Air	5	10	0	Air	25	
+83	Air Elemental	new	Air	7	10	0	Air	25	
+84	Greater Air Elemental	new	Air	8	10	0	Air	25	
+85	Dire Wolf Yearling	new	Body	4	4	0	melee	20	
+86	Dire Wolf	new	Body	4	4	2	melee	20	
+87	Pack Leader	new	Body	4	4	4	melee	20	
+91	Cyclops	new	Phys	11	2	2	Rock	15	
+92	Cyclops Hunter	new	Phys	12	2	3	Rock	15	
+93	Cyclops Warrior	new	Phys	14	2	4	Rock	15	
+94	Serpentman	new	Body	2	4	0	melee	20	
+95	Serpentman Elder	new	Body	2	6	2	melee	20	
+96	Serpentman Warrior	new	Body	2	8	3	melee	20	
+97	Dancing Light	new	Light	6	4	0	melee	20	
+98	Wisp	new	Light	10	4	0	melee	20	
+99	Will O' Wisp	new	Light	15	4	0	melee	20	
+100	Centaur	new	Phys	1	4	2	melee	20	
+101	Centaur Warrior	new	Phys	2	4	3	melee	20	
+102	Centaur Warlord	new	Phys	2	4	4	melee	20	
+103	Efreeti Soldier	new	Fire	5	8	0	Fire	25	
+104	Efreeti Knight	new	Fire	7	8	0	Fire	25	
+105	Efreeti Lord	new	Fire	8	8	0	Fire	25	
+109	Unicorn Foal	new	Water	4	6	0	melee	20	
+110	Unicorn	new	Water	4	6	0	melee	20	
+111	Unicorn Herd Leader	new	Water	5	6	0	melee	20	
+112	Emerald Dragon	replace	Phys	12	8	0	melee	25	
+113	Sapphire Dragon	replace	Phys	14	8	0	melee	25	
+114	Ruby Dragon	replace	Phys	16	8	0	melee	25	
+115	Mist Hawk	new	Air	4	7	0	Air	25	
+116	Storm Eagle	new	Air	6	7	4	Air	25	
+117	Thunderbird	new	Air	7	7	8	Air	25	
+118	Wasp Worker	new	Body	2	7	2	melee	20	
+119	Wasp Sentry	new	Body	3	7	4	melee	20	
+120	Wasp Warrior	new	Body	4	7	8	melee	20	
+121	Wyvern	new	Body	7	6	0	melee	15	
+122	Horned Wyvern	new	Body	9	6	0	melee	15	
+123	Ancient Wyvern	new	Body	12	6	0	melee	15	
+124	Brass Gorgon	new	Earth	4	4	8	melee	15	
+125	Bronze Gorgon	new	Earth	5	4	10	melee	15	
+126	Iron Gorgon	new	Earth	6	4	12	melee	15	
+127	Fire Newt	new	Fire	4	7	0	Fire	25	
+128	Fire Lizard	new	Fire	6	7	4	Fire	25	
+129	Salamander	new	Fire	7	7	8	Fire	25	
+130	Fire Bird	new	Fire	3	17	8	Fire	25	
+131	Phoenix	new	Fire	4	17	4	Fire	25	
+132	Grand Phoenix	new	Fire	4	17	8	Fire	25	
+133	Triton	new	Water	4	7	0	melee	15	
+134	Triton Warrior	new	Water	6	7	0	melee	15	
+135	Triton Crusader	new	Water	7	7	0	melee	15	
+136	Young Dragon Turtle	new	Body	5	15	0	melee	15	
+137	Dragon Turtle	new	Body	6	15	0	melee	15	
+138	Elder Tortoise	new	Body	7	15	0	melee	15	
+139	Rook	new	Body	9	7	0	melee	20	
+140	Corbie	new	Body	10	7	0	melee	20	
+141	Raven	new	Body	10	7	0	melee	20	
+145	Plane Guardian	new	Light	5	8	10	melee	15	
+146	Plane Protector	new	Light	6	8	15	melee	15	
+147	Plane Overlord	new	Light	10	8	20	melee	15	
+151	Fear	new	Mind	6	8	0	melee	15	
+152	Terror	new	Mind	8	8	0	melee	15	
+153	Nightmare	new	Dark	10	8	0	melee	15	
+157	Charger	new	Earth	3	10	20	melee	15	
+158	Juggernaut	new	Earth	4	10	30	melee	15	
+159	Demolisher	new	Earth	5	10	40	melee	15	
+160	Smoke Gog	new	Air	1	10	2	Air	30	
+161	Ember Gog	new	Air	1	10	6	Air	30	
+162	Fire Gog	new	Air	2	10	8	Air	30	
+163	Skeletal Dragon	new	Phys	5	6	0	melee	25	
+164	Bone Dragon	new	Phys	7	6	0	melee	25	
+165	Undead Dragon	new	Phys	9	6	0	melee	25	
+175	Dark Dwarf Grunt	attack1	Phys	3	5	10	Arrow	0	
+175	Dark Dwarf Grunt	new	Phys	3	5	10	melee	30	
+176	Dark Dwarf Pounder	attack1	Phys	3	5	15	Arrow	0	
+176	Dark Dwarf Pounder	new	Phys	3	5	15	melee	30	
+177	Dark Dwarf Berserker	attack1	Phys	3	5	25	Arrow	0	
+177	Dark Dwarf Berserker	new	Phys	3	5	25	melee	30	
+181	Pirate	new	Phys	2	5	0	Arrow	15	javelin
+182	Buccaneer	new	Phys	1	5	2	Arrow	15	javelin
+183	Corsair	new	Phys	2	5	3	Arrow	15	javelin
+187	Pirate Seer	new	Fire	2	4	1	Fire	30	
+188	Pirate Magi	new	Air	2	4	2	Air	30	
+189	Pirate Wizard	new	Body	3	4	4	Body	30	
+193	Soldier of Fortune	new	Phys	4	7	6	melee	15	
+194	Mercenary	new	Phys	4	7	9	melee	15	
+195	Mercenary Captain	new	Phys	4	7	12	melee	15	
+196	Chaos Guardian	new	Light	15	4	0	melee	15	
+197	Chaos Protector	new	Light	20	4	0	melee	15	
+198	Chaos Overlord	new	Light	25	4	0	melee	15	
+206	Vampire Bat	new	Body	1	3	2	melee	20	
+208	Young Behemoth	new	Earth	3	10	20	melee	15	
+209	Behemoth	new	Earth	4	10	30	melee	15	
+210	Ancient Behemoth	new	Earth	5	10	40	melee	15	
+214	Acolyte of the Moon	new	Body	2	4	0	Body	30	
+215	Cleric of the Moon	new	Body	2	4	4	Body	30	
+216	Priest of the Moon	new	Body	2	4	8	Body	30	
+217	Acolyte of the Sun	new	Spirit	2	4	0	Spirit	30	
+218	Cleric of the Sun	new	Mind	2	4	4	Mind	30	
+219	Priest of the Sun	new	Spirit	2	4	8	Spirit	30	
+226	Dragonfly	new	Body	2	2	0	melee	20	
+227	Fire Dragonfly	new	Fire	2	2	1	Fire	25	
+228	Queen Dragonfly	new	Body	3	2	2	melee	20	
+229	Dwarven Soldier	new	Earth	4	2	4	melee	15	
+230	Dwarven Lieutenant	new	Earth	4	2	8	melee	15	
+231	Dwarven Commander	new	Earth	4	2	16	melee	15	
+232	Tempest	new	Air	2	6	0	melee	20	
+233	Cyclone	new	Air	4	6	0	melee	20	
+234	Air Elemental	new	Air	6	6	0	melee	20	
+235	Clay Elemental	new	Earth	10	3	0	melee	20	
+236	Stone Elemental	new	Earth	15	3	0	melee	20	
+237	Earth Elemental	new	Earth	25	3	0	melee	20	
+238	Warden of Fire	new	Phys	2	8	0	melee	25	
+239	Guardian of Flame	new	Phys	5	8	0	melee	25	
+240	Fire Elemental	new	Phys	8	8	0	melee	25	
+241	Lesser Light Elemental	new	Light	3	4	0	melee	20	
+242	Light Elemental	new	Light	7	4	0	melee	20	
+243	Greater Light Elemental	new	Light	10	4	0	melee	20	
+244	Sprite	new	Water	3	12	0	melee	25	
+245	Sylph	new	Water	4	12	0	melee	25	
+246	Water Elemental	new	Water	6	12	0	melee	25	
+247	Elven Archer	new	Phys	3	2	2	melee	20	
+248	Elven Scout	new	Phys	4	2	3	melee	20	
+249	Elven Ranger	new	Phys	6	2	4	melee	20	
+250	Elven Warrior	new	Phys	2	4	3	Arrow	15	javelin
+251	Elven Defender	new	Phys	2	4	4	Arrow	15	javelin
+252	Elven Lancer	new	Phys	3	4	6	Arrow	15	javelin
+253	Conscript	new	Phys	4	3	9	melee	15	
+254	Soldier	new	Phys	4	3	15	melee	15	
+255	Fighter	new	Phys	4	3	21	melee	15	
+259	Initiate of the Sword	new	Phys	6	5	30	melee	15	
+260	Champion of the Sword	new	Phys	6	5	45	melee	15	
+261	Master of the Sword	new	Spirit	4	5	40	melee	15	
+262	Stone Gargoyle	new	Earth	2	12	0	melee	20	
+263	Marble Gargoyle	new	Earth	2	12	4	melee	20	
+264	Obsidian Gargoyle	new	Earth	2	12	8	melee	20	
+274	Gogling	new	Air	1	10	2	Air	30	
+275	Gog	new	Air	1	10	6	Air	30	
+276	Magog	new	Air	2	10	8	Air	30	
+280	Griffin	new	Body	2	8	2	melee	15	
+281	Hunting Griffin	new	Body	2	8	6	melee	15	
+282	Royal Griffin	new	Body	3	8	10	melee	15	
+289	Lich	new	Dark	3	8	6	Dark	30	
+290	Power Lich	new	Dark	4	8	12	Dark	30	
+291	Lich King	new	Spirit	5	8	20	Spirit	30	
+292	Sorcerer	new	Spirit	9	4	0	Spirit	30	
+293	Wizard	new	Spirit	12	4	0	Spirit	30	
+294	Archmage	new	Fire	16	4	0	Fire	30	
+298	Medusa	new	Phys	4	4	8	melee	25	
+299	Queen Medusa	new	Phys	5	4	10	melee	25	
+300	Empress Medusa	new	Phys	6	4	12	melee	25	
+301	Minotaur	new	Phys	2	7	19	Arrow	15	axe
+302	Minotaur Headsman	new	Phys	2	7	30	Arrow	15	axe
+303	Minotaur Lord	new	Phys	2	7	45	Arrow	15	axe
+307	Necromancer	new	Body	9	4	0	Body	30	
+308	Speaker for the Dead	new	Body	12	4	0	Body	30	
+309	Queen of the Dead	new	Body	16	4	0	Body	30	
+385	Giant Rat	new	Body	1	8	0	melee	20	
+388	Seeker Droid	new	Phys	10	5	10	melee	25	
+389	Sentinel Droid	new	Phys	12	5	15	melee	25	
+390	Assassin Droid	new	Phys	20	5	20	melee	25	
+391	Roc	new	Air	2	10	15	Air	25	
+392	Greater Roc	new	Air	3	10	19	Air	25	
+393	Thunderbird	new	Air	4	10	22	Air	25	
+406	Thief	replace	Body	2	4	2	Arrow	20	dagger
+407	Rogue	replace	Body	2	4	4	Arrow	20	dagger
+408	Master Thief	replace	Body	2	4	9	Arrow	20	dagger
+418	Fire Warlock	new	Air	9	4	0	Air	30	
+419	Water Warlock	new	Earth	12	4	0	Earth	30	
+420	Air Warlock	new	Fire	16	4	0	Fire	30	
+421	Wight	new	Body	2	5	4	melee	20	
+422	Wraith	new	Body	2	5	9	melee	20	
+423	Barrow Wight	new	Body	3	5	9	melee	20	
+424	Wyvern	new	Body	7	6	0	melee	15	
+425	Horned Wyvern	new	Body	9	6	0	melee	15	
+426	Ancient Wyvern	new	Body	12	6	0	melee	15	
+475	Archer	new	Phys	1	6	1	melee	25	
+478	Magyar	new	Phys	5	7	4	melee	15	
+481	Bat	new	Body	1	3	0	melee	20	
+482	Giant Bat	new	Body	1	3	2	melee	20	
+483	Vampire Bat	new	Body	1	3	2	melee	20	
+484	Flying Eye	new	Mind	5	6	0	Mind	30	
+485	Terrible Eye	new	Mind	6	6	0	Mind	30	
+486	Maddening Eye	new	Mind	7	6	0	Mind	30	
+505	Fire Lizard	new	Phys	10	6	0	melee	25	
+506	Lightning Lizard	new	Phys	12	6	0	melee	25	
+507	Thunder Lizard	new	Phys	14	6	0	melee	25	
+517	Druid	new	Body	2	4	3	Body	30	
+518	Great Druid	new	Earth	2	4	6	Earth	30	
+519	Grand Druid	new	Fire	2	4	12	Fire	30	
+523	Dust Devil	new	Air	2	6	0	melee	20	
+524	Twister	new	Air	4	6	0	melee	20	
+525	Air Elemental	new	Air	6	6	0	melee	20	
+529	Fire Beast	new	Phys	2	8	0	melee	25	
+530	Fire Spirit	new	Phys	5	8	0	melee	25	
+531	Fire Elemental	new	Phys	8	8	0	melee	25	
+532	Water Beast	new	Water	3	12	0	melee	25	
+533	Water Spirit	new	Water	4	12	0	melee	25	
+534	Water Elemental	new	Water	6	12	0	melee	25	
+538	Thug	replace	Phys	1	4	1	Arrow	15	axe
+539	Ruffian	replace	Phys	1	4	4	Arrow	15	axe
+540	Brigand	replace	Body	1	4	8	Arrow	20	dagger
+541	Stone Gargoyle	new	Earth	2	12	0	melee	15	
+542	Marble Gargoyle	new	Earth	2	12	4	melee	15	
+543	Diamond Gargoyle	new	Earth	2	12	8	melee	15	
+553	Guard	new	Phys	4	3	8	melee	15	
+568	Lich	new	Dark	3	8	6	Dark	30	
+569	Greater Lich	new	Dark	4	8	12	Dark	30	
+570	Power Lich	new	Dark	5	8	20	Dark	30	
+571	Lizard Man	new	Phys	1	6	0	melee	25	
+573	Lizard Wizard	new	Phys	1	6	5	melee	25	
+574	Medusa	new	Earth	3	4	6	Earth	25	
+575	Medusa Enchantress	new	Earth	4	4	8	Earth	25	
+576	Gorgon	new	Earth	4	4	9	Earth	25	
+580	Minotaur	new	Phys	2	7	19	Arrow	15	axe
+581	Minotaur Mage	new	Air	3	7	40	melee	15	
+582	Minotaur King	new	Dark	3	7	60	melee	15	
+586	Swordsman	new	Phys	4	7	6	melee	15	
+587	Expert Swordsman	new	Phys	4	7	9	melee	15	
+592	Ogre	new	Phys	3	5	15	melee	15	
+593	Ogre Raider	new	Phys	3	5	22	melee	15	
+594	Ogre Chieftain	new	Phys	3	5	38	melee	15	
+601	Cutpurse	new	Body	2	2	2	Arrow	20	dagger
+602	Bounty Hunter	new	Phys	1	2	4	Arrow	25	
+603	Assassin	new	Body	1	2	8	Arrow	20	dagger
+604	Cannibal	new	Body	3	3	2	melee	15	
+605	Head Hunter	new	Phys	2	3	3	Arrow	15	axe
+606	Witch Doctor	new	Earth	3	3	6	melee	15	
+616	Cannibal	new	Body	1	9	2	melee	15	
+617	Head Hunter	new	Phys	1	9	3	Arrow	15	axe
+618	Witch Doctor	new	Fire	1	9	6	melee	15	
+619	Common Rat	new	Body	1	8	0	melee	20	
+620	Large Rat	new	Body	1	8	2	melee	20	
+621	Giant Rat	new	Body	1	8	4	melee	20	
+622	Patrol Unit	new	Ener	7	5	8	melee	20	
+623	Enforcer Unit	new	Ener	9	5	11	melee	20	
+624	Terminator Unit	new	Ener	15	5	15	melee	20	
+625	Sea Serpent	new	Phys	2	20	25	melee	25	
+626	Sea Monster	new	Phys	2	20	35	melee	25	
+627	Sea Terror	new	Phys	2	20	45	melee	25	
+631	Sorcerer	new	Fire	9	4	0	Fire	30	
+632	Magician	new	Fire	12	4	0	Fire	30	
+633	Warlock	new	Air	16	4	0	Air	30	
+643	Wolfman	new	Body	2	12	12	melee	15	
+644	Werewolf	new	Body	2	12	16	melee	15	
+645	Greater Werewolf	new	Body	2	12	20	melee	15	
+646	Demon Queen	new	Fire	2	8	20	Fire	25	
+647	Reactor	new	Ener	20	5	20	melee	20	
+648	Reactor	new	Ener	20	5	20	melee	20	
+649	Cactus	new	Earth	4	6	0	Earth	25	
+650	Cactus	new	Earth	4	6	0	Earth	25	
+651	Cactus	new	Earth	5	6	0	Earth	25	
+653	Reactor	new	Ener	20	5	20	melee	20	
+654	Reactor	new	Ener	20	5	20	melee	20	
+655	Troll Runt	new	Body	1	6	1	melee	20	
+656	Troll Brawler	new	Body	2	4	3	melee	20	
+657	Troll Bruiser	new	Body	2	6	5	melee	20	

@@ -14,6 +14,12 @@
 	Action "attack1" sets the first attack instead (Chance unused): the dark dwarves shoot their
 	crossbows first and fight in melee second (27.11.26).
 
+	Projectile (javelin / axe / dagger, 27.11.26): the monster's thrown second attack leaves as an
+	Arrow (missile 1, ObjList 545: the engine's arrow handling, damage and the Unarmed GM catch stay
+	the same) and is drawn as the weapon: its TypeIndex is pointed to ObjList 12053-12055 (Thrown
+	Javelin / Axe / Dagger, SFT groups Thrownjav/axe/dag in waffel.sprites.lod, made from the MM7
+	item pictures by Tools/thrown_weapons.py; axes and daggers tumble).
+
 	Flaming arrows (ArrowF) deal Fire damage: every attack that shoots one is made Fire.
 
 	Game.MonstersTxt is changed once the game data is loaded. The bolster copies the second attack
@@ -83,6 +89,16 @@ end
 local Changed = {}          -- MONSTERS.txt id -> true, for the maps' monsters
 local First = {}            -- MONSTERS.txt id -> true: Attack1 changed (type and missile, which the bolster leaves)
 local ArrowF, FireType
+local PROJECTILE_OBJ = {javelin = 12053, axe = 12054, dagger = 12055}
+local ARROW_OBJ = 545
+local Thrown = {}           -- MONSTERS.txt id -> ObjList index of the weapon it throws (Attack2)
+local ArrowIndex
+
+local function objIndex(id)
+	for i, o in Game.ObjListBin do
+		if o.Id == id then return i end
+	end
+end
 
 local function readTable()
 	local f = io.open("Data/Tables/Monster attacks.txt", "r")
@@ -101,6 +117,7 @@ local function readTable()
 				Id = tonumber(c[1]), Name = c[2], Action = c[3], Type = c[4],
 				Count = tonumber(c[5]) or 0, Sides = tonumber(c[6]) or 0, Add = tonumber(c[7]) or 0,
 				Missile = c[8], Chance = tonumber(c[9]) or 0,
+				Projectile = c[10] and c[10]:match("^%s*(%a+)") or nil,
 			}
 		end
 	end
@@ -149,6 +166,11 @@ local function apply()
 				m.Attack2Chance = math.min(r.Chance, 100)
 				Changed[r.Id] = true
 				count = count + 1
+				local obj = r.Projectile and PROJECTILE_OBJ[r.Projectile:lower()]
+				if obj then
+					Thrown[r.Id] = objIndex(obj)
+					if not Thrown[r.Id] then warn("ObjList.txt has no object %d (%s)", obj, r.Projectile) end
+				end
 			end
 		end
 	end
@@ -171,7 +193,22 @@ local function apply()
 	if MF.LogInfo then MF.LogInfo("monster attacks: %d second attacks set, %d flaming-arrow attacks made Fire", count, burning) end
 end
 
+-- thrown weapons: a monster's Attack2 arrow drawn as the weapon it throws
+function events.Tick()
+	if not ArrowIndex or not next(Thrown) then return end
+	for i = 0, Map.Objects.count - 1 do
+		local o = Map.Objects[i]
+		if o.Type == ARROW_OBJ and o.TypeIndex == ArrowIndex and o.AttackType == 1 and o.Owner % 8 == 3 then
+			local mi = (o.Owner - 3) / 8
+			local mon = mi < Map.Monsters.count and Map.Monsters[mi]
+			local idx = mon and Thrown[mon.Id]
+			if idx then o.TypeIndex = idx end
+		end
+	end
+end
+
 function events.GameInitialized2()
+	ArrowIndex = objIndex(ARROW_OBJ)
 	local ok, err = pcall(apply)
 	if not ok then warn("%s", tostring(err)) end
 end
