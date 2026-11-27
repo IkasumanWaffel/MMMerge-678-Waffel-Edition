@@ -5,7 +5,8 @@ The side view (frame 2, the weapon pointing right) is the picture turned on its 
 views 1 and 3 are the same picture narrowed to 0.6, as the arrow's are. Views 0 and 4, straight at
 or away from the eye, are drawn like the arrow's: the weapon upright and foreshortened to 0.4 of its
 length, the near end (the point, or for view 4 the butt) at the bottom and wider (27.11.26; a
-narrowed side view was too thin to notice in the game). Axes and daggers tumble: four frames, a
+narrowed side view was too thin to notice in the game). The axe's views 0 and 4 are shaped by hand
+(axe_end_on): the head keeps its face, the haft is turned upright and foreshortened. Axes and daggers tumble: four frames, a
 quarter turn each, before the narrowing. Frames 5-7 are mirrors (SFT).
 
 Writes waffel.sprites.lod (the existing entries kept), waffel.bitmaps.lod (palettes pal2103-2105,
@@ -100,6 +101,40 @@ def end_on(img, toward, length=0.4):
     hh = max(4, round(len(up) * length))
     return perspective(resize(up, len(up[0]), hh))
 
+def axe_end_on(img, toward, length=0.4):
+    # hand-shaped views 0 and 4 for an axe lying along its flight (27.11.26): the head keeps its
+    # face (a block across the haft, drawn larger when it is the near end and smaller when far),
+    # the haft is turned upright and foreshortened, behind the head when the head comes first
+    img = trim(img); h, w = len(img), len(img[0])
+    ext = [sum(1 for y in range(h) if img[y][x]) for x in range(w)]
+    haft = sorted(ext)[len(ext) // 4]                       # the haft's thickness
+    cols = [x for x in range(w) if ext[x] > 2 * haft]
+    head_right = sum(cols) / max(1, len(cols)) > w / 2
+    x0, x1 = (min(cols), w - 1) if head_right else (0, max(cols))
+    head = [r[x0:x1 + 1] for r in img]
+    stick = [r[:x0] for r in img] if head_right else [r[x1 + 1:] for r in img]
+    stick = trim(stick)
+    near_is_head = head_right == toward
+    hs = 1.2 if near_is_head else 0.8
+    head = resize(head, max(1, round(len(head[0]) * hs)), max(1, round(len(head) * hs)))
+    # the haft upright: its end nearer to the head at the bottom when the head is near, at the top when far
+    up = rot90cw(stick) if head_right else rot90ccw(stick)          # head end of the haft at the bottom
+    up = resize(up, len(up[0]), max(4, round(len(up) * length)))
+    if near_is_head:
+        up = perspective(up, near=1.0, far=0.7)
+        parts = [up, head]                                         # haft above, head below
+    else:
+        up = [r for r in reversed(up)]                             # butt (near) at the bottom
+        up = perspective(up, near=1.3, far=0.9)
+        parts = [head, up]                                         # head above, haft below
+    W = max(len(p[0]) for p in parts)
+    out = []
+    for part in parts:
+        pw = len(part[0]); ox = (W - pw) // 2
+        for r in part:
+            out.append([0] * ox + r + [0] * (W - pw - ox))
+    return out
+
 def sprite(name, img, pal):
     h, w = len(img), len(img[0])
     lines = []; data = bytearray()
@@ -146,7 +181,9 @@ def main(icons_lod, sprites_lod, bitmaps_lod, outdir):
         for fi, fr in enumerate(frames):
             sname = base + (letters[fi] if tumble else 'a')
             for v, f in VIEWS.items():
-                if v == 0 or v == 4:
+                if (v == 0 or v == 4) and base == 'waxe' and len(trim(fr)[0]) > len(trim(fr)):
+                    im = axe_end_on(fr, v == 0)
+                elif v == 0 or v == 4:
                     im = end_on(trim(fr), v == 0)
                 else:
                     im = narrow(fr, f)
