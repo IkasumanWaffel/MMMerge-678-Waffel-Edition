@@ -2,9 +2,10 @@
 MM7 item pictures (mm7.icons.lod 7item031 Crude Spear, 7item023 Crude Axe, 7item015 Dagger).
 
 The side view (frame 2, the weapon pointing right) is the picture turned on its side; the angled
-views are the same picture narrowed in proportion to the look angle (frames 1 and 3: 0.75, frames 0
-and 4, straight at or away from the eye: 0.4, at least 8 pixels wide; 27.11.26: 0.12 was too thin
-to notice in the game). Axes and daggers tumble: four frames, a
+views 1 and 3 are the same picture narrowed to 0.6, as the arrow's are. Views 0 and 4, straight at
+or away from the eye, are drawn like the arrow's: the weapon upright and foreshortened to 0.4 of its
+length, the near end (the point, or for view 4 the butt) at the bottom and wider (27.11.26; a
+narrowed side view was too thin to notice in the game). Axes and daggers tumble: four frames, a
 quarter turn each, before the narrowing. Frames 5-7 are mirrors (SFT).
 
 Writes waffel.sprites.lod (the existing entries kept), waffel.bitmaps.lod (palettes pal2103-2105,
@@ -71,6 +72,34 @@ def narrow(img, f):
         out = [[v for v in r] for r in out]
     return out
 
+def rot90ccw(img):
+    h, w = len(img), len(img[0])
+    return [[img[x][w - 1 - y] for x in range(h)] for y in range(w)]
+
+def perspective(img, near=1.4, far=0.6):
+    # the bottom rows are nearer to the eye: drawn wider than the top ones
+    h, w = len(img), len(img[0]); W = max(1, round(w * near))
+    out = []
+    for y, r in enumerate(img):
+        f = far + (near - far) * (y / max(1, h - 1))
+        ww = max(1, round(w * f)); row = [0] * W; ox = (W - ww) // 2
+        for x in range(ww):
+            row[ox + x] = r[min(w - 1, x * w // ww)]
+        out.append(row)
+    return out
+
+def end_on(img, toward, length=0.4):
+    # views 0 and 4, like the arrow's: a weapon lying along the flight (wider than tall) is turned
+    # upright and foreshortened, the end nearer to the eye at the bottom and wider (view 0: the
+    # front, i.e. the right end, comes at the eye; view 4: the back). One standing across the
+    # flight (a tumbling frame) is seen whole.
+    h, w = len(img), len(img[0])
+    if h >= w:
+        return img
+    up = rot90cw(img) if toward else rot90ccw(img)   # right end down / left end down
+    hh = max(4, round(len(up) * length))
+    return perspective(resize(up, len(up[0]), hh))
+
 def sprite(name, img, pal):
     h, w = len(img), len(img[0])
     lines = []; data = bytearray()
@@ -85,7 +114,7 @@ def sprite(name, img, pal):
     head = name.encode('latin1').ljust(12, b'\0') + struct.pack('<IHHHHHHI', len(z), w, h, pal, 0, h - 1 - last, 0, len(data))
     return head + b''.join(struct.pack('<hhI', *l) for l in lines) + z
 
-VIEWS = {0: 0.4, 1: 0.75, 2: 1.0, 3: 0.75, 4: 0.4}
+VIEWS = {0: None, 1: 0.6, 2: 1.0, 3: 0.6, 4: None}   # 0 and 4: end_on
 WEAPONS = [
     # base name, icon, palette, length in pixels of the side view, SFT scale, tumbling
     ('wjav', '7item031', 2103, 240, 65536, False),
@@ -117,7 +146,11 @@ def main(icons_lod, sprites_lod, bitmaps_lod, outdir):
         for fi, fr in enumerate(frames):
             sname = base + (letters[fi] if tumble else 'a')
             for v, f in VIEWS.items():
-                sprites[sname + str(v)] = sprite(sname + str(v), narrow(fr, f), palid)
+                if v == 0 or v == 4:
+                    im = end_on(trim(fr), v == 0)
+                else:
+                    im = narrow(fr, f)
+                sprites[sname + str(v)] = sprite(sname + str(v), im, palid)
             group = ('Thrown' + base[1:]) if fi == 0 else ''
             sft.append([group, sname, str(scale), '-', 'x' if fi == 0 else '-', '-', 'x', '-', '-',
                         '-', '-', '-', '-', '-', 'x', 'x', 'x', '-', '-', '-', '0', str(palid), '3' if tumble else '2'])
