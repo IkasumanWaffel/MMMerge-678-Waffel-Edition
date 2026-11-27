@@ -2,8 +2,9 @@
 MM7 item pictures (mm7.icons.lod 7item031 Crude Spear, 7item023 Crude Axe, 7item015 Dagger).
 
 The side view (frame 2, the weapon pointing right) is the picture turned on its side; the angled
-views are the same picture narrowed in proportion to the look angle (frames 1 and 3: 0.7, frames 0
-and 4, straight at or away from the eye: almost flat). Axes and daggers tumble: four frames, a
+views are the same picture narrowed in proportion to the look angle (frames 1 and 3: 0.75, frames 0
+and 4, straight at or away from the eye: 0.4, at least 8 pixels wide; 27.11.26: 0.12 was too thin
+to notice in the game). Axes and daggers tumble: four frames, a
 quarter turn each, before the narrowing. Frames 5-7 are mirrors (SFT).
 
 Writes waffel.sprites.lod (the existing entries kept), waffel.bitmaps.lod (palettes pal2103-2105,
@@ -64,7 +65,7 @@ def pad_square(img):
     return out
 
 def narrow(img, f):
-    h, w = len(img), len(img[0]); w2 = max(3, round(w * f))
+    h, w = len(img), len(img[0]); w2 = max(8, round(w * f))
     out = resize(img, w2, h)
     if f < 0.3:   # keep the outline readable when seen end-on: a thin silhouette
         out = [[v for v in r] for r in out]
@@ -84,7 +85,7 @@ def sprite(name, img, pal):
     head = name.encode('latin1').ljust(12, b'\0') + struct.pack('<IHHHHHHI', len(z), w, h, pal, 0, h - 1 - last, 0, len(data))
     return head + b''.join(struct.pack('<hhI', *l) for l in lines) + z
 
-VIEWS = {0: 0.12, 1: 0.7, 2: 1.0, 3: 0.7, 4: 0.12}
+VIEWS = {0: 0.4, 1: 0.75, 2: 1.0, 3: 0.75, 4: 0.4}
 WEAPONS = [
     # base name, icon, palette, length in pixels of the side view, SFT scale, tumbling
     ('wjav', '7item031', 2103, 240, 65536, False),
