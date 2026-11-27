@@ -27,7 +27,7 @@ PAIR={'Fire':'Air','Air':'Fire','Water':'Earth','Earth':'Water','Body':'Mind','M
 HUMANOID={'Human','Elf','DarkElf','Dwarf','Goblin','Minotaur','Ogre','Troll','Lizardman','Titan','Undead','Demon'}
 ROGUE=re.compile(r'thief|cutpurse|robber|bandit|assassin|rogue|brigand|burglar|smuggler|cutthroat|ninja|spy')
 THUG=re.compile(r'thug|ruffian|buccaneer|pirate|corsair|head hunter|cannibal|brigand|bandit')
-ROCK=re.compile(r'ogre|troll|cyclop|titan|giant $|troglodyte|gorgon|behemoth|golem')
+ROCK=re.compile(r'troll|cyclop|titan|giant $|troglodyte|gorgon|behemoth|golem')
 def dice(s):
     m=re.match(r'\s*(\d+)\s*[dD]\s*(\d+)\s*(?:\+\s*(\d+))?',s or '')
     return (int(m[1]),int(m[2]),int(m[3] or 0)) if m else None
@@ -104,14 +104,14 @@ for r in mon[4:]:
             el=PAIR.get(a1[0],'Body') if a1[0]!='Phys' else 'Body'
             p=(el,scale(d,0.75),'0',20); why=f'{el} draining touch (melee only)'
         # a second attack that only repeats the first
-        trained = (kind in ('Human','Dwarf','-','0','') and not (THUG.search(low) or ROGUE.search(low) or ROCK.search(low) or 'cyclop' in low)) or re.match(r'ogre( raider| chieftain)? $',low)
-        if why=='heavy blow' and trained: why='hard hit (a trained fighter)'
+        trained = (kind in ('Human','Dwarf','-','0','') and not (THUG.search(low) or ROGUE.search(low) or ROCK.search(low) or 'cyclop' in low)) or (kind=='Ogre' and 'mage' not in low)
+        if why=='heavy blow' and trained: why='hard hit (club or falchion)' if kind=='Ogre' else 'hard hit (a trained fighter)'
         elif p[0]==a1[0] and ((p[2]=='0')==(not a1ranged)) and not why.startswith('current'):
             if not a1ranged and p[0] not in ('Phys',):
                 p=(p[0],scale(d,0.75),p[0],25); why=f'{p[0]} missile (the melee one is Attack 1)'
             elif a1ranged:
                 p=(p[0],scale(d,1.0),'0',20); why=f'{p[0]} touch up close (the missile is Attack 1)'
-            elif ROCK.search(low) or kind in ('Ogre',):
+            elif ROCK.search(low):
                 p=('Phys',scale(d,0.75),'Rock',15); why='thrown rock or boulder'
             else:
                 p=('Phys',scale(d,0.75),'Arrow',15); why='thrown spear, axe or javelin'
