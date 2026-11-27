@@ -26,7 +26,7 @@ PAIR={'Fire':'Air','Air':'Fire','Water':'Earth','Earth':'Water','Body':'Mind','M
 HUMANOID={'Human','Elf','DarkElf','Dwarf','Goblin','Minotaur','Ogre','Troll','Lizardman','Titan','Undead','Demon'}
 ROGUE=re.compile(r'thief|cutpurse|robber|bandit|assassin|rogue|brigand|burglar|smuggler|cutthroat|ninja|spy')
 THUG=re.compile(r'thug|ruffian|buccaneer|pirate|head hunter|cannibal|brigand|bandit')
-ROCK=re.compile(r'ogre|troll|cyclop|titan|giant|troglodyte|gorgon|behemoth|golem')
+ROCK=re.compile(r'ogre|troll|cyclop|titan|giant $|troglodyte|gorgon|behemoth|golem')
 def dice(s):
     m=re.match(r'\s*(\d+)\s*[dD]\s*(\d+)\s*(?:\+\s*(\d+))?',s or '')
     return (int(m[1]),int(m[2]),int(m[3] or 0)) if m else None
