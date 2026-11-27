@@ -19,7 +19,7 @@ KW=[(r'\bbat\b|bloodsucker|blood sucker','Body'),(r'moon|necro|lich|death|doom|d
  (r'sun|light|cleric|priest|paladin|crusader|templar|glow|dancing','Light'),
  (r'moon|necro|lich|death|doom|dark|skeleton|bone|shadow|night|undead|cuisinart|black','Dark'),
  (r'droid|robot|blaster|reactor|patrol|seeker|tolberti|emerald dragon|mega|varn|guardian|ultra|unit\b','Ener')]
-KIND={'Undead':'Spirit','Demon':'Fire','Dragon':'Fire','Construct':'Ener','Troll':'Body','Ogre':'Phys','Minotaur':'Phys','Titan':'Air',
+KIND={'Undead':'Spirit','Demon':'Fire','Dragon':'Fire','Construct':'Earth','Troll':'Body','Ogre':'Phys','Minotaur':'Phys','Titan':'Air',
  'Lizardman':'Body','Goblin':'Body','DarkElf':'Dark','Elf':'Phys','Dwarf':'Earth','Human':'Phys','Creature':'Body','Elemental':'Phys','Immobile':'Earth'}
 ARCHERS={'Human','Elf','DarkElf','Dwarf','Goblin','Lizardman'}
 PAIR={'Fire':'Air','Air':'Fire','Water':'Earth','Earth':'Water','Body':'Mind','Mind':'Spirit','Spirit':'Body','Light':'Spirit','Dark':'Body','Ener':'Fire','Phys':'Mind'}
