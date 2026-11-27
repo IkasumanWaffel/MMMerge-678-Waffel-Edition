@@ -9,7 +9,7 @@ SPELL={'fire bolt':'Fire','fireball':'Fire','incinerate':'Fire','meteor shower':
  'spirit lash':'Spirit','harm':'Body','flying fist':'Body','toxic cloud':'Dark','finger of death':'Dark','light bolt':'Light',
  'paralyze':'Light','mass curse':'Dark','day-o-gods':'Light'}
 # name keywords -> element (first match wins)
-KW=[(r'\bbat\b|bloodsucker|blood sucker','Body'),(r'moon|necro|lich|death|doom|dark|skeleton|bone|shadow|night|undead|cuisinart|black','Dark'),(r'fire|flame|inferno|magma|lava|efre|phoenix|ember|smoke|burn|hell|salamander|red dragon|warden of fire|devil|demon|imp\b','Fire'),
+KW=[(r'\bbat\b|bloodsucker|blood sucker','Body'),(r'moon|necro|lich|death|doom|dark|skeleton|bone|shadow|\bnight|undead|cuisinart|black','Dark'),(r'fire|flame|inferno|magma|lava|efre|phoenix|ember|smoke|burn|hell|salamander|red dragon|warden of fire|devil|demon|imp\b','Fire'),
  (r'ice|frost|snow|water|sea |shark|kraken|wyrm|unicorn|sprite|genie|djinn|triton|naga|mermaid|eel|tide','Water'),
  (r'air|storm|lightning|thunder|wind|tempest|dust devil|cloud|hawk|roc\b|thunderbird|titan|ether|crystal walker','Air'),
  (r'earth|stone|rock|boulder|clay|golem|gargoyle|sand|crystal|tree|treant|cactus|troglodyte|dwar|basilisk|gorgon|medusa|behemoth','Earth'),
@@ -17,13 +17,14 @@ KW=[(r'\bbat\b|bloodsucker|blood sucker','Body'),(r'moon|necro|lich|death|doom|d
  (r'eye|beholder|psych|mind|fear|nightmare|agar|terror|gog\b|vampire|siren','Mind'),
  (r'spider|snake|serpent|cobra|viper|wasp|scorpion|couatl|ooze|slime|jelly|rat|toad|mushroom|corpse|zombie|ghoul|ghast|mummy|troll|lizard|swamp|blood sucker|bat\b|mosquito|leech|baa|cannibal|thief|cutpurse|robber|bandit|assassin|wolf|bear|cat\b|dog|hound|panther|tiger|lion|boar|griffin|wyvern|hydra|dragonfly|minicore|chicken','Body'),
  (r'sun|light|cleric|priest|paladin|crusader|templar|glow|dancing','Light'),
- (r'moon|necro|lich|death|doom|dark|skeleton|bone|shadow|night|undead|cuisinart|black','Dark'),
+ (r'moon|necro|lich|death|doom|dark|skeleton|bone|shadow|\bnight|undead|cuisinart|black','Dark'),
  (r'droid|robot|blaster|reactor|patrol|seeker|tolberti|emerald dragon|mega|varn|guardian|ultra|unit\b','Ener')]
 KIND={'Undead':'Spirit','Demon':'Fire','Dragon':'Fire','Construct':'Earth','Troll':'Body','Ogre':'Phys','Minotaur':'Phys','Titan':'Air',
  'Lizardman':'Body','Goblin':'Body','DarkElf':'Dark','Elf':'Phys','Dwarf':'Earth','Human':'Phys','Creature':'Body','Elemental':'Phys','Immobile':'Earth'}
 ARCHERS={'Human','Elf','DarkElf','Dwarf','Goblin','Lizardman'}
 PAIR={'Fire':'Air','Air':'Fire','Water':'Earth','Earth':'Water','Body':'Mind','Mind':'Spirit','Spirit':'Body','Light':'Spirit','Dark':'Body','Ener':'Fire','Phys':'Mind'}
 HUMANOID={'Human','Elf','DarkElf','Dwarf','Goblin','Minotaur','Ogre','Troll','Lizardman','Titan','Undead','Demon'}
+ROGUE=re.compile(r'thief|cutpurse|robber|bandit|assassin|rogue|brigand|burglar|smuggler|cutthroat|ninja|spy')
 ROCK=re.compile(r'ogre|troll|cyclop|titan|giant|troglodyte|gorgon|behemoth|golem')
 def dice(s):
     m=re.match(r'\s*(\d+)\s*[dD]\s*(\d+)\s*(?:\+\s*(\d+))?',s or '')
@@ -89,6 +90,22 @@ for r in mon[4:]:
     else:  # Wimpy, not peasant
         el=prim if prim!='Phys' else 'Phys'
         p=(el,scale(d,0.75),'0',10); why='weak melee'
+    if p is not None:
+        if ROGUE.search(low) and not a1ranged:
+            el='Body' if prim in ('Body','Phys') else prim
+            p=(el,scale(d,0.75),'Arrow',20); why='thrown knives / poisoned darts'
+        elif kind=='Elemental' and not a1ranged and prim!='Phys':
+            p=(prim,scale(d,0.75),prim,25); why=f'{prim} missile from afar'
+        # a second attack that only repeats the first
+        if p[0]==a1[0] and ((p[2]=='0')==(not a1ranged)):
+            if not a1ranged and p[0] not in ('Phys',):
+                p=(p[0],scale(d,0.75),p[0],25); why=f'{p[0]} missile (the melee one is Attack 1)'
+            elif a1ranged:
+                p=(p[0],scale(d,1.0),'0',20); why=f'{p[0]} touch up close (the missile is Attack 1)'
+            elif ROCK.search(low) or kind in ('Ogre',):
+                p=('Phys',scale(d,0.75),'Rock',15); why='thrown rock or boulder'
+            else:
+                p=('Phys',scale(d,0.75),'Arrow',15); why='thrown spear, axe or javelin'
     cur = '' if a2[0] in ('0','') else f'{a2[0]} {a2[1]} {"melee" if a2[2] in ("0","") else a2[2]} {a2[3]}%'
     if p is None: act='none' if not cur else 'remove?'
     else:
