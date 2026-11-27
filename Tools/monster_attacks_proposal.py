@@ -97,6 +97,9 @@ for r in mon[4:]:
             p=(el,scale(d,0.75),'Arrow',20); why='thrown knives / poisoned darts'
         elif kind=='Elemental' and not a1ranged and prim!='Phys':
             p=(prim,scale(d,0.75),prim,25); why=f'{prim} missile from afar'
+        if re.search(r'wight|wraith',low) and not a1ranged:   # melee-only undead: a draining touch
+            el=PAIR.get(a1[0],'Body') if a1[0]!='Phys' else 'Body'
+            p=(el,scale(d,0.75),'0',20); why=f'{el} draining touch (melee only)'
         # a second attack that only repeats the first
         trained = kind in ('Human','Dwarf','-','0','') and not (THUG.search(low) or ROGUE.search(low) or ROCK.search(low) or 'cyclop' in low)
         if why=='heavy blow' and trained: why='hard hit (a trained fighter)'
