@@ -105,6 +105,8 @@ for r in mon[4:]:
             p=(el,scale(d,0.75),'0',20); why=f'{el} draining touch (melee only)'
         if kind=='Immobile' and not a1ranged and prim not in ('Phys',):   # can't walk up to the party: spits instead
             p=(prim,scale(d,1.0),prim,25); why=f'spits {prim.lower()} (cannot move)'
+        if 'dark dwarf' in low and not a1ranged:   # MM8's dark dwarves carry crossbows (sprites m632)
+            p=('Phys',scale(d,0.75),'Arrow',25); why='crossbow bolts'
         # a second attack that only repeats the first
         trained = (kind in ('Human','Dwarf','-','0','') and not (THUG.search(low) or ROGUE.search(low) or ROCK.search(low) or 'cyclop' in low)) or (kind=='Ogre' and 'mage' not in low)
         if why=='heavy blow' and trained: why='hard hit (club or falchion)' if kind=='Ogre' else 'hard hit (a trained fighter)'
