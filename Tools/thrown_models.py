@@ -34,10 +34,10 @@ TUMBLE_FRAMES = 8
 
 class Mesh:
     def __init__(self):
-        self.tris = []      # (p0, p1, p2, colour, shininess)
+        self.tris = []      # (p0, p1, p2, colour, shininess, tex (3 points) or None, part or None)
 
-    def tri(self, a, b, c, col, shine=0.0):
-        self.tris.append((np.array(a, float), np.array(b, float), np.array(c, float), col, shine))
+    def tri(self, a, b, c, col, shine=0.0, tex=None, part=None):
+        self.tris.append((np.array(a, float), np.array(b, float), np.array(c, float), col, shine, tex, part))
 
     def quad(self, a, b, c, d, col, shine=0.0):
         self.tri(a, b, c, col, shine); self.tri(a, c, d, col, shine)
@@ -155,14 +155,30 @@ def transform(points, yaw, tumble, roll=0.0, pitch=PITCH):
     y, z = y * cp - z * sp, y * sp + z * cp
     return np.stack([x, y, z], -1)
 
-def render(mesh, yaw, tumble, scale, roll=0.0, pitch=PITCH):
+def render(mesh, yaw, tumble, scale, roll=0.0, pitch=PITCH, smooth=False, shader=None):
+    # shader(points, part) -> colours: per-pixel colouring from each triangle's tex points (the
+    # horse's coat patterns, 28.11.26); triangles without a part keep their own colour
     P = np.array([[t[0], t[1], t[2]] for t in mesh.tris])            # (n, 3, 3)
     cols = np.array([t[3] for t in mesh.tris], float)
     shine = np.array([t[4] for t in mesh.tris])
     Q = transform(P, yaw, tumble, roll, pitch)
     nrm = np.cross(Q[:, 1] - Q[:, 0], Q[:, 2] - Q[:, 0])
     ln = np.linalg.norm(nrm, axis=1); keep = ln > 1e-9
-    Q, cols, shine, nrm = Q[keep], cols[keep], shine[keep], nrm[keep] / ln[keep][:, None]
+    tex = [t[5] if len(t) > 5 else None for t in mesh.tris]
+    part = [t[6] if len(t) > 6 else None for t in mesh.tris]
+    idx = np.nonzero(keep)[0]
+    tex = [tex[i] for i in idx]; part = [part[i] for i in idx]
+    P, Q, cols, shine, nrm = P[keep], Q[keep], cols[keep], shine[keep], nrm[keep]
+    if smooth:
+        # vertex normals (28.11.26, for the horse): the area-weighted face normals of every triangle
+        # sharing a corner, interpolated over each triangle
+        keys = np.round(P.reshape(-1, 3), 2)
+        _, inv = np.unique(keys, axis=0, return_inverse=True)
+        acc = np.zeros((inv.max() + 1, 3))
+        np.add.at(acc, inv, np.repeat(nrm, 3, axis=0))
+        vn = acc[inv].reshape(-1, 3, 3)
+        vn /= np.maximum(np.linalg.norm(vn, axis=2, keepdims=True), 1e-9)
+    nrm = nrm / ln[keep][:, None]
     nrm[nrm[:, 2] < 0] *= -1                                         # two-sided
     diff = np.clip(nrm @ LIGHT, 0, 1)
     half = LIGHT + np.array([0, 0, 1.0]); half /= np.linalg.norm(half)
@@ -175,6 +191,11 @@ def render(mesh, yaw, tumble, scale, roll=0.0, pitch=PITCH):
     W, H = int(math.ceil(xmax - xmin)), int(math.ceil(ymax - ymin))
     W += (-W) % SS; H += (-H) % SS
     img = np.zeros((H, W, 3)); z = np.full((H, W), -1e9); a = np.zeros((H, W))
+    deferred = shader is not None
+    if deferred:
+        # deferred shading (28.11.26): the raster pass keeps each pixel's triangle and barycentric
+        # weights; colours (the shader, once per part) and lighting are worked out for all at once
+        tid = np.full((H, W), -1, np.int64); B0 = np.zeros((H, W)); B1 = np.zeros((H, W))
     for t in range(len(Q)):
         v = xy[t] - [xmin, ymin]; v[:, 1] = H - v[:, 1]
         zz = Q[t, :, 2]
@@ -193,8 +214,43 @@ def render(mesh, yaw, tumble, scale, roll=0.0, pitch=PITCH):
         sub = z[y0:y1 + 1, x0:x1 + 1]
         win = inside & (depth > sub)
         sub[win] = depth[win]
-        img[y0:y1 + 1, x0:x1 + 1][win] = shade[t]
         a[y0:y1 + 1, x0:x1 + 1][win] = 1
+        if deferred:
+            tid[y0:y1 + 1, x0:x1 + 1][win] = t
+            B0[y0:y1 + 1, x0:x1 + 1][win] = l0[win]
+            B1[y0:y1 + 1, x0:x1 + 1][win] = l1[win]
+            continue
+        base = cols[t]
+        if smooth:
+            n = l0[win][:, None] * vn[t, 0] + l1[win][:, None] * vn[t, 1] + l2[win][:, None] * vn[t, 2]
+            n /= np.maximum(np.linalg.norm(n, axis=1, keepdims=True), 1e-9)
+            n[n[:, 2] < 0] *= -1
+            dd = np.clip(n @ LIGHT, 0, 1)
+            sp = np.clip(n @ half, 0, 1) ** 24 * shine[t]
+            img[y0:y1 + 1, x0:x1 + 1][win] = base * (0.38 + 0.72 * dd)[:, None] + 255 * sp[:, None] * 0.8
+        else:
+            img[y0:y1 + 1, x0:x1 + 1][win] = shade[t]
+    if deferred:
+        yy, xx = np.nonzero(tid >= 0)
+        T = tid[yy, xx]; b0 = B0[yy, xx]; b1 = B1[yy, xx]; b2 = 1 - b0 - b1
+        texA = np.array([tx if tx is not None else np.zeros((3, 3)) for tx in tex])
+        pts = b0[:, None] * texA[T, 0] + b1[:, None] * texA[T, 1] + b2[:, None] * texA[T, 2]
+        base = cols[T].copy()
+        names = np.array([pp if pp is not None else '' for pp in part], dtype=object)
+        pn = names[T]
+        for nm in set(pn):
+            if not nm: continue
+            sel = pn == nm
+            base[sel] = shader(pts[sel], nm)
+        if smooth:
+            n = b0[:, None] * vn[T, 0] + b1[:, None] * vn[T, 1] + b2[:, None] * vn[T, 2]
+            n /= np.maximum(np.linalg.norm(n, axis=1, keepdims=True), 1e-9)
+        else:
+            n = nrm[T]
+        n[n[:, 2] < 0] *= -1
+        dd = np.clip(n @ LIGHT, 0, 1)
+        sp = np.clip(n @ half, 0, 1) ** 24 * shine[T]
+        img[yy, xx] = base * (0.38 + 0.72 * dd)[:, None] + 255 * sp[:, None] * 0.8
     # reduce
     h, w = H // SS, W // SS
     a2 = a.reshape(h, SS, w, SS).mean((1, 3))
