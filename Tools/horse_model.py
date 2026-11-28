@@ -86,12 +86,12 @@ def ribbon(g, pts, offs, part):
         g.quad(a, b, b + offs[i + 1], a + offs[i], part)
 
 # trunk stations: x, centre height, radius up, radius down, half width
-TRUNK = [(-102, 141, 5, 7, 5), (-98, 141, 17, 20, 16), (-90, 140, 24, 28, 25), (-76, 139, 26, 34, 30),
-         (-58, 137, 25, 37, 31), (-38, 134, 21, 35, 31), (-12, 131, 20, 39, 32), (14, 131, 22, 42, 32),
-         (36, 134, 25, 44, 30), (54, 137, 28, 43, 27), (70, 139, 25, 40, 24), (82, 140, 18, 32, 19),
-         (91, 141, 10, 20, 12), (97, 142, 3, 6, 4)]
+TRUNK = [(-92, 128, 8, 10, 7), (-89, 131, 20, 24, 19), (-83, 134, 27, 32, 26), (-72, 137, 29, 36, 30),
+         (-56, 137, 27, 37, 31), (-38, 134, 22, 35, 31), (-16, 131, 21, 39, 32), (8, 131, 22, 42, 32),
+         (28, 134, 25, 44, 30), (46, 137, 28, 43, 27), (61, 139, 25, 40, 24), (72, 140, 18, 32, 19),
+         (80, 141, 10, 20, 12), (85, 142, 3, 6, 4)]
 # the shoulder (front) and the hip (back) stand out from the sides: (x, y, rx, ry, extra width)
-MUSCLES = [(56, 120, 20, 26, 3.5), (-64, 132, 24, 26, 4.0)]
+MUSCLES = [(48, 120, 20, 26, 3.5), (-60, 124, 26, 30, 4.5)]
 
 def trunk(g, xf, heavy, n=32, k=46):
     st = np.array(TRUNK, float)
@@ -120,16 +120,24 @@ def trunk(g, xf, heavy, n=32, k=46):
 
 # ---------------------------------------------------------------- the horse
 
-FRONT_X, HIND_X, LEG_Z = 58, -62, 15
-FRONT = (46, 38, 24)          # forearm, cannon, pastern (elbow to the ground)
-HIND = (52, 42, 24)           # gaskin, cannon, pastern (stifle to the ground)
+FRONT_X, HIND_X, LEG_Z = 50, -58, 15
+FRONT = (46, 38, 22)          # forearm, cannon, pastern (elbow to the ground)
+HIND = (46, 40, 21)           # gaskin, cannon, pastern (stifle to the ground)
+HIP_Y, STIFLE = 132, np.array((18.0, -40.0))     # the stifle lies forward and below the hip
 
 def leg_points(top, lengths, angles):
-    pts = [np.asarray(top, float)]; a = 0.0
-    for L, d in zip(lengths, angles):
-        a += d
+    """angles: absolute, from straight down (+ forward)"""
+    pts = [np.asarray(top, float)]
+    for L, a in zip(lengths, angles):
         pts.append(pts[-1] + (L * math.sin(a), -L * math.cos(a), 0))
     return pts
+
+def leg_angles(name, theta, flex):
+    """theta swings the whole leg (+ forward), flex folds it (0 straight .. 1 folded for a step):
+    the foreleg's knee bends the cannon back, the hind hock bends it forward; the hoof flips back."""
+    if name[1] == 'f':
+        return (theta, theta - 1.05 * flex, theta + 0.1 - 1.4 * flex)
+    return (theta - 0.5 - 0.25 * flex, theta + 0.02 + 0.45 * flex, theta + 0.32 - 0.5 * flex)
 
 def geometry(pose, heavy=1.0, feathers=False):
     g = Geo()
@@ -144,7 +152,7 @@ def geometry(pose, heavy=1.0, feathers=False):
     trunk(g, xf, heavy)
     # neck
     na, ha = pose.get('neck', 0.0), pose.get('head', 0.0)
-    base = xf((76, 148, 0))
+    base = xf((68, 148, 0))
     a1 = math.radians(60) + na + pitch
     ndir = np.array([math.cos(a1), math.sin(a1), 0])
     nup = np.array([-ndir[1], ndir[0], 0])                  # towards the crest
@@ -174,20 +182,31 @@ def geometry(pose, heavy=1.0, feathers=False):
     ribbon(g, [f0, f0 + hd * 14], [np.array((0, 0, 4.5)), np.array((0, 0, -4.5))], 'mane')
     # tail: a dock and a fall of hair
     ta, ts = pose.get('tail', 0.0), pose.get('tail_side', 0.0)
-    t0 = xf((-97, 146, 0))
-    t1 = t0 + np.array([-math.sin(math.radians(28) + ta), -math.cos(math.radians(28) + ta), ts * 0.3]) * 26
-    t2 = t1 + np.array([-0.18 + 0.4 * math.sin(ta), -1, ts]) / 1.05 * 68
+    t0 = xf((-88, 156, 0))
+    t1 = t0 + np.array([-math.sin(math.radians(72) + ta), -math.cos(math.radians(72) + ta), ts * 0.3]) * 18
+    t2 = t1 + np.array([-0.12 + 0.4 * math.sin(ta), -1, ts]) / 1.01 * 78
     limb(g, t0, t1, 6, 8, 'tail', n=8, k=5)
     limb(g, t1, t2, 8.5, 12.5, 'tail', n=12, k=8, flat=0.55, cap=0.7)
     # legs
-    for name, x, z, lengths, ur in (('lf', FRONT_X, LEG_Z, FRONT, 14.0), ('rf', FRONT_X, -LEG_Z, FRONT, 14.0),
-                                     ('lh', HIND_X, LEG_Z, HIND, 19.0), ('rh', HIND_X, -LEG_Z, HIND, 19.0)):
-        topp = xf((x, 110 if name[1] == 'f' else 116, z))
-        pts = leg_points(topp, lengths, pose['legs'][name])
+    for name, x, z in (('lf', FRONT_X, LEG_Z), ('rf', FRONT_X, -LEG_Z), ('lh', HIND_X, LEG_Z), ('rh', HIND_X, -LEG_Z)):
+        theta, flex = pose['legs'][name]
         part = 'leg_' + name
-        limb(g, pts[0] + (0, 26, 0), pts[1], ur * heavy, 7.4 * heavy, part, n=14, k=10, cap=0.25)
+        if name[1] == 'f':
+            top = xf((x, 102, z))
+            pts = leg_points(top, FRONT, leg_angles(name, theta + pitch, flex))
+            limb(g, top + (2, 30, 0), pts[1], 15 * heavy, 7.4 * heavy, part, n=14, k=10, cap=0.25)   # forearm
+        else:
+            hip = xf((x, HIP_Y, z))
+            c, s_ = math.cos(theta + pitch), math.sin(theta + pitch)
+            stifle = hip + (STIFLE[0] * c - STIFLE[1] * s_, STIFLE[0] * s_ + STIFLE[1] * c, 0)
+            pts = leg_points(stifle, HIND, leg_angles(name, theta + pitch, flex))
+            # the thigh: the hip's muscle mass down to the stifle and the back of the gaskin
+            mid = stifle * 0.55 + pts[1] * 0.45
+            limb(g, hip + (-8, 14, 0), mid + (-3, 0, 0), 27 * heavy, 12 * heavy, part, n=16, k=12, flat=0.74, cap=0.2)
+            limb(g, stifle, pts[1], 12 * heavy, 6.5 * heavy, part, n=14, k=8, cap=0.3)               # gaskin
+            ellipsoid(g, pts[1] + (-2.5, 1, 0), 5.5 * heavy, 7.5 * heavy, 5.0 * heavy, part, n=10, k=6)  # point of hock
         u1 = (pts[2] - pts[1]) / np.linalg.norm(pts[2] - pts[1])
-        limb(g, pts[1] - u1 * 5, pts[2] + u1 * 3, 6.6 * heavy, 5.6 * heavy, part, n=12, k=7, cap=0.45)   # knee / hock to fetlock
+        limb(g, pts[1] - u1 * 5, pts[2] + u1 * 3, 6.6 * heavy, 5.6 * heavy, part, n=12, k=7, cap=0.45)   # cannon
         limb(g, pts[2] - u1 * 3, pts[3] + (pts[2] - pts[3]) * 0.12, 6.0 * heavy, 5.6 * heavy, part, n=12, k=5, cap=0.45)
         d = pts[3] - pts[2]; d /= np.linalg.norm(d)
         limb(g, pts[3] - d * 5, pts[3] + d * 2.5, 6.6 * heavy, 7.6 * heavy, 'hoof', n=14, k=3, cap=0.12)
@@ -220,9 +239,9 @@ def spots(P, size, density, seed=1, rmin=0.18, rmax=0.42):
 def mix(mask, a, b):
     return np.where(mask[:, None], np.array(a, float), np.array(b, float))
 
-REST = {'legs': {'lf': (0.0, 0.0, 0.08), 'rf': (0.0, 0.0, 0.08), 'lh': (0.1, -0.3, 0.24), 'rh': (0.1, -0.3, 0.24)}}
+REST = {'legs': {'lf': (0.0, 0.0), 'rf': (0.0, 0.0), 'lh': (0.0, 0.0), 'rh': (0.0, 0.0)}}
 _a1 = math.radians(60); _a2 = math.radians(-58)
-REST_HEAD_TOP = np.array((76, 148, 0)) + np.array([math.cos(_a1), math.sin(_a1), 0]) * 64
+REST_HEAD_TOP = np.array((68, 148, 0)) + np.array([math.cos(_a1), math.sin(_a1), 0]) * 64
 REST_HD = np.array([math.cos(_a2), math.sin(_a2), 0])
 REST_UP = np.array([-REST_HD[1], REST_HD[0], 0]) * (1 if REST_HD[0] >= 0 else -1)
 
@@ -298,21 +317,16 @@ STAND = REST['legs']
 
 def walk_pose(phase):
     """Four-beat walk: left hind, left fore, right hind, right fore a quarter apart; a leg spends
-    35% of the cycle in the air, its knee / hock folding and the hoof flipping back."""
+    35% of the cycle in the air (swinging forward, folded), and the rest on the ground, swinging
+    back as the body passes over the hoof."""
     legs = {}
     for name, off in (('lh', 0.0), ('lf', 0.25), ('rh', 0.5), ('rf', 0.75)):
         ph = (phase + off) % 1.0
-        if ph < 0.35:                                    # swing
-            s = math.sin(math.pi * ph / 0.35); u = ph / 0.35
-            if name[1] == 'f':
-                legs[name] = (-0.22 + 0.62 * u, -1.05 * s, -0.35 * s + 0.08)
-            else:
-                legs[name] = (-0.22 + 0.58 * u, -0.3 - 0.55 * s, 0.24 + 0.55 * s)
-        else:                                            # stance: the hoof stays, the body passes over
+        if ph < 0.35:
+            u = ph / 0.35
+            legs[name] = (-0.3 + 0.6 * u, math.sin(math.pi * u))
+        else:
             u = (ph - 0.35) / 0.65
-            if name[1] == 'f':
-                legs[name] = (0.4 - 0.62 * u, 0.0, 0.08 + 0.12 * u)
-            else:
-                legs[name] = (0.36 - 0.58 * u, -0.3, 0.24)
+            legs[name] = (0.3 - 0.6 * u, 0.0)
     return {'legs': legs, 'neck': 0.05 * math.sin(4 * math.pi * phase), 'head': 0.0,
             'tail': 0.06 * math.sin(2 * math.pi * phase), 'height': 1.2 * math.cos(4 * math.pi * phase)}
